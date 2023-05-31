@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>deode.toolbox &mdash; deode  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            deode
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">deode</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">deode</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">deode.toolbox</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for deode.toolbox</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Toolbox handling e.g. input/output.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="kn">from</span> <span class="nn">.datetime_utils</span> <span class="kn">import</span> <span class="n">as_datetime</span>
+<span class="kn">from</span> <span class="nn">.logs</span> <span class="kn">import</span> <span class="n">get_logger_from_config</span>
+
+
+<div class="viewcode-block" id="ArchiveError"><a class="viewcode-back" href="../../deode.html#deode.toolbox.ArchiveError">[docs]</a><span class="k">class</span> <span class="nc">ArchiveError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Error raised when there are problems archiving data.&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="ProviderError"><a class="viewcode-back" href="../../deode.html#deode.toolbox.ProviderError">[docs]</a><span class="k">class</span> <span class="nc">ProviderError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Error raised when there are provider-related problems.&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="Provider"><a class="viewcode-back" href="../../deode.html#deode.toolbox.Provider">[docs]</a><span class="k">class</span> <span class="nc">Provider</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base provider class.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">identifier</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct the object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config (deode.ParsedConfig): Configuration</span>
+<span class="sd">            identifier (str): Identifier string</span>
+<span class="sd">            fetch (bool, optional): Fetch data. Defaults to False.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger_from_config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">=</span> <span class="n">identifier</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fetch</span> <span class="o">=</span> <span class="n">fetch</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="s2">&quot;Constructed Base Provider object. </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="Provider.create_resource"><a class="viewcode-back" href="../../deode.html#deode.toolbox.Provider.create_resource">[docs]</a>    <span class="k">def</span> <span class="nf">create_resource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the resource.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource (Resource): The resource to be created</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            NotImplementedError: Should be implemented</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
+
+
+<div class="viewcode-block" id="Platform"><a class="viewcode-back" href="../../deode.html#deode.toolbox.Platform">[docs]</a><span class="k">class</span> <span class="nc">Platform</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Platform.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config (deode.ParsedConfig): Config.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger_from_config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
+
+<div class="viewcode-block" id="Platform.get_system_value"><a class="viewcode-back" href="../../deode.html#deode.toolbox.Platform.get_system_value">[docs]</a>    <span class="k">def</span> <span class="nf">get_system_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">role</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the system value.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            role (str): Type of variable to substitute</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: Value from system.[role]</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">role</span> <span class="o">=</span> <span class="n">role</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;system.&quot;</span> <span class="o">+</span> <span class="n">role</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Platform.get_value"><a class="viewcode-back" href="../../deode.html#deode.toolbox.Platform.get_value">[docs]</a>    <span class="k">def</span> <span class="nf">get_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">setting</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the config value with substition.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            setting (str): Type of variable to substitute</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: Value from config with substituted variables</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">setting</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Platform.get_platform_value"><a class="viewcode-back" href="../../deode.html#deode.toolbox.Platform.get_platform_value">[docs]</a>    <span class="k">def</span> <span class="nf">get_platform_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">role</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the path.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            role (str): Type of variable to substitute</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: Value from platform.[role]</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">role</span> <span class="o">=</span> <span class="n">role</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;platform.&quot;</span> <span class="o">+</span> <span class="n">role</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Platform.get_platform"><a class="viewcode-back" href="../../deode.html#deode.toolbox.Platform.get_platform">[docs]</a>    <span class="k">def</span> <span class="nf">get_platform</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the platform.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: Platform specifc values.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;general.platform&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Platform.get_macros"><a class="viewcode-back" href="../../deode.html#deode.toolbox.Platform.get_macros">[docs]</a>    <span class="k">def</span> <span class="nf">get_macros</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the macros.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: Macros to define.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">macro_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">macros</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;platform&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">macro</span> <span class="ow">in</span> <span class="n">macros</span><span class="p">:</span>
+            <span class="n">macro_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">macro</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Platform macro list: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">macro_list</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">macro_list</span></div>
+
+<div class="viewcode-block" id="Platform.get_system_macros"><a class="viewcode-back" href="../../deode.html#deode.toolbox.Platform.get_system_macros">[docs]</a>    <span class="k">def</span> <span class="nf">get_system_macros</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the macros.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: Macros to define.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">macro_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">macros</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;system&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">macro</span> <span class="ow">in</span> <span class="n">macros</span><span class="p">:</span>
+            <span class="n">macro_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">macro</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;System macro list: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">macro_list</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">macro_list</span></div>
+
+<div class="viewcode-block" id="Platform.get_os_macros"><a class="viewcode-back" href="../../deode.html#deode.toolbox.Platform.get_os_macros">[docs]</a>    <span class="k">def</span> <span class="nf">get_os_macros</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the environment macros.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: Environment macros to be used.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;macros.os_macros&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Platform.get_gen_macros"><a class="viewcode-back" href="../../deode.html#deode.toolbox.Platform.get_gen_macros">[docs]</a>    <span class="k">def</span> <span class="nf">get_gen_macros</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the environment macros.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: Environment macros to be used.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;macros.gen_macros&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Platform.get_provider"><a class="viewcode-back" href="../../deode.html#deode.toolbox.Platform.get_provider">[docs]</a>    <span class="k">def</span> <span class="nf">get_provider</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">provider_id</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the needed provider.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            provider_id (str): The intent of the provider.</span>
+<span class="sd">            target (Resource): The target.</span>
+<span class="sd">            fetch (boolean): Fetch the file or store it. Default to True.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Provider: Provider</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            NotImplementedError: If provider not defined.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO handle platform differently archive etc</span>
+        <span class="k">if</span> <span class="n">provider_id</span> <span class="o">==</span> <span class="s2">&quot;symlink&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">LocalFileSystemSymlink</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="n">fetch</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">provider_id</span> <span class="o">==</span> <span class="s2">&quot;copy&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">LocalFileSystemCopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="n">fetch</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">provider_id</span> <span class="o">==</span> <span class="s2">&quot;move&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">LocalFileSystemMove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="n">fetch</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">provider_id</span> <span class="o">==</span> <span class="s2">&quot;ecfs&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ECFS</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="n">fetch</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Provider for </span><span class="si">{</span><span class="n">provider_id</span><span class="si">}</span><span class="s2"> not implemented&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Platform.sub_value"><a class="viewcode-back" href="../../deode.html#deode.toolbox.Platform.sub_value">[docs]</a>    <span class="k">def</span> <span class="nf">sub_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">micro</span><span class="o">=</span><span class="s2">&quot;@&quot;</span><span class="p">,</span> <span class="n">ci</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Substitute the value case-insensitively.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            pattern (str): Input string</span>
+<span class="sd">            key (str): Key to replace</span>
+<span class="sd">            value (str): Value to replace</span>
+<span class="sd">            micro (str, optional): Micro character. Defaults to &quot;@&quot;.</span>
+<span class="sd">            ci (bool, optional): Case insensitive. Defaults to True.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: Replaces string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># create the list.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Pattern: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">pattern</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;key=</span><span class="si">%s</span><span class="s2"> value=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">ci</span><span class="p">:</span>
+            <span class="n">compiled</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">micro</span><span class="si">}{</span><span class="n">key</span><span class="si">}{</span><span class="n">micro</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">),</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">compiled</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">micro</span><span class="si">}{</span><span class="n">key</span><span class="si">}{</span><span class="n">micro</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">))</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">compiled</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">pattern</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Substituted string: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">res</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span></div>
+
+<div class="viewcode-block" id="Platform.substitute"><a class="viewcode-back" href="../../deode.html#deode.toolbox.Platform.substitute">[docs]</a>    <span class="k">def</span> <span class="nf">substitute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">basetime</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">validtime</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Substitute pattern.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            pattern (str): _description_</span>
+<span class="sd">            basetime (datetime.datetime, optional): Base time. Defaults to None.</span>
+<span class="sd">            validtime (datetime.datetime, optional): Valid time. Defaults to None.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: Substituted string.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+
+            <span class="c1"># Collect what is defined in config.macros, the group, os and general macros</span>
+            <span class="n">all_macros</span> <span class="o">=</span> <span class="p">{}</span>
+
+            <span class="k">for</span> <span class="n">source</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;macros.group_macros&quot;</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">macro</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">source</span><span class="p">)</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">all_macros</span><span class="p">[</span><span class="n">macro</span><span class="o">.</span><span class="n">upper</span><span class="p">()]</span> <span class="o">=</span> <span class="n">val</span>
+
+            <span class="k">for</span> <span class="n">macro</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_os_macros</span><span class="p">()):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">all_macros</span><span class="p">[</span><span class="n">macro</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="n">macro</span><span class="p">]</span>
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="k">pass</span>
+
+            <span class="k">for</span> <span class="n">macro</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;macros.gen_macros&quot;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">macro</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                    <span class="n">key</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">macro</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">macro</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+                    <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">macro</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+                    <span class="n">key</span> <span class="o">=</span> <span class="n">macro</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+                <span class="n">all_macros</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+
+            <span class="n">i</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">start</span><span class="p">()</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;@&quot;</span><span class="p">,</span> <span class="n">pattern</span><span class="p">)]</span>
+            <span class="n">last_pattern</span> <span class="o">=</span> <span class="s2">&quot;#&quot;</span>
+            <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">last_pattern</span> <span class="o">!=</span> <span class="n">pattern</span><span class="p">:</span>
+                <span class="n">sub_patterns</span> <span class="o">=</span> <span class="p">[</span><span class="n">pattern</span><span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:</span> <span class="n">i</span><span class="p">[</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="mi">2</span><span class="p">)]</span>
+                <span class="n">last_pattern</span> <span class="o">=</span> <span class="n">pattern</span>
+                <span class="k">for</span> <span class="n">sub_pattern</span> <span class="ow">in</span> <span class="n">sub_patterns</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">val</span> <span class="o">=</span> <span class="n">all_macros</span><span class="p">[</span><span class="n">sub_pattern</span><span class="o">.</span><span class="n">upper</span><span class="p">()]</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                            <span class="s2">&quot;before replace macro=</span><span class="si">%s</span><span class="s2"> pattern=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">macro</span><span class="p">,</span> <span class="n">pattern</span>
+                        <span class="p">)</span>
+                        <span class="n">pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_value</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">sub_pattern</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                            <span class="s2">&quot;after replace macro=</span><span class="si">%s</span><span class="s2"> pattern=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">macro</span><span class="p">,</span> <span class="n">pattern</span>
+                        <span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                        <span class="k">pass</span>
+
+                <span class="n">i</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">start</span><span class="p">()</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;@&quot;</span><span class="p">,</span> <span class="n">pattern</span><span class="p">)]</span>
+
+            <span class="c1"># Time handling</span>
+            <span class="k">if</span> <span class="n">basetime</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">basetime</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;general.times.basetime&quot;</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">validtime</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">validtime</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;general.times.validtime&quot;</span><span class="p">))</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">basetime</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">basetime</span> <span class="o">=</span> <span class="n">as_datetime</span><span class="p">(</span><span class="n">basetime</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">validtime</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">validtime</span> <span class="o">=</span> <span class="n">as_datetime</span><span class="p">(</span><span class="n">validtime</span><span class="p">)</span>
+
+            <span class="n">pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_value</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s2">&quot;YYYY&quot;</span><span class="p">,</span> <span class="n">basetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y&quot;</span><span class="p">))</span>
+            <span class="n">pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_value</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s2">&quot;MM&quot;</span><span class="p">,</span> <span class="n">basetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%m&quot;</span><span class="p">),</span> <span class="n">ci</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_value</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s2">&quot;DD&quot;</span><span class="p">,</span> <span class="n">basetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">))</span>
+            <span class="n">pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_value</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s2">&quot;HH&quot;</span><span class="p">,</span> <span class="n">basetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%H&quot;</span><span class="p">))</span>
+            <span class="n">pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_value</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s2">&quot;mm&quot;</span><span class="p">,</span> <span class="n">basetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%M&quot;</span><span class="p">),</span> <span class="n">ci</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">basetime</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">validtime</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                    <span class="s2">&quot;Substituted date/time info: basetime=</span><span class="si">%s</span><span class="s2"> validtime=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="n">basetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">%H%M&quot;</span><span class="p">),</span>
+                    <span class="n">validtime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">%H%M&quot;</span><span class="p">),</span>
+                <span class="p">)</span>
+                <span class="n">lead_time</span> <span class="o">=</span> <span class="n">validtime</span> <span class="o">-</span> <span class="n">basetime</span>
+                <span class="n">pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_value</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s2">&quot;YYYY_LL&quot;</span><span class="p">,</span> <span class="n">validtime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y&quot;</span><span class="p">))</span>
+                <span class="n">pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_value</span><span class="p">(</span>
+                    <span class="n">pattern</span><span class="p">,</span> <span class="s2">&quot;MM_LL&quot;</span><span class="p">,</span> <span class="n">validtime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%m&quot;</span><span class="p">),</span> <span class="n">ci</span><span class="o">=</span><span class="kc">False</span>
+                <span class="p">)</span>
+                <span class="n">pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_value</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s2">&quot;DD_LL&quot;</span><span class="p">,</span> <span class="n">validtime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">))</span>
+                <span class="n">pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_value</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s2">&quot;HH_LL&quot;</span><span class="p">,</span> <span class="n">validtime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%H&quot;</span><span class="p">))</span>
+                <span class="n">pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_value</span><span class="p">(</span>
+                    <span class="n">pattern</span><span class="p">,</span> <span class="s2">&quot;mm_LL&quot;</span><span class="p">,</span> <span class="n">validtime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%M&quot;</span><span class="p">),</span> <span class="n">ci</span><span class="o">=</span><span class="kc">False</span>
+                <span class="p">)</span>
+
+                <span class="n">lead_seconds</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">lead_time</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">())</span>
+                <span class="n">lh</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">lead_seconds</span> <span class="o">/</span> <span class="mi">3600</span><span class="p">)</span>
+                <span class="n">lm</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">lead_seconds</span> <span class="o">%</span> <span class="mi">3600</span> <span class="o">-</span> <span class="n">lead_seconds</span> <span class="o">%</span> <span class="mi">60</span><span class="p">)</span> <span class="o">/</span> <span class="mi">60</span><span class="p">)</span>
+                <span class="n">ls</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">lead_seconds</span> <span class="o">%</span> <span class="mi">60</span><span class="p">)</span>
+
+                <span class="n">pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_value</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s2">&quot;LH&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">lh</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_value</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s2">&quot;LL&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">lh</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_value</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s2">&quot;LLH&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">lh</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_value</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s2">&quot;LLL&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">lh</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_value</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s2">&quot;LLLH&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">lh</span><span class="si">:</span><span class="s2">04d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_value</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s2">&quot;LLLL&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">lh</span><span class="si">:</span><span class="s2">04d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_value</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s2">&quot;LM&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">lm</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_value</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s2">&quot;LS&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ls</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">tstep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;general.tstep&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">tstep</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">lead_step</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">lead_seconds</span> <span class="o">/</span> <span class="n">tstep</span><span class="p">)</span>
+                    <span class="n">pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_value</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s2">&quot;TTT&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">lead_step</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_value</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s2">&quot;TTTT&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">lead_step</span><span class="si">:</span><span class="s2">04d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">basetime</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_value</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s2">&quot;YMD&quot;</span><span class="p">,</span> <span class="n">basetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">))</span>
+                <span class="n">pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_value</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s2">&quot;YYYY&quot;</span><span class="p">,</span> <span class="n">basetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y&quot;</span><span class="p">))</span>
+                <span class="n">pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_value</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s2">&quot;YY&quot;</span><span class="p">,</span> <span class="n">basetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%y&quot;</span><span class="p">))</span>
+                <span class="n">pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_value</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s2">&quot;MM&quot;</span><span class="p">,</span> <span class="n">basetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%m&quot;</span><span class="p">),</span> <span class="n">ci</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_value</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s2">&quot;DD&quot;</span><span class="p">,</span> <span class="n">basetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">))</span>
+                <span class="n">pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_value</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s2">&quot;HH&quot;</span><span class="p">,</span> <span class="n">basetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%H&quot;</span><span class="p">))</span>
+                <span class="n">pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_value</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s2">&quot;mm&quot;</span><span class="p">,</span> <span class="n">basetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%M&quot;</span><span class="p">),</span> <span class="n">ci</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_value</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s2">&quot;ss&quot;</span><span class="p">,</span> <span class="n">basetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%S&quot;</span><span class="p">),</span> <span class="n">ci</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Return pattern=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">pattern</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pattern</span></div></div>
+
+
+<div class="viewcode-block" id="FileManager"><a class="viewcode-back" href="../../deode.html#deode.toolbox.FileManager">[docs]</a><span class="k">class</span> <span class="nc">FileManager</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;FileManager class.</span>
+
+<span class="sd">    Default DEDODE provider.</span>
+
+<span class="sd">    Platform specific.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct the object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config (deode.ParsedConfig): Configuration</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger_from_config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">platform</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Constructed FileManager object.&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="FileManager.get_input"><a class="viewcode-back" href="../../deode.html#deode.toolbox.FileManager.get_input">[docs]</a>    <span class="k">def</span> <span class="nf">get_input</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">target</span><span class="p">,</span>
+        <span class="n">destination</span><span class="p">,</span>
+        <span class="n">basetime</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">validtime</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">check_archive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">provider_id</span><span class="o">=</span><span class="s2">&quot;symlink&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set input data to deode.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            target (str): Input file pattern</span>
+<span class="sd">            destination (str): Destination file pattern</span>
+<span class="sd">            basetime (datetime.datetime, optional): Base time. Defaults to None.</span>
+<span class="sd">            validtime (datetime.datetime, optional): Valid time. Defaults to None.</span>
+<span class="sd">            check_archive (bool, optional): Also check archive. Defaults to False.</span>
+<span class="sd">            provider_id (str, optional): Provider ID. Defaults to &quot;symlink&quot;.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ProviderError: &quot;No provider found for {target}&quot;</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple: provider, resource</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">destination</span> <span class="o">=</span> <span class="n">LocalFileOnDisk</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">destination</span><span class="p">,</span> <span class="n">basetime</span><span class="o">=</span><span class="n">basetime</span><span class="p">,</span> <span class="n">validtime</span><span class="o">=</span><span class="n">validtime</span>
+        <span class="p">)</span>
+
+        <span class="n">dest_file</span> <span class="o">=</span> <span class="n">destination</span><span class="o">.</span><span class="n">identifier</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Set input for target=</span><span class="si">%s</span><span class="s2"> to destination=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">dest_file</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dest_file</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Destination file already exists.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="n">destination</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Checking provider_id </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">provider_id</span><span class="p">)</span>
+            <span class="n">sub_target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
+                <span class="n">target</span><span class="p">,</span> <span class="n">basetime</span><span class="o">=</span><span class="n">basetime</span><span class="p">,</span> <span class="n">validtime</span><span class="o">=</span><span class="n">validtime</span>
+            <span class="p">)</span>
+            <span class="n">provider</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_provider</span><span class="p">(</span><span class="n">provider_id</span><span class="p">,</span> <span class="n">sub_target</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">provider</span><span class="o">.</span><span class="n">create_resource</span><span class="p">(</span><span class="n">destination</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Using provider_id </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">provider_id</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">provider</span><span class="p">,</span> <span class="n">destination</span>
+
+        <span class="c1"># Try archive</span>
+        <span class="c1"># TODO check for archive</span>
+        <span class="k">if</span> <span class="n">check_archive</span><span class="p">:</span>
+            <span class="n">provider_id</span> <span class="o">=</span> <span class="s2">&quot;ecfs&quot;</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;@ARCHIVE@&quot;</span><span class="p">,</span> <span class="s2">&quot;ectmp:/@YYYY@/@MM@/@DD@/@HH@&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">provider_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># Substitute based on ecfs</span>
+                <span class="n">sub_target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
+                    <span class="n">target</span><span class="p">,</span> <span class="n">basetime</span><span class="o">=</span><span class="n">basetime</span><span class="p">,</span> <span class="n">validtime</span><span class="o">=</span><span class="n">validtime</span>
+                <span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Checking archiving provider_id </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">provider_id</span><span class="p">)</span>
+                <span class="n">provider</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_provider</span><span class="p">(</span><span class="n">provider_id</span><span class="p">,</span> <span class="n">sub_target</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">provider</span><span class="o">.</span><span class="n">create_resource</span><span class="p">(</span><span class="n">destination</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Using provider_id </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">provider_id</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">provider</span><span class="p">,</span> <span class="n">destination</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Could not archive </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">destination</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
+        <span class="c1"># Else raise exception</span>
+        <span class="k">raise</span> <span class="n">ProviderError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;No provider found for </span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2"> and provider_id </span><span class="si">{</span><span class="n">provider_id</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="FileManager.input"><a class="viewcode-back" href="../../deode.html#deode.toolbox.FileManager.input">[docs]</a>    <span class="k">def</span> <span class="nf">input</span><span class="p">(</span>  <span class="c1"># noqa: A003 (class attribute shadowing builtin)</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">target</span><span class="p">,</span>
+        <span class="n">destination</span><span class="p">,</span>
+        <span class="n">basetime</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">validtime</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># noqa</span>
+        <span class="n">check_archive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">provider_id</span><span class="o">=</span><span class="s2">&quot;symlink&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set input data to deode.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            target (str): Input file pattern</span>
+<span class="sd">            destination (str): Destination file pattern</span>
+<span class="sd">            basetime (datetime.datetime, optional): Base time. Defaults to None.</span>
+<span class="sd">            validtime (datetime.datetime, optional): Valid time. Defaults to None.</span>
+<span class="sd">            check_archive (bool, optional): Also check archive. Defaults to False.</span>
+<span class="sd">            provider_id (str, optional): Provider ID. Defaults to &quot;symlink&quot;.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">__</span><span class="p">,</span> <span class="n">__</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_input</span><span class="p">(</span>
+            <span class="n">target</span><span class="p">,</span>
+            <span class="n">destination</span><span class="p">,</span>
+            <span class="n">basetime</span><span class="o">=</span><span class="n">basetime</span><span class="p">,</span>
+            <span class="n">validtime</span><span class="o">=</span><span class="n">validtime</span><span class="p">,</span>
+            <span class="n">check_archive</span><span class="o">=</span><span class="n">check_archive</span><span class="p">,</span>
+            <span class="n">provider_id</span><span class="o">=</span><span class="n">provider_id</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="FileManager.get_output"><a class="viewcode-back" href="../../deode.html#deode.toolbox.FileManager.get_output">[docs]</a>    <span class="k">def</span> <span class="nf">get_output</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">target</span><span class="p">,</span>
+        <span class="n">destination</span><span class="p">,</span>
+        <span class="n">basetime</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">validtime</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">archive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">provider_id</span><span class="o">=</span><span class="s2">&quot;move&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set output data from deode.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            target (str): Input file pattern</span>
+<span class="sd">            destination (str): Destination file pattern</span>
+<span class="sd">            basetime (datetime.datetime, optional): Base time. Defaults to None.</span>
+<span class="sd">            validtime (datetime.datetime, optional): Valid time. Defaults to None.</span>
+<span class="sd">            archive (bool, optional): Also archive data. Defaults to False.</span>
+<span class="sd">            provider_id (str, optional): Provider ID. Defaults to &quot;move&quot;.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple: provider, aprovider, resource</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ArchiveError: Could not archive data</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sub_target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
+            <span class="n">target</span><span class="p">,</span> <span class="n">basetime</span><span class="o">=</span><span class="n">basetime</span><span class="p">,</span> <span class="n">validtime</span><span class="o">=</span><span class="n">validtime</span>
+        <span class="p">)</span>
+        <span class="n">sub_destination</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
+            <span class="n">destination</span><span class="p">,</span> <span class="n">basetime</span><span class="o">=</span><span class="n">basetime</span><span class="p">,</span> <span class="n">validtime</span><span class="o">=</span><span class="n">validtime</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="s2">&quot;Set output for target=</span><span class="si">%s</span><span class="s2"> to destination=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">sub_target</span><span class="p">,</span> <span class="n">sub_destination</span>
+        <span class="p">)</span>
+        <span class="n">target_resource</span> <span class="o">=</span> <span class="n">LocalFileOnDisk</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">sub_target</span><span class="p">,</span> <span class="n">basetime</span><span class="o">=</span><span class="n">basetime</span><span class="p">,</span> <span class="n">validtime</span><span class="o">=</span><span class="n">validtime</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="s2">&quot;Checking provider_id=</span><span class="si">%s</span><span class="s2"> for destination=</span><span class="si">%s</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="n">provider_id</span><span class="p">,</span> <span class="n">sub_destination</span>
+        <span class="p">)</span>
+        <span class="n">provider</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_provider</span><span class="p">(</span><span class="n">provider_id</span><span class="p">,</span> <span class="n">sub_destination</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">provider</span><span class="o">.</span><span class="n">create_resource</span><span class="p">(</span><span class="n">target_resource</span><span class="p">):</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">destination</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Using provider_id </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">provider_id</span><span class="p">)</span>
+
+        <span class="n">aprovider</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">archive</span><span class="p">:</span>
+            <span class="c1"># TODO check for archive and modify macros</span>
+            <span class="n">provider_id</span> <span class="o">=</span> <span class="s2">&quot;ecfs&quot;</span>
+            <span class="n">destination</span> <span class="o">=</span> <span class="n">destination</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;@ARCHIVE@&quot;</span><span class="p">,</span> <span class="s2">&quot;ectmp:/@YYYY@/@MM@/@DD@/@HH@&quot;</span><span class="p">)</span>
+
+            <span class="n">sub_target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
+                <span class="n">target</span><span class="p">,</span> <span class="n">basetime</span><span class="o">=</span><span class="n">basetime</span><span class="p">,</span> <span class="n">validtime</span><span class="o">=</span><span class="n">validtime</span>
+            <span class="p">)</span>
+            <span class="n">sub_destination</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
+                <span class="n">destination</span><span class="p">,</span> <span class="n">basetime</span><span class="o">=</span><span class="n">basetime</span><span class="p">,</span> <span class="n">validtime</span><span class="o">=</span><span class="n">validtime</span>
+            <span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="s2">&quot;Set output for target=</span><span class="si">%s</span><span class="s2"> to destination=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">sub_target</span><span class="p">,</span> <span class="n">sub_destination</span>
+            <span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Checking archive provider_id </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">provider_id</span><span class="p">)</span>
+            <span class="n">aprovider</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_provider</span><span class="p">(</span>
+                <span class="n">provider_id</span><span class="p">,</span> <span class="n">sub_destination</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">aprovider</span><span class="o">.</span><span class="n">create_resource</span><span class="p">(</span><span class="n">target_resource</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Using provider_id </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">provider_id</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ArchiveError</span><span class="p">(</span><span class="s2">&quot;Could not archive data&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">provider</span><span class="p">,</span> <span class="n">aprovider</span><span class="p">,</span> <span class="n">target_resource</span></div>
+
+<div class="viewcode-block" id="FileManager.output"><a class="viewcode-back" href="../../deode.html#deode.toolbox.FileManager.output">[docs]</a>    <span class="k">def</span> <span class="nf">output</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">target</span><span class="p">,</span>
+        <span class="n">destination</span><span class="p">,</span>
+        <span class="n">basetime</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">validtime</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">archive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">provider_id</span><span class="o">=</span><span class="s2">&quot;move&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set output data from deode.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            target (str): Input file pattern</span>
+<span class="sd">            destination (str): Destination file pattern</span>
+<span class="sd">            basetime (datetime.datetime, optional): Base time. Defaults to None.</span>
+<span class="sd">            validtime (datetime.datetime, optional): Valid time. Defaults to None.</span>
+<span class="sd">            archive (bool, optional): Also archive data. Defaults to False.</span>
+<span class="sd">            provider_id (str, optional): Provider ID. Defaults to &quot;move&quot;.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">__</span><span class="p">,</span> <span class="n">__</span><span class="p">,</span> <span class="n">__</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_output</span><span class="p">(</span>
+            <span class="n">target</span><span class="p">,</span>
+            <span class="n">destination</span><span class="p">,</span>
+            <span class="n">basetime</span><span class="o">=</span><span class="n">basetime</span><span class="p">,</span>
+            <span class="n">validtime</span><span class="o">=</span><span class="n">validtime</span><span class="p">,</span>
+            <span class="n">archive</span><span class="o">=</span><span class="n">archive</span><span class="p">,</span>
+            <span class="n">provider_id</span><span class="o">=</span><span class="n">provider_id</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="FileManager.set_resources_from_dict"><a class="viewcode-back" href="../../deode.html#deode.toolbox.FileManager.set_resources_from_dict">[docs]</a>    <span class="k">def</span> <span class="nf">set_resources_from_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res_dict</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set resources from dict.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            res_dict (_type_): _description_</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: If the passed file type is neither &#39;input&#39; nor &#39;output&#39;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">ftype</span><span class="p">,</span> <span class="n">fobj</span> <span class="ow">in</span> <span class="n">res_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">target</span><span class="p">,</span> <span class="n">settings</span> <span class="ow">in</span> <span class="n">fobj</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                    <span class="s2">&quot;ftype=</span><span class="si">%s</span><span class="s2"> target=</span><span class="si">%s</span><span class="s2">, settings=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ftype</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">settings</span>
+                <span class="p">)</span>
+                <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;basetime&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;validtime&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;provider_id&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
+                <span class="n">keys</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">if</span> <span class="n">ftype</span> <span class="o">==</span> <span class="s2">&quot;input&quot;</span><span class="p">:</span>
+                    <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;basetime&quot;</span><span class="p">,</span> <span class="s2">&quot;validtime&quot;</span><span class="p">,</span> <span class="s2">&quot;check_archive&quot;</span><span class="p">,</span> <span class="s2">&quot;provider_id&quot;</span><span class="p">]</span>
+                    <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;check_archive&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span>
+                <span class="k">elif</span> <span class="n">ftype</span> <span class="o">==</span> <span class="s2">&quot;output&quot;</span><span class="p">:</span>
+                    <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;basetime&quot;</span><span class="p">,</span> <span class="s2">&quot;validtime&quot;</span><span class="p">,</span> <span class="s2">&quot;archive&quot;</span><span class="p">,</span> <span class="s2">&quot;provider_id&quot;</span><span class="p">]</span>
+                    <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;archive&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span>
+
+                <span class="n">destination</span> <span class="o">=</span> <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;destination&quot;</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">settings</span><span class="p">:</span>
+                        <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="n">settings</span><span class="p">[</span><span class="n">key</span><span class="p">]})</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;kwargs=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">ftype</span> <span class="o">==</span> <span class="s2">&quot;input&quot;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">destination</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">ftype</span> <span class="o">==</span> <span class="s2">&quot;output&quot;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">destination</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Unknown file type &#39;</span><span class="si">{</span><span class="n">ftype</span><span class="si">}</span><span class="s2">&#39;. Must be either &#39;input&#39; or &#39;output&#39;&quot;</span>
+                    <span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="LocalFileSystemSymlink"><a class="viewcode-back" href="../../deode.html#deode.toolbox.LocalFileSystemSymlink">[docs]</a><span class="k">class</span> <span class="nc">LocalFileSystemSymlink</span><span class="p">(</span><span class="n">Provider</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Local file system.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct the object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config (deode.ParsedConfig): Configuration</span>
+<span class="sd">            pattern (str): Identifier string</span>
+<span class="sd">            fetch (bool, optional): Fetch data. Defaults to True.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Provider</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="n">fetch</span><span class="p">)</span>
+
+<div class="viewcode-block" id="LocalFileSystemSymlink.create_resource"><a class="viewcode-back" href="../../deode.html#deode.toolbox.LocalFileSystemSymlink.create_resource">[docs]</a>    <span class="k">def</span> <span class="nf">create_resource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Symlink the resource.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource (Resource): Resource.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if success</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;ln -sf </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ln -sf </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># noqa S605</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;File is missing </span><span class="si">%s</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;ln -sf </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ln -sf </span><span class="si">{</span><span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># noqa S605</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;File is missing </span><span class="si">%s</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span></div></div>
+
+
+<div class="viewcode-block" id="LocalFileSystemCopy"><a class="viewcode-back" href="../../deode.html#deode.toolbox.LocalFileSystemCopy">[docs]</a><span class="k">class</span> <span class="nc">LocalFileSystemCopy</span><span class="p">(</span><span class="n">Provider</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Local file system copy.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct the object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config (deode.ParsedConfig): Configuration</span>
+<span class="sd">            pattern (str): Identifier string</span>
+<span class="sd">            fetch (bool, optional): Fetch data. Defaults to False.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Provider</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="n">fetch</span><span class="p">)</span>
+
+<div class="viewcode-block" id="LocalFileSystemCopy.create_resource"><a class="viewcode-back" href="../../deode.html#deode.toolbox.LocalFileSystemCopy.create_resource">[docs]</a>    <span class="k">def</span> <span class="nf">create_resource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the resource.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource (Resource): Resource.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if success</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;cp </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cp </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># noqa S605</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;File is missing </span><span class="si">%s</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;cp </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cp </span><span class="si">{</span><span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># noqa S605</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;File is missing </span><span class="si">%s</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span></div></div>
+
+
+<div class="viewcode-block" id="LocalFileSystemMove"><a class="viewcode-back" href="../../deode.html#deode.toolbox.LocalFileSystemMove">[docs]</a><span class="k">class</span> <span class="nc">LocalFileSystemMove</span><span class="p">(</span><span class="n">Provider</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Local file system copy.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct the object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config (deode.ParsedConfig): Configuration</span>
+<span class="sd">            pattern (str): Identifier string</span>
+<span class="sd">            fetch (bool, optional): Fetch data. Defaults to False.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Provider</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="n">fetch</span><span class="p">)</span>
+
+<div class="viewcode-block" id="LocalFileSystemMove.create_resource"><a class="viewcode-back" href="../../deode.html#deode.toolbox.LocalFileSystemMove.create_resource">[docs]</a>    <span class="k">def</span> <span class="nf">create_resource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the resource.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource (Resource): Resource.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if success</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;mv </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;mv </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># noqa S605</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;File is missing </span><span class="si">%s</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;mv </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;mv </span><span class="si">{</span><span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># noqa S605</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;File is missing </span><span class="si">%s</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span></div></div>
+
+
+<div class="viewcode-block" id="ArchiveProvider"><a class="viewcode-back" href="../../deode.html#deode.toolbox.ArchiveProvider">[docs]</a><span class="k">class</span> <span class="nc">ArchiveProvider</span><span class="p">(</span><span class="n">Provider</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Data from ECFS.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct the object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config (deode.ParsedConfig): Configuration</span>
+<span class="sd">            pattern (str): Filepattern</span>
+<span class="sd">            fetch (bool, optional): Fetch the data. Defaults to True.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fetch</span> <span class="o">=</span> <span class="n">fetch</span>
+        <span class="n">Provider</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">pattern</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ArchiveProvider.create_resource"><a class="viewcode-back" href="../../deode.html#deode.toolbox.ArchiveProvider.create_resource">[docs]</a>    <span class="k">def</span> <span class="nf">create_resource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the resource.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource (Resource): Resource.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if success</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Provider</span><span class="o">.</span><span class="n">create_resource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="ECFS"><a class="viewcode-back" href="../../deode.html#deode.toolbox.ECFS">[docs]</a><span class="k">class</span> <span class="nc">ECFS</span><span class="p">(</span><span class="n">ArchiveProvider</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Data from ECFS.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct ECFS provider.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config (deode.ParsedConfig): Configuration</span>
+<span class="sd">            pattern (str): Filepattern</span>
+<span class="sd">            fetch (bool, optional): Fetch the data. Defaults to True.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ArchiveProvider</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="n">fetch</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ECFS.create_resource"><a class="viewcode-back" href="../../deode.html#deode.toolbox.ECFS.create_resource">[docs]</a>    <span class="k">def</span> <span class="nf">create_resource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the resource.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource (Resource): Resource.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if success</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;ecp ecfs:</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
+            <span class="c1"># os.system(f&quot;ecp ecfs:{self.identifier} {resource.identifier}&quot;)  # noqa S605, E800</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;ecp </span><span class="si">%s</span><span class="s2"> ecfs:</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
+            <span class="c1"># os.system(f&quot;ecp {resource.identifier} ecfs:{self.identifier}&quot;)  # noqa S605, E800</span>
+        <span class="k">return</span> <span class="kc">True</span></div></div>
+
+
+<div class="viewcode-block" id="Resource"><a class="viewcode-back" href="../../deode.html#deode.toolbox.Resource">[docs]</a><span class="k">class</span> <span class="nc">Resource</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Resource container.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">identifier</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct resource.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config (deode.ParsedConfig): Configuration</span>
+<span class="sd">            identifier (str): Resource identifier</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger_from_config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">=</span> <span class="n">identifier</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Base resource&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LocalFileOnDisk"><a class="viewcode-back" href="../../deode.html#deode.toolbox.LocalFileOnDisk">[docs]</a><span class="k">class</span> <span class="nc">LocalFileOnDisk</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Local file on disk.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">basetime</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">validtime</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct local file on disk.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config (deode.ParsedConfig): Configuration</span>
+<span class="sd">            pattern (str): Identifier pattern</span>
+<span class="sd">            basetime (datetime.datetime, optional): Base time. Defaults to None.</span>
+<span class="sd">            validtime (datetime.datetime, optional): Valid time. Defaults to None.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">platform</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+        <span class="n">identifier</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">basetime</span><span class="o">=</span><span class="n">basetime</span><span class="p">,</span> <span class="n">validtime</span><span class="o">=</span><span class="n">validtime</span><span class="p">)</span>
+        <span class="n">Resource</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">identifier</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, The WP5.1 development group in the DE_330 project.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>deode.datetime_utils &mdash; deode  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            deode
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">deode</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">deode</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">deode.datetime_utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for deode.datetime_utils</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="sd">&quot;&quot;&quot;Implement helper routines to deal with dates and times.&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">timezone</span>
+
+<span class="kn">import</span> <span class="nn">dateutil.parser</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">dateutil.utils</span> <span class="kn">import</span> <span class="n">default_tzinfo</span>
+
+<span class="c1"># The regex in a json schema&#39;s &quot;pattern&quot; must use JavaScript syntax (ECMA 262).</span>
+<span class="c1"># &lt;https://json-schema.org/understanding-json-schema/reference/regular_expressions.html&gt;</span>
+<span class="n">ISO_8601_TIME_DURATION_REGEX</span> <span class="o">=</span> <span class="s2">&quot;^P(?!$)(</span><span class="se">\\</span><span class="s2">d+Y)?(</span><span class="se">\\</span><span class="s2">d+M)?(</span><span class="se">\\</span><span class="s2">d+W)?(</span><span class="se">\\</span><span class="s2">d+D)?&quot;</span>
+<span class="n">ISO_8601_TIME_DURATION_REGEX</span> <span class="o">+=</span> <span class="s2">&quot;(T(?=</span><span class="se">\\</span><span class="s2">d+[HMS])(</span><span class="se">\\</span><span class="s2">d+H)?(</span><span class="se">\\</span><span class="s2">d+M)?(</span><span class="se">\\</span><span class="s2">d+S)?)?$&quot;</span>
+<span class="n">IRX</span> <span class="o">=</span> <span class="n">ISO_8601_TIME_DURATION_REGEX</span>
+<span class="n">DEFAULT_SHIFT</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="as_datetime"><a class="viewcode-back" href="../../deode.html#deode.datetime_utils.as_datetime">[docs]</a><span class="k">def</span> <span class="nf">as_datetime</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert obj to string, parse into datetime and add UTC timezone iff naive.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">default_tzinfo</span><span class="p">(</span><span class="n">dateutil</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">obj</span><span class="p">)),</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="as_timedelta"><a class="viewcode-back" href="../../deode.html#deode.datetime_utils.as_timedelta">[docs]</a><span class="k">def</span> <span class="nf">as_timedelta</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert obj to string and parse into pd.Timedelta.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">obj</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="dt2str"><a class="viewcode-back" href="../../deode.html#deode.datetime_utils.dt2str">[docs]</a><span class="k">def</span> <span class="nf">dt2str</span><span class="p">(</span><span class="n">dt</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert timdelta object to file name suitable string.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dt (timedelta object): duration</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        duration (str): string representation of duration</span>
+<span class="sd">                        suitable for FA files</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">seconds</span> <span class="o">/</span> <span class="mi">3600</span><span class="p">)</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">days</span> <span class="o">*</span> <span class="mi">24</span><span class="p">)</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">dt</span><span class="o">.</span><span class="n">seconds</span> <span class="o">%</span> <span class="mi">3600</span> <span class="o">-</span> <span class="n">dt</span><span class="o">.</span><span class="n">seconds</span> <span class="o">%</span> <span class="mi">60</span><span class="p">)</span> <span class="o">/</span> <span class="mi">60</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">seconds</span> <span class="o">%</span> <span class="mi">60</span><span class="p">)</span>
+
+    <span class="n">duration</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">h</span><span class="si">:</span><span class="s2">04d</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">m</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">s</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">return</span> <span class="n">duration</span></div>
+
+
+<div class="viewcode-block" id="expand_output_settings"><a class="viewcode-back" href="../../deode.html#deode.datetime_utils.expand_output_settings">[docs]</a><span class="k">def</span> <span class="nf">expand_output_settings</span><span class="p">(</span><span class="n">output_settings</span><span class="p">,</span> <span class="n">forecast_range</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Expand the output_settings coming from config.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        output_settings (tuple, list, str): Specifies the output steps</span>
+<span class="sd">        forecast_range (str): Forecast range in duration syntax</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        sections (list) : List of output subsections</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">output_settings</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">output_settings</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">oi</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;PT0H:&quot;</span> <span class="o">+</span> <span class="n">forecast_range</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span> <span class="o">+</span> <span class="n">output_settings</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">output_settings</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">oi</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;PT0H:&quot;</span> <span class="o">+</span> <span class="n">output_settings</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">oi</span> <span class="o">=</span> <span class="p">[</span><span class="n">output_settings</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">oi</span> <span class="o">=</span> <span class="n">output_settings</span>
+
+    <span class="n">z</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;PT0H:PT0H:PT0H&quot;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">oi</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">z</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">z</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">],</span> <span class="n">forecast_range</span><span class="p">,</span> <span class="n">x</span><span class="p">]))</span>
+        <span class="k">elif</span> <span class="n">x</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">z</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">z</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span> <span class="o">+</span> <span class="n">x</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">z</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="n">sections</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">z</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+        <span class="n">sections</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">as_timedelta</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)])</span>
+
+    <span class="k">return</span> <span class="n">sections</span></div>
+
+
+<div class="viewcode-block" id="oi2dt_list"><a class="viewcode-back" href="../../deode.html#deode.datetime_utils.oi2dt_list">[docs]</a><span class="k">def</span> <span class="nf">oi2dt_list</span><span class="p">(</span><span class="n">output_settings</span><span class="p">,</span> <span class="n">forecast_range</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Build list of output occurences.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        output_settings (tuple,list,str): Specifies the output steps</span>
+<span class="sd">        forecast_range (str): Forecast range in duration syntax</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dt (list) : List of output occurences</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sections</span> <span class="o">=</span> <span class="n">expand_output_settings</span><span class="p">(</span><span class="n">output_settings</span><span class="p">,</span> <span class="n">forecast_range</span><span class="p">)</span>
+
+    <span class="n">dt</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">cdt</span> <span class="o">=</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="s2">&quot;PT0H&quot;</span><span class="p">)</span>
+    <span class="n">fdt</span> <span class="o">=</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="n">forecast_range</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sections</span><span class="p">:</span>
+        <span class="n">cdt</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">edt</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">while</span> <span class="n">cdt</span> <span class="o">&lt;=</span> <span class="n">edt</span> <span class="ow">and</span> <span class="n">cdt</span> <span class="o">&lt;=</span> <span class="n">fdt</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">cdt</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dt</span><span class="p">:</span>
+                <span class="n">dt</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cdt</span><span class="p">)</span>
+            <span class="n">cdt</span> <span class="o">+=</span> <span class="n">s</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">dt</span></div>
+
+
+<div class="viewcode-block" id="cycle_offset"><a class="viewcode-back" href="../../deode.html#deode.datetime_utils.cycle_offset">[docs]</a><span class="k">def</span> <span class="nf">cycle_offset</span><span class="p">(</span><span class="n">basetime</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="n">DEFAULT_SHIFT</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculcate offset from a reference time.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        basetime (datetime): Reference time</span>
+<span class="sd">        dt (timedelta): duration</span>
+<span class="sd">        shift (timedelta): shift</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        timedelta : a timdelta object of the offset</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">reftime</span> <span class="o">=</span> <span class="n">basetime</span><span class="o">.</span><span class="n">hour</span> <span class="o">*</span> <span class="mi">3600</span> <span class="o">+</span> <span class="n">basetime</span><span class="o">.</span><span class="n">minute</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">+</span> <span class="n">basetime</span><span class="o">.</span><span class="n">second</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">days</span> <span class="o">*</span> <span class="mi">3600</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">+</span> <span class="n">dt</span><span class="o">.</span><span class="n">seconds</span>
+    <span class="n">shift_seconds</span> <span class="o">=</span> <span class="n">shift</span><span class="o">.</span><span class="n">days</span> <span class="o">*</span> <span class="mi">3600</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">+</span> <span class="n">shift</span><span class="o">.</span><span class="n">seconds</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="n">reftime</span> <span class="o">%</span> <span class="n">t</span> <span class="o">-</span> <span class="n">shift_seconds</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">k</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, The WP5.1 development group in the DE_330 project.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

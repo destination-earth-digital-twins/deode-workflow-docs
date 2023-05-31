@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>deode.logs &mdash; deode  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            deode
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">deode</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">deode</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">deode.logs</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for deode.logs</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="sd">&quot;&quot;&quot;Logging-related classes, functions and definitions.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
+
+<span class="c1"># Define aliases to ANSI escape sequences to set text color in log</span>
+<span class="n">LogColor</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span>
+    <span class="n">typename</span><span class="o">=</span><span class="s2">&quot;LogColor&quot;</span><span class="p">,</span>
+    <span class="n">field_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;reset&quot;</span><span class="p">,</span> <span class="s2">&quot;yellow&quot;</span><span class="p">,</span> <span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="s2">&quot;cyan&quot;</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">logcolor</span> <span class="o">=</span> <span class="n">LogColor</span><span class="p">(</span>
+    <span class="n">reset</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\u001b</span><span class="s2">[0m&quot;</span><span class="p">,</span>
+    <span class="n">yellow</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\u001b</span><span class="s2">[33m&quot;</span><span class="p">,</span>
+    <span class="n">red</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\u001b</span><span class="s2">[31m&quot;</span><span class="p">,</span>
+    <span class="n">green</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\u001b</span><span class="s2">[32m&quot;</span><span class="p">,</span>
+    <span class="n">cyan</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\u001b</span><span class="s2">[36m&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="CustomFormatter"><a class="viewcode-back" href="../../deode.html#deode.logs.CustomFormatter">[docs]</a><span class="k">class</span> <span class="nc">CustomFormatter</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Logging Formatter to add colors and count warning / errors.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Adapted from: &lt;https://stackoverflow.com/q/14844970/3644857&gt;</span>
+
+    <span class="n">FORMATS</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;DEFAULT&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2">: </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">CRITICAL</span><span class="p">:</span> <span class="p">(</span>
+            <span class="n">logcolor</span><span class="o">.</span><span class="n">red</span>
+            <span class="o">+</span> <span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2"> </span><span class="si">%(levelname)s</span><span class="s2">(</span><span class="si">%(module)s</span><span class="s2">: </span><span class="si">%(lineno)d</span><span class="s2">): </span><span class="si">%(message)s</span><span class="s2">&quot;</span>
+            <span class="o">+</span> <span class="n">logcolor</span><span class="o">.</span><span class="n">reset</span>
+        <span class="p">),</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">:</span> <span class="n">logcolor</span><span class="o">.</span><span class="n">red</span>
+        <span class="o">+</span> <span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2"> </span><span class="si">%(levelname)s</span><span class="s2">: &quot;</span>
+        <span class="o">+</span> <span class="n">logcolor</span><span class="o">.</span><span class="n">reset</span>
+        <span class="o">+</span> <span class="s2">&quot;</span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">:</span> <span class="n">logcolor</span><span class="o">.</span><span class="n">yellow</span>
+        <span class="o">+</span> <span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2"> </span><span class="si">%(levelname)s</span><span class="s2">: &quot;</span>
+        <span class="o">+</span> <span class="n">logcolor</span><span class="o">.</span><span class="n">reset</span>
+        <span class="o">+</span> <span class="s2">&quot;</span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">:</span> <span class="p">(</span>
+            <span class="n">logcolor</span><span class="o">.</span><span class="n">green</span>
+            <span class="o">+</span> <span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2"> </span><span class="si">%(levelname)s</span><span class="s2">(</span><span class="si">%(module)s</span><span class="s2">: </span><span class="si">%(lineno)d</span><span class="s2">): &quot;</span>
+            <span class="o">+</span> <span class="n">logcolor</span><span class="o">.</span><span class="n">reset</span>
+            <span class="o">+</span> <span class="s2">&quot;</span><span class="si">%(message)s</span><span class="s2">&quot;</span>
+        <span class="p">),</span>
+    <span class="p">}</span>
+
+<div class="viewcode-block" id="CustomFormatter.format"><a class="viewcode-back" href="../../deode.html#deode.logs.CustomFormatter.format">[docs]</a>    <span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">):</span>  <span class="c1"># noqa: A003 (class attribute shadowing builtin)</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a formatter.format for &quot;record&quot;.&quot;&quot;&quot;</span>
+        <span class="n">log_fmt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">FORMATS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">record</span><span class="o">.</span><span class="n">levelno</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">FORMATS</span><span class="p">[</span><span class="s2">&quot;DEFAULT&quot;</span><span class="p">])</span>
+        <span class="n">formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="n">log_fmt</span><span class="p">,</span> <span class="n">datefmt</span><span class="o">=</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">formatter</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">record</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="get_logger"><a class="viewcode-back" href="../../deode.html#deode.logs.get_logger">[docs]</a><span class="k">def</span> <span class="nf">get_logger</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">loglevel</span><span class="o">=</span><span class="s2">&quot;INFO&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get logger with name &quot;name&quot; and loglevel &quot;loglevel&quot;.&quot;&quot;&quot;</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">logger_handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()</span>
+    <span class="n">logger_handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">CustomFormatter</span><span class="p">())</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>
+        <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">getLevelName</span><span class="p">(</span><span class="n">loglevel</span><span class="o">.</span><span class="n">upper</span><span class="p">()),</span>
+        <span class="n">handlers</span><span class="o">=</span><span class="p">[</span><span class="n">logger_handler</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">logger</span></div>
+
+
+<div class="viewcode-block" id="get_logger_from_config"><a class="viewcode-back" href="../../deode.html#deode.logs.get_logger_from_config">[docs]</a><span class="k">def</span> <span class="nf">get_logger_from_config</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get logger with name &quot;name&quot; and loglevel from config.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        config (deode.ParsedConfig): Config</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        logging: Logger instance</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">loglevel</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;general.loglevel&quot;</span><span class="p">,</span> <span class="s2">&quot;INFO&quot;</span><span class="p">)</span>
+    <span class="c1"># Do we have a name yet?</span>
+    <span class="c1"># name = config.get_value(&quot;general.exp&quot;)  # noqa</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;DEODE&quot;</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">logger_handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()</span>
+    <span class="n">logger_handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">getLevelName</span><span class="p">(</span><span class="n">loglevel</span><span class="o">.</span><span class="n">upper</span><span class="p">()))</span>
+    <span class="n">logger_handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">CustomFormatter</span><span class="p">())</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>
+        <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">getLevelName</span><span class="p">(</span><span class="n">loglevel</span><span class="o">.</span><span class="n">upper</span><span class="p">()),</span>
+        <span class="n">handlers</span><span class="o">=</span><span class="p">[</span><span class="n">logger_handler</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">getLevelName</span><span class="p">(</span><span class="n">loglevel</span><span class="o">.</span><span class="n">upper</span><span class="p">()))</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;returning logger with level </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">loglevel</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="n">logger</span><span class="o">.</span><span class="n">level</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">logger</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, The WP5.1 development group in the DE_330 project.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

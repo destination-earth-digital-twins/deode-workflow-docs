@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>deode.namelist &mdash; deode  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            deode
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">deode</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">deode</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">deode.namelist</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for deode.namelist</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="sd">&quot;&quot;&quot;Namelist handling for MASTERODB w/SURFEX.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">import</span> <span class="nn">f90nml</span>
+<span class="kn">import</span> <span class="nn">yaml</span>
+
+<span class="kn">from</span> <span class="nn">.logs</span> <span class="kn">import</span> <span class="n">get_logger_from_config</span>
+<span class="kn">from</span> <span class="nn">.toolbox</span> <span class="kn">import</span> <span class="n">Platform</span>
+
+
+<div class="viewcode-block" id="flatten_list"><a class="viewcode-back" href="../../deode.html#deode.namelist.flatten_list">[docs]</a><span class="k">def</span> <span class="nf">flatten_list</span><span class="p">(</span><span class="n">li</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Recursively flatten a list of lists (of lists).&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">li</span> <span class="o">==</span> <span class="p">[]:</span>
+        <span class="k">return</span> <span class="n">li</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">li</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">flatten_list</span><span class="p">(</span><span class="n">li</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="n">flatten_list</span><span class="p">(</span><span class="n">li</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+    <span class="k">return</span> <span class="n">li</span><span class="p">[:</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">flatten_list</span><span class="p">(</span><span class="n">li</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span></div>
+
+
+<div class="viewcode-block" id="find_num"><a class="viewcode-back" href="../../deode.html#deode.namelist.find_num">[docs]</a><span class="k">def</span> <span class="nf">find_num</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Purpose: un-quote numbers.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">i</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">f</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">s</span></div>
+
+
+<div class="viewcode-block" id="InvalidNamelistKindError"><a class="viewcode-back" href="../../deode.html#deode.namelist.InvalidNamelistKindError">[docs]</a><span class="k">class</span> <span class="nc">InvalidNamelistKindError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom exception.&quot;&quot;&quot;</span>
+
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="InvalidNamelistTargetError"><a class="viewcode-back" href="../../deode.html#deode.namelist.InvalidNamelistTargetError">[docs]</a><span class="k">class</span> <span class="nc">InvalidNamelistTargetError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom exception.&quot;&quot;&quot;</span>
+
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="NamelistGenerator"><a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistGenerator">[docs]</a><span class="k">class</span> <span class="nc">NamelistGenerator</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Fortran namelist generator based on hierarchical merging of (yaml) dicts.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">kind</span><span class="p">,</span> <span class="n">substitute</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct the generator.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config (deode.ParsedConfig): Configuration</span>
+<span class="sd">            kind (str): one of &#39;master&#39; or &#39;surfex&#39;</span>
+<span class="sd">            substitute (boolean): flag for substitution</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            InvalidNamelistKindError   # noqa: DAR401</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">kind</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;master&quot;</span><span class="p">,</span> <span class="s2">&quot;surfex&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">InvalidNamelistKindError</span><span class="p">(</span><span class="n">kind</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">platform</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">=</span> <span class="n">kind</span>  <span class="c1"># not used elsewhere, though</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">substitute</span> <span class="o">=</span> <span class="n">substitute</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger_from_config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cycle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;general.cycle&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cnfile</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span>
+            <span class="o">/</span> <span class="s2">&quot;namelist_generation_input&quot;</span>
+            <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cycle</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;assemble_</span><span class="si">{</span><span class="n">kind</span><span class="si">}</span><span class="s2">.yml&quot;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nlfile</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span>
+            <span class="o">/</span> <span class="s2">&quot;namelist_generation_input&quot;</span>
+            <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cycle</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">kind</span><span class="si">}</span><span class="s2">_namelists.yml&quot;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">domain_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;domain.name&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">accept_static_namelist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span>
+            <span class="s2">&quot;general.accept_static_namelists&quot;</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="NamelistGenerator.load_user_namelist"><a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistGenerator.load_user_namelist">[docs]</a>    <span class="k">def</span> <span class="nf">load_user_namelist</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read user provided namelist.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            found (boolean) : Logics if namelist is found or not</span>
+<span class="sd">            nldict : Namelist as dictionary</span>
+<span class="sd">            cndict : Rules for dictionary</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">namelists</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_platform_value</span><span class="p">(</span><span class="s2">&quot;NAMELISTS&quot;</span><span class="p">)</span>
+        <span class="n">ref_namelist</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">namelists</span><span class="si">}</span><span class="s2">/namelist_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">kind</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Check if reference namelist </span><span class="si">%s</span><span class="s2"> exists&quot;</span><span class="p">,</span> <span class="n">ref_namelist</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">ref_namelist</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Use reference namelist </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ref_namelist</span><span class="p">)</span>
+            <span class="n">nl</span> <span class="o">=</span> <span class="n">f90nml</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">ref_namelist</span><span class="p">)</span>
+            <span class="n">nldict</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">:</span> <span class="n">nl</span><span class="o">.</span><span class="n">todict</span><span class="p">()}</span>
+            <span class="n">cndict</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">]}</span>
+            <span class="n">found</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No reference namelist exists&quot;</span><span class="p">)</span>
+            <span class="n">found</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">nldict</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">cndict</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">return</span> <span class="n">found</span><span class="p">,</span> <span class="n">nldict</span><span class="p">,</span> <span class="n">cndict</span></div>
+
+<div class="viewcode-block" id="NamelistGenerator.load"><a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistGenerator.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate the namelists for &#39;target&#39;.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            target (str): task to generate namelists for</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            InvalidNamelistTargetError   # noqa: DAR401</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            nlres (dict): Assembled namelist</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="n">target</span>
+
+        <span class="c1"># Use static namelist if given</span>
+        <span class="n">use_yaml</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">accept_static_namelist</span><span class="p">:</span>
+            <span class="n">use_yaml</span><span class="p">,</span> <span class="n">nldict</span><span class="p">,</span> <span class="n">cndict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_user_namelist</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">use_yaml</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="s2">&quot;Use </span><span class="si">%s</span><span class="s2"> and </span><span class="si">%s</span><span class="s2"> to generate namelist&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nlfile</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cnfile</span>
+            <span class="p">)</span>
+            <span class="c1"># Read namelist file with all the categories</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nlfile</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;rt&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+                <span class="n">nldict</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+
+            <span class="c1"># Read file that describes assembly category order for the various targets (tasks)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cnfile</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;rt&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+                <span class="n">cndict</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+
+        <span class="c1"># Check target is valid</span>
+        <span class="k">if</span> <span class="n">target</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cndict</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;Could not find target &#39;</span><span class="si">%s</span><span class="s2">&#39; in </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cnfile</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Available targets:&quot;</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">cndict</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;_.+&quot;</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+                    <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">key</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">raise</span> <span class="n">InvalidNamelistTargetError</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">nldict</span> <span class="o">=</span> <span class="n">nldict</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cndict</span> <span class="o">=</span> <span class="n">cndict</span>
+
+        <span class="k">return</span> <span class="n">nldict</span><span class="p">,</span> <span class="n">cndict</span></div>
+
+<div class="viewcode-block" id="NamelistGenerator.assemble_namelist"><a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistGenerator.assemble_namelist">[docs]</a>    <span class="k">def</span> <span class="nf">assemble_namelist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate the namelists for &#39;target&#39;.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            target (str): task to generate namelists for</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            InvalidNamelistTargetError   # noqa: DAR401</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            nlres (dict): Assembled namelist</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Start with empty result dictionary</span>
+        <span class="n">nlres</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">nldict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nldict</span>
+        <span class="c1"># Assemble the target namelists based on the given category order</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">flatten_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cndict</span><span class="p">[</span><span class="n">target</span><span class="p">]):</span>
+            <span class="n">catg</span> <span class="o">=</span> <span class="n">item</span>
+            <span class="c1"># variable substitution removed at this level (may be resurrected)</span>
+            <span class="c1"># assemble namelists for this category</span>
+            <span class="k">if</span> <span class="n">catg</span> <span class="ow">in</span> <span class="n">nldict</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">nl</span> <span class="ow">in</span> <span class="n">nldict</span><span class="p">[</span><span class="n">catg</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">nl</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">nlres</span><span class="p">:</span>
+                        <span class="c1"># create the result namelist dict</span>
+                        <span class="n">nlres</span><span class="p">[</span><span class="n">nl</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                    <span class="k">if</span> <span class="n">catg</span> <span class="o">==</span> <span class="s2">&quot;rm{&quot;</span> <span class="o">+</span> <span class="n">nl</span> <span class="o">+</span> <span class="s2">&quot;}&quot;</span><span class="p">:</span>
+                        <span class="c1"># clear/remove the given namelist (but not used for now)</span>
+                        <span class="n">nlres</span><span class="p">[</span><span class="n">nl</span><span class="p">]</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">nldict</span><span class="p">[</span><span class="n">catg</span><span class="p">][</span><span class="n">nl</span><span class="p">]:</span>
+                            <span class="n">val</span> <span class="o">=</span> <span class="n">nldict</span><span class="p">[</span><span class="n">catg</span><span class="p">][</span><span class="n">nl</span><span class="p">][</span><span class="n">key</span><span class="p">]</span>
+                            <span class="n">finval</span> <span class="o">=</span> <span class="n">val</span>
+                            <span class="c1"># Replace ${var-def} with value from config, possibly macro-expanded</span>
+                            <span class="c1"># For now assumes only one subst. per line, could be generalized if needed</span>
+                            <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">finval</span><span class="p">)</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;$&quot;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">substitute</span><span class="p">:</span>
+                                <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span>
+                                    <span class="sa">r</span><span class="s2">&quot;^([^\$]*)\$\{([\w\.]+)\-?([^}]*)\}(.*)&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+                                <span class="p">)</span>
+                                <span class="k">if</span> <span class="n">m</span><span class="p">:</span>
+                                    <span class="n">pre</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                                    <span class="n">nam</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+                                    <span class="n">defval</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+                                    <span class="n">post</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+                                    <span class="k">try</span><span class="p">:</span>
+                                        <span class="n">repval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">nam</span><span class="p">)</span>
+                                    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                                        <span class="n">repval</span> <span class="o">=</span> <span class="kc">None</span>
+                                    <span class="k">if</span> <span class="n">repval</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                                        <span class="k">if</span> <span class="n">defval</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                                                <span class="s2">&quot;Using default value </span><span class="si">%s</span><span class="s2"> for &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span>
+                                                <span class="n">defval</span><span class="p">,</span>
+                                                <span class="n">nam</span><span class="p">,</span>
+                                            <span class="p">)</span>
+                                            <span class="n">repval</span> <span class="o">=</span> <span class="n">find_num</span><span class="p">(</span><span class="n">defval</span><span class="p">)</span>
+                                        <span class="k">else</span><span class="p">:</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                                                <span class="s2">&quot;No value found for: &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">nam</span>
+                                            <span class="p">)</span>
+                                            <span class="n">repval</span> <span class="o">=</span> <span class="n">finval</span>
+                                    <span class="k">else</span><span class="p">:</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                                            <span class="s2">&quot;Replaced </span><span class="si">%s</span><span class="s2"> with: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">nam</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">repval</span><span class="p">)</span>
+                                        <span class="p">)</span>
+                                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">repval</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                                        <span class="n">finval</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">pre</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">repval</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">post</span><span class="p">)</span>
+                                    <span class="k">else</span><span class="p">:</span>
+                                        <span class="n">finval</span> <span class="o">=</span> <span class="n">repval</span>
+                                <span class="k">else</span><span class="p">:</span>
+                                    <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">finval</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+                                <span class="n">finval</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">finval</span><span class="p">)</span>
+                            <span class="n">nlres</span><span class="p">[</span><span class="n">nl</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">finval</span>
+        <span class="k">return</span> <span class="n">nlres</span></div>
+
+<div class="viewcode-block" id="NamelistGenerator.update"><a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistGenerator.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nldict</span><span class="p">,</span> <span class="n">cndict_tag</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update with additional namelist dict.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            nldict (dict): additional namelist dict</span>
+<span class="sd">            cndict_tag : name to be used for recognition</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cndict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cndict_tag</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nldict</span><span class="p">[</span><span class="n">cndict_tag</span><span class="p">]</span> <span class="o">=</span> <span class="n">nldict</span></div>
+
+<div class="viewcode-block" id="NamelistGenerator.write_namelist"><a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistGenerator.write_namelist">[docs]</a>    <span class="k">def</span> <span class="nf">write_namelist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nlres</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write namelist using f90nml.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            nlres (dict): namelist to write</span>
+<span class="sd">            output_file (str) : namelist file name</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Write result.</span>
+        <span class="n">nml</span> <span class="o">=</span> <span class="n">f90nml</span><span class="o">.</span><span class="n">Namelist</span><span class="p">(</span><span class="n">nlres</span><span class="p">)</span>
+        <span class="n">nml</span><span class="o">.</span><span class="n">uppercase</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">nml</span><span class="o">.</span><span class="n">true_repr</span> <span class="o">=</span> <span class="s2">&quot;.TRUE.&quot;</span>
+        <span class="n">nml</span><span class="o">.</span><span class="n">false_repr</span> <span class="o">=</span> <span class="s2">&quot;.FALSE.&quot;</span>
+        <span class="n">nml</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Wrote: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">output_file</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NamelistGenerator.generate_namelist"><a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistGenerator.generate_namelist">[docs]</a>    <span class="k">def</span> <span class="nf">generate_namelist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate the namelists for &#39;target&#39;.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            target (str): task to generate namelists for</span>
+<span class="sd">            output_file : where to write the result (fort.4 or EXSEG1.nam typically)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">update</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">namelist_update</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="ow">in</span> <span class="n">update</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">update</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">kind</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="n">nlres</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">assemble_namelist</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write_namelist</span><span class="p">(</span><span class="n">nlres</span><span class="p">,</span> <span class="n">output_file</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, The WP5.1 development group in the DE_330 project.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

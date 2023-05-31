@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>deode.geo_utils &mdash; deode  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            deode
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">deode</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">deode</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">deode.geo_utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for deode.geo_utils</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Utilities for simple geographic tasks.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pyproj</span>
+
+
+<div class="viewcode-block" id="Projstring"><a class="viewcode-back" href="../../deode.html#deode.geo_utils.Projstring">[docs]</a><span class="k">class</span> <span class="nc">Projstring</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Proj4 string class.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct proj4 string.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">earth_radius</span> <span class="o">=</span> <span class="mf">6371000.0</span>
+
+<div class="viewcode-block" id="Projstring.get_projstring"><a class="viewcode-back" href="../../deode.html#deode.geo_utils.Projstring.get_projstring">[docs]</a>    <span class="k">def</span> <span class="nf">get_projstring</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lon0</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">lat0</span><span class="o">=-</span><span class="mf">90.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get proj4 string.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            lon0 (float, optional): Central longitude. Defaults to 0.0.</span>
+<span class="sd">            lat0 (float, optional): Central latitude. Defaults to -90.0.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: Proj4 string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">lat0</span> <span class="o">==</span> <span class="o">-</span><span class="mf">90.0</span><span class="p">:</span>
+            <span class="n">proj_string</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;+proj=stere +lat_0=</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">lat0</span><span class="p">)</span><span class="si">}</span><span class="s2"> +lon_0=</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">lon0</span><span class="p">)</span><span class="si">}</span><span class="s2"> &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;+lat_ts=</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">lat0</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">proj_string</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;+proj=lcc +lat_0=</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">lat0</span><span class="p">)</span><span class="si">}</span><span class="s2"> +lon_0=</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">lon0</span><span class="p">)</span><span class="si">}</span><span class="s2"> &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;+lat_1=</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">lat0</span><span class="p">)</span><span class="si">}</span><span class="s2"> +lat_2=</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">lat0</span><span class="p">)</span><span class="si">}</span><span class="s2"> &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;+units=m +no_defs +R=</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">earth_radius</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">proj_string</span></div></div>
+
+
+<div class="viewcode-block" id="Projection"><a class="viewcode-back" href="../../deode.html#deode.geo_utils.Projection">[docs]</a><span class="k">class</span> <span class="nc">Projection</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Projection class.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proj4str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct projection.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            proj4str (str): Proj4 string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">proj4str</span> <span class="o">=</span> <span class="n">proj4str</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">proj</span> <span class="o">=</span> <span class="n">pyproj</span><span class="o">.</span><span class="n">CRS</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="n">proj4str</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wgs84</span> <span class="o">=</span> <span class="n">pyproj</span><span class="o">.</span><span class="n">CRS</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="s2">&quot;EPSG:4326&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Projection.check_key"><a class="viewcode-back" href="../../deode.html#deode.geo_utils.Projection.check_key">[docs]</a>    <span class="k">def</span> <span class="nf">check_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if key is in config.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (str): Key to check</span>
+<span class="sd">            config (dict): Configuration</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if key is in config</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: If key is not in config</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> not in dictionary. Check config file&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Projection.get_domain_properties"><a class="viewcode-back" href="../../deode.html#deode.geo_utils.Projection.get_domain_properties">[docs]</a>    <span class="k">def</span> <span class="nf">get_domain_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domain_spec</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get domain properties.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            domain_spec (dict): Domain specification</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: Domain properties</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_key</span><span class="p">(</span><span class="s2">&quot;lonc&quot;</span><span class="p">,</span> <span class="n">domain_spec</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_key</span><span class="p">(</span><span class="s2">&quot;latc&quot;</span><span class="p">,</span> <span class="n">domain_spec</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_key</span><span class="p">(</span><span class="s2">&quot;nlon&quot;</span><span class="p">,</span> <span class="n">domain_spec</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_key</span><span class="p">(</span><span class="s2">&quot;nlat&quot;</span><span class="p">,</span> <span class="n">domain_spec</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_key</span><span class="p">(</span><span class="s2">&quot;gsize&quot;</span><span class="p">,</span> <span class="n">domain_spec</span><span class="p">)</span>
+
+        <span class="n">lonc</span> <span class="o">=</span> <span class="n">domain_spec</span><span class="p">[</span><span class="s2">&quot;lonc&quot;</span><span class="p">]</span>
+        <span class="n">latc</span> <span class="o">=</span> <span class="n">domain_spec</span><span class="p">[</span><span class="s2">&quot;latc&quot;</span><span class="p">]</span>
+        <span class="n">nlon</span> <span class="o">=</span> <span class="n">domain_spec</span><span class="p">[</span><span class="s2">&quot;nlon&quot;</span><span class="p">]</span>
+        <span class="n">nlat</span> <span class="o">=</span> <span class="n">domain_spec</span><span class="p">[</span><span class="s2">&quot;nlat&quot;</span><span class="p">]</span>
+        <span class="n">gsize</span> <span class="o">=</span> <span class="n">domain_spec</span><span class="p">[</span><span class="s2">&quot;gsize&quot;</span><span class="p">]</span>
+
+        <span class="n">xloncen</span><span class="p">,</span> <span class="n">xlatcen</span> <span class="o">=</span> <span class="n">pyproj</span><span class="o">.</span><span class="n">Transformer</span><span class="o">.</span><span class="n">from_crs</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wgs84</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">proj</span><span class="p">,</span> <span class="n">always_xy</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">lonc</span><span class="p">,</span> <span class="n">latc</span><span class="p">)</span>
+
+        <span class="n">x_0</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">xloncen</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="p">((</span><span class="nb">float</span><span class="p">(</span><span class="n">nlon</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">gsize</span><span class="p">))</span>
+        <span class="n">y_0</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">xlatcen</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="p">((</span><span class="nb">float</span><span class="p">(</span><span class="n">nlat</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">gsize</span><span class="p">))</span>
+
+        <span class="n">xxx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="n">nlon</span><span class="p">])</span>
+        <span class="n">yyy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="n">nlat</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">nlon</span><span class="p">):</span>
+            <span class="n">xxx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_0</span> <span class="o">+</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">*</span> <span class="n">gsize</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">nlat</span><span class="p">):</span>
+            <span class="n">yyy</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_0</span> <span class="o">+</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">j</span><span class="p">)</span> <span class="o">*</span> <span class="n">gsize</span><span class="p">)</span>
+
+        <span class="n">x_v</span><span class="p">,</span> <span class="n">y_v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">xxx</span><span class="p">,</span> <span class="n">yyy</span><span class="p">)</span>
+        <span class="n">lons</span><span class="p">,</span> <span class="n">lats</span> <span class="o">=</span> <span class="n">pyproj</span><span class="o">.</span><span class="n">Transformer</span><span class="o">.</span><span class="n">from_crs</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">proj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wgs84</span><span class="p">,</span> <span class="n">always_xy</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">x_v</span><span class="p">,</span> <span class="n">y_v</span><span class="p">)</span>
+
+        <span class="n">minlat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">lats</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">minlon</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">lons</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">maxlat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">lats</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">maxlon</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">lons</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="n">minlat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">([</span><span class="n">minlat</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span><span class="p">])</span>
+        <span class="n">minlon</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">([</span><span class="n">minlon</span><span class="p">,</span> <span class="o">-</span><span class="mi">180</span><span class="p">])</span>
+        <span class="n">maxlat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">([</span><span class="n">maxlat</span><span class="p">,</span> <span class="mi">90</span><span class="p">])</span>
+        <span class="n">maxlon</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">([</span><span class="n">maxlon</span><span class="p">,</span> <span class="mi">180</span><span class="p">])</span>
+
+        <span class="n">domain_properties</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;minlat&quot;</span><span class="p">:</span> <span class="n">minlat</span><span class="p">,</span>
+            <span class="s2">&quot;minlon&quot;</span><span class="p">:</span> <span class="n">minlon</span><span class="p">,</span>
+            <span class="s2">&quot;maxlat&quot;</span><span class="p">:</span> <span class="n">maxlat</span><span class="p">,</span>
+            <span class="s2">&quot;maxlon&quot;</span><span class="p">:</span> <span class="n">maxlon</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">domain_properties</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, The WP5.1 development group in the DE_330 project.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
