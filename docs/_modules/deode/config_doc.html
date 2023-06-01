@@ -407,6 +407,7 @@
 <span></span><span class="ch">#!/usr/bin/env python3</span>
 <span class="sd">&quot;&quot;&quot;Config document generation tool using config.toml and main_config_scheme.json.&quot;&quot;&quot;</span>
 
+<span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">import</span> <span class="nn">json</span>
 
 <span class="kn">from</span> <span class="nn">.namelist</span> <span class="kn">import</span> <span class="n">flatten_list</span>
@@ -529,10 +530,9 @@
 
 <div class="viewcode-block" id="DocConfig.print_header"><a class="viewcode-back" href="../../deode.html#deode.config_doc.DocConfig.print_header">[docs]</a>    <span class="k">def</span> <span class="nf">print_header</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Print header info in the doc file.&quot;&quot;&quot;</span>
+        <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(</span><span class="n">timespec</span><span class="o">=</span><span class="s2">&quot;seconds&quot;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;# The DEODE config file&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span>
-            <span class="s2">&quot;This is a file generated from the default config and the main schema file using `deode doc config &gt;| docs/markdown_docs/config.md`, do not edit!&quot;</span>
-        <span class="p">)</span></div>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;This was automatically generated running `deode doc config` on </span><span class="si">{</span><span class="n">now</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="DocConfig.get_schema"><a class="viewcode-back" href="../../deode.html#deode.config_doc.DocConfig.get_schema">[docs]</a>    <span class="k">def</span> <span class="nf">get_schema</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">schema</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Organize the schema dict.</span>
