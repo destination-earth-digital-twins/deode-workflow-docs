@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Overview: module code &mdash; Deode Prototype Docs  documentation</title>
+  <title>Configure selection of fields from fullpos &mdash; Deode Prototype Docs  documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -393,8 +394,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Overview: module code</li>
+      <li class="breadcrumb-item active">Configure selection of fields from fullpos</li>
       <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/markdown_docs/fullpos.md.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -402,25 +404,96 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>All modules for which code is available</h1>
-<ul><li><a href="deode/argparse_wrapper.html">deode.argparse_wrapper</a></li>
-<li><a href="deode/commands_functions.html">deode.commands_functions</a></li>
-<li><a href="deode/config_doc.html">deode.config_doc</a></li>
-<li><a href="deode/config_parser.html">deode.config_parser</a></li>
-<li><a href="deode/datetime_utils.html">deode.datetime_utils</a></li>
-<li><a href="deode/derived_variables.html">deode.derived_variables</a></li>
-<li><a href="deode/fullpos.html">deode.fullpos</a></li>
-<li><a href="deode/geo_utils.html">deode.geo_utils</a></li>
-<li><a href="deode/initial_conditions.html">deode.initial_conditions</a></li>
-<li><a href="deode/logs.html">deode.logs</a></li>
-<li><a href="deode/main.html">deode.main</a></li>
-<li><a href="deode/namelist.html">deode.namelist</a></li>
-<li><a href="deode/os_utils.html">deode.os_utils</a></li>
-<li><a href="deode/scheduler.html">deode.scheduler</a></li>
-<li><a href="deode/submission.html">deode.submission</a></li>
-<li><a href="deode/suites.html">deode.suites</a></li>
-<li><a href="deode/toolbox.html">deode.toolbox</a></li>
+  <section id="configure-selection-of-fields-from-fullpos">
+<h1>Configure selection of fields from fullpos<a class="headerlink" href="#configure-selection-of-fields-from-fullpos" title="Permalink to this heading"></a></h1>
+<p>Describes how to select fields and output settings for fullpos. The scripting allows to select fields and levels without having to worry about how the namelist should be constructed, this is done by the system.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this heading"></a></h2>
+<p>The fullpos output is controlled by the following settings</p>
+<ul class="simple">
+<li><p>Output interval is set by <code class="docutils literal notranslate"><span class="pre">output_settings.fullpos</span></code> in the general section of the main config file. The interval is specified using the duration syntax and can be give down to a resolution of minutes.</p></li>
+<li><p>Field selection and settings for different output times is done in <code class="docutils literal notranslate"><span class="pre">deode/namelist_generation/fullpos_namelist.yaml</span></code></p></li>
 </ul>
+<p>Currently it’s only implemented support for a single domain using the native geometry of the domain used for the model run.</p>
+</section>
+<section id="the-fullpos-config-file">
+<h2>The fullpos config file<a class="headerlink" href="#the-fullpos-config-file" title="Permalink to this heading"></a></h2>
+<p>The config file <code class="docutils literal notranslate"><span class="pre">deode/namelist_generation/fullpos_namelist.yaml</span></code> consists of four main parts</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">NAMFPC</span></code> where we specify the non-field related settings</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">selection</span></code> where all fields and levels are specified per output type as defined by fullpos</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LEVEL_MAP</span></code> and <code class="docutils literal notranslate"><span class="pre">PARAM_MAP</span></code> tells how settings in the selection part should be translated to settings in <code class="docutils literal notranslate"><span class="pre">NAMFPC</span></code>. Normally this does not have to be changed.</p></li>
+</ul>
+<p>The settings done in the <code class="docutils literal notranslate"><span class="pre">selection</span></code> part will be used to fill <code class="docutils literal notranslate"><span class="pre">NAMFPC</span></code> and the correct level numbers will be filled in the final namelist.</p>
+<section id="namfpc-settings">
+<h3>NAMFPC settings<a class="headerlink" href="#namfpc-settings" title="Permalink to this heading"></a></h3>
+<p>In the section we can add general fullpos settings as in the example below.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">NAMFPC</span><span class="p">:</span>
+    <span class="n">NFPGRIB</span><span class="p">:</span> <span class="mi">141</span>
+    <span class="n">CFPDOM</span><span class="p">:</span> <span class="s2">&quot;$</span><span class="si">{domain.name}</span><span class="s2">&quot;</span>
+    <span class="n">LFPCAPEX</span><span class="p">:</span> <span class="kc">True</span>
+    <span class="n">LFPMOIS</span><span class="p">:</span> <span class="kc">False</span>
+    <span class="n">L_READ_MODEL_DATE</span><span class="p">:</span> <span class="kc">True</span>
+    <span class="n">NFPCAPE</span><span class="p">:</span> <span class="mi">5</span>
+</pre></div>
+</div>
+</section>
+<section id="selection">
+<h3>Selection<a class="headerlink" href="#selection" title="Permalink to this heading"></a></h3>
+<p>In the selection section we specify all fields to be produced by fullpos. Following the time selection logics we define the subsection as an arbitrary number of <code class="docutils literal notranslate"><span class="pre">xxtddddhhmm</span></code> choices. The default setup contains a general selection and on for t=0, i.e. <code class="docutils literal notranslate"><span class="pre">xxt00000000</span></code>.</p>
+<p>The logics follows the namelists used by fullpos. For 2D fields we specify the field names in the appropriate sections. For 3D fields there are two ways. We can specify the fields directly as in here:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="n">NAMFPDYH</span><span class="p">:</span>
+   <span class="n">CL3DF</span><span class="p">:</span>
+     <span class="o">-</span> <span class="s1">&#39;CLOUD_FRACTI&#39;</span>
+     <span class="o">-</span> <span class="s1">&#39;GRAUPEL&#39;</span>
+   <span class="n">RFP3H</span><span class="p">:</span>
+     <span class="o">-</span> <span class="mf">20.0</span>
+     <span class="o">-</span> <span class="mf">50.0</span>
+</pre></div>
+</div>
+<p>If there is a wish for different levels for different fields we can specify this as</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="n">NAMFPDYP</span><span class="p">:</span>
+   <span class="n">VOR</span><span class="p">:</span>
+    <span class="n">CL3DF</span><span class="p">:</span>
+     <span class="o">-</span> <span class="s1">&#39;ABS_VORTICITY&#39;</span>
+    <span class="n">RFP3P</span><span class="p">:</span> 
+     <span class="o">-</span> <span class="mf">5000.0</span>
+     <span class="o">-</span> <span class="mf">10000.0</span>
+   <span class="n">DIV</span><span class="p">:</span>
+    <span class="n">CL3DF</span><span class="p">:</span>
+     <span class="o">-</span> <span class="s1">&#39;DIVERGENCE&#39;</span>
+    <span class="n">RFP3P</span><span class="p">:</span>
+     <span class="o">-</span> <span class="mf">70000.0</span>
+     <span class="o">-</span> <span class="mf">80000.0</span>
+</pre></div>
+</div>
+<p>Where <code class="docutils literal notranslate"><span class="pre">VOR</span></code> and <code class="docutils literal notranslate"><span class="pre">DIV</span></code> in the example above are just arbitrary names used to separate the different choices.</p>
+</section>
+</section>
+<section id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this heading"></a></h2>
+<p>A simple example on how the namelists are generated can be found at the end of <code class="docutils literal notranslate"><span class="pre">deode/fullpos.py</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">fullpos</span>
+
+<span class="n">fp</span> <span class="o">=</span> <span class="n">Fullpos</span><span class="p">(</span><span class="s2">&quot;test&quot;</span><span class="p">)</span>
+
+<span class="n">namfpc</span><span class="p">,</span> <span class="n">selections</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">construct</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">namfpc</span><span class="p">[</span><span class="s2">&quot;NAMFPC&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">selections</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">kk</span><span class="p">,</span> <span class="n">vv</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">kk</span><span class="p">,</span> <span class="n">vv</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The fullpos namelists can be generated from command line using</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">deode</span> <span class="o">-</span><span class="n">config_file</span> <span class="n">deode</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">config_files</span><span class="o">/</span><span class="n">config</span><span class="o">.</span><span class="n">toml</span> <span class="n">show</span> <span class="n">namelist</span> <span class="o">-</span><span class="n">t</span> <span class="n">master</span> <span class="o">-</span><span class="n">n</span> <span class="n">forecast</span>
+</pre></div>
+</div>
+<p>This will produce the namelist for the forecast and as many xxt* files as has been defined in the fullpos yaml file.</p>
+</section>
+</section>
+
 
            </div>
           </div>

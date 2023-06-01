@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Overview: module code &mdash; Deode Prototype Docs  documentation</title>
+  <title>Development guidelines &mdash; Deode Prototype Docs  documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -393,8 +394,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Overview: module code</li>
+      <li class="breadcrumb-item active">Development guidelines</li>
       <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/markdown_docs/development_guide.md.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -402,25 +404,118 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>All modules for which code is available</h1>
-<ul><li><a href="deode/argparse_wrapper.html">deode.argparse_wrapper</a></li>
-<li><a href="deode/commands_functions.html">deode.commands_functions</a></li>
-<li><a href="deode/config_doc.html">deode.config_doc</a></li>
-<li><a href="deode/config_parser.html">deode.config_parser</a></li>
-<li><a href="deode/datetime_utils.html">deode.datetime_utils</a></li>
-<li><a href="deode/derived_variables.html">deode.derived_variables</a></li>
-<li><a href="deode/fullpos.html">deode.fullpos</a></li>
-<li><a href="deode/geo_utils.html">deode.geo_utils</a></li>
-<li><a href="deode/initial_conditions.html">deode.initial_conditions</a></li>
-<li><a href="deode/logs.html">deode.logs</a></li>
-<li><a href="deode/main.html">deode.main</a></li>
-<li><a href="deode/namelist.html">deode.namelist</a></li>
-<li><a href="deode/os_utils.html">deode.os_utils</a></li>
-<li><a href="deode/scheduler.html">deode.scheduler</a></li>
-<li><a href="deode/submission.html">deode.submission</a></li>
-<li><a href="deode/suites.html">deode.suites</a></li>
-<li><a href="deode/toolbox.html">deode.toolbox</a></li>
+  <section id="development-guidelines">
+<h1>Development guidelines<a class="headerlink" href="#development-guidelines" title="Permalink to this heading"></a></h1>
+<p>Describes best practices and guidelines for development in the Deode-Prototype repository.</p>
+<section id="best-practices">
+<h2>Best practices<a class="headerlink" href="#best-practices" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p>Authors of PRs should not merge themself - Instead request a reviewer and an assignee. Assignee is responsible for merging.</p></li>
+<li><p>Assignee and reviewer may be the same person.</p></li>
+<li><p>Authors of PRs are responsible for ensuring that the PR is up to date with the base branch before merging.</p></li>
+<li><p>Assignees should not merge PRs that have failing tests.</p></li>
+<li><p>Commits to <code class="docutils literal notranslate"><span class="pre">master</span></code> and <code class="docutils literal notranslate"><span class="pre">develop</span></code> branches should only be via PRs.</p></li>
+<li><p>We rely on the good sense of both author and reviewer.</p></li>
 </ul>
+<section id="checklist-for-authors">
+<h3>Checklist for authors<a class="headerlink" href="#checklist-for-authors" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>✔️ If not up-to-date, pull in the target branch.</p></li>
+<li><p>✔️ Describe what the PR contains.</p></li>
+<li><p>✔️ Ensure your PR does not contain seperate features.</p></li>
+</ul>
+</section>
+<section id="checklist-for-reviewers">
+<h3>Checklist for reviewers<a class="headerlink" href="#checklist-for-reviewers" title="Permalink to this heading"></a></h3>
+<p>Each PR comes with its own improvements and flaws. The reviewer should check the following:</p>
+<ul class="simple">
+<li><p>✔️ Is the code readable?</p></li>
+<li><p>✔️ Is the code well tested? (Look at the coverage report)</p></li>
+<li><p>✔️ Is the code documented?</p></li>
+<li><p>✔️ Is the code easy to maintain?</p></li>
+</ul>
+</section>
+<section id="checklist-for-assignees">
+<h3>Checklist for assignees<a class="headerlink" href="#checklist-for-assignees" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>✔️ Is the PR up to date with the base branch?</p></li>
+<li><p>✔️ Are the tests passing?</p></li>
+<li><p>✔️ Is the PR ready to be merged?</p></li>
+<li><p>✔️ Squash commits and merge the PR.</p></li>
+</ul>
+</section>
+</section>
+<section id="local-testing">
+<h2>Local testing<a class="headerlink" href="#local-testing" title="Permalink to this heading"></a></h2>
+<p>No-one likes to wait for the CI to run tests. It is therefore recommended to run tests locally before pushing to the remote repository, and before creating a PR, but no one is enforced to this. How you work locally is entirely up to you.</p>
+<p>Here is a list of tests being run in the pipeline, that you can run locally from the root of the repo.</p>
+<p><strong>Black:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">black</span> <span class="pre">.</span></code></p></li>
+</ul>
+<p><strong>Isort:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">isort</span> <span class="pre">.</span></code></p></li>
+</ul>
+<p><strong>Linting:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">flakeheaven</span> <span class="pre">lint</span></code></p></li>
+</ul>
+<p><strong>Unit Tests:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pytest</span> <span class="pre">--cov=./</span> <span class="pre">tests/</span></code> <em>(In the pipeline we run multiple versions of python)</em></p></li>
+</ul>
+<p><strong>Full Ecflow test:</strong></p>
+<ul class="simple">
+<li><p>We have a working, although simplified, setup on Atos that should be maintained. Run with <code class="docutils literal notranslate"><span class="pre">bash</span> <span class="pre">./Start</span></code>. The test produces output under <code class="docutils literal notranslate"><span class="pre">$SCRATCH/deode/deode_case</span></code>.</p></li>
+</ul>
+</section>
+<section id="branches">
+<h2>Branches<a class="headerlink" href="#branches" title="Permalink to this heading"></a></h2>
+<p>As of now, the repository has two main branches:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">master</span></code> - This is the main branch. It is the branch that is deployed to production.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">develop</span></code> - This is the branch that is deployed to staging.
+As the project grows, we may add more branches, such as an <code class="docutils literal notranslate"><span class="pre">integration</span></code> branch, where we can test the integration of multiple features before merging them to <code class="docutils literal notranslate"><span class="pre">develop</span></code>, and run a simpler pipeline (see image below).</p></li>
+</ul>
+<img src="../figs/development_guide.png" alt="drawing" width="400"/>
+<section id="forks">
+<h3>Forks<a class="headerlink" href="#forks" title="Permalink to this heading"></a></h3>
+<p>Forks are used to develop features and bug fixes. They are created from the <code class="docutils literal notranslate"><span class="pre">develop</span></code> branch by forking to a local repo. When a feature is ready, a PR is created to merge it to <code class="docutils literal notranslate"><span class="pre">develop</span></code>. When a bug fix is ready, a PR is created to merge it to <code class="docutils literal notranslate"><span class="pre">develop</span></code> and <code class="docutils literal notranslate"><span class="pre">master</span></code>.</p>
+</section>
+</section>
+<section id="run-on-lumi">
+<h2>Run on LUMI<a class="headerlink" href="#run-on-lumi" title="Permalink to this heading"></a></h2>
+<p>To run the project on LUMI, you need to have a LUMI account and add your SSH key to it. You can find instructions on how to do that <a class="reference external" href="https://docs.lumi-supercomputer.eu/firststeps/SSH-keys/">here</a>. Once you have your SSH key added, you can login to LUMI by running <code class="docutils literal notranslate"><span class="pre">ssh</span> <span class="pre">-i</span> <span class="pre">&lt;your-private-key&gt;</span> <span class="pre">&lt;username&gt;&#64;&#64;lumi.csc.fi</span></code>. Once logged in create a SSH key and add that to your GitHub account, so you can clone the repo. Then follow these steps (some of which can be put in your <code class="docutils literal notranslate"><span class="pre">.profile</span></code>)</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="c1"># Clone the repo</span>
+git<span class="w"> </span>clone<span class="w"> </span>git@github.com:DEODE-NWP/Deode-Prototype.git
+
+<span class="c1"># Load modules</span>
+module<span class="w"> </span>load<span class="w"> </span>LUMI/22.06
+module<span class="w"> </span>load<span class="w"> </span>cray-python/3.9.12.1
+
+<span class="c1"># Install poetry</span>
+curl<span class="w"> </span>-sSL<span class="w"> </span>https://install.python-poetry.org<span class="w"> </span><span class="p">|</span><span class="w"> </span>python<span class="w"> </span>-
+<span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">&quot;/users/</span><span class="nv">$USER</span><span class="s2">/.local/bin:</span><span class="nv">$PATH</span><span class="s2">&quot;</span>
+
+<span class="c1"># Install project</span>
+<span class="nb">cd</span><span class="w"> </span>Deode-Prototype<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>poetry<span class="w"> </span>install
+<span class="c1"># Poetry will create a virtual environment for the project and install all dependencies in this environment.</span>
+<span class="c1"># It will be placed in something like: &quot;/users/$USER/.cache/pypoetry/virtualenvs/&lt;deode-&lt;hash&gt;&gt;/bin/:$PATH&quot;</span>
+
+<span class="c1"># To activate the environment run</span>
+poetry<span class="w"> </span>shell
+
+<span class="c1"># Check that the project runs</span>
+deode<span class="w"> </span>-h
+
+<span class="c1"># Run a stand-alone task with an example config file</span>
+deode<span class="w"> </span>-config_file<span class="w"> </span><span class="nv">$PWD</span>/deode/data/config_files/config.toml<span class="w"> </span>run<span class="w"> </span>--task<span class="w"> </span>Forecast<span class="w"> </span>--template<span class="w"> </span><span class="nv">$PWD</span>/deode/templates/stand_alone.py<span class="w"> </span>--job<span class="w"> </span><span class="nv">$PWD</span>/test.job<span class="w"> </span>--troika_config<span class="w"> </span><span class="nv">$PWD</span>/deode/data/config_files/troika.yml<span class="w"> </span>-o<span class="w"> </span><span class="nv">$PWD</span>/test.log
+</pre></div>
+</div>
+</section>
+</section>
+
 
            </div>
           </div>
