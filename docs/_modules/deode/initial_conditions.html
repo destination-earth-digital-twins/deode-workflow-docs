@@ -428,7 +428,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger_from_config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">platform</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wrk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;system.wrk&quot;</span><span class="p">)</span>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">intp_bddir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;system.intp_bddir&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">basetime</span> <span class="o">=</span> <span class="n">as_datetime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;general.times.basetime&quot;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cycle_length</span> <span class="o">=</span> <span class="n">as_timedelta</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;general.times.cycle_length&quot;</span><span class="p">)</span>
@@ -492,7 +492,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">nosuccess</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">source_sfx</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 
         <span class="c1"># Find data prepared by Prep and the boundary interpolation</span>
-        <span class="n">source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">wrk</span><span class="si">}</span><span class="s2">/ELSCF@CNMEXP@ALBC000&quot;</span><span class="p">)</span>
+        <span class="n">source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">intp_bddir</span><span class="si">}</span><span class="s2">/ELSCF@CNMEXP@ALBC000&quot;</span><span class="p">)</span>
         <span class="n">source_sfx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">archive</span><span class="si">}</span><span class="s2">/ICMSH@CNMEXP@INIT.sfx&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">source</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">source_sfx</span><span class="p">):</span>
@@ -511,7 +511,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on Jun 01, 2023.
+      <span class="lastupdated">Last updated on Jun 07, 2023.
       </span></p>
   </div>
 
