@@ -51,21 +51,16 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#regular-installation">Regular Installation</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#cloning">Cloning</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#regular-installation-from-pypi">Regular Installation from PyPi</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#regular-installation-directly-from-the-git-repo">Regular Installation Directly From The Git Repo</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#regular-installation-from-downloaded-source">Regular Installation From Downloaded Source</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#developer-mode-installation">Developer Mode Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#developer-mode-installation">Developer Mode Installation</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#installation-troubleshooting">Installation troubleshooting</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#after-installation-configuration-file">After Installation: Configuration File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#the-configuration-file">The Configuration File</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#command-line-options">Command line options</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#example-running-a-ecflow-suite-from-server-ecflow-gen-user-001">Example running a ecflow suite from server ecflow-gen-${USER}-001</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-running-a-ecflow-suite-from-server-ecflow-gen-user-001-on-atos">Example running a ecflow suite from server ecflow-gen-${USER}-001 on atos</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#example-using-poetry-and-run-the-forecast-task-from-hpc-login-command-line">Example using poetry and run the forecast task from hpc-login command line</a></li>
 </ul>
 </li>
@@ -418,8 +413,8 @@
 <h2>System Requirements<a class="headerlink" href="#system-requirements" title="Permalink to this heading"></a></h2>
 <ul>
 <li><p>python &gt;=3.8</p></li>
-<li><p><strong>Only for
-<a class="reference external" href="#developer-mode-installation">Developer-Mode Installtion</a>:</strong></p>
+<li><p><strong>For
+<a class="reference external" href="#developer-mode-installation">Developer-Mode Installation</a>:</strong></p>
 <ul>
 <li><p><a class="reference external" href="https://python-poetry.org"><code class="docutils literal notranslate"><span class="pre">poetry</span></code></a>, which can be installed as follows:</p>
 <ul>
@@ -449,94 +444,43 @@ curl -sSL https://install.python-poetry.org | python3 -
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span><span class="nv">pygdal</span><span class="o">==</span><span class="s2">&quot;`gdal-config --version`.*&quot;</span>
 </pre></div>
 </div>
+<p>On Atos (<code class="docutils literal notranslate"><span class="pre">hpc-login</span></code>) no special treatment of gdal is required.</p>
 </section>
 </section>
 <section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h2>
 <p>Before proceeding, please make sure that your system fulfils the appropriate
-<a class="reference external" href="#system-requirements">system requirements</a>. If you plan to just use the code
-without modifying it, please follow one of the installation methods presented
-in the <a class="reference external" href="#regular-installation">Regular Installation section</a>. However, if you
-need/wish to modify the code in any way, then please proceed as indicated in the
-<a class="reference external" href="#developer-mode-installation">Developer-Mode Installtion section</a>.</p>
-<section id="regular-installation">
-<h3>Regular Installation<a class="headerlink" href="#regular-installation" title="Permalink to this heading"></a></h3>
-<section id="cloning">
-<h4>Cloning<a class="headerlink" href="#cloning" title="Permalink to this heading"></a></h4>
-<p>You may need to clone the repository first before following the steps below:</p>
-<p>git clone git&#64;github.com:DEODE-NWP/Deode-Prototype.git</p>
-</section>
-<section id="regular-installation-from-pypi">
-<h4>Regular Installation from PyPi<a class="headerlink" href="#regular-installation-from-pypi" title="Permalink to this heading"></a></h4>
-<p>:point_right: Easiest method if you just want to use the code and don’t want to
-look at the source code at all.</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>pip install deode
-</pre></div>
-</div>
-</section>
-<section id="regular-installation-directly-from-the-git-repo">
-<h4>Regular Installation Directly From The Git Repo<a class="headerlink" href="#regular-installation-directly-from-the-git-repo" title="Permalink to this heading"></a></h4>
-<p>:point_right: Similar to a <a class="reference external" href="#regular-installation-from-pypi">regular installation from PyPi</a>,
-but retrieves the code from the git repo instead (which is usually updated more
-often).</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>pip install &quot;git+https://github.com/DEODE-NWP/Deode-Prototype&quot;
-</pre></div>
-</div>
-</section>
-<section id="regular-installation-from-downloaded-source">
-<h4>Regular Installation From Downloaded Source<a class="headerlink" href="#regular-installation-from-downloaded-source" title="Permalink to this heading"></a></h4>
-<p>:point_right: For those who have <code class="docutils literal notranslate"><span class="pre">deode</span></code>’s source code in a local directory,
-wish to install it from there, but also don’t want to modify any code.</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>pip install .
-</pre></div>
-</div>
-</section>
+<a class="reference external" href="#system-requirements">system requirements</a>. For the time being the recommended installation method is the <a class="reference external" href="#developer-mode-installation">Developer-Mode Installation</a> using poetry.</p>
 <section id="developer-mode-installation">
-<h4>Developer Mode Installation<a class="headerlink" href="#developer-mode-installation" title="Permalink to this heading"></a></h4>
+<h3>Developer Mode Installation<a class="headerlink" href="#developer-mode-installation" title="Permalink to this heading"></a></h3>
 <p>:point_right: For those who need/wish to make changes to <code class="docutils literal notranslate"><span class="pre">deode</span></code>’s
 source code, or use code from a different branch than <code class="docutils literal notranslate"><span class="pre">master</span></code>.</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>poetry install
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git clone git@github.com:DEODE-NWP/Deode-Prototype.git
+cd Deode-Prototype
+export PATH=~/.local/bin:$PATH
+poetry install
 </pre></div>
 </div>
 <p>Installing in “developer mode” means that changes made in any of the package’s
 source files become visible as soon as the package is reloaded.</p>
-<p>If you have problems installing <code class="docutils literal notranslate"><span class="pre">poetry</span></code>, you can install in development mode using <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">(&gt;=</span> <span class="pre">v22.2.2)</span></code> as follows:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>pip install -e .
-</pre></div>
-</div>
-</section>
-</section>
-<section id="installation-troubleshooting">
-<h3>Installation troubleshooting<a class="headerlink" href="#installation-troubleshooting" title="Permalink to this heading"></a></h3>
-<p>If you encounter a following problem when performing installation with pip locally:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>error: https://git.ecmwf.int/scm/ecsdk/troika.git did not send all necessary objects
-</pre></div>
-</div>
-<p>You might need to downgrade your pip version down to v21.2.</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>pip install pip==21.2
-</pre></div>
-</div>
-</section>
-<section id="after-installation-configuration-file">
-<h3>After Installation: Configuration File<a class="headerlink" href="#after-installation-configuration-file" title="Permalink to this heading"></a></h3>
-<p>After successful installation, a <code class="docutils literal notranslate"><span class="pre">deode</span></code> command will become available in
-your environment. However, before you can use <code class="docutils literal notranslate"><span class="pre">deode</span></code> (apart from the <code class="docutils literal notranslate"><span class="pre">-h</span></code>
-option), you will need a configuration file written in the
-<a class="reference external" href="https://en.wikipedia.org/wiki/TOML">TOML</a> format.</p>
-<p>Please take a look at the
-<a class="reference external" href="https://github.com/DEODE-NWP/Deode-Prototype/blob/develop/docs/minimal_config_example.toml">docs/minimal_config_example.toml</a> file,
-as well as the <a class="reference external" href="https://deode-nwp.github.io/deode-prototype-docs">project’s Doc Page</a>, for more information about the configuration file.</p>
-<p><code class="docutils literal notranslate"><span class="pre">deode</span></code> assumes that one of the following (whichever is first encountered)
-is your configuration file :</p>
-<ol class="arabic simple">
-<li><p>A <em>full file path</em> specified via the <code class="docutils literal notranslate"><span class="pre">DEODE_CONFIG_PATH</span></code> envvar or on command line using <code class="docutils literal notranslate"><span class="pre">--config_file</span> <span class="pre">DEODE_CONFIG_PATH</span></code></p></li>
-<li><p>A <code class="docutils literal notranslate"><span class="pre">config.toml</span></code> file located in the directory where <code class="docutils literal notranslate"><span class="pre">deode</span></code> is called</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">$HOME/.deode/config.toml</span></code></p></li>
-</ol>
 </section>
 </section>
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading"></a></h2>
+<section id="the-configuration-file">
+<h3>The Configuration File<a class="headerlink" href="#the-configuration-file" title="Permalink to this heading"></a></h3>
+<p>After successful installation, the <code class="docutils literal notranslate"><span class="pre">deode</span></code> command will become available in the poetry virtual environment. Load the virtual environment by</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">poetry</span> <span class="n">shell</span>
+</pre></div>
+</div>
+<p>to make the <code class="docutils literal notranslate"><span class="pre">deode</span></code>command available. However, before you can use <code class="docutils literal notranslate"><span class="pre">deode</span></code> (apart from the <code class="docutils literal notranslate"><span class="pre">-h</span></code> option), you will need a configuration file written in the
+<a class="reference external" href="https://en.wikipedia.org/wiki/TOML">TOML</a> format.</p>
+<p>Please take a look at the default
+<a class="reference external" href="https://github.com/DEODE-NWP/Deode-Prototype/blob/develop/deode/data/config_files/config.toml">config.toml</a> file,
+as well as the <a class="reference external" href="https://deode-nwp.github.io/deode-prototype-docs">project’s Doc Page</a>, for more information about the configuration file.</p>
+</section>
+<section id="command-line-options">
+<h3>Command line options<a class="headerlink" href="#command-line-options" title="Permalink to this heading"></a></h3>
 <p>After completing the setup, you should be able to run</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>deode [opts] SUBCOMMAND [subcommand_opts]
 </pre></div>
@@ -544,27 +488,26 @@ is your configuration file :</p>
 <p>where <code class="docutils literal notranslate"><span class="pre">[opts]</span></code> and <code class="docutils literal notranslate"><span class="pre">[subcommand_opts]</span></code> denote optional command line arguments
 that apply, respectively, to <code class="docutils literal notranslate"><span class="pre">deode</span></code> in general and to <code class="docutils literal notranslate"><span class="pre">SUBCOMMAND</span></code>
 specifically.</p>
-<ul class="simple">
-<li><p>When installing in development mode using <code class="docutils literal notranslate"><span class="pre">poetry</span></code>, you may need to run
-<code class="docutils literal notranslate"><span class="pre">poetry</span> <span class="pre">shell</span></code> to be able to run <code class="docutils literal notranslate"><span class="pre">deode</span></code> as a command.</p></li>
-</ul>
 <p><strong>Please run <code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">-h</span></code> for information</strong> about the supported subcommands
 and general <code class="docutils literal notranslate"><span class="pre">deode</span></code> options. For info about specific subcommands and the
 options that apply to them only, <strong>please run <code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">SUBCOMMAND</span> <span class="pre">-h</span></code></strong> (note
 that the <code class="docutils literal notranslate"><span class="pre">-h</span></code> goes after the subcommand in this case).</p>
 </section>
+</section>
 <section id="examples">
 <h2>Examples<a class="headerlink" href="#examples" title="Permalink to this heading"></a></h2>
-<section id="example-running-a-ecflow-suite-from-server-ecflow-gen-user-001">
-<h3>Example running a ecflow suite from server ecflow-gen-${USER}-001<a class="headerlink" href="#example-running-a-ecflow-suite-from-server-ecflow-gen-user-001" title="Permalink to this heading"></a></h3>
-<p>Log into hpc-login.ecmwf.int</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Load python and ecflow and start the poetry shell
-module load python3/3.8.8-01
+<section id="example-running-a-ecflow-suite-from-server-ecflow-gen-user-001-on-atos">
+<h3>Example running a ecflow suite from server ecflow-gen-${USER}-001 on atos<a class="headerlink" href="#example-running-a-ecflow-suite-from-server-ecflow-gen-user-001-on-atos" title="Permalink to this heading"></a></h3>
+<p>Assuming you have successfully installed deode the following will launch a run under ecflow.
+Log into hpc-login.ecmwf.int, load python and ecflow and start the poetry shell</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>module load python3/3.8.8-01
+module load ecflow
+export PATH=~/.local/bin:$PATH
 poetry shell
-
-
-# Run experiment
-ECF_HOST=`echo ecflow-gen-${USER}-001`
+</pre></div>
+</div>
+<p>Now you can start the default experiment by</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>ECF_HOST=`echo ecflow-gen-${USER}-001`
 
 deode -config_file $PWD/deode/data/config_files/config.toml \
       start suite \
@@ -578,16 +521,14 @@ deode -config_file $PWD/deode/data/config_files/config.toml \
 </section>
 <section id="example-using-poetry-and-run-the-forecast-task-from-hpc-login-command-line">
 <h3>Example using poetry and run the forecast task from hpc-login command line<a class="headerlink" href="#example-using-poetry-and-run-the-forecast-task-from-hpc-login-command-line" title="Permalink to this heading"></a></h3>
-<p>The example below shows how to run deode/task/forecast.py using the batch system rules defined in your config.toml. The example assumes you’re running the command from the Deode-Prototype root directory.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&gt; module load python3/3.8.8-01
-&gt; poetry shell
-&gt; deode run --task Forecast \
-      -config_file $PWD/deode/data/config_files/config.toml \
+<p>The example below shows how to run deode/task/forecast.py using the batch system rules defined in your config.toml. The example assumes you’re running the command from the Deode-Prototype root directory and have the appropriate input data in place.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>module load python3/3.8.8-01
+poetry shell
+deode -config_file $PWD/deode/data/config_files/config.toml \
+      run --task Forecast \
       --template $PWD/deode/templates/stand_alone.py \
       --job $PWD/forecast.job \
-      --ooutput $PWD/forecast.log
-
-
+      --output $PWD/forecast.log
 </pre></div>
 </div>
 </section>
@@ -606,7 +547,7 @@ deode -config_file $PWD/deode/data/config_files/config.toml \
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on Jun 13, 2023.
+      <span class="lastupdated">Last updated on Jun 20, 2023.
       </span></p>
   </div>
 
