@@ -280,6 +280,8 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="deode.html#deode.suites.SuiteDefinition"><code class="docutils literal notranslate"><span class="pre">SuiteDefinition</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="deode.html#deode.suites.SuiteDefinition.save_as_defs"><code class="docutils literal notranslate"><span class="pre">SuiteDefinition.save_as_defs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="deode.html#deode.suites.SuiteDefinition.static_suite_part"><code class="docutils literal notranslate"><span class="pre">SuiteDefinition.static_suite_part()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="deode.html#deode.suites.SuiteDefinition.time_dependent_suite_part"><code class="docutils literal notranslate"><span class="pre">SuiteDefinition.time_dependent_suite_part()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -346,6 +348,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#generalsectionmodel-times">GeneralSectionModel &gt; Times</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#suite-control">Suite control</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#filetemplates">FileTemplates</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#macrosection">MacroSection</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#verticallevels">VerticalLevels</a></li>
@@ -403,7 +406,7 @@
 <h1>Miscellaneous Documentation<a class="headerlink" href="#miscellaneous-documentation" title="Permalink to this heading"></a></h1>
 <section id="the-deode-config-file">
 <h2>The DEODE config file<a class="headerlink" href="#the-deode-config-file" title="Permalink to this heading"></a></h2>
-<p>This was automatically generated running <code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">doc</span> <span class="pre">config</span></code> on 2023-06-21T19:39:56.</p>
+<p>This was automatically generated running <code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">doc</span> <span class="pre">config</span></code> on 2023-06-22T11:04:01.</p>
 <section id="generalsectionmodel">
 <h3>GeneralSectionModel<a class="headerlink" href="#generalsectionmodel" title="Permalink to this heading"></a></h3>
 <p>Model for the ‘general’ section.</p>
@@ -501,19 +504,13 @@
 <td><p></p></td>
 <td><p>boolean</p></td>
 </tr>
-<tr class="row-even"><td><p>create_static_data</p></td>
-<td><p>Activate the generation of PGD and monthly climate files in the suite</p></td>
-<td><p>True</p></td>
-<td><p></p></td>
-<td><p>boolean</p></td>
-</tr>
-<tr class="row-odd"><td><p>accept_static_namelists</p></td>
+<tr class="row-even"><td><p>accept_static_namelists</p></td>
 <td><p>Allow usage of static namelists as input for the tasks. The namelist should be located in the directory specified by platform.namelists and named with the convention namelist_{kind}_{task} where kind could be surfex or master and task forecast/pgd or similar. For the extraction of namelist see <a class="reference internal" href="#../docs/namelists.md"><span class="xref myst">namelists.md</span></a>.</p></td>
 <td><p>False</p></td>
 <td><p></p></td>
 <td><p>boolean</p></td>
 </tr>
-<tr class="row-even"><td><p>nproma</p></td>
+<tr class="row-odd"><td><p>nproma</p></td>
 <td><p></p></td>
 <td><p>-32</p></td>
 <td><p></p></td>
@@ -601,6 +598,58 @@
 </tbody>
 </table>
 </section>
+</section>
+<section id="suite-control">
+<h3>Suite control<a class="headerlink" href="#suite-control" title="Permalink to this heading"></a></h3>
+<p>Suite control options</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Key</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Options</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>create_static_data</p></td>
+<td><p>Activate the generation of PGD and monthly climate files in the suite</p></td>
+<td><p>True</p></td>
+<td><p></p></td>
+<td><p>boolean</p></td>
+</tr>
+<tr class="row-odd"><td><p>create_time_dependent_suite</p></td>
+<td><p>Activate the time dependent part of the suite</p></td>
+<td><p>True</p></td>
+<td><p></p></td>
+<td><p>boolean</p></td>
+</tr>
+<tr class="row-even"><td><p>do_soil</p></td>
+<td><p>Activate preparation of SOILGRID data as input for PGD</p></td>
+<td><p>True</p></td>
+<td><p></p></td>
+<td><p>boolean</p></td>
+</tr>
+<tr class="row-odd"><td><p>do_pgd</p></td>
+<td><p>Activate generation of a PGD file</p></td>
+<td><p>True</p></td>
+<td><p></p></td>
+<td><p>boolean</p></td>
+</tr>
+<tr class="row-even"><td><p>do_prep</p></td>
+<td><p>Run prep if cold start</p></td>
+<td><p>True</p></td>
+<td><p></p></td>
+<td><p>boolean</p></td>
+</tr>
+<tr class="row-odd"><td><p>interpolate_boundaries</p></td>
+<td><p>Activates the boundary interpolation</p></td>
+<td><p>True</p></td>
+<td><p></p></td>
+<td><p>boolean</p></td>
+</tr>
+</tbody>
+</table>
 </section>
 <section id="filetemplates">
 <h3>FileTemplates<a class="headerlink" href="#filetemplates" title="Permalink to this heading"></a></h3>
@@ -1237,7 +1286,7 @@ To copy or move, one only needs to add a provider_id:
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on Jun 21, 2023.
+      <span class="lastupdated">Last updated on Jun 22, 2023.
       </span></p>
   </div>
 
