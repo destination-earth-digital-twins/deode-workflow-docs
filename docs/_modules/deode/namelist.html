@@ -577,7 +577,7 @@
 <span class="sd">            InvalidNamelistTargetError   # noqa: DAR401</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            nlres (dict): Assembled namelist</span>
+<span class="sd">            nlres (f90nml.Namelist): Assembled namelist</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Start with empty result dictionary</span>
@@ -642,7 +642,7 @@
                             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">finval</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
                                 <span class="n">finval</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">finval</span><span class="p">)</span>
                             <span class="n">nlres</span><span class="p">[</span><span class="n">nl</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">finval</span>
-        <span class="k">return</span> <span class="n">nlres</span></div>
+        <span class="k">return</span> <span class="n">f90nml</span><span class="o">.</span><span class="n">Namelist</span><span class="p">(</span><span class="n">nlres</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="NamelistGenerator.update"><a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistGenerator.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nldict</span><span class="p">,</span> <span class="n">cndict_tag</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Update with additional namelist dict.</span>
@@ -655,16 +655,17 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">cndict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cndict_tag</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nldict</span><span class="p">[</span><span class="n">cndict_tag</span><span class="p">]</span> <span class="o">=</span> <span class="n">nldict</span></div>
 
-<div class="viewcode-block" id="NamelistGenerator.write_namelist"><a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistGenerator.write_namelist">[docs]</a>    <span class="k">def</span> <span class="nf">write_namelist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nlres</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
+<div class="viewcode-block" id="NamelistGenerator.write_namelist"><a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistGenerator.write_namelist">[docs]</a>    <span class="k">def</span> <span class="nf">write_namelist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nml</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Write namelist using f90nml.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            nlres (dict): namelist to write</span>
+<span class="sd">            nml (f90nml.Namelist): namelist to write</span>
 <span class="sd">            output_file (str) : namelist file name</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nml</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">nml</span> <span class="o">=</span> <span class="n">f90nml</span><span class="o">.</span><span class="n">Namelist</span><span class="p">(</span><span class="n">nml</span><span class="p">)</span>
         <span class="c1"># Write result.</span>
-        <span class="n">nml</span> <span class="o">=</span> <span class="n">f90nml</span><span class="o">.</span><span class="n">Namelist</span><span class="p">(</span><span class="n">nlres</span><span class="p">)</span>
         <span class="n">nml</span><span class="o">.</span><span class="n">uppercase</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="n">nml</span><span class="o">.</span><span class="n">true_repr</span> <span class="o">=</span> <span class="s2">&quot;.TRUE.&quot;</span>
         <span class="n">nml</span><span class="o">.</span><span class="n">false_repr</span> <span class="o">=</span> <span class="s2">&quot;.FALSE.&quot;</span>
@@ -688,8 +689,8 @@
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">pass</span>
 
-        <span class="n">nlres</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">assemble_namelist</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">write_namelist</span><span class="p">(</span><span class="n">nlres</span><span class="p">,</span> <span class="n">output_file</span><span class="p">)</span></div></div>
+        <span class="n">nml</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">assemble_namelist</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write_namelist</span><span class="p">(</span><span class="n">nml</span><span class="p">,</span> <span class="n">output_file</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
@@ -700,7 +701,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on Jun 22, 2023.
+      <span class="lastupdated">Last updated on Jul 03, 2023.
       </span></p>
   </div>
 
