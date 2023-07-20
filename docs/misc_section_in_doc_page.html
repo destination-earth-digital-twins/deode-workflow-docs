@@ -406,7 +406,7 @@
 <h1>Miscellaneous Documentation<a class="headerlink" href="#miscellaneous-documentation" title="Permalink to this heading"></a></h1>
 <section id="the-deode-config-file">
 <h2>The DEODE config file<a class="headerlink" href="#the-deode-config-file" title="Permalink to this heading"></a></h2>
-<p>This was automatically generated running <code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">doc</span> <span class="pre">config</span></code> on 2023-07-20T08:21:53.</p>
+<p>This was automatically generated running <code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">doc</span> <span class="pre">config</span></code> on 2023-07-20T09:00:18.</p>
 <section id="generalsectionmodel">
 <h3>GeneralSectionModel<a class="headerlink" href="#generalsectionmodel" title="Permalink to this heading"></a></h3>
 <p>Model for the ‘general’ section.</p>
@@ -511,10 +511,22 @@
 <td><p>boolean</p></td>
 </tr>
 <tr class="row-odd"><td><p>nproma</p></td>
-<td><p></p></td>
+<td><p>NPROMA size in the forecast model. See the namelists for where it is used</p></td>
 <td><p>-32</p></td>
 <td><p></p></td>
+<td><p>number</p></td>
+</tr>
+<tr class="row-even"><td><p>initfile</p></td>
+<td><p>Initial file for the forecast object. Normally no need to provide unless there are special requirements or the forecast object is used in stand alone mode.</p></td>
 <td><p></p></td>
+<td><p></p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>initfile_sfx</p></td>
+<td><p>Initial surfex file for the forecast object. Normally no need to provide unless there are special requirements or the forecast object is used in stand alone mode.</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p>string</p></td>
 </tr>
 </tbody>
 </table>
@@ -566,16 +578,16 @@
 </thead>
 <tbody>
 <tr class="row-even"><td><p>basetime</p></td>
-<td><p></p></td>
+<td><p>Base TB specified</p></td>
 <td><p>2023-02-19T00:00:00Z</p></td>
 <td><p></p></td>
-<td><p></p></td>
+<td><p>string</p></td>
 </tr>
 <tr class="row-odd"><td><p>validtime</p></td>
-<td><p></p></td>
+<td><p>Valid TB specified</p></td>
 <td><p>2023-02-19T00:00:00Z</p></td>
 <td><p></p></td>
-<td><p></p></td>
+<td><p>string</p></td>
 </tr>
 <tr class="row-even"><td><p>start</p></td>
 <td><p>Start</p></td>
@@ -594,6 +606,12 @@
 <td><p>PT3H</p></td>
 <td><p></p></td>
 <td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>list</p></td>
+<td><p>List</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p>array</p></td>
 </tr>
 </tbody>
 </table>
@@ -665,10 +683,10 @@
 </thead>
 <tbody>
 <tr class="row-even"><td><p>duration_grib</p></td>
-<td><p></p></td>
+<td><p>Macros for duration representation in GRIB output files</p></td>
 <td><p>&#64;LLLH&#64;h&#64;LM&#64;m&#64;LS&#64;s</p></td>
 <td><p></p></td>
-<td><p></p></td>
+<td><p>string</p></td>
 </tr>
 <tr class="row-odd"><td><p>duration_fa</p></td>
 <td><p>Macros for duration representation of FA files, note that this is given by the IAL code.</p></td>
@@ -951,10 +969,10 @@
 <td><p>string</p></td>
 </tr>
 <tr class="row-odd"><td><p>sfx_input_defs</p></td>
-<td><p></p></td>
+<td><p>Path to the surfex json config file</p></td>
 <td><p>&#64;DEODE_HOME&#64;/deode/data/input/sfx_input_&#64;CYCLE&#64;.json</p></td>
 <td><p></p></td>
-<td><p></p></td>
+<td><p>string</p></td>
 </tr>
 <tr class="row-even"><td><p>namelists</p></td>
 <td><p>Path to static namelists</p></td>
@@ -1057,52 +1075,52 @@
 <td><p>string</p></td>
 </tr>
 <tr class="row-odd"><td><p>task_name</p></td>
-<td><p></p></td>
+<td><p>Placeholder macro.</p></td>
 <td><p>&#64;STAND_ALONE_TASK_NAME&#64;</p></td>
 <td><p></p></td>
-<td><p></p></td>
+<td><p>string</p></td>
 </tr>
 <tr class="row-even"><td><p>flake_dir</p></td>
-<td><p></p></td>
+<td><p>Path to climate PGD dir.</p></td>
 <td><p>&#64;STATIC_DATA&#64;/climate/PGD</p></td>
 <td><p></p></td>
-<td><p></p></td>
+<td><p>string</p></td>
 </tr>
 <tr class="row-odd"><td><p>albnir_soil_dir</p></td>
-<td><p></p></td>
+<td><p>Path to near-infrared spectrum soil data.</p></td>
 <td><p>&#64;CLIMDATA&#64;/ECOCLIMAP-SG/ALB_SAT</p></td>
 <td><p></p></td>
-<td><p></p></td>
+<td><p>string</p></td>
 </tr>
 <tr class="row-even"><td><p>albnir_veg_dir</p></td>
-<td><p></p></td>
+<td><p>Path to near-infrared spectrum vegetation data.</p></td>
 <td><p>&#64;CLIMDATA&#64;/ECOCLIMAP-SG/ALB_SAT</p></td>
 <td><p></p></td>
-<td><p></p></td>
+<td><p>string</p></td>
 </tr>
 <tr class="row-odd"><td><p>albvis_soil_dir</p></td>
-<td><p></p></td>
+<td><p>Path to visible soil spectrum data.</p></td>
 <td><p>&#64;CLIMDATA&#64;/ECOCLIMAP-SG/ALB_SAT</p></td>
 <td><p></p></td>
-<td><p></p></td>
+<td><p>string</p></td>
 </tr>
 <tr class="row-even"><td><p>albvis_veg_dir</p></td>
-<td><p></p></td>
+<td><p>Path to visible spectrum vegetation data.</p></td>
 <td><p>&#64;CLIMDATA&#64;/ECOCLIMAP-SG/ALB_SAT</p></td>
 <td><p></p></td>
-<td><p></p></td>
+<td><p>string</p></td>
 </tr>
 <tr class="row-odd"><td><p>lai_dir</p></td>
-<td><p></p></td>
+<td><p>TBA</p></td>
 <td><p>&#64;CLIMDATA&#64;/ECOCLIMAP-SG/LAI_SAT</p></td>
 <td><p></p></td>
-<td><p></p></td>
+<td><p>string</p></td>
 </tr>
 <tr class="row-even"><td><p>tree_height_dir</p></td>
-<td><p></p></td>
+<td><p>Path to tree_height data.</p></td>
 <td><p>&#64;CLIMDATA&#64;/ECOCLIMAP-SG/HT</p></td>
 <td><p></p></td>
-<td><p></p></td>
+<td><p>string</p></td>
 </tr>
 </tbody>
 </table>

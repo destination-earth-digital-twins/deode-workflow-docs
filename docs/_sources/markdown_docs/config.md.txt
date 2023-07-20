@@ -1,5 +1,5 @@
 # The DEODE config file
-This was automatically generated running `deode doc config` on 2023-07-20T08:21:53.
+This was automatically generated running `deode doc config` on 2023-07-20T09:00:18.
 
 ## GeneralSectionModel
 Model for the 'general' section.
@@ -20,7 +20,9 @@ Model for the 'general' section.
   |forecast_range|Forecast range|PT12H||string|
   |keep_workdirs|Do not remove working directories|True||boolean|
   |accept_static_namelists|Allow usage of static namelists as input for the tasks. The namelist should be located in the directory specified by platform.namelists and named with the convention namelist_{kind}_{task} where kind could be surfex or master and task forecast/pgd or similar. For the extraction of namelist see [namelists.md](../docs/namelists.md).|False||boolean|
-  |nproma||-32|||
+  |nproma|NPROMA size in the forecast model. See the namelists for where it is used|-32||number|
+  |initfile|Initial file for the forecast object. Normally no need to provide unless there are special requirements or the forecast object is used in stand alone mode.|||string|
+  |initfile_sfx|Initial surfex file for the forecast object. Normally no need to provide unless there are special requirements or the forecast object is used in stand alone mode.|||string|
 
 ### GeneralSectionModel > OutputSettings
 Output settings. Specified as duration for any of interval, endtime:interval, starttime:endtime:interval or a list of these options
@@ -34,11 +36,12 @@ Output settings. Specified as duration for any of interval, endtime:interval, st
 Model for the 'general.times' section.
   |Key|Description|Default|Options|Type|
   |---|---|---|---|---|
-  |basetime||2023-02-19T00:00:00Z|||
-  |validtime||2023-02-19T00:00:00Z|||
+  |basetime|Base TB specified|2023-02-19T00:00:00Z||string|
+  |validtime|Valid TB specified|2023-02-19T00:00:00Z||string|
   |start|Start|2023-02-19T00:00:00Z||string|
   |end|End|2023-02-19T03:00:00Z||string|
   |cycle_length|Cycle length defined as duration|PT3H||string|
+  |list|List|||array|
 
 ## Suite control
 Suite control options
@@ -55,7 +58,7 @@ Suite control options
 Templates for file names
   |Key|Description|Default|Options|Type|
   |---|---|---|---|---|
-  |duration_grib||@LLLH@h@LM@m@LS@s|||
+  |duration_grib|Macros for duration representation in GRIB output files|@LLLH@h@LM@m@LS@s||string|
   |duration_fa|Macros for duration representation of FA files, note that this is given by the IAL code.|@LLLH@:@LM@:@LS@||string|
   |history|Name template for history files|ICMSH@CNMEXP@+@DURATION_FA@||string|
   |surfex|Name template for surfex history files|ICMSH@CNMEXP@+@DURATION_FA@.sfx||string|
@@ -112,7 +115,7 @@ DEODE system specific path settings
   |bdclimdir|Location of host model climate files used for e927/c903|/home/snh02/work/dev-CY46h1_deode/climate/DEODE_LARGE||string|
   |bindir|Location of binaries|/home/snh02/work/dev-CY46h1_deode/bin/2023-03-29||string|
   |fullpos_config_file|Path to the fullpos yml config file|@DEODE_HOME@/deode/namelist_generation_input/@CYCLE@/fullpos_namelist.yml||string|
-  |sfx_input_defs||@DEODE_HOME@/deode/data/input/sfx_input_@CYCLE@.json|||
+  |sfx_input_defs|Path to the surfex json config file|@DEODE_HOME@/deode/data/input/sfx_input_@CYCLE@.json||string|
   |namelists|Path to static namelists|@DEODE_HOME@/deode/data/namelists/@CYCLE@||string|
 
 ## Platform
@@ -132,14 +135,14 @@ DEODE platform specific path settings
   |gmted2010_data_path|Path to gmted2010 input|@CLIMDATA@/GMTED2010||string|
   |soilgrid_data_path|Path to solgrid input data|@CLIMDATA@/SOILGRID||string|
   |pgd_data_path|Path to PGD input data|@CLIMDATA@/PGD||string|
-  |task_name||@STAND_ALONE_TASK_NAME@|||
-  |flake_dir||@STATIC_DATA@/climate/PGD|||
-  |albnir_soil_dir||@CLIMDATA@/ECOCLIMAP-SG/ALB_SAT|||
-  |albnir_veg_dir||@CLIMDATA@/ECOCLIMAP-SG/ALB_SAT|||
-  |albvis_soil_dir||@CLIMDATA@/ECOCLIMAP-SG/ALB_SAT|||
-  |albvis_veg_dir||@CLIMDATA@/ECOCLIMAP-SG/ALB_SAT|||
-  |lai_dir||@CLIMDATA@/ECOCLIMAP-SG/LAI_SAT|||
-  |tree_height_dir||@CLIMDATA@/ECOCLIMAP-SG/HT|||
+  |task_name|Placeholder macro.|@STAND_ALONE_TASK_NAME@||string|
+  |flake_dir|Path to climate PGD dir.|@STATIC_DATA@/climate/PGD||string|
+  |albnir_soil_dir|Path to near-infrared spectrum soil data.|@CLIMDATA@/ECOCLIMAP-SG/ALB_SAT||string|
+  |albnir_veg_dir|Path to near-infrared spectrum vegetation data.|@CLIMDATA@/ECOCLIMAP-SG/ALB_SAT||string|
+  |albvis_soil_dir|Path to visible soil spectrum data.|@CLIMDATA@/ECOCLIMAP-SG/ALB_SAT||string|
+  |albvis_veg_dir|Path to visible spectrum vegetation data.|@CLIMDATA@/ECOCLIMAP-SG/ALB_SAT||string|
+  |lai_dir|TBA|@CLIMDATA@/ECOCLIMAP-SG/LAI_SAT||string|
+  |tree_height_dir|Path to tree_height data.|@CLIMDATA@/ECOCLIMAP-SG/HT||string|
 
 ## Troika
 DEODE system specific path settings
