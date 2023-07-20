@@ -1,16 +1,16 @@
 # The DEODE config file
-This was automatically generated running `deode doc config` on 2023-07-17T14:46:48.
+This was automatically generated running `deode doc config` on 2023-07-20T08:21:53.
 
 ## GeneralSectionModel
 Model for the 'general' section.
   |Key|Description|Default|Options|Type|
   |---|---|---|---|---|
-  |case|Experiment name|harmonie_arome_CY46h1||string|
+  |case|Experiment name|@CYCLE@_@CSC@||string|
   |cnmexp|Experiment short name|DEOD||string|
   |realization|Placeholder for future ensemble or similar need|-1||number|
   |tstep|Model time step|75||number|
   |loglevel|Logger output level|info|critical, error, debug, info, warning, CRITICAL, ERROR, DEBUG, INFO, WARNING|string|
-  |csc|CSC|HARMONIE-AROME|AROME, ALARO, HARMONIE-AROME|string|
+  |csc|CSC|HARMONIE_AROME|AROME, ALARO, HARMONIE_AROME|string|
   |cycle|IAL cycle|CY46h1|CY48t3, CY46t1, CY46h1|string|
   |surfex|SURFEX switch|True||boolean|
   |bdint|Boundary interval|PT3H||string|
@@ -67,7 +67,7 @@ Model for the 'domain' section.
   |---|---|---|---|---|
   |os_macros|Environment variables used as macros|('USER', 'HOME', 'PWD')||array|
   |group_macros|Turns a full config section to a macro|('platform', 'system')||array|
-  |gen_macros|Turns any string config to a macro, use a dict to rename an attribute.|('general.cnmexp', 'general.cycle', 'file_templates.duration_grib', 'file_templates.duration_fa', {'surfex_template': 'file_templates.surfex'}, {'case': 'general.case'}, {'domain': 'domain.name'}, {'rrr': 'general.realization'})||array|
+  |gen_macros|Turns any string config to a macro, use a dict to rename an attribute.|('general.cnmexp', 'general.cycle', 'general.csc', 'file_templates.duration_grib', 'file_templates.duration_fa', {'surfex_template': 'file_templates.surfex'}, {'case': 'general.case'}, {'domain': 'domain.name'}, {'rrr': 'general.realization'})||array|
 
 ## VerticalLevels
 Options for vertical levels
@@ -112,7 +112,7 @@ DEODE system specific path settings
   |bdclimdir|Location of host model climate files used for e927/c903|/home/snh02/work/dev-CY46h1_deode/climate/DEODE_LARGE||string|
   |bindir|Location of binaries|/home/snh02/work/dev-CY46h1_deode/bin/2023-03-29||string|
   |fullpos_config_file|Path to the fullpos yml config file|@DEODE_HOME@/deode/namelist_generation_input/@CYCLE@/fullpos_namelist.yml||string|
-  |sfx_input_defs||@DEODE_HOME@/deode/data/input/sfx_input_CY46h1.json|||
+  |sfx_input_defs||@DEODE_HOME@/deode/data/input/sfx_input_@CYCLE@.json|||
   |namelists|Path to static namelists|@DEODE_HOME@/deode/data/namelists/@CYCLE@||string|
 
 ## Platform
