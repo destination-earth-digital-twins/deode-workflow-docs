@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Adding a New Task &mdash; Deode Prototype Docs  documentation</title>
+  <title>Computational parameters in config file &mdash; Deode Prototype Docs  documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -415,7 +415,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Adding a New Task</li>
+      <li class="breadcrumb-item active">Computational parameters in config file</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -424,83 +424,17 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="adding-a-new-task">
-<h1>Adding a New Task<a class="headerlink" href="#adding-a-new-task" title="Permalink to this heading"></a></h1>
-<p>In order to start adding a new task to the deode prototype, a <em>file</em> containing your task needs to be created in the <code class="docutils literal notranslate"><span class="pre">$DEODE_PROTOTYPE/deode/tasks</span></code> folder, where <strong>$DEODE_PROTOTYPE</strong> points to the full name to the folder in which the deode prototype is installed.</p>
-<p>In the <code class="docutils literal notranslate"><span class="pre">tasks</span></code> folder, the <code class="docutils literal notranslate"><span class="pre">discover_task.py</span></code> file looks for the task specified in the <code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">run</span></code> command. The task name should be the name of the <strong>class</strong> of your task, as it’s in the class names that discover_task.py gets the tasks available. For ease of use, the <em>file</em> name containing your class can also be named the same as the class.</p>
-<p>A created task <strong>class</strong> usually inherits the <strong>Task</strong> class from the <code class="docutils literal notranslate"><span class="pre">base.py</span></code> file inside the <code class="docutils literal notranslate"><span class="pre">tasks</span></code> folder The new tasks inherit the <strong>Task</strong> class, one can define their own <code class="docutils literal notranslate"><span class="pre">execute</span></code> , <code class="docutils literal notranslate"><span class="pre">prep</span></code> , <code class="docutils literal notranslate"><span class="pre">post</span></code>  and <code class="docutils literal notranslate"><span class="pre">run</span></code> functions and possibly define new ones.</p>
-<p>Inside that [task.taskname] directive, the <em>wrapper</em> and <em>command</em> settings could be set to their appropriate values if they are used by the task. The <em>wrapper</em> setting sets a wrapper for the command needed to be run, most commonly commands <code class="docutils literal notranslate"><span class="pre">time</span></code> or <code class="docutils literal notranslate"><span class="pre">srun</span></code>. The <em>wrapper</em> setting comes from the <strong>BatchJob</strong> class included from <code class="docutils literal notranslate"><span class="pre">batch.py</span></code> inside <code class="docutils literal notranslate"><span class="pre">base.py</span></code>.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">wrapper</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_task_setting</span><span class="p">(</span><span class="s2">&quot;wrapper&quot;</span><span class="p">)</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">batch</span> <span class="o">=</span> <span class="n">BatchJob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">,</span> <span class="n">wrapper</span><span class="p">)</span>
-
-<span class="n">cmd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_task_setting</span><span class="p">(</span><span class="s2">&quot;command&quot;</span><span class="p">)</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>The <code class="docutils literal notranslate"><span class="pre">run</span></code> function of the <strong>BatchJob</strong> class unites these two settings before running them as one in our task.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cmd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">cmd</span>
-</pre></div>
-</div>
-<p>In order to copy files, inside the <code class="docutils literal notranslate"><span class="pre">task.py</span></code> file, the <code class="docutils literal notranslate"><span class="pre">fmanager</span></code> directive from the <code class="docutils literal notranslate"><span class="pre">deode/toolbox.py</span></code> file needs to be used. To create the input for the task, the <code class="docutils literal notranslate"><span class="pre">fmanager.input</span></code> function needs to be called.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">input</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span>
-    <span class="n">target</span><span class="p">,</span>
-    <span class="n">destination</span><span class="p">,</span>
-    <span class="n">basetime</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">validtime</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="c1"># noqa</span>
-    <span class="n">check_archive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">provider_id</span><span class="o">=</span><span class="s2">&quot;symlink&quot;</span><span class="p">,</span>
-<span class="p">)</span>
-</pre></div>
-</div>
-<p>The <code class="docutils literal notranslate"><span class="pre">fmanager.input</span></code> only has two non-optional arguments and providers for <em>symlink, copy</em>, <em>move</em> and <em>ECFS</em>.
-The paths used with <code class="docutils literal notranslate"><span class="pre">fmanager</span></code> should be put into macros and not hardcoded.
-To link for example MASTERODB, one needs to call the function the following way:
-<code class="docutils literal notranslate"><span class="pre">self.fmanager.input(&quot;&#64;BINDIR&#64;/MASTERODB&quot;,</span> <span class="pre">&quot;MASTERODB&quot;)</span></code>
-To copy or move, one only needs to add a provider_id:
-<code class="docutils literal notranslate"><span class="pre">self.fmanager.input(&quot;&#64;BINDIR&#64;/MASTERODB&quot;,</span> <span class="pre">&quot;MASTERODB&quot;,</span> <span class="pre">provider_id=&quot;copy&quot;)</span></code></p>
-<p>To handle output data, the <code class="docutils literal notranslate"><span class="pre">fmanager.output</span></code> function needs to be called after the running of the code in a similar way as the input. Example:
-<code class="docutils literal notranslate"><span class="pre">self.fmanager.output(&quot;ICMSH&#64;CNMEXP&#64;+000?&quot;,</span> <span class="pre">&quot;&#64;OUTDIR&#64;/ICMSH&#64;CNMEXP&#64;+000?&quot;)</span></code>. The same providers are available for output as for input.</p>
-<p>In order to setup submission options, they need to be added to the <code class="docutils literal notranslate"><span class="pre">config.toml</span></code> file needs. One can either add to an already existing submit type, like the default <code class="docutils literal notranslate"><span class="pre">serial</span></code>, or create their own submission type. To add SLURM options, a name of the option along with the option itself needs to be added inside the <code class="docutils literal notranslate"><span class="pre">submission.submissiontype.BATCH</span></code> directive:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">submission</span><span class="o">.</span><span class="n">parallel</span><span class="o">.</span><span class="n">BATCH</span><span class="p">]</span>
-<span class="n">WALLTIME</span> <span class="o">=</span> <span class="s2">&quot;#SBATCH --time=00:11:00&quot;</span>
-<span class="n">QOS</span> <span class="o">=</span> <span class="s2">&quot;#SBATCH --qos=np&quot;</span>
-<span class="n">NTASKS</span> <span class="o">=</span> <span class="s2">&quot;#SBATCH --ntasks=128&quot;</span>
-<span class="n">CORES</span> <span class="o">=</span> <span class="s2">&quot;#SBATCH --cpus-per-task=4&quot;</span>
-<span class="n">MULTITHREAD</span> <span class="o">=</span> <span class="s2">&quot;#SBATCH --hint=nomultithread&quot;</span>
-<span class="n">NODES</span> <span class="o">=</span> <span class="s2">&quot;#SBATCH -N 4&quot;</span>
-<span class="n">NAME</span> <span class="o">=</span> <span class="s2">&quot;#SBATCH --job-name=fcast_task&quot;</span>
-<span class="n">ACCOUNT</span> <span class="o">=</span> <span class="s2">&quot;#SBATCH -A msdeode&quot;</span>
-
-</pre></div>
-</div>
-<p>To add environment variables, run modules or arbitrary commands, they need to be added to the <code class="docutils literal notranslate"><span class="pre">submission.submissiontype.ENV</span></code> directive</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">submission</span><span class="o">.</span><span class="n">parallel</span><span class="o">.</span><span class="n">ENV</span><span class="p">]</span>
-<span class="n">MODULE</span> <span class="o">=</span> <span class="s2">&quot;print(&#39;My beautiful module&#39;)&quot;</span>
-<span class="n">OS</span> <span class="o">=</span> <span class="s2">&quot;import os&quot;</span>
-</pre></div>
-</div>
-<p>One can also specify these in a task.exceptions directive:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">submission</span><span class="o">.</span><span class="n">task_exceptions</span><span class="o">.</span><span class="n">Newtask</span><span class="o">.</span><span class="n">BATCH</span><span class="p">]</span>
-<span class="n">WALLTIME</span> <span class="o">=</span> <span class="s2">&quot;#SBATCH --time=00:11:00&quot;</span>
-<span class="n">QOS</span> <span class="o">=</span> <span class="s2">&quot;#SBATCH --qos=np&quot;</span>
-<span class="n">NTASKS</span> <span class="o">=</span> <span class="s2">&quot;#SBATCH --ntasks=128&quot;</span>
-<span class="n">CORES</span> <span class="o">=</span> <span class="s2">&quot;#SBATCH --cpus-per-task=4&quot;</span>
-<span class="n">MULTITHREAD</span> <span class="o">=</span> <span class="s2">&quot;#SBATCH --hint=nomultithread&quot;</span>
-<span class="n">NODES</span> <span class="o">=</span> <span class="s2">&quot;#SBATCH -N 4&quot;</span>
-<span class="n">NAME</span> <span class="o">=</span> <span class="s2">&quot;#SBATCH --job-name=fcast_task&quot;</span>
-<span class="n">ACCOUNT</span> <span class="o">=</span> <span class="s2">&quot;#SBATCH -A msdeode&quot;</span>
-
-<span class="p">[</span><span class="n">submission</span><span class="o">.</span><span class="n">task_exceptions</span><span class="o">.</span><span class="n">Newtask</span><span class="o">.</span><span class="n">ENV</span><span class="p">]</span>
-<span class="n">MODULE</span> <span class="o">=</span> <span class="s2">&quot;print(&#39;My beautiful module&#39;)&quot;</span>
-<span class="n">OS</span> <span class="o">=</span> <span class="s2">&quot;import os&quot;</span>
-</pre></div>
-</div>
-<p>After that is all done, the new task can be ran with:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>deode -config_file=/your/config.toml -loglevel debug run --task yourtask  --template $PWD/deode/templates/stand_alone.py  --job $PWD/yourtask.job  --troika_config $PWD/config.yml  -o $PWD/yourtask.log
-</pre></div>
-</div>
-<p>If <code class="docutils literal notranslate"><span class="pre">config_file</span></code> is specified under <code class="docutils literal notranslate"><span class="pre">[troika]</span></code> in config.yml, one can skip the –troika_config argument.</p>
+  <section id="computational-parameters-in-config-file">
+<h1>Computational parameters in config file<a class="headerlink" href="#computational-parameters-in-config-file" title="Permalink to this heading"></a></h1>
+<p>The default <code class="docutils literal notranslate"><span class="pre">config.toml</span></code> file, parameters in the <code class="docutils literal notranslate"><span class="pre">submission</span></code> groups refer to a coarse-resolution run in a small domain and a short lead time.</p>
+<p>When running at higher resolution on real-sized domains, it is suggested to take care of and adjust the following parameters:</p>
+<ul class="simple">
+<li><p>WALLTIME: maximum wallclock time allowed by task. It can be raised in <code class="docutils literal notranslate"><span class="pre">[submission.task_exceptions.{e927,Forecast,Pgd,Prep}.BATCH]</span></code>. Raising it is suggested especially during climate generation, e.g., in <code class="docutils literal notranslate"><span class="pre">[submission.task_exceptions.Pgd.BATCH]</span></code>.</p></li>
+<li><p>NPROC: number of compute processes (can be also adjusted within <code class="docutils literal notranslate"><span class="pre">[submission.task_exceptions.{e927,Forecast,Pgd,Prep}]</span></code>).</p></li>
+<li><p>NODES: number of compute nodes.</p></li>
+<li><p>NTASKS: number of MPI tasks.</p></li>
+</ul>
+<p>The parameter values encoding instructions in the <code class="docutils literal notranslate"><span class="pre">BATCH</span></code> groups are specific to the SLURM scheduler.</p>
 </section>
 
 
