@@ -135,7 +135,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.config_parser.ParsedConfig.json_schema"><code class="docutils literal notranslate"><span class="pre">ParsedConfig.json_schema</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.config_parser.get_default_config_paths"><code class="docutils literal notranslate"><span class="pre">get_default_config_paths()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.config_parser.get_default_config_path"><code class="docutils literal notranslate"><span class="pre">get_default_config_path()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.datetime_utils">deode.datetime_utils module</a><ul>
@@ -427,7 +427,6 @@
   <h1>Source code for deode.config_parser</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python3</span>
 <span class="sd">&quot;&quot;&quot;Registration and validation of options passed in the config file.&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">contextlib</span>
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">logging</span>
@@ -472,7 +471,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Error to be raised when more than one schema is defined for a config section.&quot;&quot;&quot;</span></div>
 
 
-<div class="viewcode-block" id="get_default_config_paths"><a class="viewcode-back" href="../../deode.html#deode.config_parser.get_default_config_paths">[docs]</a><span class="k">def</span> <span class="nf">get_default_config_paths</span><span class="p">():</span>
+<div class="viewcode-block" id="get_default_config_path"><a class="viewcode-back" href="../../deode.html#deode.config_parser.get_default_config_path">[docs]</a><span class="k">def</span> <span class="nf">get_default_config_path</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the default path to the adopted config file.&quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;DEODE_CONFIG_PATH&quot;</span><span class="p">,</span> <span class="s2">&quot;config.toml&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">resolve</span><span class="p">(</span><span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -490,7 +489,7 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the underlying data stored by the instance.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_data&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
     <span class="nd">@data</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">,</span> <span class="n">nested_maps_type</span><span class="o">=</span><span class="nb">dict</span><span class="p">):</span>
@@ -535,19 +534,20 @@
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s1">&#39;json&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span>
 
     <span class="c1"># Implement the abstract methods __getitem__, __iter__ and __len__ from from Mapping</span>
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">items</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get items from container.</span>
 
 <span class="sd">        The behaviour is similar to a `dict`, except for the fact that</span>
 <span class="sd">        `self[&quot;A.B.C.D. ...&quot;]` will behave like `self[&quot;A&quot;][&quot;B&quot;][&quot;C&quot;][&quot;D&quot;][...]`.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            items (str): Attributes to be retrieved, as dot-separated strings.</span>
+<span class="sd">            item (str): Item to be retrieved. Use dot-separated keys to retrieve a nested</span>
+<span class="sd">                item in one go.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Any: Value of the item.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">reduce</span><span class="p">(</span><span class="n">getitem</span><span class="p">,</span> <span class="n">items</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">reduce</span><span class="p">(</span><span class="n">getitem</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
@@ -597,9 +597,8 @@
     <span class="nd">@metadata</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the metadata associated with the instance.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">new</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">new</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span> <span class="o">=</span> <span class="n">modify_mappings</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="n">new</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="n">new</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span> <span class="o">=</span> <span class="n">modify_mappings</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="n">new</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="JsonSchema"><a class="viewcode-back" href="../../deode.html#deode.config_parser.JsonSchema">[docs]</a><span class="k">class</span> <span class="nc">JsonSchema</span><span class="p">(</span><span class="n">BaseMapping</span><span class="p">):</span>
@@ -646,16 +645,14 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">json_schema</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return instance&#39;s JSON schema.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the instance&#39;s JSON schema.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_json_schema</span>
 
     <span class="nd">@json_schema</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">json_schema</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">,</span> <span class="n">_validate_data</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_json_schema</span> <span class="o">=</span> <span class="n">JsonSchema</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">_validate_data</span><span class="p">:</span>
-            <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">AttributeError</span><span class="p">):</span>
-                <span class="c1"># Trigger data validation, if data is available</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
+        <span class="k">if</span> <span class="n">_validate_data</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
 
 <div class="viewcode-block" id="ParsedConfig.from_file"><a class="viewcode-back" href="../../deode.html#deode.config_parser.ParsedConfig.from_file">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">include_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -798,7 +795,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on Aug 20, 2023.
+      <span class="lastupdated">Last updated on Aug 21, 2023.
       </span></p>
   </div>
 
