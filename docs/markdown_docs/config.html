@@ -364,6 +364,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#generalsectionmodel-times">GeneralSectionModel &gt; Times</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../misc_section_in_doc_page.html#domainsection">DomainSection</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../misc_section_in_doc_page.html#suite-control">Suite control</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../misc_section_in_doc_page.html#filetemplates">FileTemplates</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../misc_section_in_doc_page.html#macrosection">MacroSection</a></li>
@@ -426,7 +427,7 @@
              
   <section id="the-deode-config-file">
 <h1>The DEODE config file<a class="headerlink" href="#the-deode-config-file" title="Permalink to this heading"></a></h1>
-<p>This was automatically generated running <code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">doc</span> <span class="pre">config</span></code> on 2023-08-21T10:57:49.</p>
+<p>This was automatically generated running <code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">doc</span> <span class="pre">config</span></code> on 2023-08-22T10:44:50.</p>
 <section id="generalsectionmodel">
 <h2>GeneralSectionModel<a class="headerlink" href="#generalsectionmodel" title="Permalink to this heading"></a></h2>
 <p>Model for the ‘general’ section.</p>
@@ -488,30 +489,6 @@
 <td><p></p></td>
 <td><p>boolean</p></td>
 </tr>
-<tr class="row-even"><td><p>bdint</p></td>
-<td><p>Boundary interval</p></td>
-<td><p>PT3H</p></td>
-<td><p></p></td>
-<td><p>string</p></td>
-</tr>
-<tr class="row-odd"><td><p>bdshift</p></td>
-<td><p>Shift of boundary initial time. E.g. ‘-PT3H’ would mean use 3H old boundaries</p></td>
-<td><p>PT0H</p></td>
-<td><p></p></td>
-<td><p>string</p></td>
-</tr>
-<tr class="row-even"><td><p>bdcycle</p></td>
-<td><p>Boundary model cycle interval</p></td>
-<td><p>PT12H</p></td>
-<td><p></p></td>
-<td><p>string</p></td>
-</tr>
-<tr class="row-odd"><td><p>bdmax</p></td>
-<td><p>Max number of parallel boundary interpolation tasks</p></td>
-<td><p>12</p></td>
-<td><p></p></td>
-<td><p>number</p></td>
-</tr>
 <tr class="row-even"><td><p>forecast_range</p></td>
 <td><p>Forecast range</p></td>
 <td><p>PT12H</p></td>
@@ -533,6 +510,30 @@
 <tr class="row-odd"><td><p>nproma</p></td>
 <td><p>NPROMA size in the forecast model. See the namelists for where it is used</p></td>
 <td><p>-32</p></td>
+<td><p></p></td>
+<td><p>number</p></td>
+</tr>
+<tr class="row-even"><td><p>bdint</p></td>
+<td><p>Boundary interval</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>bdshift</p></td>
+<td><p>Shift of boundary initial time. E.g. ‘-PT3H’ would mean use 3H old boundaries</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>bdcycle</p></td>
+<td><p>Boundary model cycle interval</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>bdmax</p></td>
+<td><p>Max number of parallel boundary interpolation tasks</p></td>
+<td><p></p></td>
 <td><p></p></td>
 <td><p>number</p></td>
 </tr>
@@ -565,13 +566,13 @@
 <tbody>
 <tr class="row-even"><td><p>history</p></td>
 <td><p>Output list for history files</p></td>
-<td><p>(‘PT1H:PT3H:PT1H’, ‘PT3H:PT6H:PT3H’, ‘PT6H’)</p></td>
+<td><p>(‘PT1H:PT12H:PT1H’,)</p></td>
 <td><p></p></td>
 <td><p></p></td>
 </tr>
 <tr class="row-odd"><td><p>fullpos</p></td>
 <td><p>Output list for fullpos files</p></td>
-<td><p>PT24H:PT15M</p></td>
+<td><p>(‘PT6H:PT15M’, ‘PT9H:PT30M’, ‘PT1H’)</p></td>
 <td><p></p></td>
 <td><p></p></td>
 </tr>
@@ -636,6 +637,58 @@
 </tbody>
 </table>
 </section>
+</section>
+<section id="domainsection">
+<h2>DomainSection<a class="headerlink" href="#domainsection" title="Permalink to this heading"></a></h2>
+<p>Model for the ‘domain’ section.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Key</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Options</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>bdint</p></td>
+<td><p>Boundary interval</p></td>
+<td><p>PT3H</p></td>
+<td><p></p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>bdshift</p></td>
+<td><p>Shift of boundary initial time. E.g. ‘-PT3H’ would mean use 3H old boundaries</p></td>
+<td><p>PT0H</p></td>
+<td><p></p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>bdcycle</p></td>
+<td><p>Boundary model cycle interval</p></td>
+<td><p>PT12H</p></td>
+<td><p></p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>bdmodel</p></td>
+<td><p>Coupling model</p></td>
+<td><p>ifs</p></td>
+<td><p>arome, ifs</p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>bd_has_surfex</p></td>
+<td><p>Set to true if the host model runs with surfex</p></td>
+<td><p>False</p></td>
+<td><p></p></td>
+<td><p>boolean</p></td>
+</tr>
+<tr class="row-odd"><td><p>bdmax</p></td>
+<td><p>Max number of parallel boundary interpolation tasks</p></td>
+<td><p>12</p></td>
+<td><p></p></td>
+<td><p>number</p></td>
+</tr>
+</tbody>
+</table>
 </section>
 <section id="suite-control">
 <h2>Suite control<a class="headerlink" href="#suite-control" title="Permalink to this heading"></a></h2>
@@ -1189,7 +1242,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on Aug 21, 2023.
+      <span class="lastupdated">Last updated on Aug 22, 2023.
       </span></p>
   </div>
 

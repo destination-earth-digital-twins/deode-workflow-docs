@@ -1,5 +1,5 @@
 # The DEODE config file
-This was automatically generated running `deode doc config` on 2023-08-21T10:57:49.
+This was automatically generated running `deode doc config` on 2023-08-22T10:44:50.
 
 ## GeneralSectionModel
 Model for the 'general' section.
@@ -13,14 +13,14 @@ Model for the 'general' section.
   |csc|CSC|HARMONIE_AROME|AROME, ALARO, HARMONIE_AROME|string|
   |cycle|IAL cycle|CY46h1|CY48t3, CY46t1, CY46h1|string|
   |surfex|SURFEX switch|True||boolean|
-  |bdint|Boundary interval|PT3H||string|
-  |bdshift|Shift of boundary initial time. E.g. '-PT3H' would mean use 3H old boundaries|PT0H||string|
-  |bdcycle|Boundary model cycle interval|PT12H||string|
-  |bdmax|Max number of parallel boundary interpolation tasks|12||number|
   |forecast_range|Forecast range|PT12H||string|
   |keep_workdirs|Do not remove working directories|True||boolean|
   |accept_static_namelists|Allow usage of static namelists as input for the tasks. The namelist should be located in the directory specified by platform.namelists and named with the convention namelist_{kind}_{task} where kind could be surfex or master and task forecast/pgd or similar. For the extraction of namelist see [namelists.md](../docs/namelists.md).|False||boolean|
   |nproma|NPROMA size in the forecast model. See the namelists for where it is used|-32||number|
+  |bdint|Boundary interval|||string|
+  |bdshift|Shift of boundary initial time. E.g. '-PT3H' would mean use 3H old boundaries|||string|
+  |bdcycle|Boundary model cycle interval|||string|
+  |bdmax|Max number of parallel boundary interpolation tasks|||number|
   |initfile|Initial file for the forecast object. Normally no need to provide unless there are special requirements or the forecast object is used in stand alone mode.|||string|
   |initfile_sfx|Initial surfex file for the forecast object. Normally no need to provide unless there are special requirements or the forecast object is used in stand alone mode.|||string|
 
@@ -28,8 +28,8 @@ Model for the 'general' section.
 Output settings. Specified as duration for any of interval, endtime:interval, starttime:endtime:interval or a list of these options
   |Key|Description|Default|Options|Type|
   |---|---|---|---|---|
-  |history|Output list for history files|('PT1H:PT3H:PT1H', 'PT3H:PT6H:PT3H', 'PT6H')|||
-  |fullpos|Output list for fullpos files|PT24H:PT15M|||
+  |history|Output list for history files|('PT1H:PT12H:PT1H',)|||
+  |fullpos|Output list for fullpos files|('PT6H:PT15M', 'PT9H:PT30M', 'PT1H')|||
   |surfex|Output list for surfex files|('PT3H:PT1H', 'PT9H:PT24H:PT3H')|||
 
 ### GeneralSectionModel > Times
@@ -42,6 +42,17 @@ Model for the 'general.times' section.
   |end|End|2023-02-19T03:00:00Z||string|
   |cycle_length|Cycle length defined as duration|PT3H||string|
   |list|List|||array|
+
+## DomainSection
+Model for the 'domain' section.
+  |Key|Description|Default|Options|Type|
+  |---|---|---|---|---|
+  |bdint|Boundary interval|PT3H||string|
+  |bdshift|Shift of boundary initial time. E.g. '-PT3H' would mean use 3H old boundaries|PT0H||string|
+  |bdcycle|Boundary model cycle interval|PT12H||string|
+  |bdmodel|Coupling model|ifs|arome, ifs|string|
+  |bd_has_surfex|Set to true if the host model runs with surfex|False||boolean|
+  |bdmax|Max number of parallel boundary interpolation tasks|12||number|
 
 ## Suite control
 Suite control options

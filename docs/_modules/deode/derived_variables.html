@@ -363,6 +363,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#generalsectionmodel-times">GeneralSectionModel &gt; Times</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#domainsection">DomainSection</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#suite-control">Suite control</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#filetemplates">FileTemplates</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#macrosection">MacroSection</a></li>
@@ -491,6 +492,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Geometry</span>
     <span class="n">truncation</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;linear&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;quadratic&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;cubic&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;custom&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
+    <span class="n">lspsmoro</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;linear&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;quadratic&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;cubic&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;custom&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
 
     <span class="n">ndguxg</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain.nimax&quot;</span><span class="p">])</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain.ilone&quot;</span><span class="p">])</span>
     <span class="n">ndglg</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain.njmax&quot;</span><span class="p">])</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain.ilate&quot;</span><span class="p">])</span>
@@ -518,7 +520,7 @@
 
     <span class="c1"># Time ranges</span>
     <span class="n">tstep</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.tstep&quot;</span><span class="p">])</span>
-    <span class="n">bdint</span> <span class="o">=</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.bdint&quot;</span><span class="p">])</span>
+    <span class="n">bdint</span> <span class="o">=</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;boundaries.bdint&quot;</span><span class="p">])</span>
     <span class="n">forecast_range</span> <span class="o">=</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.forecast_range&quot;</span><span class="p">])</span>
     <span class="n">cstop</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">forecast_range</span><span class="o">.</span><span class="n">days</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">3600</span> <span class="o">+</span> <span class="n">forecast_range</span><span class="o">.</span><span class="n">seconds</span><span class="p">)</span> <span class="o">/</span> <span class="mi">60</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">cstop</span> <span class="o">%</span> <span class="mi">60</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -528,7 +530,7 @@
         <span class="n">cstop</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;m</span><span class="si">{</span><span class="n">cstop</span><span class="si">}</span><span class="s2">&quot;</span>
 
     <span class="c1"># Output settings</span>
-    <span class="n">namoutput</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;history&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;fullpos&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;surfex&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+    <span class="n">namoutput</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;history&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;fullpos&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;surfex&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]}</span>
     <span class="n">oi</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.output_settings&quot;</span><span class="p">]</span>
 
     <span class="n">forecast_range_org</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.forecast_range&quot;</span><span class="p">]</span>
@@ -551,6 +553,7 @@
             <span class="s2">&quot;xtrunc&quot;</span><span class="p">:</span> <span class="n">truncation</span><span class="p">[</span><span class="n">gridtype</span><span class="p">],</span>
             <span class="s2">&quot;nsmax&quot;</span><span class="p">:</span> <span class="n">nsmax</span><span class="p">,</span>
             <span class="s2">&quot;nmsmax&quot;</span><span class="p">:</span> <span class="n">nmsmax</span><span class="p">,</span>
+            <span class="s2">&quot;lspsmoro&quot;</span><span class="p">:</span> <span class="n">lspsmoro</span><span class="p">[</span><span class="n">gridtype</span><span class="p">],</span>
         <span class="p">},</span>
         <span class="s2">&quot;namelist&quot;</span><span class="p">:</span> <span class="p">{</span>
             <span class="s2">&quot;nhists&quot;</span><span class="p">:</span> <span class="n">namoutput</span><span class="p">[</span><span class="s2">&quot;history&quot;</span><span class="p">],</span>
@@ -584,7 +587,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on Aug 21, 2023.
+      <span class="lastupdated">Last updated on Aug 22, 2023.
       </span></p>
   </div>
 

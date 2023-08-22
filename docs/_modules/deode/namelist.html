@@ -363,6 +363,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#generalsectionmodel-times">GeneralSectionModel &gt; Times</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#domainsection">DomainSection</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#suite-control">Suite control</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#filetemplates">FileTemplates</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#macrosection">MacroSection</a></li>
@@ -493,7 +494,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">platform</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">=</span> <span class="n">kind</span>  <span class="c1"># not used elsewhere, though</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">=</span> <span class="n">kind</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">substitute</span> <span class="o">=</span> <span class="n">substitute</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger_from_config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cycle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.cycle&quot;</span><span class="p">]</span>
@@ -532,7 +533,9 @@
             <span class="n">cndict</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">]}</span>
             <span class="n">found</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No reference namelist exists&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;No reference namelist </span><span class="si">%s</span><span class="s2"> exists, fallback to yaml files&quot;</span><span class="p">,</span> <span class="n">ref_namelist</span>
+            <span class="p">)</span>
             <span class="n">found</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="n">nldict</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="n">cndict</span> <span class="o">=</span> <span class="p">{}</span>
@@ -574,9 +577,9 @@
         <span class="c1"># Check target is valid</span>
         <span class="k">if</span> <span class="n">target</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cndict</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="s2">&quot;Could not find target &#39;</span><span class="si">%s</span><span class="s2">&#39; in </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cnfile</span><span class="p">)</span>
+                <span class="s2">&quot;Could not find target namelist &#39;</span><span class="si">%s</span><span class="s2">&#39; in </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cnfile</span><span class="p">)</span>
             <span class="p">)</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Available targets:&quot;</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Available namelist targets:&quot;</span>
             <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">cndict</span><span class="p">:</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;_.+&quot;</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
                     <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">key</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span>
@@ -702,6 +705,7 @@
 <span class="sd">            output_file : where to write the result (fort.4 or EXSEG1.nam typically)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Generate namelist for: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">update</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;namelist_update&quot;</span><span class="p">]</span>
@@ -722,7 +726,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on Aug 21, 2023.
+      <span class="lastupdated">Last updated on Aug 22, 2023.
       </span></p>
   </div>
 

@@ -365,6 +365,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#generalsectionmodel-times">GeneralSectionModel &gt; Times</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#domainsection">DomainSection</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#suite-control">Suite control</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#filetemplates">FileTemplates</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#macrosection">MacroSection</a></li>
@@ -429,7 +430,7 @@
 <h1>Miscellaneous Documentation<a class="headerlink" href="#miscellaneous-documentation" title="Permalink to this heading"></a></h1>
 <section id="the-deode-config-file">
 <h2>The DEODE config file<a class="headerlink" href="#the-deode-config-file" title="Permalink to this heading"></a></h2>
-<p>This was automatically generated running <code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">doc</span> <span class="pre">config</span></code> on 2023-08-21T10:57:49.</p>
+<p>This was automatically generated running <code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">doc</span> <span class="pre">config</span></code> on 2023-08-22T10:44:50.</p>
 <section id="generalsectionmodel">
 <h3>GeneralSectionModel<a class="headerlink" href="#generalsectionmodel" title="Permalink to this heading"></a></h3>
 <p>Model for the ‘general’ section.</p>
@@ -491,30 +492,6 @@
 <td><p></p></td>
 <td><p>boolean</p></td>
 </tr>
-<tr class="row-even"><td><p>bdint</p></td>
-<td><p>Boundary interval</p></td>
-<td><p>PT3H</p></td>
-<td><p></p></td>
-<td><p>string</p></td>
-</tr>
-<tr class="row-odd"><td><p>bdshift</p></td>
-<td><p>Shift of boundary initial time. E.g. ‘-PT3H’ would mean use 3H old boundaries</p></td>
-<td><p>PT0H</p></td>
-<td><p></p></td>
-<td><p>string</p></td>
-</tr>
-<tr class="row-even"><td><p>bdcycle</p></td>
-<td><p>Boundary model cycle interval</p></td>
-<td><p>PT12H</p></td>
-<td><p></p></td>
-<td><p>string</p></td>
-</tr>
-<tr class="row-odd"><td><p>bdmax</p></td>
-<td><p>Max number of parallel boundary interpolation tasks</p></td>
-<td><p>12</p></td>
-<td><p></p></td>
-<td><p>number</p></td>
-</tr>
 <tr class="row-even"><td><p>forecast_range</p></td>
 <td><p>Forecast range</p></td>
 <td><p>PT12H</p></td>
@@ -536,6 +513,30 @@
 <tr class="row-odd"><td><p>nproma</p></td>
 <td><p>NPROMA size in the forecast model. See the namelists for where it is used</p></td>
 <td><p>-32</p></td>
+<td><p></p></td>
+<td><p>number</p></td>
+</tr>
+<tr class="row-even"><td><p>bdint</p></td>
+<td><p>Boundary interval</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>bdshift</p></td>
+<td><p>Shift of boundary initial time. E.g. ‘-PT3H’ would mean use 3H old boundaries</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>bdcycle</p></td>
+<td><p>Boundary model cycle interval</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>bdmax</p></td>
+<td><p>Max number of parallel boundary interpolation tasks</p></td>
+<td><p></p></td>
 <td><p></p></td>
 <td><p>number</p></td>
 </tr>
@@ -568,13 +569,13 @@
 <tbody>
 <tr class="row-even"><td><p>history</p></td>
 <td><p>Output list for history files</p></td>
-<td><p>(‘PT1H:PT3H:PT1H’, ‘PT3H:PT6H:PT3H’, ‘PT6H’)</p></td>
+<td><p>(‘PT1H:PT12H:PT1H’,)</p></td>
 <td><p></p></td>
 <td><p></p></td>
 </tr>
 <tr class="row-odd"><td><p>fullpos</p></td>
 <td><p>Output list for fullpos files</p></td>
-<td><p>PT24H:PT15M</p></td>
+<td><p>(‘PT6H:PT15M’, ‘PT9H:PT30M’, ‘PT1H’)</p></td>
 <td><p></p></td>
 <td><p></p></td>
 </tr>
@@ -639,6 +640,58 @@
 </tbody>
 </table>
 </section>
+</section>
+<section id="domainsection">
+<h3>DomainSection<a class="headerlink" href="#domainsection" title="Permalink to this heading"></a></h3>
+<p>Model for the ‘domain’ section.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Key</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Options</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>bdint</p></td>
+<td><p>Boundary interval</p></td>
+<td><p>PT3H</p></td>
+<td><p></p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>bdshift</p></td>
+<td><p>Shift of boundary initial time. E.g. ‘-PT3H’ would mean use 3H old boundaries</p></td>
+<td><p>PT0H</p></td>
+<td><p></p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>bdcycle</p></td>
+<td><p>Boundary model cycle interval</p></td>
+<td><p>PT12H</p></td>
+<td><p></p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>bdmodel</p></td>
+<td><p>Coupling model</p></td>
+<td><p>ifs</p></td>
+<td><p>arome, ifs</p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>bd_has_surfex</p></td>
+<td><p>Set to true if the host model runs with surfex</p></td>
+<td><p>False</p></td>
+<td><p></p></td>
+<td><p>boolean</p></td>
+</tr>
+<tr class="row-odd"><td><p>bdmax</p></td>
+<td><p>Max number of parallel boundary interpolation tasks</p></td>
+<td><p>12</p></td>
+<td><p></p></td>
+<td><p>number</p></td>
+</tr>
+</tbody>
+</table>
 </section>
 <section id="suite-control">
 <h3>Suite control<a class="headerlink" href="#suite-control" title="Permalink to this heading"></a></h3>
@@ -1287,7 +1340,7 @@ To copy or move, one only needs to add a provider_id:
 <section id="get-a-specific-namelist-from-command-line">
 <h3>Get a specific namelist from command line<a class="headerlink" href="#get-a-specific-namelist-from-command-line" title="Permalink to this heading"></a></h3>
 <p>For a given configuration file any namelist generated by the system can be extracted from command line using e.g. for the forecast</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">deode</span> <span class="n">show</span> <span class="n">namelist</span> <span class="o">-</span><span class="n">t</span> <span class="n">master</span> <span class="o">-</span><span class="n">n</span> <span class="n">forecast</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">deode</span> <span class="n">show</span> <span class="n">namelist</span> <span class="o">-</span><span class="n">t</span> <span class="n">master</span> <span class="o">-</span><span class="n">n</span> <span class="n">forecast_bdmodel_ifs</span>
 </pre></div>
 </div>
 <p>If you are uncertain about the name of the namelist you’re searching for just type any name to get a list</p>
@@ -1409,7 +1462,7 @@ To copy or move, one only needs to add a provider_id:
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on Aug 21, 2023.
+      <span class="lastupdated">Last updated on Aug 22, 2023.
       </span></p>
   </div>
 
