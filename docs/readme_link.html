@@ -55,6 +55,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#setting-up-the-environment-after-developer-mode-install">Setting up the Environment after Developer-Mode Install</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#the-configuration-file">The Configuration File</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#command-line-options">Command line options</a></li>
 </ul>
@@ -433,15 +434,14 @@
 <h1>DEODE Scripting System<a class="headerlink" href="#deode-scripting-system" title="Permalink to this heading"></a></h1>
 <section id="about">
 <h2>About<a class="headerlink" href="#about" title="Permalink to this heading"></a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">deode</span></code> is a python package that runs the Destination Earth on Demand Extremes system.</p>
-<p>See also the <a class="reference external" href="https://destination-earth-digital-twins.github.io/deode-prototype-docs">project’s Doc Page</a> for more information.</p>
+<p>The DEODE Scripting System provides a <code class="docutils literal notranslate"><span class="pre">deode</span></code> python package that runs the Destination Earth on Demand Extremes system.</p>
+<p>See the <a class="reference external" href="https://destination-earth-digital-twins.github.io/deode-prototype-docs">project’s Doc Page</a> for more information.</p>
 </section>
 <section id="system-requirements">
 <h2>System Requirements<a class="headerlink" href="#system-requirements" title="Permalink to this heading"></a></h2>
 <ul>
 <li><p>python &gt;=3.8</p></li>
-<li><p><strong>For
-<a class="reference external" href="#developer-mode-installation">Developer-Mode Installation</a>:</strong></p>
+<li><p><strong>For <a class="reference external" href="#developer-mode-installation">Developer-Mode Installation</a>:</strong></p>
 <ul>
 <li><p><a class="reference external" href="https://python-poetry.org"><code class="docutils literal notranslate"><span class="pre">poetry</span></code></a>, which can be installed as follows:</p>
 <ul>
@@ -471,40 +471,52 @@ curl -sSL https://install.python-poetry.org | python3 -
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span><span class="nv">pygdal</span><span class="o">==</span><span class="s2">&quot;`gdal-config --version`.*&quot;</span>
 </pre></div>
 </div>
-<p>On Atos (<code class="docutils literal notranslate"><span class="pre">hpc-login</span></code>) no special treatment of gdal is required.</p>
+<p><strong>N.B.</strong>: No special treatment of gdal is required on Atos (<code class="docutils literal notranslate"><span class="pre">hpc-login</span></code>).</p>
 </section>
 </section>
 <section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h2>
 <p>Before proceeding, please make sure that your system fulfils the appropriate
-<a class="reference external" href="#system-requirements">system requirements</a>. For the time being the recommended installation method is the <a class="reference external" href="#developer-mode-installation">Developer-Mode Installation</a> using poetry.</p>
+<a class="reference external" href="#system-requirements">system requirements</a>. For the time being the recommended installation method is the <a class="reference external" href="#developer-mode-installation">developer-mode installation using the poetry tool</a>.</p>
 <section id="developer-mode-installation">
 <h3>Developer Mode Installation<a class="headerlink" href="#developer-mode-installation" title="Permalink to this heading"></a></h3>
 <p>:point_right: For those who need/wish to make changes to <code class="docutils literal notranslate"><span class="pre">deode</span></code>’s
 source code, or use code from a different branch than <code class="docutils literal notranslate"><span class="pre">master</span></code>.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git clone git@github.com:destination-earth-digital-twins/Deode-Prototype.git
-cd Deode-Prototype
 export PATH=~/.local/bin:$PATH
+cd Deode-Prototype
 poetry install
 </pre></div>
 </div>
 <p>Installing in “developer mode” means that changes made in any of the package’s
 source files become visible as soon as the package is reloaded.</p>
+<p>This will will install <code class="docutils literal notranslate"><span class="pre">deode</span></code> and its dependencies in an isolated virtual environment
+located inside the package’s source directory.</p>
 </section>
 </section>
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading"></a></h2>
-<section id="the-configuration-file">
-<h3>The Configuration File<a class="headerlink" href="#the-configuration-file" title="Permalink to this heading"></a></h3>
-<p>After successful installation, the <code class="docutils literal notranslate"><span class="pre">deode</span></code> command will become available in the poetry virtual environment. Load the virtual environment by</p>
+<section id="setting-up-the-environment-after-developer-mode-install">
+<h3>Setting up the Environment after <a class="reference external" href="#developer-mode-installation">Developer-Mode Install</a><a class="headerlink" href="#setting-up-the-environment-after-developer-mode-install" title="Permalink to this heading"></a></h3>
+<p>You need to activate the created virtual environment before being able to
+run <code class="docutils literal notranslate"><span class="pre">deode</span></code>. Inside the install directory, please run:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">poetry</span> <span class="n">shell</span>
 </pre></div>
 </div>
-<p>to make the <code class="docutils literal notranslate"><span class="pre">deode</span></code>command available. However, before you can use <code class="docutils literal notranslate"><span class="pre">deode</span></code> (apart from the <code class="docutils literal notranslate"><span class="pre">-h</span></code> option), you will need a configuration file written in the
-<a class="reference external" href="https://en.wikipedia.org/wiki/TOML">TOML</a> format.</p>
-<p>Please take a look at the default
-<a class="reference external" href="https://github.com/destination-earth-digital-twins/Deode-Prototype/blob/develop/deode/data/config_files/config.toml">config.toml</a> file,
-as well as the <a class="reference external" href="https://destination-earth-digital-twins.github.io/deode-prototype-docs">project’s Doc Page</a>, for more information about the configuration file.</p>
+<p>Alternatively, to activate a <code class="docutils literal notranslate"><span class="pre">deode</span></code> install located in an arbitrary
+directory <code class="docutils literal notranslate"><span class="pre">MY_DEODE_SOURCE_DIRECTORY</span></code>, please run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">poetry</span> <span class="n">shell</span> <span class="o">--</span><span class="n">directory</span><span class="o">=</span><span class="n">MY_DEODE_SOURCE_DIRECTORY</span>
+</pre></div>
+</div>
+</section>
+<section id="the-configuration-file">
+<h3>The Configuration File<a class="headerlink" href="#the-configuration-file" title="Permalink to this heading"></a></h3>
+<p>Before you can use <code class="docutils literal notranslate"><span class="pre">deode</span></code> (apart from the <code class="docutils literal notranslate"><span class="pre">-h</span></code> option), you will need a configuration file written in the
+<a class="reference external" href="https://en.wikipedia.org/wiki/TOML">TOML</a> format. Please take a look at
+the default
+<a class="reference external" href="https://github.com/destination-earth-digital-twins/Deode-Prototype/blob/develop/deode/data/config_files/config.toml">config.toml</a> file, as well as the
+<a class="reference external" href="https://destination-earth-digital-twins.github.io/deode-prototype-docs">project’s Doc Page</a>,
+for more information about this.</p>
 </section>
 <section id="command-line-options">
 <h3>Command line options<a class="headerlink" href="#command-line-options" title="Permalink to this heading"></a></h3>
@@ -526,7 +538,7 @@ that the <code class="docutils literal notranslate"><span class="pre">-h</span><
 <section id="example-running-a-ecflow-suite-from-server-ecflow-gen-user-001-on-atos">
 <h3>Example running a ecflow suite from server ecflow-gen-${USER}-001 on atos<a class="headerlink" href="#example-running-a-ecflow-suite-from-server-ecflow-gen-user-001-on-atos" title="Permalink to this heading"></a></h3>
 <p>Assuming you have successfully installed deode the following will launch a run under ecflow.
-Log into hpc-login.ecmwf.int, load python and ecflow and start the poetry shell</p>
+Log into hpc-login.ecmwf.int, load python and ecflow, go to <code class="docutils literal notranslate"><span class="pre">deode's</span></code> root dir and start the poetry shell:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>module load python3/3.8.8-01
 module load ecflow
 export PATH=~/.local/bin:$PATH
@@ -548,7 +560,7 @@ deode -config_file $PWD/deode/data/config_files/config.toml \
 </section>
 <section id="example-using-poetry-and-run-the-forecast-task-from-hpc-login-command-line">
 <h3>Example using poetry and run the forecast task from hpc-login command line<a class="headerlink" href="#example-using-poetry-and-run-the-forecast-task-from-hpc-login-command-line" title="Permalink to this heading"></a></h3>
-<p>The example below shows how to run deode/task/forecast.py using the batch system rules defined in your config.toml. The example assumes you’re running the command from the Deode-Prototype root directory and have the appropriate input data in place.</p>
+<p>The example below shows how to run deode/task/forecast.py using the batch system rules defined in your config.toml. The example assumes that (i) you’re running the command from the Deode-Prototype root directory (see the <a class="reference external" href="#setting-up-the-environment-after-developer-mode-install">environment setup instructions</a>) and (ii) have the appropriate input data in place.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>module load python3/3.8.8-01
 poetry shell
 deode -config_file $PWD/deode/data/config_files/config.toml \
@@ -574,7 +586,7 @@ deode -config_file $PWD/deode/data/config_files/config.toml \
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on Aug 22, 2023.
+      <span class="lastupdated">Last updated on Aug 28, 2023.
       </span></p>
   </div>
 
