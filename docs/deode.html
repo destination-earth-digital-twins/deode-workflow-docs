@@ -90,6 +90,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-deode.commands_functions">deode.commands_functions module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#deode.commands_functions.doc_config"><code class="docutils literal notranslate"><span class="pre">doc_config()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deode.commands_functions.namelist_integrate"><code class="docutils literal notranslate"><span class="pre">namelist_integrate()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#deode.commands_functions.run_task"><code class="docutils literal notranslate"><span class="pre">run_task()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#deode.commands_functions.set_deode_home"><code class="docutils literal notranslate"><span class="pre">set_deode_home()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#deode.commands_functions.show_config"><code class="docutils literal notranslate"><span class="pre">show_config()</span></code></a></li>
@@ -215,17 +216,32 @@
 <li class="toctree-l2"><a class="reference internal" href="#module-deode.namelist">deode.namelist module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#deode.namelist.InvalidNamelistKindError"><code class="docutils literal notranslate"><span class="pre">InvalidNamelistKindError</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#deode.namelist.InvalidNamelistTargetError"><code class="docutils literal notranslate"><span class="pre">InvalidNamelistTargetError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deode.namelist.NamelistComparator"><code class="docutils literal notranslate"><span class="pre">NamelistComparator</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#deode.namelist.NamelistComparator.compare_dicts"><code class="docutils literal notranslate"><span class="pre">NamelistComparator.compare_dicts()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deode.namelist.NamelistComparator.compare_lists"><code class="docutils literal notranslate"><span class="pre">NamelistComparator.compare_lists()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#deode.namelist.NamelistGenerator"><code class="docutils literal notranslate"><span class="pre">NamelistGenerator</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#deode.namelist.NamelistGenerator.assemble_namelist"><code class="docutils literal notranslate"><span class="pre">NamelistGenerator.assemble_namelist()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deode.namelist.NamelistGenerator.check_replace_scalar"><code class="docutils literal notranslate"><span class="pre">NamelistGenerator.check_replace_scalar()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#deode.namelist.NamelistGenerator.generate_namelist"><code class="docutils literal notranslate"><span class="pre">NamelistGenerator.generate_namelist()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#deode.namelist.NamelistGenerator.load"><code class="docutils literal notranslate"><span class="pre">NamelistGenerator.load()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#deode.namelist.NamelistGenerator.load_user_namelist"><code class="docutils literal notranslate"><span class="pre">NamelistGenerator.load_user_namelist()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deode.namelist.NamelistGenerator.traverse"><code class="docutils literal notranslate"><span class="pre">NamelistGenerator.traverse()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#deode.namelist.NamelistGenerator.update"><code class="docutils literal notranslate"><span class="pre">NamelistGenerator.update()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#deode.namelist.NamelistGenerator.write_namelist"><code class="docutils literal notranslate"><span class="pre">NamelistGenerator.write_namelist()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#deode.namelist.NamelistIntegrator"><code class="docutils literal notranslate"><span class="pre">NamelistIntegrator</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#deode.namelist.NamelistIntegrator.dict2yml"><code class="docutils literal notranslate"><span class="pre">NamelistIntegrator.dict2yml()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deode.namelist.NamelistIntegrator.ftn2dict"><code class="docutils literal notranslate"><span class="pre">NamelistIntegrator.ftn2dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deode.namelist.NamelistIntegrator.yml2dict"><code class="docutils literal notranslate"><span class="pre">NamelistIntegrator.yml2dict()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#deode.namelist.find_num"><code class="docutils literal notranslate"><span class="pre">find_num()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#deode.namelist.flatten_list"><code class="docutils literal notranslate"><span class="pre">flatten_list()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deode.namelist.list_set_at_index"><code class="docutils literal notranslate"><span class="pre">list_set_at_index()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deode.namelist.represent_ordereddict"><code class="docutils literal notranslate"><span class="pre">represent_ordereddict()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-deode.os_utils">deode.os_utils module</a><ul>
@@ -471,6 +487,23 @@
 <li><p><strong>args</strong> (<em>argparse.Namespace</em>) – Parsed command line arguments.</p></li>
 <li><p><strong>config</strong> (<em>.config_parser.ParsedConfig</em>) – Parsed config file contents.</p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deode.commands_functions.namelist_integrate">
+<span class="sig-name descname"><span class="pre">namelist_integrate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/commands_functions.html#namelist_integrate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.commands_functions.namelist_integrate" title="Permalink to this definition"></a></dt>
+<dd><p>Implement the ‘namelist integrate’ command.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args</strong> (<em>argparse.Namespace</em>) – Parsed command line arguments.</p></li>
+<li><p><strong>config</strong> (<em>.config_parser.ParsedConfig</em>) – Parsed config file contents.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>SystemExit   # noqa</strong> – DAR401</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1289,6 +1322,66 @@ selection (dict): xxtddddhhmm part</p>
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="deode.namelist.NamelistComparator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">NamelistComparator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/namelist.html#NamelistComparator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.namelist.NamelistComparator" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Helper class for namelist generation and integration.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="deode.namelist.NamelistComparator.compare_dicts">
+<span class="sig-name descname"><span class="pre">compare_dicts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dbase</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dcomp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">action</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/namelist.html#NamelistComparator.compare_dicts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.namelist.NamelistComparator.compare_dicts" title="Permalink to this definition"></a></dt>
+<dd><p>Compare two dictionaries, recursively if needed.</p>
+<p>The dict must only consist of dict, list, str, float, int, bool</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dbase</strong> – base dict</p></li>
+<li><p><strong>dcomp</strong> – comparison dict</p></li>
+<li><p><strong>action</strong> (<em>str</em>) – one of ‘intersection’, ‘diff’ or ‘union’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>result dict from the specified comparison action</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dout</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>SystemExit   # noqa</strong> – DAR401</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deode.namelist.NamelistComparator.compare_lists">
+<span class="sig-name descname"><span class="pre">compare_lists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">libase</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">licomp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sib</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sic</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sio</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">action</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/namelist.html#NamelistComparator.compare_lists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.namelist.NamelistComparator.compare_lists" title="Permalink to this definition"></a></dt>
+<dd><p>Compare two lists, recursively if needed.</p>
+<p>The list must only consist of dict, list, str, float, int, bool</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>libase</strong> – base list</p></li>
+<li><p><strong>licomp</strong> – comparison list</p></li>
+<li><p><strong>sib</strong> – list of start indices for libase</p></li>
+<li><p><strong>sic</strong> – list of start indices for licomp</p></li>
+<li><p><strong>sio</strong> – list of start indices for liout (modified)</p></li>
+<li><p><strong>action</strong> (<em>str</em>) – one of ‘intersection’, ‘diff’ or ‘union’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>result list from the specified comparison action</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>liout</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>SystemExit   # noqa</strong> – DAR401</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="deode.namelist.NamelistGenerator">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">NamelistGenerator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">substitute</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/namelist.html#NamelistGenerator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.namelist.NamelistGenerator" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -1309,6 +1402,23 @@ selection (dict): xxtddddhhmm part</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>nlres (f90nml.Namelist)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deode.namelist.NamelistGenerator.check_replace_scalar">
+<span class="sig-name descname"><span class="pre">check_replace_scalar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/namelist.html#NamelistGenerator.check_replace_scalar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.namelist.NamelistGenerator.check_replace_scalar" title="Permalink to this definition"></a></dt>
+<dd><p>Check a scalar for variable substitution from config.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>val</strong> – value to be checked</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>value after possible substitution</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>KeyError   # noqa</strong> – DAR401</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1364,6 +1474,20 @@ cndict : Rules for dictionary</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="deode.namelist.NamelistGenerator.traverse">
+<span class="sig-name descname"><span class="pre">traverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/namelist.html#NamelistGenerator.traverse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.namelist.NamelistGenerator.traverse" title="Permalink to this definition"></a></dt>
+<dd><p>Traverse a nested structure and do variable substitution where needed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> – (dict, list, str, float, int, bool)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>node, with values replaced</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="deode.namelist.NamelistGenerator.update">
 <span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nldict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cndict_tag</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/namelist.html#NamelistGenerator.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.namelist.NamelistGenerator.update" title="Permalink to this definition"></a></dt>
 <dd><p>Update with additional namelist dict.</p>
@@ -1393,6 +1517,32 @@ cndict : Rules for dictionary</p>
 
 </dd></dl>
 
+<dl class="py class">
+<dt class="sig sig-object py" id="deode.namelist.NamelistIntegrator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">NamelistIntegrator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/namelist.html#NamelistIntegrator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.namelist.NamelistIntegrator" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Helper class to read fortran namelists and store as yaml, in a more compact form.</p>
+<p>Reduces duplication if several namelists have similar settings.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="deode.namelist.NamelistIntegrator.dict2yml">
+<span class="sig-name descname"><span class="pre">dict2yml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nmldict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ymlfile</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/namelist.html#NamelistIntegrator.dict2yml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.namelist.NamelistIntegrator.dict2yml" title="Permalink to this definition"></a></dt>
+<dd><p>Write dict as yaml file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deode.namelist.NamelistIntegrator.ftn2dict">
+<span class="sig-name descname"><span class="pre">ftn2dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ftnfile</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/namelist.html#NamelistIntegrator.ftn2dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.namelist.NamelistIntegrator.ftn2dict" title="Permalink to this definition"></a></dt>
+<dd><p>Read fortran namelist file with f90nml and return as plain dict.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deode.namelist.NamelistIntegrator.yml2dict">
+<span class="sig-name descname"><span class="pre">yml2dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ymlfile</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/namelist.html#NamelistIntegrator.yml2dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.namelist.NamelistIntegrator.yml2dict" title="Permalink to this definition"></a></dt>
+<dd><p>Read yaml namelist file and return as dict.</p>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="deode.namelist.find_num">
 <span class="sig-name descname"><span class="pre">find_num</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/namelist.html#find_num"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.namelist.find_num" title="Permalink to this definition"></a></dt>
@@ -1403,6 +1553,18 @@ cndict : Rules for dictionary</p>
 <dt class="sig sig-object py" id="deode.namelist.flatten_list">
 <span class="sig-name descname"><span class="pre">flatten_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">li</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/namelist.html#flatten_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.namelist.flatten_list" title="Permalink to this definition"></a></dt>
 <dd><p>Recursively flatten a list of lists (of lists).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deode.namelist.list_set_at_index">
+<span class="sig-name descname"><span class="pre">list_set_at_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">li</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/namelist.html#list_set_at_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.namelist.list_set_at_index" title="Permalink to this definition"></a></dt>
+<dd><p>Handle ‘sparse’ lists (that may contain null values).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deode.namelist.represent_ordereddict">
+<span class="sig-name descname"><span class="pre">represent_ordereddict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dumper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/namelist.html#represent_ordereddict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.namelist.represent_ordereddict" title="Permalink to this definition"></a></dt>
+<dd><p>YAML representer, simplifies working with namelists read by f90nml.</p>
 </dd></dl>
 
 </section>
@@ -2512,7 +2674,7 @@ server specific way.</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on Aug 28, 2023.
+      <span class="lastupdated">Last updated on Aug 29, 2023.
       </span></p>
   </div>
 
