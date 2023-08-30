@@ -1,5 +1,5 @@
 # The DEODE config file
-This was automatically generated running `deode doc config` on 2023-08-29T10:58:35.
+This was automatically generated running `deode doc config` on 2023-08-30T12:50:00.
 
 ## GeneralSectionModel
 Model for the 'general' section.
@@ -9,14 +9,16 @@ Model for the 'general' section.
   |cnmexp|Experiment short name|DEOD||string|
   |realization|Placeholder for future ensemble or similar need|-1||number|
   |tstep|Model time step|75||number|
-  |loglevel|Logger output level|info|critical, error, debug, info, warning, CRITICAL, ERROR, DEBUG, INFO, WARNING|string|
+  |loglevel|Logger output level|debug|critical, error, debug, info, warning, CRITICAL, ERROR, DEBUG, INFO, WARNING|string|
   |csc|CSC|HARMONIE_AROME|AROME, ALARO, HARMONIE_AROME|string|
   |cycle|IAL cycle|CY46h1|CY48t3, CY46t1, CY46h1|string|
   |surfex|SURFEX switch|True||boolean|
-  |forecast_range|Forecast range|PT12H||string|
+  |marsprep_global||True|||
+  |forecast_range|Forecast range|PT6H||string|
   |keep_workdirs|Do not remove working directories|True||boolean|
   |accept_static_namelists|Allow usage of static namelists as input for the tasks. The namelist should be located in the directory specified by platform.namelists and named with the convention namelist_{kind}_{task} where kind could be surfex or master and task forecast/pgd or similar. For the extraction of namelist see [namelists.md](../docs/namelists.md).|False||boolean|
   |nproma|NPROMA size in the forecast model. See the namelists for where it is used|-32||number|
+  |mars_expver|Name of the experiment to get data from MARS in case of global DT. Empty string for operational.|0001||string|
   |bdint|Boundary interval|||string|
   |bdshift|Shift of boundary initial time. E.g. '-PT3H' would mean use 3H old boundaries|||string|
   |bdcycle|Boundary model cycle interval|||string|
@@ -28,7 +30,7 @@ Model for the 'general' section.
 Output settings. Specified as duration for any of interval, endtime:interval, starttime:endtime:interval or a list of these options
   |Key|Description|Default|Options|Type|
   |---|---|---|---|---|
-  |history|Output list for history files|('PT1H:PT12H:PT1H',)|||
+  |history|Output list for history files|('PT0H:PT12H:PT1H',)|||
   |fullpos|Output list for fullpos files|('PT6H:PT15M', 'PT9H:PT30M', 'PT1H')|||
   |surfex|Output list for surfex files|('PT3H:PT1H', 'PT9H:PT24H:PT3H')|||
 
@@ -38,16 +40,17 @@ Model for the 'general.times' section.
   |---|---|---|---|---|
   |basetime|Base TB specified|2023-02-19T00:00:00Z||string|
   |validtime|Valid TB specified|2023-02-19T00:00:00Z||string|
-  |start|Start|2023-02-19T00:00:00Z||string|
-  |end|End|2023-02-19T03:00:00Z||string|
+  |start|Start|2023-08-23T15:00:00Z||string|
+  |end|End|2023-08-23T18:00:00Z||string|
   |cycle_length|Cycle length defined as duration|PT3H||string|
   |list|List|||array|
 
-## DomainSection
-Model for the 'domain' section.
+## BoundarySection
+Settings for control of boundary treatment.
   |Key|Description|Default|Options|Type|
   |---|---|---|---|---|
-  |bdint|Boundary interval|PT3H||string|
+  |bdstrategy||same_forecast|simulate_operational, analysis_only, same_forecast|string|
+  |bdint|Boundary interval|PT1H||string|
   |bdshift|Shift of boundary initial time. E.g. '-PT3H' would mean use 3H old boundaries|PT0H||string|
   |bdcycle|Boundary model cycle interval|PT12H||string|
   |bdmodel|Coupling model|ifs|arome, ifs|string|
@@ -64,6 +67,7 @@ Suite control options
   |do_pgd|Activate generation of a PGD file|True||boolean|
   |do_prep|Run prep if cold start|True||boolean|
   |interpolate_boundaries|Activates the boundary interpolation|True||boolean|
+  |do_marsprep|Run marsprep or skip extraction|True||boolean|
 
 ## FileTemplates
 Templates for file names
@@ -81,7 +85,7 @@ Model for the 'macros' section.
   |---|---|---|---|---|
   |os_macros|Environment variables used as macros|('USER', 'HOME', 'PWD')||array|
   |group_macros|Turns a full config section to a macro|('platform', 'system')||array|
-  |gen_macros|Turns any string config to a macro, use a dict to rename an attribute.|('general.cnmexp', 'general.cycle', 'general.csc', 'file_templates.duration_grib', 'file_templates.duration_fa', {'surfex_template': 'file_templates.surfex'}, {'case': 'general.case'}, {'domain': 'domain.name'}, {'rrr': 'general.realization'})||array|
+  |gen_macros|Turns any string config to a macro, use a dict to rename an attribute.|('general.cnmexp', 'general.mars_expver', 'general.cycle', 'general.csc', 'file_templates.duration_grib', 'file_templates.duration_fa', {'surfex_template': 'file_templates.surfex'}, {'case': 'general.case'}, {'domain': 'domain.name'}, {'rrr': 'general.realization'})||array|
 
 ## System
 DEODE system specific path settings
@@ -89,10 +93,11 @@ DEODE system specific path settings
   |---|---|---|---|---|
   |wrk|Location of date specific working directory|@SCRATCH@/deode/@CASE@/@YYYY@@MM@@DD@_@HH@@mm@||string|
   |archive|Location of date specific archive|@ARCHIVE_ROOT@/@YYYY@/@MM@/@DD@/@HH@/||string|
-  |bddir|Location of input boundaries|/scratch/sism/DEOL/@YYYY@/@MM@/@DD@/@HH@||string|
+  |bddir|Location of input boundaries|@INTP_BDDIR@||string|
   |intp_bddir|Location of boundaries on the current domain, i.e. the output directory of e927|@WRK@||string|
-  |bdfile_template|Name template for input boundary files|PFIFSDEOL+@LLLL@||string|
-  |bddir_sfx|Location of input intial file for surfex|/home/snh02/work/dev-CY46h1_deode/boundaries/HRES/@YYYY@/@MM@/@DD@/@HH@||string|
+  |bdfile_template|Name template for input boundary files|ELSCF@CNMEXP@ALBC@NNN@||string|
+  |marsfile_template||mars_prefetch_[levtype]_[date]_[time]+[step]|||
+  |bddir_sfx|Location of input intial file for surfex|@MARSDIR@||string|
   |bdfile_sfx_template|Name template for input initial surfex file for prep|fc@YYYY@@MM@@DD@_@HH@+@LLL@||string|
   |climdir|Location of generated/used climate files (PGD/monthly files)|@SCRATCH@/deode/@CASE@/climate/@DOMAIN@||string|
   |bdclimdir|Location of host model climate files used for e927/c903|/home/snh02/work/dev-CY46h1_deode/climate/DEODE_LARGE||string|
@@ -100,6 +105,8 @@ DEODE system specific path settings
   |fullpos_config_file|Path to the fullpos yml config file|@DEODE_HOME@/deode/namelist_generation_input/@CYCLE@/fullpos_namelist.yml||string|
   |sfx_input_defs|Path to the surfex json config file|@DEODE_HOME@/deode/data/input/sfx_input_@CYCLE@.json||string|
   |namelists|Path to static namelists|@DEODE_HOME@/deode/data/namelists/@CYCLE@||string|
+  |marsdir|Location input files extracted from MARS by Marsprep|/scratch/@USER@/deode/@CASE@/ECMWF_DATA/@YYYY@/@MM@/@DD@/@HH@/@MARS_EXPVER@||string|
+  |global_sfcdir|Path to SFC files needed for c903, which are not in MARS|/hpcperm/snh02/climate_fields_mir/climate.v020_MIR_orog/||string|
 
 ## Troika
 DEODE system specific path settings
