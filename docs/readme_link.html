@@ -564,12 +564,12 @@ poetry shell
 <p>Now you can start the default experiment by</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>ECF_HOST=`echo ecflow-gen-${USER}-001`
 
-deode -config_file $PWD/deode/data/config_files/config.toml \
+deode --config-file $PWD/deode/data/config_files/config.toml \
       start suite \
-      --ecf_host $ECF_HOST \
-      --ecf_port 3141 \
+      --ecf-host $ECF_HOST \
+      --ecf-port 3141 \
       --joboutdir $HOME/deode_ecflow/job \
-      --ecf_files $HOME/deode_ecflow/ecf
+      --ecf-files $HOME/deode_ecflow/ecf
 </pre></div>
 </div>
 <p>You can now open ecflow_ui and add ecflow-gen-${USER}-001 as the server with port 3141. The default config file will locate the working directory under <code class="docutils literal notranslate"><span class="pre">$SCRATCH/deode</span></code></p>
@@ -579,7 +579,7 @@ deode -config_file $PWD/deode/data/config_files/config.toml \
 <p>The example below shows how to run deode/task/forecast.py using the batch system rules defined in your config.toml. The example assumes that (i) you’re running the command from the Deode-Prototype root directory (see the <a class="reference external" href="#setting-up-the-environment-after-developer-mode-install">environment setup instructions</a>) and (ii) have the appropriate input data in place.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>module load python3/3.8.8-01
 poetry shell
-deode -config_file $PWD/deode/data/config_files/config.toml \
+deode --config-file $PWD/deode/data/config_files/config.toml \
       run --task Forecast \
       --template $PWD/deode/templates/stand_alone.py \
       --job $PWD/forecast.job \

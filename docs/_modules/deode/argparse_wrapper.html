@@ -485,12 +485,12 @@
     <span class="n">common_parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">add_help</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="n">common_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;-deode_home&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--deode-home&quot;</span><span class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Specify deode_home to override automatic detection&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">common_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;-config_file&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--config-file&quot;</span><span class="p">,</span>
         <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;CONFIG_FILE_PATH&quot;</span><span class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="n">get_default_config_path</span><span class="p">(),</span>
         <span class="nb">type</span><span class="o">=</span><span class="n">Path</span><span class="p">,</span>
@@ -506,7 +506,7 @@
         <span class="p">),</span>
     <span class="p">)</span>
     <span class="n">common_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;-loglevel&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--loglevel&quot;</span><span class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="s2">&quot;info&quot;</span><span class="p">,</span>
         <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;critical&quot;</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="s2">&quot;warning&quot;</span><span class="p">,</span> <span class="s2">&quot;info&quot;</span><span class="p">,</span> <span class="s2">&quot;debug&quot;</span><span class="p">,</span> <span class="s2">&quot;notset&quot;</span><span class="p">],</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;What type of info should be printed to the log&quot;</span><span class="p">,</span>
@@ -541,21 +541,12 @@
     <span class="n">parser_run</span> <span class="o">=</span> <span class="n">subparsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
         <span class="s2">&quot;run&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Runs a task.&quot;</span><span class="p">,</span> <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">common_parser</span><span class="p">]</span>
     <span class="p">)</span>
-    <span class="n">parser_run</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--task&quot;</span><span class="p">,</span> <span class="s2">&quot;-t&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;task&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Task name&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">parser_run</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;--template&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;template_job&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Template&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span>
-    <span class="p">)</span>
+    <span class="n">parser_run</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--task&quot;</span><span class="p">,</span> <span class="s2">&quot;-t&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Task name&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">parser_run</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--template-job&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Template&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">parser_run</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--job&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;task_job&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Task job file&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">parser_run</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;--output&quot;</span><span class="p">,</span> <span class="s2">&quot;-o&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;output&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Task output file&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span>
-    <span class="p">)</span>
-    <span class="n">parser_run</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--troika&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;troika&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;troika&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="n">parser_run</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;--troika_config&quot;</span><span class="p">,</span>
-        <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;troika_config&quot;</span><span class="p">,</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;/opt/troika/etc/troika.yml&quot;</span><span class="p">,</span>
-        <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">parser_run</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--output&quot;</span><span class="p">,</span> <span class="s2">&quot;-o&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Task output file&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">parser_run</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--troika&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;troika&quot;</span><span class="p">)</span>
+    <span class="n">parser_run</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--troika-config&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;/opt/troika/etc/troika.yml&quot;</span><span class="p">)</span>
     <span class="n">parser_run</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">run_command</span><span class="o">=</span><span class="n">run_task</span><span class="p">)</span>
 
     <span class="c1">############################################</span>
@@ -578,44 +569,21 @@
         <span class="s2">&quot;suite&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Start the suite&quot;</span><span class="p">,</span> <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">common_parser</span><span class="p">]</span>
     <span class="p">)</span>
     <span class="n">parser_start_suite</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;--ecf_host&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;-host&quot;</span><span class="p">,</span>
-        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
-        <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;ecf_host&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Ecflow host&quot;</span><span class="p">,</span>
-        <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;--ecf-host&quot;</span><span class="p">,</span> <span class="s2">&quot;-host&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Ecflow host&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span>
     <span class="p">)</span>
     <span class="n">parser_start_suite</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;--ecf_port&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;-port&quot;</span><span class="p">,</span>
-        <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
-        <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;ecf_port&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Ecflow port&quot;</span><span class="p">,</span>
-        <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;--ecf-port&quot;</span><span class="p">,</span> <span class="s2">&quot;-port&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Ecflow port&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span>
     <span class="p">)</span>
     <span class="n">parser_start_suite</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;--start_command&quot;</span><span class="p">,</span>
-        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
-        <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;start_command&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Start command for server&quot;</span><span class="p">,</span>
-        <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;--start-command&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Start command for server&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span>
     <span class="p">)</span>
     <span class="n">parser_start_suite</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;--joboutdir&quot;</span><span class="p">,</span> <span class="s2">&quot;-j&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;joboutdir&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Job out directory&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span>
+        <span class="s2">&quot;--joboutdir&quot;</span><span class="p">,</span> <span class="s2">&quot;-j&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Job out directory&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span>
     <span class="p">)</span>
     <span class="n">parser_start_suite</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;--ecf_files&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;-f&quot;</span><span class="p">,</span>
-        <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;ecf_files&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Ecflow container directory&quot;</span><span class="p">,</span>
-        <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;--ecf-files&quot;</span><span class="p">,</span> <span class="s2">&quot;-f&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Ecflow container directory&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span>
     <span class="p">)</span>
-    <span class="n">parser_start_suite</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;--begin&quot;</span><span class="p">,</span> <span class="s2">&quot;-b&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;begin&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Begin suite&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span>
-    <span class="p">)</span>
+    <span class="n">parser_start_suite</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--begin&quot;</span><span class="p">,</span> <span class="s2">&quot;-b&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Begin suite&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">parser_start_suite</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">run_command</span><span class="o">=</span><span class="n">start_suite</span><span class="p">)</span>
 
     <span class="c1">###########################################</span>
@@ -666,35 +634,31 @@
     <span class="n">parser_show_namelist</span> <span class="o">=</span> <span class="n">show_command_subparsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
         <span class="s2">&quot;namelist&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Print namelist in use and exit&quot;</span><span class="p">,</span> <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">common_parser</span><span class="p">]</span>
     <span class="p">)</span>
-
     <span class="n">parser_show_namelist</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--namelist-type&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-t&quot;</span><span class="p">,</span>
         <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
-        <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;namelist_type&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Namelist target, master or surfex&quot;</span><span class="p">,</span>
         <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;master&quot;</span><span class="p">,</span> <span class="s2">&quot;surfex&quot;</span><span class="p">],</span>
         <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span>
-
     <span class="n">parser_show_namelist</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--namelist&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-n&quot;</span><span class="p">,</span>
         <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
-        <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;namelist&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Namelist to show, type anything to print available options&quot;</span><span class="p">,</span>
         <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span>
-
     <span class="n">parser_show_namelist</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--optional-namelist-name&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-o&quot;</span><span class="p">,</span>
         <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
         <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;namelist_name&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Optional namelist name&quot;</span><span class="p">,</span>
-        <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span>
-
     <span class="n">parser_show_namelist</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s2">&quot;--no-substitute&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-b&quot;</span><span class="p">,</span>
@@ -702,14 +666,12 @@
         <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Do not substitute config values in the written namelist&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-
     <span class="n">parser_show_namelist</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">run_command</span><span class="o">=</span><span class="n">show_namelist</span><span class="p">)</span>
 
-    <span class="c1"># doc subparser</span>
-    <span class="n">parser_doc</span> <span class="o">=</span> <span class="n">subparsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
-        <span class="s2">&quot;doc&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Print documentation style output&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="c1">###########################################</span>
+    <span class="c1"># Configure parser for the &quot;doc&quot; command #</span>
+    <span class="c1">###########################################</span>
+    <span class="n">parser_doc</span> <span class="o">=</span> <span class="n">subparsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="s2">&quot;doc&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Print documentation style output&quot;</span><span class="p">)</span>
     <span class="n">doc_command_subparsers</span> <span class="o">=</span> <span class="n">parser_doc</span><span class="o">.</span><span class="n">add_subparsers</span><span class="p">(</span>
         <span class="n">title</span><span class="o">=</span><span class="s2">&quot;doc&quot;</span><span class="p">,</span>
         <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;doc_what&quot;</span><span class="p">,</span>
