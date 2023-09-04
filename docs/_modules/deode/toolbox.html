@@ -382,13 +382,13 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#boundarysection">BoundarySection</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#suite-control">Suite control</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#filetemplates">FileTemplates</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#macrosection">MacroSection</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#system">System</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#troika">Troika</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#domain">domain</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#platform">platform</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#vertical-levels">vertical_levels</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#platform">platform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#macros">macros</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#file-templates">file_templates</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#include-section">Include Section</a></li>
 </ul>
 </li>
@@ -718,6 +718,13 @@
                         <span class="k">pass</span>
 
                 <span class="n">i</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">start</span><span class="p">()</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;@&quot;</span><span class="p">,</span> <span class="n">pattern</span><span class="p">)]</span>
+
+            <span class="c1"># LBC number handling</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">bd_nr</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;task.args.bd_nr&quot;</span><span class="p">])</span>
+                <span class="n">pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_value</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s2">&quot;NNN&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">bd_nr</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">pass</span>
 
             <span class="c1"># Time handling</span>
             <span class="k">if</span> <span class="n">basetime</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1277,7 +1284,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on Aug 30, 2023.
+      <span class="lastupdated">Last updated on Sep 04, 2023.
       </span></p>
   </div>
 
