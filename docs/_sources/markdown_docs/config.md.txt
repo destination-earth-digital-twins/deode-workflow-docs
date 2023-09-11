@@ -1,5 +1,5 @@
 # The DEODE config file
-This was automatically generated running `deode doc config` on 2023-09-05T06:36:52.
+This was automatically generated running `deode doc config` on 2023-09-11T10:33:18.
 
 ## GeneralSectionModel
 Model for the 'general' section.
@@ -9,7 +9,6 @@ Model for the 'general' section.
   |cnmexp|Experiment short name|DEOD||string|
   |realization|Placeholder for future ensemble or similar need|-1||number|
   |tstep|Model time step|75||number|
-  |loglevel|Logger output level|info|critical, error, debug, info, warning, CRITICAL, ERROR, DEBUG, INFO, WARNING|string|
   |csc|CSC|AROME|AROME, ALARO, HARMONIE_AROME|string|
   |cycle|IAL cycle|CY48t3|CY48t3, CY46t1, CY46h1|string|
   |surfex|SURFEX switch|True||boolean|
@@ -18,6 +17,7 @@ Model for the 'general' section.
   |accept_static_namelists|Allow usage of static namelists as input for the tasks. The namelist should be located in the directory specified by platform.namelists and named with the convention namelist_{kind}_{task} where kind could be surfex or master and task forecast/pgd or similar. For the extraction of namelist see [namelists.md](../docs/namelists.md).|False||boolean|
   |nproma|NPROMA size in the forecast model. See the namelists for where it is used|-32||number|
   |mars_expver|Name of the experiment to get data from MARS in case of global DT. Empty string for operational.|0001||string|
+  |loglevel|Logger output level||CRITICAL, ERROR, DEBUG, INFO, WARNING|string|
   |initfile|Initial file for the forecast object. Normally no need to provide unless there are special requirements or the forecast object is used in stand alone mode.|||string|
   |initfile_sfx|Initial surfex file for the forecast object. Normally no need to provide unless there are special requirements or the forecast object is used in stand alone mode.|||string|
 
@@ -156,7 +156,7 @@ DEODE system specific path settings
   |---|---|---|---|---|
   |os_macros||('USER', 'HOME', 'PWD')|||
   |group_macros||('platform', 'system')|||
-  |gen_macros||('general.cnmexp', 'general.cycle', 'general.csc', 'file_templates.duration_grib', 'file_templates.duration_fa', {'surfex_template': 'file_templates.surfex'}, {'case': 'general.case'}, {'domain': 'domain.name'}, {'rrr': 'general.realization'})|||
+  |gen_macros||('general.cnmexp', 'general.cycle', 'general.csc', 'general.mars_expver', 'file_templates.duration_grib', 'file_templates.duration_fa', {'surfex_template': 'file_templates.surfex'}, {'case': 'general.case'}, {'domain': 'domain.name'}, {'rrr': 'general.realization'})|||
 
 ## file_templates
 

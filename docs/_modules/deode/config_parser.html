@@ -189,25 +189,18 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.logs">deode.logs module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.logs.CustomFormatter"><code class="docutils literal notranslate"><span class="pre">CustomFormatter</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.CustomFormatter.FORMATS"><code class="docutils literal notranslate"><span class="pre">CustomFormatter.FORMATS</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.CustomFormatter.format"><code class="docutils literal notranslate"><span class="pre">CustomFormatter.format()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.logs.LogFormatter"><code class="docutils literal notranslate"><span class="pre">LogFormatter</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogFormatter.code_location"><code class="docutils literal notranslate"><span class="pre">LogFormatter.code_location</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogFormatter.datetime"><code class="docutils literal notranslate"><span class="pre">LogFormatter.datetime</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogFormatter.format_string"><code class="docutils literal notranslate"><span class="pre">LogFormatter.format_string()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogFormatter.level"><code class="docutils literal notranslate"><span class="pre">LogFormatter.level</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogFormatter.message"><code class="docutils literal notranslate"><span class="pre">LogFormatter.message</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.logs.LogColor"><code class="docutils literal notranslate"><span class="pre">LogColor</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogColor.cyan"><code class="docutils literal notranslate"><span class="pre">LogColor.cyan</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogColor.green"><code class="docutils literal notranslate"><span class="pre">LogColor.green</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogColor.red"><code class="docutils literal notranslate"><span class="pre">LogColor.red</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogColor.reset"><code class="docutils literal notranslate"><span class="pre">LogColor.reset</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogColor.yellow"><code class="docutils literal notranslate"><span class="pre">LogColor.yellow</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.logs.LoggerHandlers"><code class="docutils literal notranslate"><span class="pre">LoggerHandlers</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LoggerHandlers.add"><code class="docutils literal notranslate"><span class="pre">LoggerHandlers.add()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.logs.get_logger"><code class="docutils literal notranslate"><span class="pre">get_logger()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.logs.get_logger_from_config"><code class="docutils literal notranslate"><span class="pre">get_logger_from_config()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.main">deode.main module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.main.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.namelist">deode.namelist module</a><ul>
@@ -447,7 +440,6 @@
 <span class="sd">&quot;&quot;&quot;Registration and validation of options passed in the config file.&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Mapping</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span>
@@ -464,6 +456,7 @@
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">PACKAGE_DIRECTORY</span>
 <span class="kn">from</span> <span class="nn">.datetime_utils</span> <span class="kn">import</span> <span class="n">ISO_8601_TIME_DURATION_REGEX</span>
 <span class="kn">from</span> <span class="nn">.general_utils</span> <span class="kn">import</span> <span class="n">get_empty_nested_defaultdict</span><span class="p">,</span> <span class="n">modify_mappings</span>
+<span class="kn">from</span> <span class="nn">.logs</span> <span class="kn">import</span> <span class="n">logger</span>
 
 
 <span class="k">def</span> <span class="nf">_get_main_config_schema</span><span class="p">():</span>
@@ -477,8 +470,6 @@
 <span class="n">CONFIG_SCHEMAS_DIR</span> <span class="o">=</span> <span class="n">PACKAGE_CONFIG_DIR</span> <span class="o">/</span> <span class="s2">&quot;config_file_schemas&quot;</span>
 <span class="n">MAIN_CONFIG_JSON_SCHEMA_PATH</span> <span class="o">=</span> <span class="n">CONFIG_SCHEMAS_DIR</span> <span class="o">/</span> <span class="s2">&quot;main_config_schema.json&quot;</span>
 <span class="n">MAIN_CONFIG_JSON_SCHEMA</span> <span class="o">=</span> <span class="n">_get_main_config_schema</span><span class="p">()</span>
-
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="ConfigFileValidationError"><a class="viewcode-back" href="../../deode.html#deode.config_parser.ConfigFileValidationError">[docs]</a><span class="k">class</span> <span class="nc">ConfigFileValidationError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
@@ -688,7 +679,7 @@
 <span class="k">def</span> <span class="nf">_read_raw_config_file</span><span class="p">(</span><span class="n">config_path</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Read raw configs from files in miscellaneous formats.&quot;&quot;&quot;</span>
     <span class="n">config_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">config_path</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Reading configs from file &lt;</span><span class="si">%s</span><span class="s2">&gt;&quot;</span><span class="p">,</span> <span class="n">config_path</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Reading configs from file &lt;</span><span class="si">{}</span><span class="s2">&gt;&quot;</span><span class="p">,</span> <span class="n">config_path</span><span class="p">)</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">config_file</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">config_path</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">&quot;.toml&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">tomlkit</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span>
@@ -751,7 +742,7 @@
         <span class="n">schema_file</span> <span class="o">=</span> <span class="n">schemas_path</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">section_name</span><span class="si">}</span><span class="s2">_section_schema.json&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">schema_file</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="s1">&#39;No validation schema for config section &quot;</span><span class="si">%s</span><span class="s1">&quot;. Using default.&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;No validation schema for config section &quot;</span><span class="si">{}</span><span class="s1">&quot;. Using default.&#39;</span><span class="p">,</span>
                 <span class="n">sections_traversed_str</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">schema_file</span> <span class="o">=</span> <span class="n">schemas_path</span> <span class="o">/</span> <span class="s2">&quot;default_section_schema.json&quot;</span>
@@ -813,7 +804,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on Sep 05, 2023.
+      <span class="lastupdated">Last updated on Sep 11, 2023.
       </span></p>
   </div>
 

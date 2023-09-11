@@ -192,25 +192,18 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-deode.logs">deode.logs module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#deode.logs.CustomFormatter"><code class="docutils literal notranslate"><span class="pre">CustomFormatter</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#deode.logs.CustomFormatter.FORMATS"><code class="docutils literal notranslate"><span class="pre">CustomFormatter.FORMATS</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#deode.logs.CustomFormatter.format"><code class="docutils literal notranslate"><span class="pre">CustomFormatter.format()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deode.logs.LogFormatter"><code class="docutils literal notranslate"><span class="pre">LogFormatter</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#deode.logs.LogFormatter.code_location"><code class="docutils literal notranslate"><span class="pre">LogFormatter.code_location</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deode.logs.LogFormatter.datetime"><code class="docutils literal notranslate"><span class="pre">LogFormatter.datetime</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deode.logs.LogFormatter.format_string"><code class="docutils literal notranslate"><span class="pre">LogFormatter.format_string()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deode.logs.LogFormatter.level"><code class="docutils literal notranslate"><span class="pre">LogFormatter.level</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deode.logs.LogFormatter.message"><code class="docutils literal notranslate"><span class="pre">LogFormatter.message</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#deode.logs.LogColor"><code class="docutils literal notranslate"><span class="pre">LogColor</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#deode.logs.LogColor.cyan"><code class="docutils literal notranslate"><span class="pre">LogColor.cyan</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#deode.logs.LogColor.green"><code class="docutils literal notranslate"><span class="pre">LogColor.green</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#deode.logs.LogColor.red"><code class="docutils literal notranslate"><span class="pre">LogColor.red</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#deode.logs.LogColor.reset"><code class="docutils literal notranslate"><span class="pre">LogColor.reset</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#deode.logs.LogColor.yellow"><code class="docutils literal notranslate"><span class="pre">LogColor.yellow</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deode.logs.LoggerHandlers"><code class="docutils literal notranslate"><span class="pre">LoggerHandlers</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#deode.logs.LoggerHandlers.add"><code class="docutils literal notranslate"><span class="pre">LoggerHandlers.add()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#deode.logs.get_logger"><code class="docutils literal notranslate"><span class="pre">get_logger()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#deode.logs.get_logger_from_config"><code class="docutils literal notranslate"><span class="pre">get_logger_from_config()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#module-deode.main">deode.main module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#deode.main.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-deode.namelist">deode.namelist module</a><ul>
@@ -979,14 +972,13 @@
 <p>Derive runtime variables.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="deode.derived_variables.check_fullpos_namelist">
-<span class="sig-name descname"><span class="pre">check_fullpos_namelist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nlgen</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/derived_variables.html#check_fullpos_namelist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.derived_variables.check_fullpos_namelist" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">check_fullpos_namelist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nlgen</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/derived_variables.html#check_fullpos_namelist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.derived_variables.check_fullpos_namelist" title="Permalink to this definition"></a></dt>
 <dd><p>Find existing fullpos select files or generate them.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>config</strong> (<em>deode.ParsedConfig</em>) – Configuration</p></li>
 <li><p><strong>nlgen</strong> (<em>dict</em>) – master forecast namelist</p></li>
-<li><p><strong>logger</strong> (<em>object</em>) – Logger object</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -1217,90 +1209,49 @@ selection (dict): xxtddddhhmm part</p>
 <span id="deode-logs-module"></span><h2>deode.logs module<a class="headerlink" href="#module-deode.logs" title="Permalink to this heading"></a></h2>
 <p>Logging-related classes, functions and definitions.</p>
 <dl class="py class">
-<dt class="sig sig-object py" id="deode.logs.CustomFormatter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CustomFormatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datefmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'%'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/logs.html#CustomFormatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.logs.CustomFormatter" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Formatter</span></code></p>
-<p>Logging Formatter to add colors and count warning / errors.</p>
+<dt class="sig sig-object py" id="deode.logs.LogFormatter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LogFormatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datetime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'&lt;green&gt;{time:YYYY-MM-DD</span> <span class="pre">HH:mm:ss}&lt;/green&gt;'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'&lt;level&gt;{level:</span> <span class="pre">&lt;8}&lt;/level&gt;'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code_location</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'&lt;cyan&gt;&#64;{name}&lt;/cyan&gt;:&lt;cyan&gt;{function}&lt;/cyan&gt;</span> <span class="pre">&lt;cyan&gt;&lt;{file.path}&lt;/cyan&gt;:&lt;cyan&gt;{line}&gt;:&lt;/cyan&gt;'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'&lt;level&gt;{message}&lt;/level&gt;'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/logs.html#LogFormatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.logs.LogFormatter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Helper class to setup logging without poluting the module’s main scope.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="deode.logs.CustomFormatter.FORMATS">
-<span class="sig-name descname"><span class="pre">FORMATS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'DEFAULT':</span> <span class="pre">'%(asctime)s:</span> <span class="pre">%(message)s',</span> <span class="pre">50:</span> <span class="pre">'\x1b[31m%(asctime)s</span> <span class="pre">%(levelname)s(%(module)s:</span> <span class="pre">%(lineno)d):</span> <span class="pre">%(message)s\x1b[0m',</span> <span class="pre">40:</span> <span class="pre">'\x1b[31m%(asctime)s</span> <span class="pre">%(levelname)s:</span> <span class="pre">\x1b[0m%(message)s',</span> <span class="pre">30:</span> <span class="pre">'\x1b[33m%(asctime)s</span> <span class="pre">%(levelname)s:</span> <span class="pre">\x1b[0m%(message)s',</span> <span class="pre">10:</span> <span class="pre">'\x1b[32m%(asctime)s</span> <span class="pre">%(levelname)s(%(module)s:</span> <span class="pre">%(lineno)d):</span> <span class="pre">\x1b[0m%(message)s'}</span></em><a class="headerlink" href="#deode.logs.CustomFormatter.FORMATS" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="deode.logs.LogFormatter.code_location">
+<span class="sig-name descname"><span class="pre">code_location</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'&lt;cyan&gt;&#64;{name}&lt;/cyan&gt;:&lt;cyan&gt;{function}&lt;/cyan&gt;</span> <span class="pre">&lt;cyan&gt;&lt;{file.path}&lt;/cyan&gt;:&lt;cyan&gt;{line}&gt;:&lt;/cyan&gt;'</span></em><a class="headerlink" href="#deode.logs.LogFormatter.code_location" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="deode.logs.LogFormatter.datetime">
+<span class="sig-name descname"><span class="pre">datetime</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'&lt;green&gt;{time:YYYY-MM-DD</span> <span class="pre">HH:mm:ss}&lt;/green&gt;'</span></em><a class="headerlink" href="#deode.logs.LogFormatter.datetime" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="deode.logs.CustomFormatter.format">
-<span class="sig-name descname"><span class="pre">format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/logs.html#CustomFormatter.format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.logs.CustomFormatter.format" title="Permalink to this definition"></a></dt>
-<dd><p>Return a formatter.format for “record”.</p>
+<dt class="sig sig-object py" id="deode.logs.LogFormatter.format_string">
+<span class="sig-name descname"><span class="pre">format_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loglevel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/logs.html#LogFormatter.format_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.logs.LogFormatter.format_string" title="Permalink to this definition"></a></dt>
+<dd><p>Return the appropriate fmt string according to log level and fmt opts.</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="deode.logs.LogFormatter.level">
+<span class="sig-name descname"><span class="pre">level</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'&lt;level&gt;{level:</span> <span class="pre">&lt;8}&lt;/level&gt;'</span></em><a class="headerlink" href="#deode.logs.LogFormatter.level" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="deode.logs.LogFormatter.message">
+<span class="sig-name descname"><span class="pre">message</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'&lt;level&gt;{message}&lt;/level&gt;'</span></em><a class="headerlink" href="#deode.logs.LogFormatter.message" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="deode.logs.LogColor">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LogColor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yellow</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">red</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">green</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cyan</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#deode.logs.LogColor" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="deode.logs.LogColor.cyan">
-<span class="sig-name descname"><span class="pre">cyan</span></span><a class="headerlink" href="#deode.logs.LogColor.cyan" title="Permalink to this definition"></a></dt>
-<dd><p>Alias for field number 4</p>
+<dt class="sig sig-object py" id="deode.logs.LoggerHandlers">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LoggerHandlers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">default_level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'INFO'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">sinks</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/logs.html#LoggerHandlers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.logs.LoggerHandlers" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></p>
+<p>Helper class to configure logger handlers when using <cite>loguru.logger.configure</cite>.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="deode.logs.LoggerHandlers.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sink</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">configs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/logs.html#LoggerHandlers.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.logs.LoggerHandlers.add" title="Permalink to this definition"></a></dt>
+<dd><p>Add handler to instance.</p>
 </dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="deode.logs.LogColor.green">
-<span class="sig-name descname"><span class="pre">green</span></span><a class="headerlink" href="#deode.logs.LogColor.green" title="Permalink to this definition"></a></dt>
-<dd><p>Alias for field number 3</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="deode.logs.LogColor.red">
-<span class="sig-name descname"><span class="pre">red</span></span><a class="headerlink" href="#deode.logs.LogColor.red" title="Permalink to this definition"></a></dt>
-<dd><p>Alias for field number 2</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="deode.logs.LogColor.reset">
-<span class="sig-name descname"><span class="pre">reset</span></span><a class="headerlink" href="#deode.logs.LogColor.reset" title="Permalink to this definition"></a></dt>
-<dd><p>Alias for field number 0</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="deode.logs.LogColor.yellow">
-<span class="sig-name descname"><span class="pre">yellow</span></span><a class="headerlink" href="#deode.logs.LogColor.yellow" title="Permalink to this definition"></a></dt>
-<dd><p>Alias for field number 1</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="deode.logs.get_logger">
-<span class="sig-name descname"><span class="pre">get_logger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loglevel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'INFO'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/logs.html#get_logger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.logs.get_logger" title="Permalink to this definition"></a></dt>
-<dd><p>Get logger with name “name” and loglevel “loglevel”.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="deode.logs.get_logger_from_config">
-<span class="sig-name descname"><span class="pre">get_logger_from_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/logs.html#get_logger_from_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.logs.get_logger_from_config" title="Permalink to this definition"></a></dt>
-<dd><p>Get logger with name “name” and loglevel from config.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>config</strong> (<em>deode.ParsedConfig</em>) – Config</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Logger instance</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>logging</p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
-<section id="module-deode.main">
-<span id="deode-main-module"></span><h2>deode.main module<a class="headerlink" href="#module-deode.main" title="Permalink to this heading"></a></h2>
-<p>Program’s entry point.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="deode.main.main">
-<span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">argv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/main.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.main.main" title="Permalink to this definition"></a></dt>
-<dd><p>Program’s main routine.</p>
 </dd></dl>
 
 </section>
@@ -1852,10 +1803,7 @@ server specific way.</p>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>KeyError</strong> – If the task settings cannot be found in the config.</p></li>
-<li><p><strong>RuntimeError</strong> – Submission failure.</p></li>
-</ul>
+<dd class="field-even"><p><strong>RuntimeError</strong> – Submission failure.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2126,7 +2074,7 @@ server specific way.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="deode.suites.SuiteDefinition">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SuiteDefinition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">suite_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joboutdir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecf_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task_settings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loglevel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecf_home</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecf_include</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecf_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecf_jobout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecf_micro</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'%'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dry_run</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/suites.html#SuiteDefinition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.suites.SuiteDefinition" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SuiteDefinition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">suite_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joboutdir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecf_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task_settings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecf_home</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecf_include</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecf_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecf_jobout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecf_micro</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'%'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dry_run</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/suites.html#SuiteDefinition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.suites.SuiteDefinition" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Definition of suite.</p>
 <dl class="py method">
@@ -2674,7 +2622,7 @@ server specific way.</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on Sep 05, 2023.
+      <span class="lastupdated">Last updated on Sep 11, 2023.
       </span></p>
   </div>
 

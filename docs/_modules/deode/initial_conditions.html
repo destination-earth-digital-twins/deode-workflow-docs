@@ -189,25 +189,18 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.logs">deode.logs module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.logs.CustomFormatter"><code class="docutils literal notranslate"><span class="pre">CustomFormatter</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.CustomFormatter.FORMATS"><code class="docutils literal notranslate"><span class="pre">CustomFormatter.FORMATS</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.CustomFormatter.format"><code class="docutils literal notranslate"><span class="pre">CustomFormatter.format()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.logs.LogFormatter"><code class="docutils literal notranslate"><span class="pre">LogFormatter</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogFormatter.code_location"><code class="docutils literal notranslate"><span class="pre">LogFormatter.code_location</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogFormatter.datetime"><code class="docutils literal notranslate"><span class="pre">LogFormatter.datetime</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogFormatter.format_string"><code class="docutils literal notranslate"><span class="pre">LogFormatter.format_string()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogFormatter.level"><code class="docutils literal notranslate"><span class="pre">LogFormatter.level</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogFormatter.message"><code class="docutils literal notranslate"><span class="pre">LogFormatter.message</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.logs.LogColor"><code class="docutils literal notranslate"><span class="pre">LogColor</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogColor.cyan"><code class="docutils literal notranslate"><span class="pre">LogColor.cyan</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogColor.green"><code class="docutils literal notranslate"><span class="pre">LogColor.green</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogColor.red"><code class="docutils literal notranslate"><span class="pre">LogColor.red</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogColor.reset"><code class="docutils literal notranslate"><span class="pre">LogColor.reset</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogColor.yellow"><code class="docutils literal notranslate"><span class="pre">LogColor.yellow</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.logs.LoggerHandlers"><code class="docutils literal notranslate"><span class="pre">LoggerHandlers</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LoggerHandlers.add"><code class="docutils literal notranslate"><span class="pre">LoggerHandlers.add()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.logs.get_logger"><code class="docutils literal notranslate"><span class="pre">get_logger()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.logs.get_logger_from_config"><code class="docutils literal notranslate"><span class="pre">get_logger_from_config()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.main">deode.main module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.main.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.namelist">deode.namelist module</a><ul>
@@ -448,7 +441,7 @@
 <span class="kn">import</span> <span class="nn">os</span>
 
 <span class="kn">from</span> <span class="nn">.datetime_utils</span> <span class="kn">import</span> <span class="n">as_datetime</span><span class="p">,</span> <span class="n">as_timedelta</span>
-<span class="kn">from</span> <span class="nn">.logs</span> <span class="kn">import</span> <span class="n">get_logger_from_config</span>
+<span class="kn">from</span> <span class="nn">.logs</span> <span class="kn">import</span> <span class="n">logger</span>
 <span class="kn">from</span> <span class="nn">.toolbox</span> <span class="kn">import</span> <span class="n">Platform</span>
 
 
@@ -463,7 +456,6 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger_from_config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">platform</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wrk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;system.wrk&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">intp_bddir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;system.intp_bddir&quot;</span><span class="p">]</span>
@@ -484,7 +476,7 @@
 <span class="sd">            FileNotFoundError : if fail is True</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Could not find:</span><span class="se">\n</span><span class="s2">  </span><span class="si">%s</span><span class="se">\n</span><span class="s2">  </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">f1</span><span class="p">,</span> <span class="n">f2</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Could not find:</span><span class="se">\n</span><span class="s2">  </span><span class="si">{}</span><span class="se">\n</span><span class="s2">  </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">f1</span><span class="p">,</span> <span class="n">f2</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">fail</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="s2">&quot;Could not find any initial files&quot;</span><span class="p">)</span></div>
 
@@ -495,8 +487,8 @@
         <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">KeyError</span><span class="p">):</span>
             <span class="n">source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.initfile&quot;</span><span class="p">]</span>
             <span class="n">source_sfx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.initfile_sfx&quot;</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Defined source </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">source</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Defined source_sfx </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">source_sfx</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Defined source </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">source</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Defined source_sfx </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">source_sfx</span><span class="p">)</span>
             <span class="n">init_defined</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="k">if</span> <span class="n">init_defined</span><span class="p">:</span>
@@ -520,7 +512,7 @@
         <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">source</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">source_sfx</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Found initial files</span><span class="se">\n</span><span class="s2">  </span><span class="si">%s</span><span class="se">\n</span><span class="s2">  </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">source_sfx</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Found initial files</span><span class="se">\n</span><span class="s2">  </span><span class="si">{}</span><span class="se">\n</span><span class="s2">  </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">source_sfx</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">source</span><span class="p">,</span> <span class="n">source_sfx</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">nosuccess</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">source_sfx</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
@@ -530,7 +522,7 @@
         <span class="n">source_sfx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">archive</span><span class="si">}</span><span class="s2">/ICMSH@CNMEXP@INIT.sfx&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">source</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">source_sfx</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Found initial files</span><span class="se">\n</span><span class="s2">  </span><span class="si">%s</span><span class="se">\n</span><span class="s2">  </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">source_sfx</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Found initial files</span><span class="se">\n</span><span class="s2">  </span><span class="si">{}</span><span class="se">\n</span><span class="s2">  </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">source_sfx</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">source</span><span class="p">,</span> <span class="n">source_sfx</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">nosuccess</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">source_sfx</span><span class="p">)</span>
@@ -545,7 +537,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on Sep 05, 2023.
+      <span class="lastupdated">Last updated on Sep 11, 2023.
       </span></p>
   </div>
 

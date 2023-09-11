@@ -189,25 +189,18 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.logs">deode.logs module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.logs.CustomFormatter"><code class="docutils literal notranslate"><span class="pre">CustomFormatter</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.CustomFormatter.FORMATS"><code class="docutils literal notranslate"><span class="pre">CustomFormatter.FORMATS</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.CustomFormatter.format"><code class="docutils literal notranslate"><span class="pre">CustomFormatter.format()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.logs.LogFormatter"><code class="docutils literal notranslate"><span class="pre">LogFormatter</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogFormatter.code_location"><code class="docutils literal notranslate"><span class="pre">LogFormatter.code_location</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogFormatter.datetime"><code class="docutils literal notranslate"><span class="pre">LogFormatter.datetime</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogFormatter.format_string"><code class="docutils literal notranslate"><span class="pre">LogFormatter.format_string()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogFormatter.level"><code class="docutils literal notranslate"><span class="pre">LogFormatter.level</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogFormatter.message"><code class="docutils literal notranslate"><span class="pre">LogFormatter.message</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.logs.LogColor"><code class="docutils literal notranslate"><span class="pre">LogColor</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogColor.cyan"><code class="docutils literal notranslate"><span class="pre">LogColor.cyan</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogColor.green"><code class="docutils literal notranslate"><span class="pre">LogColor.green</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogColor.red"><code class="docutils literal notranslate"><span class="pre">LogColor.red</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogColor.reset"><code class="docutils literal notranslate"><span class="pre">LogColor.reset</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogColor.yellow"><code class="docutils literal notranslate"><span class="pre">LogColor.yellow</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.logs.LoggerHandlers"><code class="docutils literal notranslate"><span class="pre">LoggerHandlers</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LoggerHandlers.add"><code class="docutils literal notranslate"><span class="pre">LoggerHandlers.add()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.logs.get_logger"><code class="docutils literal notranslate"><span class="pre">get_logger()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.logs.get_logger_from_config"><code class="docutils literal notranslate"><span class="pre">get_logger_from_config()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.main">deode.main module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.main.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.namelist">deode.namelist module</a><ul>
@@ -453,7 +446,7 @@
 <span class="kn">import</span> <span class="nn">f90nml</span>
 <span class="kn">import</span> <span class="nn">yaml</span>
 
-<span class="kn">from</span> <span class="nn">.logs</span> <span class="kn">import</span> <span class="n">get_logger_from_config</span>
+<span class="kn">from</span> <span class="nn">.logs</span> <span class="kn">import</span> <span class="n">logger</span>
 <span class="kn">from</span> <span class="nn">.toolbox</span> <span class="kn">import</span> <span class="n">Platform</span>
 
 
@@ -529,7 +522,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">platform</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger_from_config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
 
 <div class="viewcode-block" id="NamelistComparator.compare_dicts"><a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistComparator.compare_dicts">[docs]</a>    <span class="k">def</span> <span class="nf">compare_dicts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbase</span><span class="p">,</span> <span class="n">dcomp</span><span class="p">,</span> <span class="n">action</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compare two dictionaries, recursively if needed.</span>
@@ -560,7 +552,7 @@
                     <span class="k">if</span> <span class="ow">not</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">):</span>
                         <span class="c1"># Invoke ourselves recursively</span>
                         <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;recursive dict comp for </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
                         <span class="n">dout</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compare_dicts</span><span class="p">(</span><span class="n">dbase</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">dcomp</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">action</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">valb</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">valc</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
                     <span class="n">kl</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
@@ -577,7 +569,7 @@
                     <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sib</span><span class="p">)):</span>
                         <span class="n">sio</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="mi">999</span><span class="p">)</span>
                     <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Compare lists </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">, start indices </span><span class="si">{</span><span class="n">sib</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">sic</span><span class="si">}</span><span class="s2">&quot;</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
                     <span class="n">dout</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compare_lists</span><span class="p">(</span>
                         <span class="n">dbase</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">dcomp</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">sib</span><span class="p">,</span> <span class="n">sic</span><span class="p">,</span> <span class="n">sio</span><span class="p">,</span> <span class="n">action</span>
                     <span class="p">)</span>
@@ -585,13 +577,13 @@
                 <span class="k">elif</span> <span class="n">valc</span> <span class="o">==</span> <span class="n">valb</span><span class="p">:</span>
                     <span class="c1"># This should be a scalar, with same value</span>
                     <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> : </span><span class="si">{</span><span class="n">valb</span><span class="si">}</span><span class="s2"> == </span><span class="si">{</span><span class="n">valc</span><span class="si">}</span><span class="s2">&quot;</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">action</span> <span class="o">!=</span> <span class="s2">&quot;diff&quot;</span><span class="p">:</span>
                         <span class="n">dout</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">valc</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="c1"># also scalar, but values differ</span>
                     <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> : </span><span class="si">{</span><span class="n">valb</span><span class="si">}</span><span class="s2"> /= </span><span class="si">{</span><span class="n">valc</span><span class="si">}</span><span class="s2">&quot;</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">action</span> <span class="o">!=</span> <span class="s2">&quot;intersection&quot;</span> <span class="ow">and</span> <span class="n">valc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                         <span class="n">dout</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">valc</span>
             <span class="k">else</span><span class="p">:</span>
@@ -713,7 +705,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">platform</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">=</span> <span class="n">kind</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">substitute</span> <span class="o">=</span> <span class="n">substitute</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger_from_config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nlcomp</span> <span class="o">=</span> <span class="n">NamelistComparator</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cycle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.cycle&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cnfile</span> <span class="o">=</span> <span class="p">(</span>
@@ -743,16 +734,16 @@
         <span class="n">namelists</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_system_value</span><span class="p">(</span><span class="s2">&quot;namelists&quot;</span><span class="p">)</span>
         <span class="n">ref_namelist</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">namelists</span><span class="si">}</span><span class="s2">/namelist_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">kind</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="si">}</span><span class="s2">&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Check if reference namelist </span><span class="si">%s</span><span class="s2"> exists&quot;</span><span class="p">,</span> <span class="n">ref_namelist</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Check if reference namelist </span><span class="si">{}</span><span class="s2"> exists&quot;</span><span class="p">,</span> <span class="n">ref_namelist</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">ref_namelist</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Use reference namelist </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ref_namelist</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Use reference namelist </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ref_namelist</span><span class="p">)</span>
             <span class="n">nl</span> <span class="o">=</span> <span class="n">f90nml</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">ref_namelist</span><span class="p">)</span>
             <span class="n">nldict</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">:</span> <span class="n">nl</span><span class="o">.</span><span class="n">todict</span><span class="p">()}</span>
             <span class="n">cndict</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">]}</span>
             <span class="n">found</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="s2">&quot;No reference namelist </span><span class="si">%s</span><span class="s2"> exists, fallback to yaml files&quot;</span><span class="p">,</span> <span class="n">ref_namelist</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;No reference namelist </span><span class="si">{}</span><span class="s2"> exists, fallback to yaml files&quot;</span><span class="p">,</span> <span class="n">ref_namelist</span>
             <span class="p">)</span>
             <span class="n">found</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="n">nldict</span> <span class="o">=</span> <span class="p">{}</span>
@@ -781,9 +772,7 @@
             <span class="n">use_yaml</span><span class="p">,</span> <span class="n">nldict</span><span class="p">,</span> <span class="n">cndict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_user_namelist</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">use_yaml</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                <span class="s2">&quot;Use </span><span class="si">%s</span><span class="s2"> and </span><span class="si">%s</span><span class="s2"> to generate namelist&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nlfile</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cnfile</span>
-            <span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Use </span><span class="si">{}</span><span class="s2"> and </span><span class="si">{}</span><span class="s2"> to generate namelist&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nlfile</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cnfile</span><span class="p">)</span>
             <span class="c1"># Read namelist file with all the categories</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nlfile</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;rt&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
                 <span class="n">nldict</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
@@ -794,14 +783,14 @@
 
         <span class="c1"># Check target is valid</span>
         <span class="k">if</span> <span class="n">target</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cndict</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="s2">&quot;Could not find target namelist &#39;</span><span class="si">%s</span><span class="s2">&#39; in </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cnfile</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;Could not find target namelist &#39;</span><span class="si">{}</span><span class="s2">&#39; in </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cnfile</span><span class="p">)</span>
             <span class="p">)</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Available namelist targets:&quot;</span>
             <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">cndict</span><span class="p">:</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;_.+&quot;</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
                     <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">key</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
             <span class="k">raise</span> <span class="n">InvalidNamelistTargetError</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">nldict</span> <span class="o">=</span> <span class="n">nldict</span>
@@ -838,17 +827,17 @@
                     <span class="n">repval</span> <span class="o">=</span> <span class="kc">None</span>
                 <span class="k">if</span> <span class="n">repval</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">defval</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                            <span class="s2">&quot;Using default value </span><span class="si">%s</span><span class="s2"> for &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                            <span class="s2">&quot;Using default value </span><span class="si">{}</span><span class="s2"> for &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="p">,</span>
                             <span class="n">defval</span><span class="p">,</span>
                             <span class="n">nam</span><span class="p">,</span>
                         <span class="p">)</span>
                         <span class="n">repval</span> <span class="o">=</span> <span class="n">find_num</span><span class="p">(</span><span class="n">defval</span><span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;No value found for: &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">nam</span><span class="p">)</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;No value found for: &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">nam</span><span class="p">)</span>
                         <span class="n">repval</span> <span class="o">=</span> <span class="n">finval</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Replaced </span><span class="si">%s</span><span class="s2"> with: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">nam</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">repval</span><span class="p">))</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Replaced </span><span class="si">{}</span><span class="s2"> with: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">nam</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">repval</span><span class="p">))</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">repval</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
                     <span class="n">finval</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">pre</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">repval</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">post</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
@@ -939,7 +928,7 @@
         <span class="n">nml</span><span class="o">.</span><span class="n">false_repr</span> <span class="o">=</span> <span class="s2">&quot;.FALSE.&quot;</span>
         <span class="n">nml</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Wrote: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">output_file</span><span class="p">)</span></div>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Wrote: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">output_file</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="NamelistGenerator.generate_namelist"><a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistGenerator.generate_namelist">[docs]</a>    <span class="k">def</span> <span class="nf">generate_namelist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate the namelists for &#39;target&#39;.</span>
@@ -949,7 +938,7 @@
 <span class="sd">            output_file : where to write the result (fort.4 or EXSEG1.nam typically)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Generate namelist for: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Generate namelist for: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">update</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;namelist_update&quot;</span><span class="p">]</span>
@@ -981,7 +970,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">platform</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger_from_config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
         <span class="n">yaml</span><span class="o">.</span><span class="n">add_representer</span><span class="p">(</span><span class="n">OrderedDict</span><span class="p">,</span> <span class="n">represent_ordereddict</span><span class="p">)</span>
 
 <div class="viewcode-block" id="NamelistIntegrator.ftn2dict"><a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistIntegrator.ftn2dict">[docs]</a>    <span class="k">def</span> <span class="nf">ftn2dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ftnfile</span><span class="p">):</span>
@@ -1005,11 +993,11 @@
                     <span class="n">lk</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ynml</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
                     <span class="k">if</span> <span class="n">lk</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                         <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Ignoring empty duplicate namelist </span><span class="si">{</span><span class="n">namu</span><span class="si">}</span><span class="s2">&quot;</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">dupl</span><span class="p">[</span><span class="n">namu</span><span class="p">]</span> <span class="o">=</span> <span class="n">lk</span>
                         <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Found duplicate namelist </span><span class="si">{</span><span class="n">namu</span><span class="si">}</span><span class="s2"> with </span><span class="si">{</span><span class="n">lk</span><span class="si">}</span><span class="s2"> extra line(s)!&quot;</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">onml</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">ynml</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dupl</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -1017,7 +1005,7 @@
             <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;The following namelists in </span><span class="si">{</span><span class="n">ftnfile</span><span class="si">}</span><span class="s2"> have non-empty duplicates: </span><span class="si">{</span><span class="n">which</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">onml</span></div>
 
 <div class="viewcode-block" id="NamelistIntegrator.yml2dict"><a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistIntegrator.yml2dict">[docs]</a>    <span class="k">def</span> <span class="nf">yml2dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ymlfile</span><span class="p">):</span>
@@ -1040,7 +1028,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on Sep 05, 2023.
+      <span class="lastupdated">Last updated on Sep 11, 2023.
       </span></p>
   </div>
 

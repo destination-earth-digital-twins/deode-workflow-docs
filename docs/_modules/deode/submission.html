@@ -189,25 +189,18 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.logs">deode.logs module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.logs.CustomFormatter"><code class="docutils literal notranslate"><span class="pre">CustomFormatter</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.CustomFormatter.FORMATS"><code class="docutils literal notranslate"><span class="pre">CustomFormatter.FORMATS</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.CustomFormatter.format"><code class="docutils literal notranslate"><span class="pre">CustomFormatter.format()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.logs.LogFormatter"><code class="docutils literal notranslate"><span class="pre">LogFormatter</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogFormatter.code_location"><code class="docutils literal notranslate"><span class="pre">LogFormatter.code_location</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogFormatter.datetime"><code class="docutils literal notranslate"><span class="pre">LogFormatter.datetime</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogFormatter.format_string"><code class="docutils literal notranslate"><span class="pre">LogFormatter.format_string()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogFormatter.level"><code class="docutils literal notranslate"><span class="pre">LogFormatter.level</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogFormatter.message"><code class="docutils literal notranslate"><span class="pre">LogFormatter.message</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.logs.LogColor"><code class="docutils literal notranslate"><span class="pre">LogColor</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogColor.cyan"><code class="docutils literal notranslate"><span class="pre">LogColor.cyan</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogColor.green"><code class="docutils literal notranslate"><span class="pre">LogColor.green</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogColor.red"><code class="docutils literal notranslate"><span class="pre">LogColor.red</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogColor.reset"><code class="docutils literal notranslate"><span class="pre">LogColor.reset</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogColor.yellow"><code class="docutils literal notranslate"><span class="pre">LogColor.yellow</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.logs.LoggerHandlers"><code class="docutils literal notranslate"><span class="pre">LoggerHandlers</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LoggerHandlers.add"><code class="docutils literal notranslate"><span class="pre">LoggerHandlers.add()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.logs.get_logger"><code class="docutils literal notranslate"><span class="pre">get_logger()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.logs.get_logger_from_config"><code class="docutils literal notranslate"><span class="pre">get_logger_from_config()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.main">deode.main module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.main.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.namelist">deode.namelist module</a><ul>
@@ -451,12 +444,9 @@
 <span class="kn">import</span> <span class="nn">sys</span>
 
 <span class="kn">from</span> <span class="nn">.derived_variables</span> <span class="kn">import</span> <span class="n">derived_variables</span>
-<span class="kn">from</span> <span class="nn">.logs</span> <span class="kn">import</span> <span class="n">get_logger</span><span class="p">,</span> <span class="n">get_logger_from_config</span>
+<span class="kn">from</span> <span class="nn">.logs</span> <span class="kn">import</span> <span class="n">logger</span>
 <span class="kn">from</span> <span class="nn">.tasks.discover_task</span> <span class="kn">import</span> <span class="n">get_task</span>
 <span class="kn">from</span> <span class="nn">.toolbox</span> <span class="kn">import</span> <span class="n">Platform</span>
-
-<span class="c1"># TODO remove the need of this  # noqa</span>
-<span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="s2">&quot;INFO&quot;</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="ProcessorLayout"><a class="viewcode-back" href="../../deode.html#deode.submission.ProcessorLayout">[docs]</a><span class="k">class</span> <span class="nc">ProcessorLayout</span><span class="p">:</span>
@@ -526,7 +516,6 @@
 <span class="sd">        Args:</span>
 <span class="sd">             config(deode.ParserdConfig): Configuration</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger_from_config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
         <span class="n">submission_defs</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;submission&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">submission_defs</span> <span class="o">=</span> <span class="n">submission_defs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">job_type</span> <span class="o">=</span> <span class="kc">None</span>
@@ -547,7 +536,7 @@
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Mapping</span><span class="p">):</span>
                 <span class="n">dic</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">TaskSettings</span><span class="o">.</span><span class="n">update_task_setting</span><span class="p">(</span><span class="n">dic</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="p">{}),</span> <span class="n">val</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;key=</span><span class="si">%s</span><span class="s2"> value=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;key=</span><span class="si">{}</span><span class="s2"> value=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
                 <span class="n">dic</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
         <span class="k">return</span> <span class="n">dic</span></div>
 
@@ -565,7 +554,7 @@
         <span class="n">all_defs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">submission_defs</span>
         <span class="n">submit_types</span> <span class="o">=</span> <span class="n">all_defs</span><span class="p">[</span><span class="s2">&quot;submit_types&quot;</span><span class="p">]</span>
         <span class="n">default_submit_type</span> <span class="o">=</span> <span class="n">all_defs</span><span class="p">[</span><span class="s2">&quot;default_submit_type&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;default_submit_type=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">default_submit_type</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;default_submit_type=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">default_submit_type</span><span class="p">)</span>
         <span class="n">task_submit_type</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">for</span> <span class="n">s_t</span> <span class="ow">in</span> <span class="n">submit_types</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">s_t</span> <span class="ow">in</span> <span class="n">all_defs</span> <span class="ow">and</span> <span class="s2">&quot;tasks&quot;</span> <span class="ow">in</span> <span class="n">all_defs</span><span class="p">[</span><span class="n">s_t</span><span class="p">]:</span>
@@ -576,7 +565,7 @@
             <span class="n">task_submit_type</span> <span class="o">=</span> <span class="n">default_submit_type</span>
 
         <span class="k">if</span> <span class="n">task_submit_type</span> <span class="ow">in</span> <span class="n">all_defs</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;task_submit_type for task </span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">task_submit_type</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;task_submit_type for task </span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">task_submit_type</span><span class="p">)</span>
             <span class="n">task_settings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_task_setting</span><span class="p">(</span>
                 <span class="n">task_settings</span><span class="p">,</span> <span class="n">all_defs</span><span class="p">[</span><span class="n">task_submit_type</span><span class="p">]</span>
             <span class="p">)</span>
@@ -590,7 +579,7 @@
 
         <span class="k">if</span> <span class="s2">&quot;task_exceptions&quot;</span> <span class="ow">in</span> <span class="n">all_defs</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">all_defs</span><span class="p">[</span><span class="s2">&quot;task_exceptions&quot;</span><span class="p">]:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Task task_exceptions for task </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">task</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Task task_exceptions for task </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">task</span><span class="p">)</span>
                 <span class="n">task_settings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_task_setting</span><span class="p">(</span>
                     <span class="n">task_settings</span><span class="p">,</span> <span class="n">all_defs</span><span class="p">[</span><span class="s2">&quot;task_exceptions&quot;</span><span class="p">][</span><span class="n">task</span><span class="p">]</span>
                 <span class="p">)</span>
@@ -601,7 +590,7 @@
         <span class="c1"># Set task specific processor layout</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">processor_layout</span> <span class="o">=</span> <span class="n">ProcessorLayout</span><span class="p">(</span><span class="n">task_settings</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Task settings for task </span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">task_settings</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Task settings for task </span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">task_settings</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">task_settings</span></div>
 
 <div class="viewcode-block" id="TaskSettings.get_task_settings"><a class="viewcode-back" href="../../deode.html#deode.submission.TaskSettings.get_task_settings">[docs]</a>    <span class="k">def</span> <span class="nf">get_task_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ecf_micro</span><span class="o">=</span><span class="s2">&quot;%&quot;</span><span class="p">):</span>
@@ -622,21 +611,19 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">task_settings</span><span class="p">:</span>
                 <span class="n">m_task_settings</span> <span class="o">=</span> <span class="p">{}</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">task_settings</span><span class="p">[</span><span class="n">key</span><span class="p">]))</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">task_settings</span><span class="p">[</span><span class="n">key</span><span class="p">]))</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">task_settings</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="nb">dict</span><span class="p">):</span>
                     <span class="k">for</span> <span class="n">setting</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">task_settings</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                            <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> variables: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">setting</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">variables</span>
-                        <span class="p">)</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> variables: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">setting</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">variables</span><span class="p">)</span>
                         <span class="k">if</span> <span class="n">variables</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                             <span class="k">if</span> <span class="n">setting</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
                                 <span class="n">value</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ecf_micro</span><span class="si">}{</span><span class="n">setting</span><span class="si">}{</span><span class="n">ecf_micro</span><span class="si">}</span><span class="s2">&quot;</span>
-                                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
                         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
                             <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;@TASK_NAME@&quot;</span><span class="p">,</span> <span class="n">task</span><span class="p">)</span>
 
                         <span class="n">m_task_settings</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">setting</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">m_task_settings</span><span class="p">)</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">m_task_settings</span><span class="p">)</span>
                     <span class="k">return</span> <span class="n">m_task_settings</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">value</span> <span class="o">=</span> <span class="n">task_settings</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
@@ -676,13 +663,13 @@
         <span class="n">keys</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">recursive_items</span><span class="p">(</span><span class="n">task_settings</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
                 <span class="n">keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">recursive_items</span><span class="p">(</span><span class="n">task_settings</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;key=</span><span class="si">%s</span><span class="s2"> value=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;key=</span><span class="si">{}</span><span class="s2"> value=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;update </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;update </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
                 <span class="n">settings</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
         <span class="k">return</span> <span class="n">settings</span></div>
 
@@ -701,11 +688,11 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">interpreter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_task_settings</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="s2">&quot;INTERPRETER&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">interpreter</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">interpreter</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">interpreter</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">interpreter</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;#!</span><span class="si">{</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="si">}</span><span class="s2">&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">interpreter</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">interpreter</span><span class="p">)</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">input_template_job</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file_handler</span><span class="p">:</span>
             <span class="n">input_content</span> <span class="o">=</span> <span class="n">file_handler</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
         <span class="n">dir_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">task_job</span><span class="p">))</span>
@@ -715,13 +702,13 @@
             <span class="n">batch_settings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_task_settings</span><span class="p">(</span>
                 <span class="n">task</span><span class="p">,</span> <span class="s2">&quot;BATCH&quot;</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="n">variables</span><span class="p">,</span> <span class="n">ecf_micro</span><span class="o">=</span><span class="n">ecf_micro</span>
             <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;batch settings </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">batch_settings</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;batch settings </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">batch_settings</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">__</span><span class="p">,</span> <span class="n">b_setting</span> <span class="ow">in</span> <span class="n">batch_settings</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="n">file_handler</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">b_setting</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">env_settings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_task_settings</span><span class="p">(</span>
                 <span class="n">task</span><span class="p">,</span> <span class="s2">&quot;ENV&quot;</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="n">variables</span><span class="p">,</span> <span class="n">ecf_micro</span><span class="o">=</span><span class="n">ecf_micro</span>
             <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">env_settings</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">env_settings</span><span class="p">)</span>
             <span class="n">python_task_env</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
             <span class="k">for</span> <span class="n">__</span><span class="p">,</span> <span class="n">e_setting</span> <span class="ow">in</span> <span class="n">env_settings</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="n">python_task_env</span> <span class="o">=</span> <span class="n">python_task_env</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">e_setting</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -735,10 +722,6 @@
                 <span class="n">input_content</span> <span class="o">=</span> <span class="n">input_content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
                     <span class="s2">&quot;@STAND_ALONE_TASK_CONFIG@&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span>
                 <span class="p">)</span>
-            <span class="n">loglevel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_task_settings</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="s2">&quot;LOGLEVEL&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">loglevel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">loglevel</span> <span class="o">=</span> <span class="s2">&quot;INFO&quot;</span>
-            <span class="n">input_content</span> <span class="o">=</span> <span class="n">input_content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;@STAND_ALONE_TASK_LOGLEVEL@&quot;</span><span class="p">,</span> <span class="n">loglevel</span><span class="p">)</span>
             <span class="n">file_handler</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">input_content</span><span class="p">)</span>
         <span class="c1"># Make file executable for user</span>
         <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">task_job</span><span class="p">,</span> <span class="mo">0o744</span><span class="p">)</span></div></div>
@@ -767,14 +750,9 @@
 <span class="sd">            troika (str, optional): troika binary. Defaults to &quot;troika&quot;.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            KeyError: If the task settings cannot be found in the config.</span>
 <span class="sd">            RuntimeError: Submission failure.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">get_task</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Task not found: </span><span class="si">{</span><span class="n">task</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">KeyError</span>
-
+        <span class="n">_</span> <span class="o">=</span> <span class="n">get_task</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
         <span class="n">platform</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
 
         <span class="c1"># Update dervived variables (nproc etc)</span>
@@ -808,7 +786,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on Sep 05, 2023.
+      <span class="lastupdated">Last updated on Sep 11, 2023.
       </span></p>
   </div>
 

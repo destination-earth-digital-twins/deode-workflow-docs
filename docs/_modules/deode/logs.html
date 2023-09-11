@@ -189,25 +189,18 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.logs">deode.logs module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.logs.CustomFormatter"><code class="docutils literal notranslate"><span class="pre">CustomFormatter</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.CustomFormatter.FORMATS"><code class="docutils literal notranslate"><span class="pre">CustomFormatter.FORMATS</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.CustomFormatter.format"><code class="docutils literal notranslate"><span class="pre">CustomFormatter.format()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.logs.LogFormatter"><code class="docutils literal notranslate"><span class="pre">LogFormatter</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogFormatter.code_location"><code class="docutils literal notranslate"><span class="pre">LogFormatter.code_location</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogFormatter.datetime"><code class="docutils literal notranslate"><span class="pre">LogFormatter.datetime</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogFormatter.format_string"><code class="docutils literal notranslate"><span class="pre">LogFormatter.format_string()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogFormatter.level"><code class="docutils literal notranslate"><span class="pre">LogFormatter.level</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogFormatter.message"><code class="docutils literal notranslate"><span class="pre">LogFormatter.message</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.logs.LogColor"><code class="docutils literal notranslate"><span class="pre">LogColor</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogColor.cyan"><code class="docutils literal notranslate"><span class="pre">LogColor.cyan</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogColor.green"><code class="docutils literal notranslate"><span class="pre">LogColor.green</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogColor.red"><code class="docutils literal notranslate"><span class="pre">LogColor.red</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogColor.reset"><code class="docutils literal notranslate"><span class="pre">LogColor.reset</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogColor.yellow"><code class="docutils literal notranslate"><span class="pre">LogColor.yellow</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.logs.LoggerHandlers"><code class="docutils literal notranslate"><span class="pre">LoggerHandlers</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LoggerHandlers.add"><code class="docutils literal notranslate"><span class="pre">LoggerHandlers.add()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.logs.get_logger"><code class="docutils literal notranslate"><span class="pre">get_logger()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.logs.get_logger_from_config"><code class="docutils literal notranslate"><span class="pre">get_logger_from_config()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.main">deode.main module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.main.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.namelist">deode.namelist module</a><ul>
@@ -445,95 +438,92 @@
   <h1>Source code for deode.logs</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python3</span>
 <span class="sd">&quot;&quot;&quot;Logging-related classes, functions and definitions.&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pprint</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Sequence</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
-<span class="c1"># Define aliases to ANSI escape sequences to set text color in log</span>
-<span class="n">LogColor</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span>
-    <span class="n">typename</span><span class="o">=</span><span class="s2">&quot;LogColor&quot;</span><span class="p">,</span>
-    <span class="n">field_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;reset&quot;</span><span class="p">,</span> <span class="s2">&quot;yellow&quot;</span><span class="p">,</span> <span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="s2">&quot;cyan&quot;</span><span class="p">),</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">loguru</span> <span class="kn">import</span> <span class="n">logger</span>
 
-<span class="n">logcolor</span> <span class="o">=</span> <span class="n">LogColor</span><span class="p">(</span>
-    <span class="n">reset</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\u001b</span><span class="s2">[0m&quot;</span><span class="p">,</span>
-    <span class="n">yellow</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\u001b</span><span class="s2">[33m&quot;</span><span class="p">,</span>
-    <span class="n">red</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\u001b</span><span class="s2">[31m&quot;</span><span class="p">,</span>
-    <span class="n">green</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\u001b</span><span class="s2">[32m&quot;</span><span class="p">,</span>
-    <span class="n">cyan</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\u001b</span><span class="s2">[36m&quot;</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">PACKAGE_NAME</span>
 
-
-<div class="viewcode-block" id="CustomFormatter"><a class="viewcode-back" href="../../deode.html#deode.logs.CustomFormatter">[docs]</a><span class="k">class</span> <span class="nc">CustomFormatter</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Logging Formatter to add colors and count warning / errors.&quot;&quot;&quot;</span>
-
-    <span class="c1"># Adapted from: &lt;https://stackoverflow.com/q/14844970/3644857&gt;</span>
-
-    <span class="n">FORMATS</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;DEFAULT&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2">: </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">CRITICAL</span><span class="p">:</span> <span class="p">(</span>
-            <span class="n">logcolor</span><span class="o">.</span><span class="n">red</span>
-            <span class="o">+</span> <span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2"> </span><span class="si">%(levelname)s</span><span class="s2">(</span><span class="si">%(module)s</span><span class="s2">: </span><span class="si">%(lineno)d</span><span class="s2">): </span><span class="si">%(message)s</span><span class="s2">&quot;</span>
-            <span class="o">+</span> <span class="n">logcolor</span><span class="o">.</span><span class="n">reset</span>
-        <span class="p">),</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">:</span> <span class="n">logcolor</span><span class="o">.</span><span class="n">red</span>
-        <span class="o">+</span> <span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2"> </span><span class="si">%(levelname)s</span><span class="s2">: &quot;</span>
-        <span class="o">+</span> <span class="n">logcolor</span><span class="o">.</span><span class="n">reset</span>
-        <span class="o">+</span> <span class="s2">&quot;</span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">:</span> <span class="n">logcolor</span><span class="o">.</span><span class="n">yellow</span>
-        <span class="o">+</span> <span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2"> </span><span class="si">%(levelname)s</span><span class="s2">: &quot;</span>
-        <span class="o">+</span> <span class="n">logcolor</span><span class="o">.</span><span class="n">reset</span>
-        <span class="o">+</span> <span class="s2">&quot;</span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">:</span> <span class="p">(</span>
-            <span class="n">logcolor</span><span class="o">.</span><span class="n">green</span>
-            <span class="o">+</span> <span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2"> </span><span class="si">%(levelname)s</span><span class="s2">(</span><span class="si">%(module)s</span><span class="s2">: </span><span class="si">%(lineno)d</span><span class="s2">): &quot;</span>
-            <span class="o">+</span> <span class="n">logcolor</span><span class="o">.</span><span class="n">reset</span>
-            <span class="o">+</span> <span class="s2">&quot;</span><span class="si">%(message)s</span><span class="s2">&quot;</span>
-        <span class="p">),</span>
-    <span class="p">}</span>
-
-<div class="viewcode-block" id="CustomFormatter.format"><a class="viewcode-back" href="../../deode.html#deode.logs.CustomFormatter.format">[docs]</a>    <span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">):</span>  <span class="c1"># noqa: A003 (class attribute shadowing builtin)</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a formatter.format for &quot;record&quot;.&quot;&quot;&quot;</span>
-        <span class="n">log_fmt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">FORMATS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">record</span><span class="o">.</span><span class="n">levelno</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">FORMATS</span><span class="p">[</span><span class="s2">&quot;DEFAULT&quot;</span><span class="p">])</span>
-        <span class="n">formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="n">log_fmt</span><span class="p">,</span> <span class="n">datefmt</span><span class="o">=</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">formatter</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">record</span><span class="p">)</span></div></div>
+<span class="n">GLOBAL_LOGLEVEL</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;DEODE_LOGLEVEL&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;LOGURU_LEVEL&quot;</span><span class="p">,</span> <span class="s2">&quot;INFO&quot;</span><span class="p">))</span>
+<span class="n">DEFAULT_LOGDIR</span> <span class="o">=</span> <span class="n">Path</span><span class="p">()</span><span class="o">.</span><span class="n">home</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;.logs&quot;</span> <span class="o">/</span> <span class="n">PACKAGE_NAME</span>
+<span class="n">DEFAULT_LOGFILE_RETENTION_TIME</span> <span class="o">=</span> <span class="s2">&quot;1 week&quot;</span>
+<span class="n">DEFAULT_LOG_SINKS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;console&quot;</span><span class="p">:</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span>
+    <span class="s2">&quot;logfile&quot;</span><span class="p">:</span> <span class="n">DEFAULT_LOGDIR</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">PACKAGE_NAME</span><span class="si">}</span><span class="s2">_</span><span class="se">{{</span><span class="s2">time</span><span class="se">}}</span><span class="s2">.log&quot;</span><span class="p">,</span>
+<span class="p">}</span>
 
 
-<div class="viewcode-block" id="get_logger"><a class="viewcode-back" href="../../deode.html#deode.logs.get_logger">[docs]</a><span class="k">def</span> <span class="nf">get_logger</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">loglevel</span><span class="o">=</span><span class="s2">&quot;INFO&quot;</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get logger with name &quot;name&quot; and loglevel &quot;loglevel&quot;.&quot;&quot;&quot;</span>
-    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-    <span class="n">logger_handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()</span>
-    <span class="n">logger_handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">CustomFormatter</span><span class="p">())</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>
-        <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">getLevelName</span><span class="p">(</span><span class="n">loglevel</span><span class="o">.</span><span class="n">upper</span><span class="p">()),</span>
-        <span class="n">handlers</span><span class="o">=</span><span class="p">[</span><span class="n">logger_handler</span><span class="p">],</span>
+<div class="viewcode-block" id="LogFormatter"><a class="viewcode-back" href="../../deode.html#deode.logs.LogFormatter">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">LogFormatter</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper class to setup logging without poluting the module&#39;s main scope.&quot;&quot;&quot;</span>
+
+    <span class="n">datetime</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&lt;green&gt;{time:YYYY-MM-DD HH:mm:ss}&lt;/green&gt;&quot;</span>
+    <span class="n">level</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&lt;level&gt;</span><span class="si">{level: &lt;8}</span><span class="s2">&lt;/level&gt;&quot;</span>
+    <span class="n">code_location</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;&lt;cyan&gt;@</span><span class="si">{name}</span><span class="s2">&lt;/cyan&gt;:&lt;cyan&gt;</span><span class="si">{function}</span><span class="s2">&lt;/cyan&gt; &quot;</span>
+        <span class="o">+</span> <span class="s2">&quot;&lt;cyan&gt;&lt;</span><span class="si">{file.path}</span><span class="s2">&lt;/cyan&gt;:&lt;cyan&gt;</span><span class="si">{line}</span><span class="s2">&gt;:&lt;/cyan&gt;&quot;</span>
     <span class="p">)</span>
-    <span class="k">return</span> <span class="n">logger</span></div>
+    <span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&lt;level&gt;</span><span class="si">{message}</span><span class="s2">&lt;/level&gt;&quot;</span>
+
+<div class="viewcode-block" id="LogFormatter.format_string"><a class="viewcode-back" href="../../deode.html#deode.logs.LogFormatter.format_string">[docs]</a>    <span class="k">def</span> <span class="nf">format_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loglevel</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the appropriate fmt string according to log level and fmt opts.&quot;&quot;&quot;</span>
+        <span class="n">rtn</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">datetime</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">level</span><span class="si">}</span><span class="s2"> | &quot;</span>
+
+        <span class="n">loglevel</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">level</span><span class="p">(</span><span class="n">loglevel</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">loglevel</span><span class="o">.</span><span class="n">no</span> <span class="o">&lt;</span> <span class="mi">20</span><span class="p">:</span>  <span class="c1"># More detail than just &quot;INFO&quot;</span>
+            <span class="n">rtn</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">code_location</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">rtn</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="n">rtn</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="n">rtn</span></div></div>
 
 
-<div class="viewcode-block" id="get_logger_from_config"><a class="viewcode-back" href="../../deode.html#deode.logs.get_logger_from_config">[docs]</a><span class="k">def</span> <span class="nf">get_logger_from_config</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get logger with name &quot;name&quot; and loglevel from config.</span>
+<div class="viewcode-block" id="LoggerHandlers"><a class="viewcode-back" href="../../deode.html#deode.logs.LoggerHandlers">[docs]</a><span class="k">class</span> <span class="nc">LoggerHandlers</span><span class="p">(</span><span class="n">Sequence</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper class to configure logger handlers when using `loguru.logger.configure`.&quot;&quot;&quot;</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        config (deode.ParsedConfig): Config</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default_level</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">GLOBAL_LOGLEVEL</span><span class="p">,</span> <span class="o">**</span><span class="n">sinks</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialise instance with default loglevel and sinks.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_level</span> <span class="o">=</span> <span class="n">default_level</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">sink</span> <span class="ow">in</span> <span class="p">{</span><span class="o">**</span><span class="n">DEFAULT_LOG_SINKS</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="o">**</span><span class="n">sinks</span><span class="p">}</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">sink</span><span class="o">=</span><span class="n">sink</span><span class="p">)</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">        logging: Logger instance</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">loglevel</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;general.loglevel&quot;</span><span class="p">,</span> <span class="s2">&quot;INFO&quot;</span><span class="p">)</span>
-    <span class="c1"># Do we have a name yet?</span>
-    <span class="c1"># name = config.get(&quot;general.exp&quot;)  # noqa</span>
-    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;DEODE&quot;</span>
-    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-    <span class="n">logger_handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()</span>
-    <span class="n">logger_handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">getLevelName</span><span class="p">(</span><span class="n">loglevel</span><span class="o">.</span><span class="n">upper</span><span class="p">()))</span>
-    <span class="n">logger_handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">CustomFormatter</span><span class="p">())</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>
-        <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">getLevelName</span><span class="p">(</span><span class="n">loglevel</span><span class="o">.</span><span class="n">upper</span><span class="p">()),</span>
-        <span class="n">handlers</span><span class="o">=</span><span class="p">[</span><span class="n">logger_handler</span><span class="p">],</span>
-    <span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">getLevelName</span><span class="p">(</span><span class="n">loglevel</span><span class="o">.</span><span class="n">upper</span><span class="p">()))</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;returning logger with level </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">loglevel</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="n">logger</span><span class="o">.</span><span class="n">level</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">logger</span></div>
+<div class="viewcode-block" id="LoggerHandlers.add"><a class="viewcode-back" href="../../deode.html#deode.logs.LoggerHandlers.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">sink</span><span class="p">,</span> <span class="o">**</span><span class="n">configs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add handler to instance.&quot;&quot;&quot;</span>
+        <span class="n">configs</span><span class="p">[</span><span class="s2">&quot;level&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">configs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;level&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_level</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="n">configs</span><span class="p">[</span><span class="s2">&quot;format&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">configs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span>
+            <span class="s2">&quot;format&quot;</span><span class="p">,</span> <span class="n">LogFormatter</span><span class="p">()</span><span class="o">.</span><span class="n">format_string</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s2">&quot;level&quot;</span><span class="p">])</span>
+        <span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">configs</span><span class="p">[</span><span class="s2">&quot;sink&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">sink</span><span class="p">)</span>
+            <span class="n">configs</span><span class="p">[</span><span class="s2">&quot;retention&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">configs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="s2">&quot;retention&quot;</span><span class="p">,</span> <span class="n">DEFAULT_LOGFILE_RETENTION_TIME</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="n">configs</span><span class="p">[</span><span class="s2">&quot;sink&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sink</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">configs</span></div>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">pprint</span><span class="o">.</span><span class="n">pformat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">)</span>
+
+    <span class="c1"># Implement abstract methods</span>
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="n">item</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">)</span></div>
+
+
+<span class="n">logger</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">handlers</span><span class="o">=</span><span class="n">LoggerHandlers</span><span class="p">())</span>
+<span class="c1"># Disable logger by defalt in case the project is used as a library. Leave it for the user</span>
+<span class="c1"># to enable it if they so wish.</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">disable</span><span class="p">(</span><span class="n">PACKAGE_NAME</span><span class="p">)</span>
 </pre></div>
 
            </div>
@@ -544,7 +534,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on Sep 05, 2023.
+      <span class="lastupdated">Last updated on Sep 11, 2023.
       </span></p>
   </div>
 

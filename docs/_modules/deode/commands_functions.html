@@ -189,25 +189,18 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.logs">deode.logs module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.logs.CustomFormatter"><code class="docutils literal notranslate"><span class="pre">CustomFormatter</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.CustomFormatter.FORMATS"><code class="docutils literal notranslate"><span class="pre">CustomFormatter.FORMATS</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.CustomFormatter.format"><code class="docutils literal notranslate"><span class="pre">CustomFormatter.format()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.logs.LogFormatter"><code class="docutils literal notranslate"><span class="pre">LogFormatter</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogFormatter.code_location"><code class="docutils literal notranslate"><span class="pre">LogFormatter.code_location</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogFormatter.datetime"><code class="docutils literal notranslate"><span class="pre">LogFormatter.datetime</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogFormatter.format_string"><code class="docutils literal notranslate"><span class="pre">LogFormatter.format_string()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogFormatter.level"><code class="docutils literal notranslate"><span class="pre">LogFormatter.level</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogFormatter.message"><code class="docutils literal notranslate"><span class="pre">LogFormatter.message</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.logs.LogColor"><code class="docutils literal notranslate"><span class="pre">LogColor</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogColor.cyan"><code class="docutils literal notranslate"><span class="pre">LogColor.cyan</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogColor.green"><code class="docutils literal notranslate"><span class="pre">LogColor.green</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogColor.red"><code class="docutils literal notranslate"><span class="pre">LogColor.red</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogColor.reset"><code class="docutils literal notranslate"><span class="pre">LogColor.reset</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LogColor.yellow"><code class="docutils literal notranslate"><span class="pre">LogColor.yellow</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.logs.LoggerHandlers"><code class="docutils literal notranslate"><span class="pre">LoggerHandlers</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.logs.LoggerHandlers.add"><code class="docutils literal notranslate"><span class="pre">LoggerHandlers.add()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.logs.get_logger"><code class="docutils literal notranslate"><span class="pre">get_logger()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.logs.get_logger_from_config"><code class="docutils literal notranslate"><span class="pre">get_logger_from_config()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.main">deode.main module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.main.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.namelist">deode.namelist module</a><ul>
@@ -451,7 +444,7 @@
 <span class="kn">from</span> <span class="nn">.config_doc</span> <span class="kn">import</span> <span class="n">DocConfig</span>
 <span class="kn">from</span> <span class="nn">.config_parser</span> <span class="kn">import</span> <span class="n">MAIN_CONFIG_JSON_SCHEMA_PATH</span>
 <span class="kn">from</span> <span class="nn">.derived_variables</span> <span class="kn">import</span> <span class="n">check_fullpos_namelist</span><span class="p">,</span> <span class="n">derived_variables</span>
-<span class="kn">from</span> <span class="nn">.logs</span> <span class="kn">import</span> <span class="n">get_logger</span>
+<span class="kn">from</span> <span class="nn">.logs</span> <span class="kn">import</span> <span class="n">logger</span>
 <span class="kn">from</span> <span class="nn">.namelist</span> <span class="kn">import</span> <span class="n">NamelistComparator</span><span class="p">,</span> <span class="n">NamelistGenerator</span><span class="p">,</span> <span class="n">NamelistIntegrator</span>
 <span class="kn">from</span> <span class="nn">.scheduler</span> <span class="kn">import</span> <span class="n">EcflowServer</span>
 <span class="kn">from</span> <span class="nn">.submission</span> <span class="kn">import</span> <span class="n">NoSchedulerSubmission</span><span class="p">,</span> <span class="n">TaskSettings</span>
@@ -493,8 +486,7 @@
 <span class="sd">        config (.config_parser.ParsedConfig): Parsed config file contents.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">loglevel</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Running </span><span class="si">%s</span><span class="s2">...&quot;</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">task</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Running </span><span class="si">{}</span><span class="s2">...&quot;</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">task</span><span class="p">)</span>
 
     <span class="n">deode_home</span> <span class="o">=</span> <span class="n">set_deode_home</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
     <span class="n">config</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">update</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;platform&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;deode_home&quot;</span><span class="p">:</span> <span class="n">deode_home</span><span class="p">}})</span>
@@ -504,7 +496,7 @@
     <span class="n">sub</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span>
         <span class="n">args</span><span class="o">.</span><span class="n">task</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">template_job</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">task_job</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">output</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">troika</span>
     <span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Done with task </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">task</span><span class="p">)</span></div>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Done with task </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">task</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="start_suite"><a class="viewcode-back" href="../../deode.html#deode.commands_functions.start_suite">[docs]</a><span class="k">def</span> <span class="nf">start_suite</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
@@ -515,7 +507,6 @@
 <span class="sd">        config (.config_parser.ParsedConfig): Parsed config file contents.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">loglevel</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting suite...&quot;</span><span class="p">)</span>
 
     <span class="n">deode_home</span> <span class="o">=</span> <span class="n">set_deode_home</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
@@ -529,12 +520,7 @@
     <span class="n">suite_name</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">config</span><span class="p">)</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">suite_name</span><span class="p">)</span>
     <span class="n">submission_defs</span> <span class="o">=</span> <span class="n">TaskSettings</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
     <span class="n">defs</span> <span class="o">=</span> <span class="n">SuiteDefinition</span><span class="p">(</span>
-        <span class="n">suite_name</span><span class="p">,</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">joboutdir</span><span class="p">,</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
-        <span class="n">config</span><span class="p">,</span>
-        <span class="n">submission_defs</span><span class="p">,</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">loglevel</span><span class="p">,</span>
+        <span class="n">suite_name</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">joboutdir</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">submission_defs</span>
     <span class="p">)</span>
     <span class="n">def_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">suite_name</span><span class="si">}</span><span class="s2">.def&quot;</span>
     <span class="n">defs</span><span class="o">.</span><span class="n">save_as_defs</span><span class="p">(</span><span class="n">def_file</span><span class="p">)</span>
@@ -565,12 +551,11 @@
 <span class="sd">        config (.config_parser.ParsedConfig): Parsed config file contents.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">loglevel</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Printing requested configs...&quot;</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">section</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">section</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">format</span><span class="p">))</span>
     <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Error retrieving config data for config section &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">section</span><span class="p">)</span></div>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Error retrieving config data for config section &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">section</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="show_config_schema"><a class="viewcode-back" href="../../deode.html#deode.commands_functions.show_config_schema">[docs]</a><span class="k">def</span> <span class="nf">show_config_schema</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
@@ -581,7 +566,6 @@
 <span class="sd">        config (.config_parser.ParsedConfig): Parsed config file contents.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">loglevel</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Printing JSON schema used in the validation of the configs...&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">json_schema</span><span class="p">)</span></div>
 
@@ -594,8 +578,6 @@
 <span class="sd">        config (.config_parser.ParsedConfig): Parsed config file contents.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">loglevel</span><span class="p">)</span>
-
     <span class="n">deode_home</span> <span class="o">=</span> <span class="n">set_deode_home</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
     <span class="n">config</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">update</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;platform&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;deode_home&quot;</span><span class="p">:</span> <span class="n">deode_home</span><span class="p">}})</span>
 
@@ -607,14 +589,14 @@
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">namelist_type</span> <span class="ow">in</span> <span class="n">update</span><span class="p">:</span>
         <span class="n">nlgen</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">update</span><span class="p">[</span><span class="n">args</span><span class="o">.</span><span class="n">namelist_type</span><span class="p">],</span> <span class="n">args</span><span class="o">.</span><span class="n">namelist_type</span><span class="p">)</span>
     <span class="k">if</span> <span class="s2">&quot;forecast&quot;</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">namelist</span> <span class="ow">and</span> <span class="n">args</span><span class="o">.</span><span class="n">namelist_type</span> <span class="o">==</span> <span class="s2">&quot;master&quot;</span><span class="p">:</span>
-        <span class="n">nlgen</span> <span class="o">=</span> <span class="n">check_fullpos_namelist</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">nlgen</span><span class="p">,</span> <span class="n">logger</span><span class="p">)</span>
+        <span class="n">nlgen</span> <span class="o">=</span> <span class="n">check_fullpos_namelist</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">nlgen</span><span class="p">)</span>
     <span class="n">nlres</span> <span class="o">=</span> <span class="n">nlgen</span><span class="o">.</span><span class="n">assemble_namelist</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">namelist</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">namelist_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">namelist_name</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">namelist_name</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">namelist_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;namelist_</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">namelist_type</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">namelist</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="n">nlgen</span><span class="o">.</span><span class="n">write_namelist</span><span class="p">(</span><span class="n">nlres</span><span class="p">,</span> <span class="n">namelist_name</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Printing namelist in use to file </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">namelist_name</span><span class="p">)</span></div>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Printing namelist in use to file </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">namelist_name</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="namelist_integrate"><a class="viewcode-back" href="../../deode.html#deode.commands_functions.namelist_integrate">[docs]</a><span class="k">def</span> <span class="nf">namelist_integrate</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
@@ -628,7 +610,6 @@
 <span class="sd">        SystemExit   # noqa: DAR401</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">loglevel</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Integrating namelist(s) ...&quot;</span><span class="p">)</span>
 
     <span class="n">nlcomp</span> <span class="o">=</span> <span class="n">NamelistComparator</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
@@ -690,7 +671,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on Sep 05, 2023.
+      <span class="lastupdated">Last updated on Sep 11, 2023.
       </span></p>
   </div>
 
