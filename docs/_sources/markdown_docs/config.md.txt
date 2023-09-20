@@ -1,5 +1,5 @@
 # The DEODE config file
-This was automatically generated running `deode doc config` on 2023-09-13T14:54:05.
+This was automatically generated running `deode doc config` on 2023-09-20T06:32:32.
 
 ## GeneralSectionModel
 Model for the 'general' section.
@@ -33,11 +33,11 @@ Output settings. Specified as duration for any of interval, endtime:interval, st
 Model for the 'general.times' section.
   |Key|Description|Default|Options|Type|
   |---|---|---|---|---|
-  |basetime|Base TB specified|2023-02-19T00:00:00Z||string|
-  |validtime|Valid TB specified|2023-02-19T00:00:00Z||string|
-  |start|Start|2023-08-30T05:00:00Z||string|
-  |end|End|2023-08-30T06:00:00Z||string|
-  |cycle_length|Cycle length defined as duration|PT1H||string|
+  |basetime|Base TB specified|2023-08-21T00:00:00Z||string|
+  |validtime|Valid TB specified|2023-08-21T00:00:00Z||string|
+  |start|Start|2023-09-16T00:00:00Z||string|
+  |end|End|2023-09-17T12:00:00Z||string|
+  |cycle_length|Cycle length defined as duration|PT24H||string|
   |list|List|||array|
 
 ## BoundarySection
@@ -45,9 +45,9 @@ Settings for control of boundary treatment.
   |Key|Description|Default|Options|Type|
   |---|---|---|---|---|
   |bdstrategy||same_forecast|simulate_operational, analysis_only, same_forecast|string|
-  |bdint|Boundary interval|PT1H||string|
+  |bdint|Boundary interval|PT3H||string|
   |bdshift|Shift of boundary initial time. E.g. '-PT3H' would mean use 3H old boundaries|PT0H||string|
-  |bdcycle|Boundary model cycle interval|PT06H||string|
+  |bdcycle|Boundary model cycle interval|PT12H||string|
   |bdmodel|Coupling model|ifs|arome, ifs|string|
   |bd_has_surfex|Set to true if the host model runs with surfex|False||boolean|
   |bdtasks_per_batch|Max number of parallel boundary interpolation tasks|24||number|
@@ -76,13 +76,13 @@ DEODE system specific path settings
   |intp_bddir|Location of boundaries on the current domain, i.e. the output directory of e927|@WRK@||string|
   |bdfile_template|Name template for input boundary files|ELSCF@CNMEXP@ALBC@NNN@||string|
   |bddir_sfx|Location of input intial file for surfex|@MARSDIR@||string|
-  |bdfile_sfx_template|Name template for input initial surfex file for prep|ECSFCSFX+@LLL@||string|
+  |bdfile_sfx_template|Name template for input initial surfex file for prep|ECSFCSFX@DOMAIN@+@LLL@||string|
   |climdir|Location of generated/used climate files (PGD/monthly files)|@CASEDIR@/climate/@DOMAIN@||string|
   |bdclimdir|Location of host model climate files used for e927/c903|@FIXED_BDCLIMDIR@||string|
   |fullpos_config_file|Path to the fullpos yml config file|@DEODE_HOME@/deode/namelist_generation_input/@CYCLE@/fullpos_namelist.yml||string|
   |sfx_input_defs|Path to the surfex json config file|@DEODE_HOME@/deode/data/input/sfx_input_@CYCLE@.json||string|
   |namelists|Path to static namelists|@DEODE_HOME@/deode/data/namelists/@CYCLE@||string|
-  |marsdir|Location input files extracted from MARS by Marsprep|@CASEDIR@/IFS/@YYYY@/@MM@/@DD@/@HH@/@MARS_EXPVER@||string|
+  |marsdir|Location input files extracted from MARS by Marsprep|@SCRATCH@/deode/IFS/@YYYY@/@MM@/@DD@/@HH@/@MARS_EXPVER@||string|
   |marsfile_template||mars_prefetch_[levtype]_[date]_[time]+[step]|||
   |global_sfcdir|Path to SFC files needed for c903, which are not in MARS|/hpcperm/snh02/climate_fields_mir/climate.v020_MIR_orog/||string|
   |bindir|Location of binaries|||string|
