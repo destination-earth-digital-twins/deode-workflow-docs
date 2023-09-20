@@ -376,6 +376,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#boundarysection">BoundarySection</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#suite-control">Suite control</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#system">System</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#archiving">archiving</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#troika">Troika</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#domain">domain</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#vertical-levels">vertical_levels</a></li>
@@ -440,9 +441,11 @@
 <span class="kn">import</span> <span class="nn">contextlib</span>
 <span class="kn">import</span> <span class="nn">os</span>
 
-<span class="kn">from</span> <span class="nn">.datetime_utils</span> <span class="kn">import</span> <span class="n">as_datetime</span><span class="p">,</span> <span class="n">as_timedelta</span>
+<span class="kn">from</span> <span class="nn">.datetime_utils</span> <span class="kn">import</span> <span class="n">as_datetime</span><span class="p">,</span> <span class="n">as_timedelta</span><span class="p">,</span> <span class="n">cycle_offset</span>
 <span class="kn">from</span> <span class="nn">.logs</span> <span class="kn">import</span> <span class="n">logger</span>
 <span class="kn">from</span> <span class="nn">.toolbox</span> <span class="kn">import</span> <span class="n">Platform</span>
+<span class="kn">from</span> <span class="nn">.tasks.base</span> <span class="kn">import</span> <span class="n">Task</span>
+<span class="kn">from</span> <span class="nn">.tasks.batch</span> <span class="kn">import</span> <span class="n">BatchJob</span>
 
 
 <div class="viewcode-block" id="InitialConditions"><a class="viewcode-back" href="../../deode.html#deode.initial_conditions.InitialConditions">[docs]</a><span class="k">class</span> <span class="nc">InitialConditions</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -457,12 +460,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">platform</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">wrk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;system.wrk&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">intp_bddir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;system.intp_bddir&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">basetime</span> <span class="o">=</span> <span class="n">as_datetime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.times.basetime&quot;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cycle_length</span> <span class="o">=</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.times.cycle_length&quot;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">archive</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;system.archive&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">file_templates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;file_templates&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">system</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;system&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
 
 <div class="viewcode-block" id="InitialConditions.nosuccess"><a class="viewcode-back" href="../../deode.html#deode.initial_conditions.InitialConditions.nosuccess">[docs]</a>    <span class="k">def</span> <span class="nf">nosuccess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f1</span><span class="p">,</span> <span class="n">f2</span><span class="p">,</span> <span class="n">fail</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Report of not success.</span>
@@ -511,12 +512,12 @@
         <span class="n">pdtg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">basetime</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">cycle_length</span>
 
         <span class="n">source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">archive</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">file_templates</span><span class="p">[</span><span class="s1">&#39;history&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="p">[</span><span class="s1">&#39;archive&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">file_templates</span><span class="p">[</span><span class="s1">&#39;history&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">basetime</span><span class="o">=</span><span class="n">pdtg</span><span class="p">,</span>
             <span class="n">validtime</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">basetime</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">source_sfx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">archive</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">file_templates</span><span class="p">[</span><span class="s1">&#39;surfex&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">system</span><span class="p">[</span><span class="s1">&#39;archive&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">file_templates</span><span class="p">[</span><span class="s1">&#39;surfex&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">basetime</span><span class="o">=</span><span class="n">pdtg</span><span class="p">,</span>
             <span class="n">validtime</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">basetime</span><span class="p">,</span>
         <span class="p">)</span>

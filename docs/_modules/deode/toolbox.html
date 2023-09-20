@@ -376,6 +376,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#boundarysection">BoundarySection</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#suite-control">Suite control</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#system">System</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#archiving">archiving</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#troika">Troika</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#domain">domain</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#vertical-levels">vertical_levels</a></li>
@@ -849,7 +850,7 @@
         <span class="c1"># TODO check for archive</span>
         <span class="k">if</span> <span class="n">check_archive</span><span class="p">:</span>
             <span class="n">provider_id</span> <span class="o">=</span> <span class="s2">&quot;ecfs&quot;</span>
-            <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;@ARCHIVE@&quot;</span><span class="p">,</span> <span class="s2">&quot;ectmp:/@YYYY@/@MM@/@DD@/@HH@&quot;</span><span class="p">)</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;@ARCHIVE@&quot;</span><span class="p">,</span> <span class="s2">&quot;ec:@YYYY@/@MM@/@DD@/@HH@&quot;</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">provider_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="c1"># Substitute based on ecfs</span>
@@ -950,7 +951,7 @@
         <span class="k">if</span> <span class="n">archive</span><span class="p">:</span>
             <span class="c1"># TODO check for archive and modify macros</span>
             <span class="n">provider_id</span> <span class="o">=</span> <span class="s2">&quot;ecfs&quot;</span>
-            <span class="n">destination</span> <span class="o">=</span> <span class="n">destination</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;@ARCHIVE@&quot;</span><span class="p">,</span> <span class="s2">&quot;ectmp:/@YYYY@/@MM@/@DD@/@HH@&quot;</span><span class="p">)</span>
+            <span class="n">destination</span> <span class="o">=</span> <span class="n">destination</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;@ARCHIVE@&quot;</span><span class="p">,</span> <span class="s2">&quot;ec:/@YYYY@/@MM@/@DD@/@HH@&quot;</span><span class="p">)</span>
 
             <span class="n">sub_target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
                 <span class="n">target</span><span class="p">,</span> <span class="n">basetime</span><span class="o">=</span><span class="n">basetime</span><span class="p">,</span> <span class="n">validtime</span><span class="o">=</span><span class="n">validtime</span>
@@ -1218,11 +1219,15 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;ecp ecfs:</span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
-            <span class="c1"># os.system(f&quot;ecp ecfs:{self.identifier} {resource.identifier}&quot;)  # noqa S605, E800</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;ecp </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span>  <span class="c1"># noqa S605, E800</span>
+                <span class="sa">f</span><span class="s2">&quot;ecp -p </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;ecp </span><span class="si">{}</span><span class="s2"> ecfs:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
-            <span class="c1"># os.system(f&quot;ecp {resource.identifier} ecfs:{self.identifier}&quot;)  # noqa S605, E800</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;ecp </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span>  <span class="c1"># noqa S605, E800</span>
+                <span class="sa">f</span><span class="s2">&quot;ecp -p </span><span class="si">{</span><span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
         <span class="k">return</span> <span class="kc">True</span></div></div>
 
 
