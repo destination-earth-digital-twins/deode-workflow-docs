@@ -376,7 +376,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#boundarysection">BoundarySection</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#suite-control">Suite control</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#system">System</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#archiving">archiving</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#troika">Troika</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#domain">domain</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#vertical-levels">vertical_levels</a></li>
@@ -700,8 +699,8 @@
     <span class="n">config_includes</span> <span class="o">=</span> <span class="n">raw_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;include&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="n">overlapping_sections</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">config_includes</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">raw_config</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">overlapping_sections</span><span class="p">:</span>
-        <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;The following section(s) exist multiple times in the config.toml file: [</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">overlapping_sections</span><span class="p">)</span><span class="si">}</span><span class="s2">]. &quot;</span>
-        <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot;Please rectify before proceeding.&quot;</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;`[include]` section(s) [</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">overlapping_sections</span><span class="p">)</span><span class="si">}</span><span class="s2">] &quot;</span>
+        <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot;already present in parent config.&quot;</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">config_includes</span>
 
@@ -805,7 +804,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on Sep 20, 2023.
+      <span class="lastupdated">Last updated on Sep 21, 2023.
       </span></p>
   </div>
 
