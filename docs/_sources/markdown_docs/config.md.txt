@@ -1,5 +1,5 @@
 # The DEODE config file
-This was automatically generated running `deode doc config` on 2023-09-25T10:29:16.
+This was automatically generated running `deode doc config` on 2023-09-25T10:29:54.
 
 ## GeneralSectionModel
 Model for the 'general' section.
@@ -52,6 +52,13 @@ Settings for control of boundary treatment.
   |bd_has_surfex|Set to true if the host model runs with surfex|False||boolean|
   |bdtasks_per_batch|Max number of parallel boundary interpolation tasks|24||number|
 
+## FullposSection
+Settings for control of fullpos selection.
+  |Key|Description|Default|Options|Type|
+  |---|---|---|---|---|
+  |config_path||@DEODE_HOME@/deode/namelist_generation_input/@CYCLE@/fullpos||string|
+  |selection|List of rules and selections to include|('rules', 'namfpc_header', 'master_selection')||array|
+
 ## Suite control
 Suite control options
   |Key|Description|Default|Options|Type|
@@ -80,13 +87,13 @@ DEODE system specific path settings
   |bdfile_sfx_template|Name template for input initial surfex file for prep|ECSFCSFX@DOMAIN@+@LLL@||string|
   |climdir|Location of generated/used climate files (PGD/monthly files)|@CASEDIR@/climate/@DOMAIN@||string|
   |bdclimdir|Location of host model climate files used for e927/c903|@FIXED_BDCLIMDIR@||string|
-  |fullpos_config_file|Path to the fullpos yml config file|@DEODE_HOME@/deode/namelist_generation_input/@CYCLE@/fullpos_namelist.yml||string|
   |sfx_input_defs|Path to the surfex json config file|@DEODE_HOME@/deode/data/input/sfx_input_@CYCLE@.json||string|
   |namelists|Path to static namelists|@DEODE_HOME@/deode/data/namelists/@CYCLE@||string|
   |marsdir|Location input files extracted from MARS by Marsprep|@SCRATCH@/deode/IFS/@YYYY@/@MM@/@DD@/@HH@/@MARS_EXPVER@||string|
   |marsfile_template||mars_prefetch_[levtype]_[date]_[time]+[step]|||
   |global_sfcdir|Path to SFC files needed for c903, which are not in MARS|/hpcperm/snh02/climate_fields_mir/climate.v020_MIR_orog/||string|
   |bindir|Location of binaries|||string|
+  |fullpos_config_file|Path to the fullpos yml config file|||string|
 
 ## Troika
 DEODE system specific path settings

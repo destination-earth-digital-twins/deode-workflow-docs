@@ -160,8 +160,11 @@
 <li class="toctree-l4"><a class="reference internal" href="../deode.html#deode.fullpos.Fullpos.construct"><code class="docutils literal notranslate"><span class="pre">Fullpos.construct()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../deode.html#deode.fullpos.Fullpos.expand"><code class="docutils literal notranslate"><span class="pre">Fullpos.expand()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../deode.html#deode.fullpos.Fullpos.load"><code class="docutils literal notranslate"><span class="pre">Fullpos.load()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../deode.html#deode.fullpos.Fullpos.merge_dict"><code class="docutils literal notranslate"><span class="pre">Fullpos.merge_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../deode.html#deode.fullpos.Fullpos.update_selection"><code class="docutils literal notranslate"><span class="pre">Fullpos.update_selection()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../deode.html#deode.fullpos.InvalidSelectionCombination"><code class="docutils literal notranslate"><span class="pre">InvalidSelectionCombination</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../deode.html#module-deode.general_utils">deode.general_utils module</a><ul>
@@ -375,6 +378,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../misc_section_in_doc_page.html#boundarysection">BoundarySection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../misc_section_in_doc_page.html#fullpossection">FullposSection</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../misc_section_in_doc_page.html#suite-control">Suite control</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../misc_section_in_doc_page.html#system">System</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../misc_section_in_doc_page.html#troika">Troika</a></li>
@@ -400,9 +404,10 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../misc_section_in_doc_page.html#configure-selection-of-fields-from-fullpos">Configure selection of fields from fullpos</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../misc_section_in_doc_page.html#overview">Overview</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../misc_section_in_doc_page.html#the-fullpos-config-file">The fullpos config file</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../misc_section_in_doc_page.html#the-fullpos-config-files">The fullpos config files</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#namfpc-settings">NAMFPC settings</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#selection">Selection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#combine-selection-files">Combine selection files</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../misc_section_in_doc_page.html#example">Example</a></li>
@@ -443,17 +448,17 @@
 <p>The fullpos output is controlled by the following settings</p>
 <ul class="simple">
 <li><p>Output interval is set by <code class="docutils literal notranslate"><span class="pre">output_settings.fullpos</span></code> in the general section of the main config file. The interval is specified using the duration syntax and can be give down to a resolution of minutes.</p></li>
-<li><p>Field selection and settings for different output times is done in <code class="docutils literal notranslate"><span class="pre">deode/namelist_generation/fullpos_namelist.yaml</span></code></p></li>
+<li><p>Field selection and settings for different output times is done in the fullpos main selection, <code class="docutils literal notranslate"><span class="pre">deode/namelist_generation/CYCLE/master_selection.yml</span></code></p></li>
 </ul>
 <p>Currently it’s only implemented support for a single domain using the native geometry of the domain used for the model run.</p>
 </section>
-<section id="the-fullpos-config-file">
-<h2>The fullpos config file<a class="headerlink" href="#the-fullpos-config-file" title="Permalink to this heading"></a></h2>
-<p>The config file <code class="docutils literal notranslate"><span class="pre">deode/namelist_generation/fullpos_namelist.yaml</span></code> consists of four main parts</p>
+<section id="the-fullpos-config-files">
+<h2>The fullpos config files<a class="headerlink" href="#the-fullpos-config-files" title="Permalink to this heading"></a></h2>
+<p>There are three fullpos config file types under <code class="docutils literal notranslate"><span class="pre">deode/namelist_generation/fullpos/CYCLE/</span></code></p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">NAMFPC</span></code> where we specify the non-field related settings</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">selection</span></code> where all fields and levels are specified per output type as defined by fullpos</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">LEVEL_MAP</span></code> and <code class="docutils literal notranslate"><span class="pre">PARAM_MAP</span></code> tells how settings in the selection part should be translated to settings in <code class="docutils literal notranslate"><span class="pre">NAMFPC</span></code>. Normally this does not have to be changed.</p></li>
+<li><p>rules.yml sets <code class="docutils literal notranslate"><span class="pre">LEVEL_MAP</span></code> and <code class="docutils literal notranslate"><span class="pre">PARAM_MAP</span></code> and tells how settings in the selection part should be translated to settings in <code class="docutils literal notranslate"><span class="pre">NAMFPC</span></code>. Normally this does not have to be changed.</p></li>
+<li><p>namfpc_header.yml where we specify the non-field related settings in NAMFPC</p></li>
+<li><p>master_selection.yml where all fields and levels are specified per output type as defined by fullpos</p></li>
 </ul>
 <p>The settings done in the <code class="docutils literal notranslate"><span class="pre">selection</span></code> part will be used to fill <code class="docutils literal notranslate"><span class="pre">NAMFPC</span></code> and the correct level numbers will be filled in the final namelist.</p>
 <section id="namfpc-settings">
@@ -498,27 +503,22 @@
      <span class="o">-</span> <span class="mf">80000.0</span>
 </pre></div>
 </div>
-<p>Where <code class="docutils literal notranslate"><span class="pre">VOR</span></code> and <code class="docutils literal notranslate"><span class="pre">DIV</span></code> in the example above are just arbitrary names used to separate the different choices.</p>
+<p>Where <code class="docutils literal notranslate"><span class="pre">VOR</span></code> and <code class="docutils literal notranslate"><span class="pre">DIV</span></code> in the example above are just arbitrary names used to separate the different choices. Note that it’s not possible to combine grouped and none grouped settings.</p>
+</section>
+<section id="combine-selection-files">
+<h3>Combine selection files<a class="headerlink" href="#combine-selection-files" title="Permalink to this heading"></a></h3>
+<p>A number of selection files can be combined by extending the <code class="docutils literal notranslate"><span class="pre">selection</span></code> in the fullpos part of the config file</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">fullpos</span><span class="p">]</span>
+ <span class="n">selection</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;rules&quot;</span><span class="p">,</span> <span class="s2">&quot;namfpc_header&quot;</span><span class="p">,</span> <span class="s2">&quot;master_selection&quot;</span> <span class="p">,</span><span class="s2">&quot;my_additions&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>This allows to define different combination of output depending on other configuration choices.</p>
 </section>
 </section>
 <section id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this heading"></a></h2>
-<p>A simple example on how the namelists are generated can be found at the end of <code class="docutils literal notranslate"><span class="pre">deode/fullpos.py</span></code></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">fullpos</span>
-
-<span class="n">fp</span> <span class="o">=</span> <span class="n">Fullpos</span><span class="p">(</span><span class="s2">&quot;test&quot;</span><span class="p">)</span>
-
-<span class="n">namfpc</span><span class="p">,</span> <span class="n">selections</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">construct</span><span class="p">()</span>
-<span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">namfpc</span><span class="p">[</span><span class="s2">&quot;NAMFPC&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">selections</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">kk</span><span class="p">,</span> <span class="n">vv</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">kk</span><span class="p">,</span> <span class="n">vv</span><span class="p">)</span>
-</pre></div>
-</div>
 <p>The fullpos namelists can be generated from command line using</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">deode</span> <span class="o">--</span><span class="n">config</span><span class="o">-</span><span class="n">file</span> <span class="n">deode</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">config_files</span><span class="o">/</span><span class="n">config</span><span class="o">.</span><span class="n">toml</span> <span class="n">show</span> <span class="n">namelist</span> <span class="o">-</span><span class="n">t</span> <span class="n">master</span> <span class="o">-</span><span class="n">n</span> <span class="n">forecast</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">deode</span> <span class="o">--</span><span class="n">config</span><span class="o">-</span><span class="n">file</span> <span class="n">deode</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">config_files</span><span class="o">/</span><span class="n">config</span><span class="o">.</span><span class="n">toml</span> <span class="n">show</span> <span class="n">namelist</span> <span class="o">-</span><span class="n">t</span> <span class="n">master</span> <span class="o">-</span><span class="n">n</span> <span class="n">forecast_bdmodel_ifs</span>
 </pre></div>
 </div>
 <p>This will produce the namelist for the forecast and as many xxt* files as has been defined in the fullpos yaml file.</p>

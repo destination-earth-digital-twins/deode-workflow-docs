@@ -159,8 +159,11 @@
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.fullpos.Fullpos.construct"><code class="docutils literal notranslate"><span class="pre">Fullpos.construct()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.fullpos.Fullpos.expand"><code class="docutils literal notranslate"><span class="pre">Fullpos.expand()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.fullpos.Fullpos.load"><code class="docutils literal notranslate"><span class="pre">Fullpos.load()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.fullpos.Fullpos.merge_dict"><code class="docutils literal notranslate"><span class="pre">Fullpos.merge_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.fullpos.Fullpos.update_selection"><code class="docutils literal notranslate"><span class="pre">Fullpos.update_selection()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.fullpos.InvalidSelectionCombination"><code class="docutils literal notranslate"><span class="pre">InvalidSelectionCombination</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.general_utils">deode.general_utils module</a><ul>
@@ -374,6 +377,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#boundarysection">BoundarySection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#fullpossection">FullposSection</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#suite-control">Suite control</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#system">System</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#troika">Troika</a></li>
@@ -399,9 +403,10 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../misc_section_in_doc_page.html#configure-selection-of-fields-from-fullpos">Configure selection of fields from fullpos</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#overview">Overview</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#the-fullpos-config-file">The fullpos config file</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#the-fullpos-config-files">The fullpos config files</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#namfpc-settings">NAMFPC settings</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#selection">Selection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#combine-selection-files">Combine selection files</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#example">Example</a></li>
@@ -438,30 +443,44 @@
   <h1>Source code for deode.fullpos</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python3</span>
 <span class="sd">&quot;&quot;&quot;Fullpos namelist generation.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+
 <span class="kn">import</span> <span class="nn">yaml</span>
 
+<span class="kn">from</span> <span class="nn">.logs</span> <span class="kn">import</span> <span class="n">logger</span>
 <span class="kn">from</span> <span class="nn">.namelist</span> <span class="kn">import</span> <span class="n">flatten_list</span>
+
+
+<div class="viewcode-block" id="InvalidSelectionCombination"><a class="viewcode-back" href="../../deode.html#deode.fullpos.InvalidSelectionCombination">[docs]</a><span class="k">class</span> <span class="nc">InvalidSelectionCombination</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom exception.&quot;&quot;&quot;</span>
+
+    <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="Fullpos"><a class="viewcode-back" href="../../deode.html#deode.fullpos.Fullpos">[docs]</a><span class="k">class</span> <span class="nc">Fullpos</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Fullpos namelist generator based on (yaml) dicts.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domain</span><span class="p">,</span> <span class="n">nlfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fullpos_config</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domain</span><span class="p">,</span> <span class="n">fpdir</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">fpfiles</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fpdict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct the fullpos generator.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            domain (str): Domain name</span>
-<span class="sd">            nlfile (str): Fullpos yaml config file</span>
-<span class="sd">            fullpos_config (dict): Fullpos config as dict</span>
+<span class="sd">            fpdir (str): Path to fullpos config files</span>
+<span class="sd">            fpfiles (list): List of fullpos config files to read (wihtout the yml suffix)</span>
+<span class="sd">            fpdict (dict): A dictionary of fullpos settings</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">domain</span> <span class="o">=</span> <span class="n">domain</span>
-        <span class="k">if</span> <span class="n">nlfile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">nldict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">nlfile</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">fullpos_config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">nldict</span> <span class="o">=</span> <span class="n">fullpos_config</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fpdir</span> <span class="o">=</span> <span class="n">fpdir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nldict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">fpfiles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nldict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fpdir</span><span class="p">,</span> <span class="n">fpfiles</span><span class="p">))</span>
 
-<div class="viewcode-block" id="Fullpos.expand"><a class="viewcode-back" href="../../deode.html#deode.fullpos.Fullpos.expand">[docs]</a>    <span class="k">def</span> <span class="nf">expand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">levtype</span><span class="p">,</span> <span class="n">levels</span><span class="p">,</span> <span class="n">domain</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">fpdict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nldict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">fpdict</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Fullpos.expand"><a class="viewcode-back" href="../../deode.html#deode.fullpos.Fullpos.expand">[docs]</a>    <span class="k">def</span> <span class="nf">expand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">levtype</span><span class="p">,</span> <span class="n">levels</span><span class="p">,</span> <span class="n">domain</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Expand fullpos namelists to levels and domains.</span>
 
 <span class="sd">        Args:</span>
@@ -469,12 +488,13 @@
 <span class="sd">            levtype (str): type of vertical level in fullpos syntax</span>
 <span class="sd">            levels (list): list of levels</span>
 <span class="sd">            domain (str): domain name</span>
+<span class="sd">            i (int): parameter conuter</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            d (dict): Expaned names</span>
+<span class="sd">            d (dict): expaned names</span>
+<span class="sd">            i (int): parameter counter</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;CL3DF&quot;</span><span class="p">]:</span>
             <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -488,22 +508,86 @@
                 <span class="n">d</span><span class="p">[</span><span class="n">lev</span><span class="p">]</span> <span class="o">=</span> <span class="n">levels</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">level</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
                 <span class="n">d</span><span class="p">[</span><span class="n">dom</span><span class="p">]</span> <span class="o">=</span> <span class="n">domain</span>
 
-        <span class="k">return</span> <span class="n">d</span></div>
+        <span class="k">return</span> <span class="n">d</span><span class="p">,</span> <span class="n">i</span></div>
 
-<div class="viewcode-block" id="Fullpos.load"><a class="viewcode-back" href="../../deode.html#deode.fullpos.Fullpos.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nlfile</span><span class="p">):</span>
+<div class="viewcode-block" id="Fullpos.load"><a class="viewcode-back" href="../../deode.html#deode.fullpos.Fullpos.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fpdir</span><span class="p">,</span> <span class="n">fpfiles</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Load fullpos yaml file.</span>
 
 <span class="sd">        Arguments:</span>
-<span class="sd">            nlfile (str): fullpos config _file (yml)</span>
+<span class="sd">            fpdir (str): Path do fullpos settings</span>
+<span class="sd">            fpfiles (list): List of yml files to read</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            nldict (dict): fullpos settings</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">nlfile</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;rt&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-            <span class="n">nldict</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;selection&quot;</span>
+        <span class="n">nldict</span> <span class="o">=</span> <span class="p">{</span><span class="n">s</span><span class="p">:</span> <span class="p">{}}</span>
+        <span class="k">for</span> <span class="n">fpfile</span> <span class="ow">in</span> <span class="n">fpfiles</span><span class="p">:</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fpdir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fpfile</span><span class="si">}</span><span class="s2">.yml&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Read </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;rt&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+                <span class="n">n</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+                <span class="n">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">n</span><span class="p">:</span>
+                    <span class="n">nldict</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge_dict</span><span class="p">(</span><span class="n">nldict</span><span class="p">[</span><span class="n">s</span><span class="p">],</span> <span class="n">n</span><span class="p">[</span><span class="n">s</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">nldict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">nldict</span></div>
+
+<div class="viewcode-block" id="Fullpos.merge_dict"><a class="viewcode-back" href="../../deode.html#deode.fullpos.Fullpos.merge_dict">[docs]</a>    <span class="k">def</span> <span class="nf">merge_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d1</span><span class="p">,</span> <span class="n">d2</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge two dictionaries, tailored for the fullpos yml structure.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            d1 (dict): Reference dict</span>
+<span class="sd">            d2 (dict): Update dict</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            d (dict): Merged dict</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">d1</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">d2</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">d</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                    <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge_dict</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">v</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]:</span>
+                            <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+        <span class="k">return</span> <span class="n">d</span></div>
+
+<div class="viewcode-block" id="Fullpos.update_selection"><a class="viewcode-back" href="../../deode.html#deode.fullpos.Fullpos.update_selection">[docs]</a>    <span class="k">def</span> <span class="nf">update_selection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">additions_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">additions_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add choices to the selection section.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            additions_list (list): Additional selection to be read from files</span>
+<span class="sd">            additions_dict (dict): Additional selection as a dictionary</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">additions_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="c1"># Read the update</span>
+            <span class="k">for</span> <span class="n">addition</span> <span class="ow">in</span> <span class="n">additions_list</span><span class="p">:</span>
+                <span class="n">fpfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fpdir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">addition</span><span class="si">}</span><span class="s2">.yml&quot;</span><span class="p">)</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fpfile</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;rt&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+                    <span class="n">nldict</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+                    <span class="n">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">nldict</span><span class="p">[</span><span class="s2">&quot;selection&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge_dict</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">nldict</span><span class="p">[</span><span class="s2">&quot;selection&quot;</span><span class="p">],</span> <span class="n">nldict</span>
+                <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">additions_dict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nldict</span><span class="p">[</span><span class="s2">&quot;selection&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge_dict</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">nldict</span><span class="p">[</span><span class="s2">&quot;selection&quot;</span><span class="p">],</span> <span class="n">additions_dict</span>
+            <span class="p">)</span></div>
 
 <div class="viewcode-block" id="Fullpos.construct"><a class="viewcode-back" href="../../deode.html#deode.fullpos.Fullpos.construct">[docs]</a>    <span class="k">def</span> <span class="nf">construct</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct the fullpos namelists.</span>
@@ -511,6 +595,10 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            namfpc_out (dict): namfpc part</span>
 <span class="sd">            selection (dict): xxtddddhhmm part</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            InvalidSelectionCombination    # noqa: DAR401</span>
+
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">namfpc_out</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;NAMFPC&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">nldict</span><span class="p">[</span><span class="s2">&quot;NAMFPC&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()}</span>
@@ -533,6 +621,8 @@
                         <span class="n">namfpc</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
 
                 <span class="k">elif</span> <span class="s2">&quot;CL3DF&quot;</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="n">InvalidSelectionCombination</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
                     <span class="n">x</span> <span class="o">=</span> <span class="n">level_map</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
                     <span class="n">namfpc</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">x</span><span class="p">])</span>
                     <span class="n">x</span> <span class="o">=</span> <span class="n">param_map</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;CL3DF&quot;</span><span class="p">]</span>
@@ -566,11 +656,13 @@
                     <span class="n">tmp</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span>
                 <span class="k">elif</span> <span class="s2">&quot;CL3DF&quot;</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
                     <span class="n">x</span> <span class="o">=</span> <span class="n">level_map</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
-                    <span class="n">tmp</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">namfpc</span><span class="p">[</span><span class="n">x</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="p">)</span>
+                    <span class="n">tmp</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">namfpc</span><span class="p">[</span><span class="n">x</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">x</span> <span class="o">=</span> <span class="n">level_map</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+                    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
                     <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-                        <span class="n">tmp</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">namfpc</span><span class="p">[</span><span class="n">x</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="p">))</span>
+                        <span class="n">d</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">namfpc</span><span class="p">[</span><span class="n">x</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+                        <span class="n">tmp</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">tmp</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="n">selection</span><span class="p">[</span><span class="n">kk</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
