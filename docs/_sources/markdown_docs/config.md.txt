@@ -1,5 +1,5 @@
 # The DEODE config file
-This was automatically generated running `deode doc config` on 2023-09-25T09:42:30.
+This was automatically generated running `deode doc config` on 2023-09-25T10:29:16.
 
 ## GeneralSectionModel
 Model for the 'general' section.
@@ -12,7 +12,7 @@ Model for the 'general' section.
   |csc|CSC|AROME|AROME, ALARO, HARMONIE_AROME|string|
   |cycle|IAL cycle|CY48t3|CY48t3, CY46t1, CY46h1|string|
   |surfex|SURFEX switch|True||boolean|
-  |forecast_range|Forecast range|PT12H||string|
+  |forecast_range|Forecast range|PT6H||string|
   |keep_workdirs|Do not remove working directories|True||boolean|
   |accept_static_namelists|Allow usage of static namelists as input for the tasks. The namelist should be located in the directory specified by platform.namelists and named with the convention namelist_{kind}_{task} where kind could be surfex or master and task forecast/pgd or similar. For the extraction of namelist see [namelists.md](../docs/namelists.md).|False||boolean|
   |nproma|NPROMA size in the forecast model. See the namelists for where it is used|-32||number|
@@ -25,9 +25,9 @@ Model for the 'general' section.
 Output settings. Specified as duration for any of interval, endtime:interval, starttime:endtime:interval or a list of these options
   |Key|Description|Default|Options|Type|
   |---|---|---|---|---|
-  |history|Output list for history files|('PT0H:PT12H:PT1H',)|||
+  |history|Output list for history files|('PT0H:PT6H:PT3H',)|||
   |fullpos|Output list for fullpos files|('PT6H:PT15M', 'PT9H:PT30M', 'PT1H')|||
-  |surfex|Output list for surfex files|('PT3H:PT1H', 'PT9H:PT24H:PT3H')|||
+  |surfex|Output list for surfex files|('PT6H:PT1H', 'PT9H:PT24H:PT3H')|||
 
 ### GeneralSectionModel > Times
 Model for the 'general.times' section.
@@ -35,9 +35,9 @@ Model for the 'general.times' section.
   |---|---|---|---|---|
   |basetime|Base TB specified|2023-08-21T00:00:00Z||string|
   |validtime|Valid TB specified|2023-08-21T00:00:00Z||string|
-  |start|Start|2023-09-16T00:00:00Z||string|
-  |end|End|2023-09-17T12:00:00Z||string|
-  |cycle_length|Cycle length defined as duration|PT24H||string|
+  |start|Start|2023-09-16T05:00:00Z||string|
+  |end|End|2023-09-16T17:00:00Z||string|
+  |cycle_length|Cycle length defined as duration|PT6H||string|
   |list|List|||array|
 
 ## BoundarySection
@@ -47,7 +47,7 @@ Settings for control of boundary treatment.
   |bdstrategy||same_forecast|simulate_operational, analysis_only, same_forecast|string|
   |bdint|Boundary interval|PT3H||string|
   |bdshift|Shift of boundary initial time. E.g. '-PT3H' would mean use 3H old boundaries|PT0H||string|
-  |bdcycle|Boundary model cycle interval|PT12H||string|
+  |bdcycle|Boundary model cycle interval|PT24H||string|
   |bdmodel|Coupling model|ifs|arome, ifs|string|
   |bd_has_surfex|Set to true if the host model runs with surfex|False||boolean|
   |bdtasks_per_batch|Max number of parallel boundary interpolation tasks|24||number|
@@ -56,14 +56,14 @@ Settings for control of boundary treatment.
 Suite control options
   |Key|Description|Default|Options|Type|
   |---|---|---|---|---|
-  |create_static_data|Activate the generation of PGD and monthly climate files in the suite|True||boolean|
+  |create_static_data|Activate the generation of PGD and monthly climate files in the suite|False||boolean|
   |create_time_dependent_suite|Activate the time dependent part of the suite|True||boolean|
   |do_soil|Activate preparation of SOILGRID data as input for PGD|False||boolean|
   |do_pgd|Activate generation of a PGD file|True||boolean|
   |do_prep|Run prep if cold start|True||boolean|
   |interpolate_boundaries|Activates the boundary interpolation|True||boolean|
   |do_marsprep|Run marsprep or skip extraction|True||boolean|
-  |do_prep_just_first_run|Run prep just first run|False||boolean|
+  |cold_start|Run prep every run|False||boolean|
 
 ## System
 DEODE system specific path settings
