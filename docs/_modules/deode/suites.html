@@ -456,13 +456,19 @@
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#generalsectionmodel-times">GeneralSectionModel &gt; Times</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#archiving">archiving</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#boundarysection">BoundarySection</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#fullpossection">FullposSection</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#suite-control">Suite control</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#system">System</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#troika">Troika</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#domain">domain</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#file-templates">file_templates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#file-templates">file_templates</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#file-templates-fullpos">file_templates.fullpos</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#file-templates-history">file_templates.history</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#file-templates-surfex">file_templates.surfex</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#macros">macros</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#platform">platform</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#vertical-levels">vertical_levels</a></li>
@@ -563,7 +569,6 @@
 <span class="sd">            ecf_files (str): Path to ecflow containers</span>
 <span class="sd">            task_settings (TaskSettings): Submission configuration</span>
 <span class="sd">            config (deode.ParsedConfig): Configuration file</span>
-<span class="sd">            task_settings (deode.TaskSettings): Task settings</span>
 <span class="sd">            ecf_home (str, optional): ECF_HOME. Defaults to None.</span>
 <span class="sd">            ecf_include (str, optional): ECF_INCLUDE.</span>
 <span class="sd">                                         Defaults to None which uses ecf_files.</span>
@@ -588,6 +593,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">interpolate_boundaries</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.interpolate_boundaries&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">do_prep</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.do_prep&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">do_marsprep</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.do_marsprep&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">do_archiving</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.do_archiving&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cold_start</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.cold_start&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">surfex</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.surfex&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">suite_name</span> <span class="o">=</span> <span class="n">suite_name</span>
@@ -943,7 +949,7 @@
             <span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">task_settings</span><span class="o">.</span><span class="n">get_task_settings</span><span class="p">(</span><span class="s2">&quot;Forecast&quot;</span><span class="p">))</span>
 
-            <span class="n">forecast</span> <span class="o">=</span> <span class="n">EcflowSuiteTask</span><span class="p">(</span>
+            <span class="n">forecast_task</span> <span class="o">=</span> <span class="n">EcflowSuiteTask</span><span class="p">(</span>
                 <span class="s2">&quot;Forecast&quot;</span><span class="p">,</span>
                 <span class="n">forecasting</span><span class="p">,</span>
                 <span class="n">config</span><span class="p">,</span>
@@ -953,7 +959,7 @@
                 <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="p">)</span>
 
-            <span class="n">creategrib_trigger</span> <span class="o">=</span> <span class="n">EcflowSuiteTriggers</span><span class="p">([</span><span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">forecast</span><span class="p">)])</span>
+            <span class="n">creategrib_trigger</span> <span class="o">=</span> <span class="n">EcflowSuiteTriggers</span><span class="p">([</span><span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">forecast_task</span><span class="p">)])</span>
 
             <span class="n">EcflowSuiteTask</span><span class="p">(</span>
                 <span class="s2">&quot;CreateGrib&quot;</span><span class="p">,</span>
@@ -963,7 +969,20 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
                 <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
                 <span class="n">trigger</span><span class="o">=</span><span class="n">creategrib_trigger</span><span class="p">,</span>
-            <span class="p">)</span></div>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_archiving</span><span class="p">:</span>
+                <span class="n">archiving_trigger</span> <span class="o">=</span> <span class="n">EcflowSuiteTriggers</span><span class="p">([</span><span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">cycle_fam</span><span class="p">)])</span>
+
+                <span class="n">EcflowSuiteTask</span><span class="p">(</span>
+                    <span class="s2">&quot;ArchiveHour&quot;</span><span class="p">,</span>
+                    <span class="n">time_family</span><span class="p">,</span>
+                    <span class="n">config</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">task_settings</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
+                    <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
+                    <span class="n">trigger</span><span class="o">=</span><span class="n">archiving_trigger</span><span class="p">,</span>
+                <span class="p">)</span></div>
 
 <div class="viewcode-block" id="SuiteDefinition.static_suite_part"><a class="viewcode-back" href="../../deode.html#deode.suites.SuiteDefinition.static_suite_part">[docs]</a>    <span class="k">def</span> <span class="nf">static_suite_part</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">input_template</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the time dependent part of the suite.</span>
@@ -1059,7 +1078,7 @@
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_pgd</span><span class="p">:</span>
             <span class="n">pgd_update_trigger</span> <span class="o">=</span> <span class="n">EcflowSuiteTriggers</span><span class="p">([</span><span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">e923constant</span><span class="p">)])</span>
-            <span class="n">EcflowSuiteTask</span><span class="p">(</span>
+            <span class="n">pgd_update</span> <span class="o">=</span> <span class="n">EcflowSuiteTask</span><span class="p">(</span>
                 <span class="s2">&quot;PgdUpdate&quot;</span><span class="p">,</span>
                 <span class="n">static_data</span><span class="p">,</span>
                 <span class="n">config</span><span class="p">,</span>
@@ -1070,6 +1089,32 @@
                 <span class="n">trigger</span><span class="o">=</span><span class="n">pgd_update_trigger</span><span class="p">,</span>
             <span class="p">)</span>
 
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_archiving</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_pgd</span><span class="p">:</span>
+            <span class="n">archive_static_trigger</span> <span class="o">=</span> <span class="n">EcflowSuiteTriggers</span><span class="p">([</span><span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">pgd_update</span><span class="p">)])</span>
+            <span class="n">EcflowSuiteTask</span><span class="p">(</span>
+                <span class="s2">&quot;ArchiveStatic&quot;</span><span class="p">,</span>
+                <span class="n">static_data</span><span class="p">,</span>
+                <span class="n">config</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">task_settings</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
+                <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">trigger</span><span class="o">=</span><span class="n">archive_static_trigger</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_archiving</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">do_pgd</span><span class="p">):</span>
+            <span class="n">archive_static_trigger</span> <span class="o">=</span> <span class="n">EcflowSuiteTriggers</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">month_family</span><span class="p">)]</span>
+            <span class="p">)</span>
+            <span class="n">EcflowSuiteTask</span><span class="p">(</span>
+                <span class="s2">&quot;ArchiveStatic&quot;</span><span class="p">,</span>
+                <span class="n">static_data</span><span class="p">,</span>
+                <span class="n">config</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">task_settings</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
+                <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">trigger</span><span class="o">=</span><span class="n">archive_static_trigger</span><span class="p">,</span>
+            <span class="p">)</span>
         <span class="k">return</span> <span class="n">static_data</span></div>
 
 <div class="viewcode-block" id="SuiteDefinition.save_as_defs"><a class="viewcode-back" href="../../deode.html#deode.suites.SuiteDefinition.save_as_defs">[docs]</a>    <span class="k">def</span> <span class="nf">save_as_defs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">def_file</span><span class="p">):</span>
@@ -1473,7 +1518,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on Sep 28, 2023.
+      <span class="lastupdated">Last updated on Sep 29, 2023.
       </span></p>
   </div>
 

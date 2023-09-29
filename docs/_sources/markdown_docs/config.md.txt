@@ -1,5 +1,5 @@
 # The DEODE config file
-This was automatically generated running `deode doc config` on 2023-09-28T05:47:47.
+This was automatically generated running `deode doc config` on 2023-09-29T08:25:31.
 
 ## GeneralSectionModel
 Model for the 'general' section.
@@ -40,6 +40,16 @@ Model for the 'general.times' section.
   |validtime|Valid TB specified|2023-08-21T00:00:00Z||string|
   |list|List|||array|
 
+## archiving
+
+  |Key|Description|Default|Options|Type|
+  |---|---|---|---|---|
+  |apath||deode/@CASE@/|||
+  |arch_cdate||archive/@YYYY@/@MM@/@DD@/@HH@/|||
+  |comp||atos|||
+  |grp||msdeode|||
+  |loc||ectmp:|||
+
 ## BoundarySection
 Settings for control of boundary treatment.
   |Key|Description|Default|Options|Type|
@@ -66,6 +76,7 @@ Suite control options
   |cold_start|Run prep every run|False||boolean|
   |create_static_data|Activate the generation of PGD and monthly climate files in the suite|True||boolean|
   |create_time_dependent_suite|Activate the time dependent part of the suite|True||boolean|
+  |do_archiving||False|||
   |do_marsprep|Run marsprep or skip extraction|True||boolean|
   |do_pgd|Activate generation of a PGD file|True||boolean|
   |do_prep|Run prep if cold start|True||boolean|
@@ -83,7 +94,7 @@ DEODE system specific path settings
   |bdfile_sfx_template|Name template for input initial surfex file for prep|ECSFCSFX@DOMAIN@+@LLL@||string|
   |bdfile_template|Name template for input boundary files|ELSCF@CNMEXP@ALBC@NNN@||string|
   |casedir||@SCRATCH@/deode/@CASE@|||
-  |climdir|Location of generated/used climate files (PGD/monthly files)|@CASEDIR@/climate/@DOMAIN@||string|
+  |climdir|Location of generated/used climate files (PGD/monthly files)|@CASEDIR@/climate/@DOMAIN@/||string|
   |global_sfcdir|Path to SFC files needed for c903, which are not in MARS|/hpcperm/snh02/climate_fields_mir/climate.v020_MIR_orog/||string|
   |intp_bddir|Location of boundaries on the current domain, i.e. the output directory of e927|@WRK@||string|
   |logs|Location of collected logfiles|@ARCHIVE_ROOT@/logs||string|
@@ -91,7 +102,7 @@ DEODE system specific path settings
   |marsfile_template||mars_prefetch_[levtype]_[date]_[time]+[step]|||
   |namelists|Path to static namelists|@DEODE_HOME@/deode/data/namelists/@CYCLE@||string|
   |sfx_input_defs|Path to the surfex json config file|@DEODE_HOME@/deode/data/input/sfx_input_@CYCLE@.json||string|
-  |wrk|Location of date specific working directory|@CASEDIR@/@YYYY@@MM@@DD@_@HH@@mm@||string|
+  |wrk|Location of date specific working directory|@CASEDIR@/@YYYY@@MM@@DD@_@HH@@mm@/||string|
   |bindir|Location of binaries|||string|
   |fullpos_config_file|Path to the fullpos yml config file|||string|
 
@@ -125,17 +136,35 @@ DEODE system specific path settings
 
   |Key|Description|Default|Options|Type|
   |---|---|---|---|---|
-  |duration_fa||@LLLH@:@LM@:@LS@|||
-  |duration_grib||@LLLH@h@LM@m@LS@s|||
-  |fullpos||GRIBPF@CNMEXP@@DOMAIN@+@DURATION_FA@|||
-  |history||ICMSH@CNMEXP@+@DURATION_FA@|||
-  |surfex||ICMSH@CNMEXP@+@DURATION_FA@.sfx|||
+  |duration_archive||@LLLH@h@LM@m@LS@s|||
+  |duration_model||@LLLH@:@LM@:@LS@|||
+
+### file_templates.fullpos
+
+  |Key|Description|Default|Options|Type|
+  |---|---|---|---|---|
+  |archive||GRIBPF@CNMEXP@@DOMAIN@+@DURATION_ARCHIVE@|||
+  |model||GRIBPF@CNMEXP@@DOMAIN@+@DURATION_MODEL@|||
+
+### file_templates.history
+
+  |Key|Description|Default|Options|Type|
+  |---|---|---|---|---|
+  |archive||ICMSH@CNMEXP@+@DURATION_ARCHIVE@|||
+  |model||ICMSH@CNMEXP@+@DURATION_MODEL@|||
+
+### file_templates.surfex
+
+  |Key|Description|Default|Options|Type|
+  |---|---|---|---|---|
+  |archive||ICMSH@CNMEXP@+@DURATION_ARCHIVE@.sfx|||
+  |model||ICMSH@CNMEXP@+@DURATION_MODEL@.sfx|||
 
 ## macros
 
   |Key|Description|Default|Options|Type|
   |---|---|---|---|---|
-  |gen_macros||('general.cnmexp', 'general.cycle', 'general.csc', 'general.mars_expver', 'file_templates.duration_grib', 'file_templates.duration_fa', {'surfex_template': 'file_templates.surfex'}, {'case': 'general.case'}, {'domain': 'domain.name'}, {'rrr': 'general.realization'})|||
+  |gen_macros||('general.cnmexp', 'general.cycle', 'general.csc', 'general.mars_expver', 'file_templates.duration_model', 'file_templates.duration_archive', {'surfex_template': 'file_templates.surfex.archive'}, {'case': 'general.case'}, {'domain': 'domain.name'}, {'rrr': 'general.realization'})|||
   |group_macros||('platform', 'system')|||
   |os_macros||('USER', 'HOME', 'PWD')|||
 
