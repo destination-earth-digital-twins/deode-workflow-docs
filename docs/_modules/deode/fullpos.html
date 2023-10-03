@@ -633,6 +633,9 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            d (dict): Merged dict</span>
 
+<span class="sd">        Raises:</span>
+<span class="sd">            InvalidSelectionCombination    # noqa: DAR401</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">d</span> <span class="o">=</span> <span class="n">d1</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">d2</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -644,7 +647,7 @@
                         <span class="k">if</span> <span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]:</span>
                             <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+                    <span class="k">raise</span> <span class="n">InvalidSelectionCombination</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
 
@@ -685,7 +688,6 @@
 
 <span class="sd">        Raises:</span>
 <span class="sd">            InvalidSelectionCombination    # noqa: DAR401</span>
-
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">namfpc_out</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;NAMFPC&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">nldict</span><span class="p">[</span><span class="s2">&quot;NAMFPC&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()}</span>
