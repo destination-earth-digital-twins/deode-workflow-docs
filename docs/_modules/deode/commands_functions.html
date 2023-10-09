@@ -187,6 +187,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.derived_variables">deode.derived_variables module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.derived_variables.check_fullpos_namelist"><code class="docutils literal notranslate"><span class="pre">check_fullpos_namelist()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.derived_variables.derived_variables"><code class="docutils literal notranslate"><span class="pre">derived_variables()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.derived_variables.set_times"><code class="docutils literal notranslate"><span class="pre">set_times()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.fullpos">deode.fullpos module</a><ul>
@@ -540,7 +541,7 @@
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">GeneralConstants</span>
 <span class="kn">from</span> <span class="nn">.config_doc</span> <span class="kn">import</span> <span class="n">DocConfig</span>
 <span class="kn">from</span> <span class="nn">.config_parser</span> <span class="kn">import</span> <span class="n">BasicConfig</span><span class="p">,</span> <span class="n">ConfigParserDefaults</span>
-<span class="kn">from</span> <span class="nn">.derived_variables</span> <span class="kn">import</span> <span class="n">check_fullpos_namelist</span><span class="p">,</span> <span class="n">derived_variables</span>
+<span class="kn">from</span> <span class="nn">.derived_variables</span> <span class="kn">import</span> <span class="n">check_fullpos_namelist</span><span class="p">,</span> <span class="n">derived_variables</span><span class="p">,</span> <span class="n">set_times</span>
 <span class="kn">from</span> <span class="nn">.logs</span> <span class="kn">import</span> <span class="n">logger</span>
 <span class="kn">from</span> <span class="nn">.namelist</span> <span class="kn">import</span> <span class="n">NamelistComparator</span><span class="p">,</span> <span class="n">NamelistGenerator</span><span class="p">,</span> <span class="n">NamelistIntegrator</span>
 <span class="kn">from</span> <span class="nn">.scheduler</span> <span class="kn">import</span> <span class="n">EcflowServer</span>
@@ -588,6 +589,7 @@
 
     <span class="n">deode_home</span> <span class="o">=</span> <span class="n">set_deode_home</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
     <span class="n">config</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">update</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;platform&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;deode_home&quot;</span><span class="p">:</span> <span class="n">deode_home</span><span class="p">}})</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">update</span><span class="o">=</span><span class="n">set_times</span><span class="p">(</span><span class="n">config</span><span class="p">))</span>
 
     <span class="n">submission_defs</span> <span class="o">=</span> <span class="n">TaskSettings</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
     <span class="n">sub</span> <span class="o">=</span> <span class="n">NoSchedulerSubmission</span><span class="p">(</span><span class="n">submission_defs</span><span class="p">)</span>
@@ -609,6 +611,7 @@
 
     <span class="n">deode_home</span> <span class="o">=</span> <span class="n">set_deode_home</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
     <span class="n">config</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">update</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;platform&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;deode_home&quot;</span><span class="p">:</span> <span class="n">deode_home</span><span class="p">}})</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">update</span><span class="o">=</span><span class="n">set_times</span><span class="p">(</span><span class="n">config</span><span class="p">))</span>
 
     <span class="n">server</span> <span class="o">=</span> <span class="n">EcflowServer</span><span class="p">(</span>
         <span class="n">args</span><span class="o">.</span><span class="n">ecf_host</span><span class="p">,</span> <span class="n">ecf_port</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">ecf_port</span><span class="p">,</span> <span class="n">start_command</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">start_command</span>
@@ -699,7 +702,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">deode_home</span> <span class="o">=</span> <span class="n">set_deode_home</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
     <span class="n">config</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">update</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;platform&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;deode_home&quot;</span><span class="p">:</span> <span class="n">deode_home</span><span class="p">}})</span>
-
+    <span class="n">config</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">update</span><span class="o">=</span><span class="n">set_times</span><span class="p">(</span><span class="n">config</span><span class="p">))</span>
     <span class="n">config</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">update</span><span class="o">=</span><span class="n">derived_variables</span><span class="p">(</span><span class="n">config</span><span class="p">))</span>
 
     <span class="n">nlgen</span> <span class="o">=</span> <span class="n">NamelistGenerator</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">namelist_type</span><span class="p">,</span> <span class="n">substitute</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">no_substitute</span><span class="p">)</span>
