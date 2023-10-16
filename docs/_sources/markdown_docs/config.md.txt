@@ -1,8 +1,8 @@
-This was automatically generated running `deode doc config` on 2023-10-16T21:35:43.
+This was automatically generated running `deode doc config` on 2023-10-16T21:42:41.
 
-# Config
+# DeodeConfig
 
-**Title:** Config
+**Title:** DeodeConfig
 
 |                           |                                                                           |
 | ------------------------- | ------------------------------------------------------------------------- |
@@ -10,28 +10,28 @@ This was automatically generated running `deode doc config` on 2023-10-16T21:35:
 | **Required**              | No                                                                        |
 | **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
 
-**Description:** Model for validation of `deode`'s main config file.
+**Description:** Model for validation of the data in the main config file.
 
-| Property                             | Type   | Required | Default | Title/Description  |
-| ------------------------------------ | ------ | -------- | ------- | ------------------ |
-| [general](#general )                 | object | Yes      | -       | General Section    |
-| [suite_control](#suite_control )     | object | No       | -       | Suite control      |
-| [system](#system )                   | object | No       | -       | System             |
-| [boundaries](#boundaries )           | object | No       | -       | Boundary Section   |
-| [fullpos](#fullpos )                 | object | No       | -       | Fullpos Section    |
-| [troika](#troika )                   | object | No       | -       | Troika             |
-| [include](#include )                 | object | No       | -       | Include Section    |
-| [domain](#domain )                   | object | No       | -       | Domain Section     |
-| [file_templates](#file_templates )   | object | No       | -       | File Templates     |
-| [macros](#macros )                   | object | No       | -       | Macros Section     |
-| [platform](#platform )               | object | No       | -       | Platform Section   |
-| [submission](#submission )           | object | No       | -       | Submission Section |
-| [vertical_levels](#vertical_levels ) | object | No       | -       | Vertical Levels    |
-| [](#additionalProperties )           | object | No       | -       | -                  |
+| Property                               | Pattern | Type   | Deprecated | Definition | Title/Description   |
+| -------------------------------------- | ------- | ------ | ---------- | ---------- | ------------------- |
+| + [general](#general )                 | No      | object | No         | -          | GeneralSectionModel |
+| - [suite_control](#suite_control )     | No      | object | No         | -          | Suite control       |
+| - [system](#system )                   | No      | object | No         | -          | System              |
+| - [boundaries](#boundaries )           | No      | object | No         | -          | BoundarySection     |
+| - [fullpos](#fullpos )                 | No      | object | No         | -          | FullposSection      |
+| - [troika](#troika )                   | No      | object | No         | -          | Troika              |
+| - [include](#include )                 | No      | object | No         | -          | Include Section     |
+| - [domain](#domain )                   | No      | object | No         | -          | DomainSection       |
+| - [file_templates](#file_templates )   | No      | object | No         | -          | FileTemplates       |
+| - [macros](#macros )                   | No      | object | No         | -          | MacroSection        |
+| - [platform](#platform )               | No      | object | No         | -          | DomainSection       |
+| - [submission](#submission )           | No      | object | No         | -          | SubmissionSection   |
+| - [vertical_levels](#vertical_levels ) | No      | object | No         | -          | VerticalLevels      |
+| - [](#additionalProperties )           | No      | object | No         | -          | -                   |
 
-## <a name="general"></a>Property `Config > general`
+## <a name="general"></a>Property `DeodeConfig > general`
 
-**Title:** General Section
+**Title:** GeneralSectionModel
 
 |                           |                                                                           |
 | ------------------------- | ------------------------------------------------------------------------- |
@@ -41,29 +41,29 @@ This was automatically generated running `deode doc config` on 2023-10-16T21:35:
 
 **Description:** Model for the 'general' section.
 
-| Property                                                     | Type             | Required | Default      | Title/Description                                                                                                                                                                                                                                                                                                                            |
-| ------------------------------------------------------------ | ---------------- | -------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [times](#general_times )                                     | Combination      | Yes      | -            | Time-Related Entries                                                                                                                                                                                                                                                                                                                         |
-| [accept_static_namelists](#general_accept_static_namelists ) | boolean          | No       | -            | Allow usage of static namelists as input for the tasks. The namelist should be located in the directory specified by platform.namelists and named with the convention namelist_{kind}_{task} where kind could be surfex or master and task forecast/pgd or similar. For the extraction of namelist see [namelists.md](../docs/namelists.md). |
-| [case](#general_case )                                       | string           | No       | "deode_case" | Experiment name                                                                                                                                                                                                                                                                                                                              |
-| [realization](#general_realization )                         | number           | No       | -            | Placeholder for future ensemble or similar need                                                                                                                                                                                                                                                                                              |
-| [cnmexp](#general_cnmexp )                                   | string           | No       | "DEOD"       | Experiment short name                                                                                                                                                                                                                                                                                                                        |
-| [tstep](#general_tstep )                                     | number           | No       | -            | Model time step                                                                                                                                                                                                                                                                                                                              |
-| [loglevel](#general_loglevel )                               | enum (of string) | No       | -            | Logger output level                                                                                                                                                                                                                                                                                                                          |
-| [surfex](#general_surfex )                                   | boolean          | No       | -            | SURFEX switch                                                                                                                                                                                                                                                                                                                                |
-| [keep_workdirs](#general_keep_workdirs )                     | boolean          | No       | -            | Do not remove working directories                                                                                                                                                                                                                                                                                                            |
-| [csc](#general_csc )                                         | enum (of string) | No       | "AROME"      | CSC                                                                                                                                                                                                                                                                                                                                          |
-| [cycle](#general_cycle )                                     | enum (of string) | No       | -            | IAL cycle                                                                                                                                                                                                                                                                                                                                    |
-| [nproma](#general_nproma )                                   | number           | No       | -            | NPROMA size in the forecast model. See the namelists for where it is used                                                                                                                                                                                                                                                                    |
-| [initfile](#general_initfile )                               | string           | No       | -            | Initial file for the forecast object. Normally no need to provide unless there are special requirements or the forecast object is used in stand alone mode.                                                                                                                                                                                  |
-| [initfile_sfx](#general_initfile_sfx )                       | string           | No       | -            | Initial surfex file for the forecast object. Normally no need to provide unless there are special requirements or the forecast object is used in stand alone mode.                                                                                                                                                                           |
-| [mars_expver](#general_mars_expver )                         | string           | No       | ""           | Name of the experiment to get data from MARS in case of global DT. Empty string for operational.                                                                                                                                                                                                                                             |
-| [output_settings](#general_output_settings )                 | object           | No       | -            | Output Settings                                                                                                                                                                                                                                                                                                                              |
-| [windfarm](#general_windfarm )                               | boolean          | No       | -            | Switch on wind farm parameterisation                                                                                                                                                                                                                                                                                                         |
+| Property                                                       | Pattern | Type             | Deprecated | Definition | Title/Description                                                                                                                                                                                                                                                                                                                            |
+| -------------------------------------------------------------- | ------- | ---------------- | ---------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| + [times](#general_times )                                     | No      | Combination      | No         | -          | Times                                                                                                                                                                                                                                                                                                                                        |
+| - [accept_static_namelists](#general_accept_static_namelists ) | No      | boolean          | No         | -          | Allow usage of static namelists as input for the tasks. The namelist should be located in the directory specified by platform.namelists and named with the convention namelist_{kind}_{task} where kind could be surfex or master and task forecast/pgd or similar. For the extraction of namelist see [namelists.md](../docs/namelists.md). |
+| - [case](#general_case )                                       | No      | string           | No         | -          | Experiment name                                                                                                                                                                                                                                                                                                                              |
+| - [realization](#general_realization )                         | No      | number           | No         | -          | Placeholder for future ensemble or similar need                                                                                                                                                                                                                                                                                              |
+| - [cnmexp](#general_cnmexp )                                   | No      | string           | No         | -          | Experiment short name                                                                                                                                                                                                                                                                                                                        |
+| - [tstep](#general_tstep )                                     | No      | number           | No         | -          | Model time step                                                                                                                                                                                                                                                                                                                              |
+| - [loglevel](#general_loglevel )                               | No      | enum (of string) | No         | -          | Logger output level                                                                                                                                                                                                                                                                                                                          |
+| - [surfex](#general_surfex )                                   | No      | boolean          | No         | -          | SURFEX switch                                                                                                                                                                                                                                                                                                                                |
+| - [keep_workdirs](#general_keep_workdirs )                     | No      | boolean          | No         | -          | Do not remove working directories                                                                                                                                                                                                                                                                                                            |
+| - [csc](#general_csc )                                         | No      | enum (of string) | No         | -          | CSC                                                                                                                                                                                                                                                                                                                                          |
+| - [cycle](#general_cycle )                                     | No      | enum (of string) | No         | -          | IAL cycle                                                                                                                                                                                                                                                                                                                                    |
+| - [nproma](#general_nproma )                                   | No      | number           | No         | -          | NPROMA size in the forecast model. See the namelists for where it is used                                                                                                                                                                                                                                                                    |
+| - [initfile](#general_initfile )                               | No      | string           | No         | -          | Initial file for the forecast object. Normally no need to provide unless there are special requirements or the forecast object is used in stand alone mode.                                                                                                                                                                                  |
+| - [initfile_sfx](#general_initfile_sfx )                       | No      | string           | No         | -          | Initial surfex file for the forecast object. Normally no need to provide unless there are special requirements or the forecast object is used in stand alone mode.                                                                                                                                                                           |
+| - [mars_expver](#general_mars_expver )                         | No      | string           | No         | -          | Name of the experiment to get data from MARS in case of global DT. Empty string for operational.                                                                                                                                                                                                                                             |
+| - [output_settings](#general_output_settings )                 | No      | object           | No         | -          | OutputSettings                                                                                                                                                                                                                                                                                                                               |
+| - [windfarm](#general_windfarm )                               | No      | boolean          | No         | -          | Switch on wind farm parameterisation                                                                                                                                                                                                                                                                                                         |
 
-### <a name="general_times"></a>Property `Config > general > times`
+### <a name="general_times"></a>Property `DeodeConfig > general > times`
 
-**Title:** Time-Related Entries
+**Title:** Times
 
 |                           |                                                                           |
 | ------------------------- | ------------------------------------------------------------------------- |
@@ -73,22 +73,22 @@ This was automatically generated running `deode doc config` on 2023-10-16T21:35:
 
 **Description:** Model for the 'general.times' section.
 
-| Property                                         | Type            | Required | Default | Title/Description                |
-| ------------------------------------------------ | --------------- | -------- | ------- | -------------------------------- |
-| [forecast_range](#general_times_forecast_range ) | string          | No       | -       | Forecast range                   |
-| [start](#general_times_start )                   | string          | No       | -       | Start                            |
-| [end](#general_times_end )                       | string          | No       | -       | End                              |
-| [list](#general_times_list )                     | array of string | No       | -       | List                             |
-| [cycle_length](#general_times_cycle_length )     | string          | No       | "PT3H"  | Cycle length defined as duration |
-| [basetime](#general_times_basetime )             | string          | No       | -       | Base TB specified                |
-| [validtime](#general_times_validtime )           | string          | No       | -       | Valid TB specified               |
+| Property                                           | Pattern | Type            | Deprecated | Definition | Title/Description                |
+| -------------------------------------------------- | ------- | --------------- | ---------- | ---------- | -------------------------------- |
+| - [forecast_range](#general_times_forecast_range ) | No      | string          | No         | -          | Forecast range                   |
+| - [start](#general_times_start )                   | No      | string          | No         | -          | Start                            |
+| - [end](#general_times_end )                       | No      | string          | No         | -          | End                              |
+| - [list](#general_times_list )                     | No      | array of string | No         | -          | List                             |
+| - [cycle_length](#general_times_cycle_length )     | No      | string          | No         | -          | Cycle length defined as duration |
+| - [basetime](#general_times_basetime )             | No      | string          | No         | -          | Base TB specified                |
+| - [validtime](#general_times_validtime )           | No      | string          | No         | -          | Valid TB specified               |
 
 | One of(Option)                    |
 | --------------------------------- |
 | [item 0](#general_times_oneOf_i0) |
 | [item 1](#general_times_oneOf_i1) |
 
-#### <a name="general_times_oneOf_i0"></a>Property `Config > general > times > oneOf > item 0`
+#### <a name="general_times_oneOf_i0"></a>Property `DeodeConfig > general > times > oneOf > item 0`
 
 |                           |                                                                           |
 | ------------------------- | ------------------------------------------------------------------------- |
@@ -111,7 +111,7 @@ This was automatically generated running `deode doc config` on 2023-10-16T21:35:
 * start
 * end
 
-#### <a name="general_times_oneOf_i1"></a>Property `Config > general > times > oneOf > item 1`
+#### <a name="general_times_oneOf_i1"></a>Property `DeodeConfig > general > times > oneOf > item 1`
 
 |                           |                                                                           |
 | ------------------------- | ------------------------------------------------------------------------- |
@@ -132,7 +132,7 @@ This was automatically generated running `deode doc config` on 2023-10-16T21:35:
 | [item 0](#general_times_oneOf_i1_not_anyOf_i0) |
 | [item 1](#general_times_oneOf_i1_not_anyOf_i1) |
 
-##### <a name="general_times_oneOf_i1_not_anyOf_i0"></a>Property `Config > general > times > oneOf > item 1 > not > anyOf > item 0`
+##### <a name="general_times_oneOf_i1_not_anyOf_i0"></a>Property `DeodeConfig > general > times > oneOf > item 1 > not > anyOf > item 0`
 
 |                           |                                                                           |
 | ------------------------- | ------------------------------------------------------------------------- |
@@ -143,7 +143,7 @@ This was automatically generated running `deode doc config` on 2023-10-16T21:35:
 ##### <a name="autogenerated_heading_6"></a>The following properties are required
 * start
 
-##### <a name="general_times_oneOf_i1_not_anyOf_i1"></a>Property `Config > general > times > oneOf > item 1 > not > anyOf > item 1`
+##### <a name="general_times_oneOf_i1_not_anyOf_i1"></a>Property `DeodeConfig > general > times > oneOf > item 1 > not > anyOf > item 1`
 
 |                           |                                                                           |
 | ------------------------- | ------------------------------------------------------------------------- |
@@ -157,7 +157,7 @@ This was automatically generated running `deode doc config` on 2023-10-16T21:35:
 ##### <a name="autogenerated_heading_8"></a>The following properties are required
 * list
 
-#### <a name="general_times_forecast_range"></a>Property `Config > general > times > forecast_range`
+#### <a name="general_times_forecast_range"></a>Property `DeodeConfig > general > times > forecast_range`
 
 |              |          |
 | ------------ | -------- |
@@ -170,7 +170,7 @@ This was automatically generated running `deode doc config` on 2023-10-16T21:35:
 | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Must match regular expression** | ```^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$``` [Test](https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24) |
 
-#### <a name="general_times_start"></a>Property `Config > general > times > start`
+#### <a name="general_times_start"></a>Property `DeodeConfig > general > times > start`
 
 |              |             |
 | ------------ | ----------- |
@@ -180,7 +180,7 @@ This was automatically generated running `deode doc config` on 2023-10-16T21:35:
 
 **Description:** Start
 
-#### <a name="general_times_end"></a>Property `Config > general > times > end`
+#### <a name="general_times_end"></a>Property `DeodeConfig > general > times > end`
 
 |              |             |
 | ------------ | ----------- |
@@ -190,7 +190,7 @@ This was automatically generated running `deode doc config` on 2023-10-16T21:35:
 
 **Description:** End
 
-#### <a name="general_times_list"></a>Property `Config > general > times > list`
+#### <a name="general_times_list"></a>Property `DeodeConfig > general > times > list`
 
 |              |                   |
 | ------------ | ----------------- |
@@ -211,7 +211,7 @@ This was automatically generated running `deode doc config` on 2023-10-16T21:35:
 | --------------------------------------- | ----------- |
 | [list items](#general_times_list_items) | -           |
 
-##### <a name="autogenerated_heading_9"></a>Config > general > times > list > list items
+##### <a name="autogenerated_heading_9"></a>DeodeConfig > general > times > list > list items
 
 |              |             |
 | ------------ | ----------- |
@@ -219,7 +219,7 @@ This was automatically generated running `deode doc config` on 2023-10-16T21:35:
 | **Required** | No          |
 | **Format**   | `date-time` |
 
-#### <a name="general_times_cycle_length"></a>Property `Config > general > times > cycle_length`
+#### <a name="general_times_cycle_length"></a>Property `DeodeConfig > general > times > cycle_length`
 
 |              |          |
 | ------------ | -------- |
@@ -233,7 +233,7 @@ This was automatically generated running `deode doc config` on 2023-10-16T21:35:
 | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Must match regular expression** | ```^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$``` [Test](https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24) |
 
-#### <a name="general_times_basetime"></a>Property `Config > general > times > basetime`
+#### <a name="general_times_basetime"></a>Property `DeodeConfig > general > times > basetime`
 
 |              |          |
 | ------------ | -------- |
@@ -242,7 +242,7 @@ This was automatically generated running `deode doc config` on 2023-10-16T21:35:
 
 **Description:** Base TB specified
 
-#### <a name="general_times_validtime"></a>Property `Config > general > times > validtime`
+#### <a name="general_times_validtime"></a>Property `DeodeConfig > general > times > validtime`
 
 |              |          |
 | ------------ | -------- |
@@ -251,7 +251,7 @@ This was automatically generated running `deode doc config` on 2023-10-16T21:35:
 
 **Description:** Valid TB specified
 
-### <a name="general_accept_static_namelists"></a>Property `Config > general > accept_static_namelists`
+### <a name="general_accept_static_namelists"></a>Property `DeodeConfig > general > accept_static_namelists`
 
 |              |           |
 | ------------ | --------- |
@@ -260,7 +260,7 @@ This was automatically generated running `deode doc config` on 2023-10-16T21:35:
 
 **Description:** Allow usage of static namelists as input for the tasks. The namelist should be located in the directory specified by platform.namelists and named with the convention namelist_{kind}_{task} where kind could be surfex or master and task forecast/pgd or similar. For the extraction of namelist see [namelists.md](../docs/namelists.md).
 
-### <a name="general_case"></a>Property `Config > general > case`
+### <a name="general_case"></a>Property `DeodeConfig > general > case`
 
 |              |                |
 | ------------ | -------------- |
@@ -270,7 +270,7 @@ This was automatically generated running `deode doc config` on 2023-10-16T21:35:
 
 **Description:** Experiment name
 
-### <a name="general_realization"></a>Property `Config > general > realization`
+### <a name="general_realization"></a>Property `DeodeConfig > general > realization`
 
 |              |          |
 | ------------ | -------- |
@@ -279,7 +279,7 @@ This was automatically generated running `deode doc config` on 2023-10-16T21:35:
 
 **Description:** Placeholder for future ensemble or similar need
 
-### <a name="general_cnmexp"></a>Property `Config > general > cnmexp`
+### <a name="general_cnmexp"></a>Property `DeodeConfig > general > cnmexp`
 
 |              |          |
 | ------------ | -------- |
@@ -294,7 +294,7 @@ This was automatically generated running `deode doc config` on 2023-10-16T21:35:
 | **Min length** | 4 |
 | **Max length** | 4 |
 
-### <a name="general_tstep"></a>Property `Config > general > tstep`
+### <a name="general_tstep"></a>Property `DeodeConfig > general > tstep`
 
 |              |          |
 | ------------ | -------- |
@@ -303,7 +303,7 @@ This was automatically generated running `deode doc config` on 2023-10-16T21:35:
 
 **Description:** Model time step
 
-### <a name="general_loglevel"></a>Property `Config > general > loglevel`
+### <a name="general_loglevel"></a>Property `DeodeConfig > general > loglevel`
 
 |              |                    |
 | ------------ | ------------------ |
@@ -319,7 +319,7 @@ Must be one of:
 * "INFO"
 * "WARNING"
 
-### <a name="general_surfex"></a>Property `Config > general > surfex`
+### <a name="general_surfex"></a>Property `DeodeConfig > general > surfex`
 
 |              |           |
 | ------------ | --------- |
@@ -328,7 +328,7 @@ Must be one of:
 
 **Description:** SURFEX switch
 
-### <a name="general_keep_workdirs"></a>Property `Config > general > keep_workdirs`
+### <a name="general_keep_workdirs"></a>Property `DeodeConfig > general > keep_workdirs`
 
 |              |           |
 | ------------ | --------- |
@@ -337,7 +337,7 @@ Must be one of:
 
 **Description:** Do not remove working directories
 
-### <a name="general_csc"></a>Property `Config > general > csc`
+### <a name="general_csc"></a>Property `DeodeConfig > general > csc`
 
 |              |                    |
 | ------------ | ------------------ |
@@ -352,7 +352,7 @@ Must be one of:
 * "ALARO"
 * "HARMONIE_AROME"
 
-### <a name="general_cycle"></a>Property `Config > general > cycle`
+### <a name="general_cycle"></a>Property `DeodeConfig > general > cycle`
 
 |              |                    |
 | ------------ | ------------------ |
@@ -365,7 +365,7 @@ Must be one of:
 * "CY48t3"
 * "CY46h1"
 
-### <a name="general_nproma"></a>Property `Config > general > nproma`
+### <a name="general_nproma"></a>Property `DeodeConfig > general > nproma`
 
 |              |          |
 | ------------ | -------- |
@@ -374,7 +374,7 @@ Must be one of:
 
 **Description:** NPROMA size in the forecast model. See the namelists for where it is used
 
-### <a name="general_initfile"></a>Property `Config > general > initfile`
+### <a name="general_initfile"></a>Property `DeodeConfig > general > initfile`
 
 |              |          |
 | ------------ | -------- |
@@ -383,7 +383,7 @@ Must be one of:
 
 **Description:** Initial file for the forecast object. Normally no need to provide unless there are special requirements or the forecast object is used in stand alone mode.
 
-### <a name="general_initfile_sfx"></a>Property `Config > general > initfile_sfx`
+### <a name="general_initfile_sfx"></a>Property `DeodeConfig > general > initfile_sfx`
 
 |              |          |
 | ------------ | -------- |
@@ -392,7 +392,7 @@ Must be one of:
 
 **Description:** Initial surfex file for the forecast object. Normally no need to provide unless there are special requirements or the forecast object is used in stand alone mode.
 
-### <a name="general_mars_expver"></a>Property `Config > general > mars_expver`
+### <a name="general_mars_expver"></a>Property `DeodeConfig > general > mars_expver`
 
 |              |          |
 | ------------ | -------- |
@@ -402,9 +402,9 @@ Must be one of:
 
 **Description:** Name of the experiment to get data from MARS in case of global DT. Empty string for operational.
 
-### <a name="general_output_settings"></a>Property `Config > general > output_settings`
+### <a name="general_output_settings"></a>Property `DeodeConfig > general > output_settings`
 
-**Title:** Output Settings
+**Title:** OutputSettings
 
 |                           |                                                                           |
 | ------------------------- | ------------------------------------------------------------------------- |
@@ -414,14 +414,14 @@ Must be one of:
 
 **Description:** Output settings. Specified as duration for any of interval, endtime:interval, starttime:endtime:interval or a list of these options
 
-| Property                                     | Type   | Required | Default | Title/Description                                                 |
-| -------------------------------------------- | ------ | -------- | ------- | ----------------------------------------------------------------- |
-| [history](#general_output_settings_history ) | object | No       | -       | Output list for history files                                     |
-| [surfex](#general_output_settings_surfex )   | object | No       | -       | Output list for surfex files                                      |
-| [fullpos](#general_output_settings_fullpos ) | object | No       | -       | Output list for fullpos files                                     |
-| [nrazts](#general_output_settings_nrazts )   | object | No       | -       | Reset times for instantaneous fluxes ( e.g. min/max temperature ) |
+| Property                                       | Pattern | Type   | Deprecated | Definition | Title/Description                                                 |
+| ---------------------------------------------- | ------- | ------ | ---------- | ---------- | ----------------------------------------------------------------- |
+| - [history](#general_output_settings_history ) | No      | object | No         | -          | Output list for history files                                     |
+| - [surfex](#general_output_settings_surfex )   | No      | object | No         | -          | Output list for surfex files                                      |
+| - [fullpos](#general_output_settings_fullpos ) | No      | object | No         | -          | Output list for fullpos files                                     |
+| - [nrazts](#general_output_settings_nrazts )   | No      | object | No         | -          | Reset times for instantaneous fluxes ( e.g. min/max temperature ) |
 
-#### <a name="general_output_settings_history"></a>Property `Config > general > output_settings > history`
+#### <a name="general_output_settings_history"></a>Property `DeodeConfig > general > output_settings > history`
 
 |                           |                                                                           |
 | ------------------------- | ------------------------------------------------------------------------- |
@@ -431,7 +431,7 @@ Must be one of:
 
 **Description:** Output list for history files
 
-#### <a name="general_output_settings_surfex"></a>Property `Config > general > output_settings > surfex`
+#### <a name="general_output_settings_surfex"></a>Property `DeodeConfig > general > output_settings > surfex`
 
 |                           |                                                                           |
 | ------------------------- | ------------------------------------------------------------------------- |
@@ -441,7 +441,7 @@ Must be one of:
 
 **Description:** Output list for surfex files
 
-#### <a name="general_output_settings_fullpos"></a>Property `Config > general > output_settings > fullpos`
+#### <a name="general_output_settings_fullpos"></a>Property `DeodeConfig > general > output_settings > fullpos`
 
 |                           |                                                                           |
 | ------------------------- | ------------------------------------------------------------------------- |
@@ -451,7 +451,7 @@ Must be one of:
 
 **Description:** Output list for fullpos files
 
-#### <a name="general_output_settings_nrazts"></a>Property `Config > general > output_settings > nrazts`
+#### <a name="general_output_settings_nrazts"></a>Property `DeodeConfig > general > output_settings > nrazts`
 
 |                           |                                                                           |
 | ------------------------- | ------------------------------------------------------------------------- |
@@ -461,7 +461,7 @@ Must be one of:
 
 **Description:** Reset times for instantaneous fluxes ( e.g. min/max temperature )
 
-### <a name="general_windfarm"></a>Property `Config > general > windfarm`
+### <a name="general_windfarm"></a>Property `DeodeConfig > general > windfarm`
 
 |              |           |
 | ------------ | --------- |
@@ -470,7 +470,7 @@ Must be one of:
 
 **Description:** Switch on wind farm parameterisation
 
-## <a name="suite_control"></a>Property `Config > suite_control`
+## <a name="suite_control"></a>Property `DeodeConfig > suite_control`
 
 **Title:** Suite control
 
@@ -482,18 +482,18 @@ Must be one of:
 
 **Description:** Suite control options
 
-| Property                                                                   | Type    | Required | Default | Title/Description                                                     |
-| -------------------------------------------------------------------------- | ------- | -------- | ------- | --------------------------------------------------------------------- |
-| [do_soil](#suite_control_do_soil )                                         | boolean | No       | -       | Activate preparation of SOILGRID data as input for PGD                |
-| [do_pgd](#suite_control_do_pgd )                                           | boolean | No       | -       | Activate generation of a PGD file                                     |
-| [do_prep](#suite_control_do_prep )                                         | boolean | No       | -       | Run prep if cold start                                                |
-| [cold_start](#suite_control_cold_start )                                   | boolean | No       | -       | Run prep every run                                                    |
-| [interpolate_boundaries](#suite_control_interpolate_boundaries )           | boolean | No       | -       | Activates the boundary interpolation                                  |
-| [do_marsprep](#suite_control_do_marsprep )                                 | boolean | No       | -       | Run marsprep or skip extraction                                       |
-| [create_static_data](#suite_control_create_static_data )                   | boolean | No       | -       | Activate the generation of PGD and monthly climate files in the suite |
-| [create_time_dependent_suite](#suite_control_create_time_dependent_suite ) | boolean | No       | -       | Activate the time dependent part of the suite                         |
+| Property                                                                     | Pattern | Type    | Deprecated | Definition | Title/Description                                                     |
+| ---------------------------------------------------------------------------- | ------- | ------- | ---------- | ---------- | --------------------------------------------------------------------- |
+| - [do_soil](#suite_control_do_soil )                                         | No      | boolean | No         | -          | Activate preparation of SOILGRID data as input for PGD                |
+| - [do_pgd](#suite_control_do_pgd )                                           | No      | boolean | No         | -          | Activate generation of a PGD file                                     |
+| - [do_prep](#suite_control_do_prep )                                         | No      | boolean | No         | -          | Run prep if cold start                                                |
+| - [cold_start](#suite_control_cold_start )                                   | No      | boolean | No         | -          | Run prep every run                                                    |
+| - [interpolate_boundaries](#suite_control_interpolate_boundaries )           | No      | boolean | No         | -          | Activates the boundary interpolation                                  |
+| - [do_marsprep](#suite_control_do_marsprep )                                 | No      | boolean | No         | -          | Run marsprep or skip extraction                                       |
+| - [create_static_data](#suite_control_create_static_data )                   | No      | boolean | No         | -          | Activate the generation of PGD and monthly climate files in the suite |
+| - [create_time_dependent_suite](#suite_control_create_time_dependent_suite ) | No      | boolean | No         | -          | Activate the time dependent part of the suite                         |
 
-### <a name="suite_control_do_soil"></a>Property `Config > suite_control > do_soil`
+### <a name="suite_control_do_soil"></a>Property `DeodeConfig > suite_control > do_soil`
 
 |              |           |
 | ------------ | --------- |
@@ -502,7 +502,7 @@ Must be one of:
 
 **Description:** Activate preparation of SOILGRID data as input for PGD
 
-### <a name="suite_control_do_pgd"></a>Property `Config > suite_control > do_pgd`
+### <a name="suite_control_do_pgd"></a>Property `DeodeConfig > suite_control > do_pgd`
 
 |              |           |
 | ------------ | --------- |
@@ -511,7 +511,7 @@ Must be one of:
 
 **Description:** Activate generation of a PGD file
 
-### <a name="suite_control_do_prep"></a>Property `Config > suite_control > do_prep`
+### <a name="suite_control_do_prep"></a>Property `DeodeConfig > suite_control > do_prep`
 
 |              |           |
 | ------------ | --------- |
@@ -520,7 +520,7 @@ Must be one of:
 
 **Description:** Run prep if cold start
 
-### <a name="suite_control_cold_start"></a>Property `Config > suite_control > cold_start`
+### <a name="suite_control_cold_start"></a>Property `DeodeConfig > suite_control > cold_start`
 
 |              |           |
 | ------------ | --------- |
@@ -529,7 +529,7 @@ Must be one of:
 
 **Description:** Run prep every run
 
-### <a name="suite_control_interpolate_boundaries"></a>Property `Config > suite_control > interpolate_boundaries`
+### <a name="suite_control_interpolate_boundaries"></a>Property `DeodeConfig > suite_control > interpolate_boundaries`
 
 |              |           |
 | ------------ | --------- |
@@ -538,7 +538,7 @@ Must be one of:
 
 **Description:** Activates the boundary interpolation
 
-### <a name="suite_control_do_marsprep"></a>Property `Config > suite_control > do_marsprep`
+### <a name="suite_control_do_marsprep"></a>Property `DeodeConfig > suite_control > do_marsprep`
 
 |              |           |
 | ------------ | --------- |
@@ -547,7 +547,7 @@ Must be one of:
 
 **Description:** Run marsprep or skip extraction
 
-### <a name="suite_control_create_static_data"></a>Property `Config > suite_control > create_static_data`
+### <a name="suite_control_create_static_data"></a>Property `DeodeConfig > suite_control > create_static_data`
 
 |              |           |
 | ------------ | --------- |
@@ -556,7 +556,7 @@ Must be one of:
 
 **Description:** Activate the generation of PGD and monthly climate files in the suite
 
-### <a name="suite_control_create_time_dependent_suite"></a>Property `Config > suite_control > create_time_dependent_suite`
+### <a name="suite_control_create_time_dependent_suite"></a>Property `DeodeConfig > suite_control > create_time_dependent_suite`
 
 |              |           |
 | ------------ | --------- |
@@ -565,7 +565,7 @@ Must be one of:
 
 **Description:** Activate the time dependent part of the suite
 
-## <a name="system"></a>Property `Config > system`
+## <a name="system"></a>Property `DeodeConfig > system`
 
 **Title:** System
 
@@ -577,26 +577,26 @@ Must be one of:
 
 **Description:** DEODE system specific path settings
 
-| Property                                            | Type   | Required | Default | Title/Description                                                               |
-| --------------------------------------------------- | ------ | -------- | ------- | ------------------------------------------------------------------------------- |
-| [bdfile_sfx_template](#system_bdfile_sfx_template ) | string | No       | -       | Name template for input initial surfex file for prep                            |
-| [bdfile_template](#system_bdfile_template )         | string | No       | -       | Name template for input boundary files                                          |
-| [bddir_sfx](#system_bddir_sfx )                     | string | No       | -       | Location of input intial file for surfex                                        |
-| [bddir](#system_bddir )                             | string | No       | -       | Location of input boundaries                                                    |
-| [intp_bddir](#system_intp_bddir )                   | string | No       | -       | Location of boundaries on the current domain, i.e. the output directory of e927 |
-| [climdir](#system_climdir )                         | string | No       | -       | Location of generated/used climate files (PGD/monthly files)                    |
-| [bindir](#system_bindir )                           | string | No       | -       | Location of binaries                                                            |
-| [bdclimdir](#system_bdclimdir )                     | string | No       | -       | Location of host model climate files used for e927/c903                         |
-| [wrk](#system_wrk )                                 | string | No       | -       | Location of date specific working directory                                     |
-| [fullpos_config_file](#system_fullpos_config_file ) | string | No       | -       | Path to the fullpos yml config file                                             |
-| [archive](#system_archive )                         | string | No       | -       | Location of date specific archive                                               |
-| [logs](#system_logs )                               | string | No       | -       | Location of collected logfiles                                                  |
-| [namelists](#system_namelists )                     | string | No       | -       | Path to static namelists                                                        |
-| [marsdir](#system_marsdir )                         | string | No       | -       | Location input files extracted from MARS by Marsprep                            |
-| [global_sfcdir](#system_global_sfcdir )             | string | No       | -       | Path to SFC files needed for c903, which are not in MARS                        |
-| [sfx_input_defs](#system_sfx_input_defs )           | string | No       | -       | Path to the surfex json config file                                             |
+| Property                                              | Pattern | Type   | Deprecated | Definition | Title/Description                                                               |
+| ----------------------------------------------------- | ------- | ------ | ---------- | ---------- | ------------------------------------------------------------------------------- |
+| - [bdfile_sfx_template](#system_bdfile_sfx_template ) | No      | string | No         | -          | Name template for input initial surfex file for prep                            |
+| - [bdfile_template](#system_bdfile_template )         | No      | string | No         | -          | Name template for input boundary files                                          |
+| - [bddir_sfx](#system_bddir_sfx )                     | No      | string | No         | -          | Location of input intial file for surfex                                        |
+| - [bddir](#system_bddir )                             | No      | string | No         | -          | Location of input boundaries                                                    |
+| - [intp_bddir](#system_intp_bddir )                   | No      | string | No         | -          | Location of boundaries on the current domain, i.e. the output directory of e927 |
+| - [climdir](#system_climdir )                         | No      | string | No         | -          | Location of generated/used climate files (PGD/monthly files)                    |
+| - [bindir](#system_bindir )                           | No      | string | No         | -          | Location of binaries                                                            |
+| - [bdclimdir](#system_bdclimdir )                     | No      | string | No         | -          | Location of host model climate files used for e927/c903                         |
+| - [wrk](#system_wrk )                                 | No      | string | No         | -          | Location of date specific working directory                                     |
+| - [fullpos_config_file](#system_fullpos_config_file ) | No      | string | No         | -          | Path to the fullpos yml config file                                             |
+| - [archive](#system_archive )                         | No      | string | No         | -          | Location of date specific archive                                               |
+| - [logs](#system_logs )                               | No      | string | No         | -          | Location of collected logfiles                                                  |
+| - [namelists](#system_namelists )                     | No      | string | No         | -          | Path to static namelists                                                        |
+| - [marsdir](#system_marsdir )                         | No      | string | No         | -          | Location input files extracted from MARS by Marsprep                            |
+| - [global_sfcdir](#system_global_sfcdir )             | No      | string | No         | -          | Path to SFC files needed for c903, which are not in MARS                        |
+| - [sfx_input_defs](#system_sfx_input_defs )           | No      | string | No         | -          | Path to the surfex json config file                                             |
 
-### <a name="system_bdfile_sfx_template"></a>Property `Config > system > bdfile_sfx_template`
+### <a name="system_bdfile_sfx_template"></a>Property `DeodeConfig > system > bdfile_sfx_template`
 
 |              |          |
 | ------------ | -------- |
@@ -605,7 +605,7 @@ Must be one of:
 
 **Description:** Name template for input initial surfex file for prep
 
-### <a name="system_bdfile_template"></a>Property `Config > system > bdfile_template`
+### <a name="system_bdfile_template"></a>Property `DeodeConfig > system > bdfile_template`
 
 |              |          |
 | ------------ | -------- |
@@ -614,7 +614,7 @@ Must be one of:
 
 **Description:** Name template for input boundary files
 
-### <a name="system_bddir_sfx"></a>Property `Config > system > bddir_sfx`
+### <a name="system_bddir_sfx"></a>Property `DeodeConfig > system > bddir_sfx`
 
 |              |          |
 | ------------ | -------- |
@@ -623,7 +623,7 @@ Must be one of:
 
 **Description:** Location of input intial file for surfex
 
-### <a name="system_bddir"></a>Property `Config > system > bddir`
+### <a name="system_bddir"></a>Property `DeodeConfig > system > bddir`
 
 |              |          |
 | ------------ | -------- |
@@ -632,7 +632,7 @@ Must be one of:
 
 **Description:** Location of input boundaries
 
-### <a name="system_intp_bddir"></a>Property `Config > system > intp_bddir`
+### <a name="system_intp_bddir"></a>Property `DeodeConfig > system > intp_bddir`
 
 |              |          |
 | ------------ | -------- |
@@ -641,7 +641,7 @@ Must be one of:
 
 **Description:** Location of boundaries on the current domain, i.e. the output directory of e927
 
-### <a name="system_climdir"></a>Property `Config > system > climdir`
+### <a name="system_climdir"></a>Property `DeodeConfig > system > climdir`
 
 |              |          |
 | ------------ | -------- |
@@ -650,7 +650,7 @@ Must be one of:
 
 **Description:** Location of generated/used climate files (PGD/monthly files)
 
-### <a name="system_bindir"></a>Property `Config > system > bindir`
+### <a name="system_bindir"></a>Property `DeodeConfig > system > bindir`
 
 |              |          |
 | ------------ | -------- |
@@ -659,7 +659,7 @@ Must be one of:
 
 **Description:** Location of binaries
 
-### <a name="system_bdclimdir"></a>Property `Config > system > bdclimdir`
+### <a name="system_bdclimdir"></a>Property `DeodeConfig > system > bdclimdir`
 
 |              |          |
 | ------------ | -------- |
@@ -668,7 +668,7 @@ Must be one of:
 
 **Description:** Location of host model climate files used for e927/c903
 
-### <a name="system_wrk"></a>Property `Config > system > wrk`
+### <a name="system_wrk"></a>Property `DeodeConfig > system > wrk`
 
 |              |          |
 | ------------ | -------- |
@@ -677,7 +677,7 @@ Must be one of:
 
 **Description:** Location of date specific working directory
 
-### <a name="system_fullpos_config_file"></a>Property `Config > system > fullpos_config_file`
+### <a name="system_fullpos_config_file"></a>Property `DeodeConfig > system > fullpos_config_file`
 
 |              |          |
 | ------------ | -------- |
@@ -686,7 +686,7 @@ Must be one of:
 
 **Description:** Path to the fullpos yml config file
 
-### <a name="system_archive"></a>Property `Config > system > archive`
+### <a name="system_archive"></a>Property `DeodeConfig > system > archive`
 
 |              |          |
 | ------------ | -------- |
@@ -695,7 +695,7 @@ Must be one of:
 
 **Description:** Location of date specific archive
 
-### <a name="system_logs"></a>Property `Config > system > logs`
+### <a name="system_logs"></a>Property `DeodeConfig > system > logs`
 
 |              |          |
 | ------------ | -------- |
@@ -704,7 +704,7 @@ Must be one of:
 
 **Description:** Location of collected logfiles
 
-### <a name="system_namelists"></a>Property `Config > system > namelists`
+### <a name="system_namelists"></a>Property `DeodeConfig > system > namelists`
 
 |              |          |
 | ------------ | -------- |
@@ -713,7 +713,7 @@ Must be one of:
 
 **Description:** Path to static namelists
 
-### <a name="system_marsdir"></a>Property `Config > system > marsdir`
+### <a name="system_marsdir"></a>Property `DeodeConfig > system > marsdir`
 
 |              |          |
 | ------------ | -------- |
@@ -722,7 +722,7 @@ Must be one of:
 
 **Description:** Location input files extracted from MARS by Marsprep
 
-### <a name="system_global_sfcdir"></a>Property `Config > system > global_sfcdir`
+### <a name="system_global_sfcdir"></a>Property `DeodeConfig > system > global_sfcdir`
 
 |              |          |
 | ------------ | -------- |
@@ -731,7 +731,7 @@ Must be one of:
 
 **Description:** Path to SFC files needed for c903, which are not in MARS
 
-### <a name="system_sfx_input_defs"></a>Property `Config > system > sfx_input_defs`
+### <a name="system_sfx_input_defs"></a>Property `DeodeConfig > system > sfx_input_defs`
 
 |              |          |
 | ------------ | -------- |
@@ -740,9 +740,9 @@ Must be one of:
 
 **Description:** Path to the surfex json config file
 
-## <a name="boundaries"></a>Property `Config > boundaries`
+## <a name="boundaries"></a>Property `DeodeConfig > boundaries`
 
-**Title:** Boundary Section
+**Title:** BoundarySection
 
 |                           |                                                                           |
 | ------------------------- | ------------------------------------------------------------------------- |
@@ -752,17 +752,17 @@ Must be one of:
 
 **Description:** Settings for control of boundary treatment.
 
-| Property                                            | Type             | Required | Default         | Title/Description                                                             |
-| --------------------------------------------------- | ---------------- | -------- | --------------- | ----------------------------------------------------------------------------- |
-| [bdstrategy](#boundaries_bdstrategy )               | enum (of string) | No       | "same_forecast" | Boundary strategy                                                             |
-| [bdint](#boundaries_bdint )                         | string           | No       | -               | Boundary interval                                                             |
-| [bdshift](#boundaries_bdshift )                     | string           | No       | -               | Shift of boundary initial time. E.g. '-PT3H' would mean use 3H old boundaries |
-| [bdcycle](#boundaries_bdcycle )                     | string           | No       | -               | Boundary model cycle interval                                                 |
-| [bdtasks_per_batch](#boundaries_bdtasks_per_batch ) | number           | No       | -               | Max number of parallel boundary interpolation tasks                           |
-| [bdmodel](#boundaries_bdmodel )                     | enum (of string) | No       | -               | Coupling model                                                                |
-| [bd_has_surfex](#boundaries_bd_has_surfex )         | boolean          | No       | -               | Set to true if the host model runs with surfex                                |
+| Property                                              | Pattern | Type             | Deprecated | Definition | Title/Description                                                             |
+| ----------------------------------------------------- | ------- | ---------------- | ---------- | ---------- | ----------------------------------------------------------------------------- |
+| - [bdstrategy](#boundaries_bdstrategy )               | No      | enum (of string) | No         | -          | Boundary strategy                                                             |
+| - [bdint](#boundaries_bdint )                         | No      | string           | No         | -          | Boundary interval                                                             |
+| - [bdshift](#boundaries_bdshift )                     | No      | string           | No         | -          | Shift of boundary initial time. E.g. '-PT3H' would mean use 3H old boundaries |
+| - [bdcycle](#boundaries_bdcycle )                     | No      | string           | No         | -          | Boundary model cycle interval                                                 |
+| - [bdtasks_per_batch](#boundaries_bdtasks_per_batch ) | No      | number           | No         | -          | Max number of parallel boundary interpolation tasks                           |
+| - [bdmodel](#boundaries_bdmodel )                     | No      | enum (of string) | No         | -          | Coupling model                                                                |
+| - [bd_has_surfex](#boundaries_bd_has_surfex )         | No      | boolean          | No         | -          | Set to true if the host model runs with surfex                                |
 
-### <a name="boundaries_bdstrategy"></a>Property `Config > boundaries > bdstrategy`
+### <a name="boundaries_bdstrategy"></a>Property `DeodeConfig > boundaries > bdstrategy`
 
 **Title:** Boundary strategy
 
@@ -777,7 +777,7 @@ Must be one of:
 * "analysis_only"
 * "same_forecast"
 
-### <a name="boundaries_bdint"></a>Property `Config > boundaries > bdint`
+### <a name="boundaries_bdint"></a>Property `DeodeConfig > boundaries > bdint`
 
 |              |          |
 | ------------ | -------- |
@@ -790,7 +790,7 @@ Must be one of:
 | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Must match regular expression** | ```^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$``` [Test](https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24) |
 
-### <a name="boundaries_bdshift"></a>Property `Config > boundaries > bdshift`
+### <a name="boundaries_bdshift"></a>Property `DeodeConfig > boundaries > bdshift`
 
 |              |          |
 | ------------ | -------- |
@@ -803,7 +803,7 @@ Must be one of:
 | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Must match regular expression** | ```^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$``` [Test](https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24) |
 
-### <a name="boundaries_bdcycle"></a>Property `Config > boundaries > bdcycle`
+### <a name="boundaries_bdcycle"></a>Property `DeodeConfig > boundaries > bdcycle`
 
 |              |          |
 | ------------ | -------- |
@@ -816,7 +816,7 @@ Must be one of:
 | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Must match regular expression** | ```^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$``` [Test](https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24) |
 
-### <a name="boundaries_bdtasks_per_batch"></a>Property `Config > boundaries > bdtasks_per_batch`
+### <a name="boundaries_bdtasks_per_batch"></a>Property `DeodeConfig > boundaries > bdtasks_per_batch`
 
 |              |          |
 | ------------ | -------- |
@@ -825,7 +825,7 @@ Must be one of:
 
 **Description:** Max number of parallel boundary interpolation tasks
 
-### <a name="boundaries_bdmodel"></a>Property `Config > boundaries > bdmodel`
+### <a name="boundaries_bdmodel"></a>Property `DeodeConfig > boundaries > bdmodel`
 
 |              |                    |
 | ------------ | ------------------ |
@@ -838,7 +838,7 @@ Must be one of:
 * "arome"
 * "ifs"
 
-### <a name="boundaries_bd_has_surfex"></a>Property `Config > boundaries > bd_has_surfex`
+### <a name="boundaries_bd_has_surfex"></a>Property `DeodeConfig > boundaries > bd_has_surfex`
 
 |              |           |
 | ------------ | --------- |
@@ -847,9 +847,9 @@ Must be one of:
 
 **Description:** Set to true if the host model runs with surfex
 
-## <a name="fullpos"></a>Property `Config > fullpos`
+## <a name="fullpos"></a>Property `DeodeConfig > fullpos`
 
-**Title:** Fullpos Section
+**Title:** FullposSection
 
 |                           |                                                                           |
 | ------------------------- | ------------------------------------------------------------------------- |
@@ -859,12 +859,12 @@ Must be one of:
 
 **Description:** Settings for control of fullpos selection.
 
-| Property                             | Type            | Required | Default | Title/Description                       |
-| ------------------------------------ | --------------- | -------- | ------- | --------------------------------------- |
-| [config_path](#fullpos_config_path ) | string          | No       | -       | Path to fullpos config files            |
-| [selection](#fullpos_selection )     | array of string | No       | -       | List of rules and selections to include |
+| Property                               | Pattern | Type            | Deprecated | Definition | Title/Description                       |
+| -------------------------------------- | ------- | --------------- | ---------- | ---------- | --------------------------------------- |
+| - [config_path](#fullpos_config_path ) | No      | string          | No         | -          | Path to fullpos config files            |
+| - [selection](#fullpos_selection )     | No      | array of string | No         | -          | List of rules and selections to include |
 
-### <a name="fullpos_config_path"></a>Property `Config > fullpos > config_path`
+### <a name="fullpos_config_path"></a>Property `DeodeConfig > fullpos > config_path`
 
 **Title:** Path to fullpos config files
 
@@ -873,7 +873,7 @@ Must be one of:
 | **Type**     | `string` |
 | **Required** | No       |
 
-### <a name="fullpos_selection"></a>Property `Config > fullpos > selection`
+### <a name="fullpos_selection"></a>Property `DeodeConfig > fullpos > selection`
 
 |              |                   |
 | ------------ | ----------------- |
@@ -894,14 +894,14 @@ Must be one of:
 | ------------------------------------------- | ----------- |
 | [selection items](#fullpos_selection_items) | -           |
 
-#### <a name="autogenerated_heading_10"></a>Config > fullpos > selection > selection items
+#### <a name="autogenerated_heading_10"></a>DeodeConfig > fullpos > selection > selection items
 
 |              |          |
 | ------------ | -------- |
 | **Type**     | `string` |
 | **Required** | No       |
 
-## <a name="troika"></a>Property `Config > troika`
+## <a name="troika"></a>Property `DeodeConfig > troika`
 
 **Title:** Troika
 
@@ -913,11 +913,11 @@ Must be one of:
 
 **Description:** DEODE system specific path settings
 
-| Property                            | Type   | Required | Default | Title/Description  |
-| ----------------------------------- | ------ | -------- | ------- | ------------------ |
-| [config_file](#troika_config_file ) | string | No       | -       | Troika config file |
+| Property                              | Pattern | Type   | Deprecated | Definition | Title/Description  |
+| ------------------------------------- | ------- | ------ | ---------- | ---------- | ------------------ |
+| - [config_file](#troika_config_file ) | No      | string | No         | -          | Troika config file |
 
-### <a name="troika_config_file"></a>Property `Config > troika > config_file`
+### <a name="troika_config_file"></a>Property `DeodeConfig > troika > config_file`
 
 |              |          |
 | ------------ | -------- |
@@ -926,7 +926,7 @@ Must be one of:
 
 **Description:** Troika config file
 
-## <a name="include"></a>Property `Config > include`
+## <a name="include"></a>Property `DeodeConfig > include`
 
 **Title:** Include Section
 
@@ -938,9 +938,9 @@ Must be one of:
 
 **Description:** Sections to be included from other config files. Specified as 'key = val' pairs, where the keys are the section names and the vals are the paths to the files containing them.
 
-## <a name="domain"></a>Property `Config > domain`
+## <a name="domain"></a>Property `DeodeConfig > domain`
 
-**Title:** Domain Section
+**Title:** DomainSection
 
 |                           |                                                                           |
 | ------------------------- | ------------------------------------------------------------------------- |
@@ -950,25 +950,25 @@ Must be one of:
 
 **Description:** Model for validation of the data in the 'domain' section of the config file.
 
-| Property                          | Type             | Required | Default | Title/Description                    |
-| --------------------------------- | ---------------- | -------- | ------- | ------------------------------------ |
-| [gridtype](#domain_gridtype )     | enum (of string) | No       | -       | Select truncation type               |
-| [name](#domain_name )             | string           | No       | -       | Name of your domain                  |
-| [nimax](#domain_nimax )           | number           | No       | -       | Number of grid points longitudinally |
-| [njmax](#domain_njmax )           | number           | No       | -       | Number of grid points latitudinally  |
-| [xdx](#domain_xdx )               | number           | No       | -       | Domain longitudinal length in meters |
-| [xdy](#domain_xdy )               | number           | No       | -       | Domain latiudinal length in meters   |
-| [ilone](#domain_ilone )           | number           | No       | -       | Longitudinal extension zone          |
-| [ilate](#domain_ilate )           | number           | No       | -       | Latitudinal extension zone           |
-| [nbzong](#domain_nbzong )         | number           | No       | -       | Latitudinal coupling zone width      |
-| [nbzonl](#domain_nbzonl )         | number           | No       | -       | Longitudinal coupling zone width     |
-| [xloncen](#domain_xloncen )       | number           | No       | -       | Domain center longitude              |
-| [xlatcen](#domain_xlatcen )       | number           | No       | -       | Domain center latitude               |
-| [xlon0](#domain_xlon0 )           | number           | No       | -       | Reference longitude                  |
-| [xlat0](#domain_xlat0 )           | number           | No       | -       | Reference latitude                   |
-| [](#domain_additionalProperties ) | object           | No       | -       | -                                    |
+| Property                            | Pattern | Type             | Deprecated | Definition | Title/Description                  |
+| ----------------------------------- | ------- | ---------------- | ---------- | ---------- | ---------------------------------- |
+| - [gridtype](#domain_gridtype )     | No      | enum (of string) | No         | -          | Select truncation type             |
+| - [name](#domain_name )             | No      | string           | No         | -          | Name of your domain                |
+| - [nimax](#domain_nimax )           | No      | number           | No         | -          | Number of grid points zonally      |
+| - [njmax](#domain_njmax )           | No      | number           | No         | -          | Number of grid points meridionally |
+| - [xdx](#domain_xdx )               | No      | number           | No         | -          | Zonal grid size in meters          |
+| - [xdy](#domain_xdy )               | No      | number           | No         | -          | Meridional grid size in meters     |
+| - [ilone](#domain_ilone )           | No      | number           | No         | -          | Zonal extension zone               |
+| - [ilate](#domain_ilate )           | No      | number           | No         | -          | Meridional extension zone          |
+| - [nbzong](#domain_nbzong )         | No      | number           | No         | -          | Zonal coupling zone width          |
+| - [nbzonl](#domain_nbzonl )         | No      | number           | No         | -          | Meridional coupling zone width     |
+| - [xloncen](#domain_xloncen )       | No      | number           | No         | -          | Domain center longitude            |
+| - [xlatcen](#domain_xlatcen )       | No      | number           | No         | -          | Domain center latitude             |
+| - [xlon0](#domain_xlon0 )           | No      | number           | No         | -          | Longitude of center of projection  |
+| - [xlat0](#domain_xlat0 )           | No      | number           | No         | -          | Latitude of center of projection   |
+| - [](#domain_additionalProperties ) | No      | object           | No         | -          | -                                  |
 
-### <a name="domain_gridtype"></a>Property `Config > domain > gridtype`
+### <a name="domain_gridtype"></a>Property `DeodeConfig > domain > gridtype`
 
 |              |                    |
 | ------------ | ------------------ |
@@ -983,7 +983,7 @@ Must be one of:
 * "cubic"
 * "custom"
 
-### <a name="domain_name"></a>Property `Config > domain > name`
+### <a name="domain_name"></a>Property `DeodeConfig > domain > name`
 
 |              |          |
 | ------------ | -------- |
@@ -996,111 +996,111 @@ Must be one of:
 | -------------- | -- |
 | **Max length** | 20 |
 
-### <a name="domain_nimax"></a>Property `Config > domain > nimax`
+### <a name="domain_nimax"></a>Property `DeodeConfig > domain > nimax`
 
 |              |          |
 | ------------ | -------- |
 | **Type**     | `number` |
 | **Required** | No       |
 
-**Description:** Number of grid points longitudinally
+**Description:** Number of grid points zonally
 
 | Restrictions |        |
 | ------------ | ------ |
 | **Minimum**  | &ge; 0 |
 
-### <a name="domain_njmax"></a>Property `Config > domain > njmax`
+### <a name="domain_njmax"></a>Property `DeodeConfig > domain > njmax`
 
 |              |          |
 | ------------ | -------- |
 | **Type**     | `number` |
 | **Required** | No       |
 
-**Description:** Number of grid points latitudinally
+**Description:** Number of grid points meridionally
 
 | Restrictions |        |
 | ------------ | ------ |
 | **Minimum**  | &ge; 0 |
 
-### <a name="domain_xdx"></a>Property `Config > domain > xdx`
+### <a name="domain_xdx"></a>Property `DeodeConfig > domain > xdx`
 
 |              |          |
 | ------------ | -------- |
 | **Type**     | `number` |
 | **Required** | No       |
 
-**Description:** Domain longitudinal length in meters
+**Description:** Zonal grid size in meters
 
 | Restrictions |        |
 | ------------ | ------ |
 | **Minimum**  | &ge; 0 |
 
-### <a name="domain_xdy"></a>Property `Config > domain > xdy`
+### <a name="domain_xdy"></a>Property `DeodeConfig > domain > xdy`
 
 |              |          |
 | ------------ | -------- |
 | **Type**     | `number` |
 | **Required** | No       |
 
-**Description:** Domain latiudinal length in meters
+**Description:** Meridional grid size in meters
 
 | Restrictions |        |
 | ------------ | ------ |
 | **Minimum**  | &ge; 0 |
 
-### <a name="domain_ilone"></a>Property `Config > domain > ilone`
+### <a name="domain_ilone"></a>Property `DeodeConfig > domain > ilone`
 
 |              |          |
 | ------------ | -------- |
 | **Type**     | `number` |
 | **Required** | No       |
 
-**Description:** Longitudinal extension zone
+**Description:** Zonal extension zone
 
 | Restrictions |        |
 | ------------ | ------ |
 | **Minimum**  | &ge; 0 |
 
-### <a name="domain_ilate"></a>Property `Config > domain > ilate`
+### <a name="domain_ilate"></a>Property `DeodeConfig > domain > ilate`
 
 |              |          |
 | ------------ | -------- |
 | **Type**     | `number` |
 | **Required** | No       |
 
-**Description:** Latitudinal extension zone
+**Description:** Meridional extension zone
 
 | Restrictions |        |
 | ------------ | ------ |
 | **Minimum**  | &ge; 0 |
 
-### <a name="domain_nbzong"></a>Property `Config > domain > nbzong`
+### <a name="domain_nbzong"></a>Property `DeodeConfig > domain > nbzong`
 
 |              |          |
 | ------------ | -------- |
 | **Type**     | `number` |
 | **Required** | No       |
 
-**Description:** Latitudinal coupling zone width
+**Description:** Zonal coupling zone width
 
 | Restrictions |        |
 | ------------ | ------ |
 | **Minimum**  | &ge; 0 |
 
-### <a name="domain_nbzonl"></a>Property `Config > domain > nbzonl`
+### <a name="domain_nbzonl"></a>Property `DeodeConfig > domain > nbzonl`
 
 |              |          |
 | ------------ | -------- |
 | **Type**     | `number` |
 | **Required** | No       |
 
-**Description:** Longitudinal coupling zone width
+**Description:** Meridional coupling zone width
 
 | Restrictions |        |
 | ------------ | ------ |
 | **Minimum**  | &ge; 0 |
 
-### <a name="domain_xloncen"></a>Property `Config > domain > xloncen`
+### <a name="domain_xloncen"></a>Property `DeodeConfig > domain > xloncen`
 
 |              |          |
 | ------------ | -------- |
@@ -1114,7 +1114,7 @@ Must be one of:
 | **Minimum**  | &ge; -180 |
 | **Maximum**  | &le; 180  |
 
-### <a name="domain_xlatcen"></a>Property `Config > domain > xlatcen`
+### <a name="domain_xlatcen"></a>Property `DeodeConfig > domain > xlatcen`
 
 |              |          |
 | ------------ | -------- |
@@ -1128,37 +1128,37 @@ Must be one of:
 | **Minimum**  | &ge; -90 |
 | **Maximum**  | &le; 90  |
 
-### <a name="domain_xlon0"></a>Property `Config > domain > xlon0`
+### <a name="domain_xlon0"></a>Property `DeodeConfig > domain > xlon0`
 
 |              |          |
 | ------------ | -------- |
 | **Type**     | `number` |
 | **Required** | No       |
 
-**Description:** Reference longitude
+**Description:** Longitude of center of projection
 
 | Restrictions |           |
 | ------------ | --------- |
 | **Minimum**  | &ge; -180 |
 | **Maximum**  | &le; 180  |
 
-### <a name="domain_xlat0"></a>Property `Config > domain > xlat0`
+### <a name="domain_xlat0"></a>Property `DeodeConfig > domain > xlat0`
 
 |              |          |
 | ------------ | -------- |
 | **Type**     | `number` |
 | **Required** | No       |
 
-**Description:** Reference latitude
+**Description:** Latitude of center of projection
 
 | Restrictions |          |
 | ------------ | -------- |
 | **Minimum**  | &ge; -90 |
 | **Maximum**  | &le; 90  |
 
-## <a name="file_templates"></a>Property `Config > file_templates`
+## <a name="file_templates"></a>Property `DeodeConfig > file_templates`
 
-**Title:** File Templates
+**Title:** FileTemplates
 
 |                           |                                                                           |
 | ------------------------- | ------------------------------------------------------------------------- |
@@ -1168,13 +1168,13 @@ Must be one of:
 
 **Description:** Templates for file names
 
-| Property                                        | Type   | Required | Default | Title/Description                                                                        |
-| ----------------------------------------------- | ------ | -------- | ------- | ---------------------------------------------------------------------------------------- |
-| [duration_grib](#file_templates_duration_grib ) | string | No       | -       | Macros for duration representation in GRIB output files                                  |
-| [duration_fa](#file_templates_duration_fa )     | string | No       | -       | Macros for duration representation of FA files, note that this is given by the IAL code. |
-| [](#file_templates_additionalProperties )       | object | No       | -       | -                                                                                        |
+| Property                                          | Pattern | Type   | Deprecated | Definition | Title/Description                                                                        |
+| ------------------------------------------------- | ------- | ------ | ---------- | ---------- | ---------------------------------------------------------------------------------------- |
+| - [duration_grib](#file_templates_duration_grib ) | No      | string | No         | -          | Macros for duration representation in GRIB output files                                  |
+| - [duration_fa](#file_templates_duration_fa )     | No      | string | No         | -          | Macros for duration representation of FA files, note that this is given by the IAL code. |
+| - [](#file_templates_additionalProperties )       | No      | object | No         | -          | -                                                                                        |
 
-### <a name="file_templates_duration_grib"></a>Property `Config > file_templates > duration_grib`
+### <a name="file_templates_duration_grib"></a>Property `DeodeConfig > file_templates > duration_grib`
 
 |              |          |
 | ------------ | -------- |
@@ -1183,7 +1183,7 @@ Must be one of:
 
 **Description:** Macros for duration representation in GRIB output files
 
-### <a name="file_templates_duration_fa"></a>Property `Config > file_templates > duration_fa`
+### <a name="file_templates_duration_fa"></a>Property `DeodeConfig > file_templates > duration_fa`
 
 |              |          |
 | ------------ | -------- |
@@ -1192,9 +1192,9 @@ Must be one of:
 
 **Description:** Macros for duration representation of FA files, note that this is given by the IAL code.
 
-## <a name="macros"></a>Property `Config > macros`
+## <a name="macros"></a>Property `DeodeConfig > macros`
 
-**Title:** Macros Section
+**Title:** MacroSection
 
 |                           |                                                                           |
 | ------------------------- | ------------------------------------------------------------------------- |
@@ -1204,14 +1204,14 @@ Must be one of:
 
 **Description:** Model for the 'macros' section.
 
-| Property                              | Type   | Required | Default | Title/Description                                                      |
-| ------------------------------------- | ------ | -------- | ------- | ---------------------------------------------------------------------- |
-| [gen_macros](#macros_gen_macros )     | array  | No       | -       | Turns any string config to a macro, use a dict to rename an attribute. |
-| [os_macros](#macros_os_macros )       | array  | No       | -       | Environment variables used as macros                                   |
-| [group_macros](#macros_group_macros ) | array  | No       | -       | Turns a full config section to a macro                                 |
-| [](#macros_additionalProperties )     | object | No       | -       | -                                                                      |
+| Property                                | Pattern | Type   | Deprecated | Definition | Title/Description                                                      |
+| --------------------------------------- | ------- | ------ | ---------- | ---------- | ---------------------------------------------------------------------- |
+| - [gen_macros](#macros_gen_macros )     | No      | array  | No         | -          | Turns any string config to a macro, use a dict to rename an attribute. |
+| - [os_macros](#macros_os_macros )       | No      | array  | No         | -          | Environment variables used as macros                                   |
+| - [group_macros](#macros_group_macros ) | No      | array  | No         | -          | Turns a full config section to a macro                                 |
+| - [](#macros_additionalProperties )     | No      | object | No         | -          | -                                                                      |
 
-### <a name="macros_gen_macros"></a>Property `Config > macros > gen_macros`
+### <a name="macros_gen_macros"></a>Property `DeodeConfig > macros > gen_macros`
 
 |              |         |
 | ------------ | ------- |
@@ -1228,7 +1228,7 @@ Must be one of:
 | **Additional items** | False              |
 | **Tuple validation** | N/A                |
 
-### <a name="macros_os_macros"></a>Property `Config > macros > os_macros`
+### <a name="macros_os_macros"></a>Property `DeodeConfig > macros > os_macros`
 
 |              |         |
 | ------------ | ------- |
@@ -1245,7 +1245,7 @@ Must be one of:
 | **Additional items** | False              |
 | **Tuple validation** | N/A                |
 
-### <a name="macros_group_macros"></a>Property `Config > macros > group_macros`
+### <a name="macros_group_macros"></a>Property `DeodeConfig > macros > group_macros`
 
 |              |         |
 | ------------ | ------- |
@@ -1262,9 +1262,9 @@ Must be one of:
 | **Additional items** | False              |
 | **Tuple validation** | N/A                |
 
-## <a name="platform"></a>Property `Config > platform`
+## <a name="platform"></a>Property `DeodeConfig > platform`
 
-**Title:** Platform Section
+**Title:** DomainSection
 
 |                           |                                                                           |
 | ------------------------- | ------------------------------------------------------------------------- |
@@ -1274,33 +1274,33 @@ Must be one of:
 
 **Description:** DEODE platform specific path settings
 
-| Property                                              | Type   | Required | Default | Title/Description                                      |
-| ----------------------------------------------------- | ------ | -------- | ------- | ------------------------------------------------------ |
-| [ecoclim_data_path](#platform_ecoclim_data_path )     | string | No       | -       | Path to the ECOCLIMAP-II data                          |
-| [deode_home](#platform_deode_home )                   | string | No       | -       | Path to the deode code, normally no need to change     |
-| [pgd_data_path](#platform_pgd_data_path )             | string | No       | -       | Path to PGD input data                                 |
-| [soilgrid_data_path](#platform_soilgrid_data_path )   | string | No       | -       | Path to solgrid input data                             |
-| [gmted2010_data_path](#platform_gmted2010_data_path ) | string | No       | -       | Path to gmted2010 input                                |
-| [ecosg_data_path](#platform_ecosg_data_path )         | string | No       | -       | Path to ECOCLIMAP SG data                              |
-| [climdata](#platform_climdata )                       | string | No       | -       | Macro used in other platform paths                     |
-| [static_data](#platform_static_data )                 | string | No       | -       | Macro used in other platform paths                     |
-| [e923_data](#platform_e923_data )                     | string | No       | -       | Path to e923 input data                                |
-| [ncdir](#platform_ncdir )                             | string | No       | -       | Path to ECrad NetCDF data                              |
-| [rrtm_dir](#platform_rrtm_dir )                       | string | No       | -       | Path to RRTM input data                                |
-| [scratch](#platform_scratch )                         | string | No       | -       | Path used as macro for e.g. wrk and other directories. |
-| [task_name](#platform_task_name )                     | string | No       | -       | Placeholder macro.                                     |
-| [flake_dir](#platform_flake_dir )                     | string | No       | -       | Path to climate PGD dir.                               |
-| [albnir_soil_dir](#platform_albnir_soil_dir )         | string | No       | -       | Path to near-infrared spectrum soil data.              |
-| [albnir_veg_dir](#platform_albnir_veg_dir )           | string | No       | -       | Path to near-infrared spectrum vegetation data.        |
-| [albvis_soil_dir](#platform_albvis_soil_dir )         | string | No       | -       | Path to visible soil spectrum data.                    |
-| [albvis_veg_dir](#platform_albvis_veg_dir )           | string | No       | -       | Path to visible spectrum vegetation data.              |
-| [lai_dir](#platform_lai_dir )                         | string | No       | -       | TBA                                                    |
-| [tree_height_dir](#platform_tree_height_dir )         | string | No       | -       | Path to tree_height data.                              |
-| [windfarm_path](#platform_windfarm_path )             | string | No       | -       | Path to wind farm parameterisation input data.         |
-| [archive_root](#platform_archive_root )               | string | No       | -       | Path to the main archive directory                     |
-| [](#platform_additionalProperties )                   | object | No       | -       | -                                                      |
+| Property                                                | Pattern | Type   | Deprecated | Definition | Title/Description                                      |
+| ------------------------------------------------------- | ------- | ------ | ---------- | ---------- | ------------------------------------------------------ |
+| - [ecoclim_data_path](#platform_ecoclim_data_path )     | No      | string | No         | -          | Path to the ECOCLIMAP-II data                          |
+| - [deode_home](#platform_deode_home )                   | No      | string | No         | -          | Path to the deode code, normally no need to change     |
+| - [pgd_data_path](#platform_pgd_data_path )             | No      | string | No         | -          | Path to PGD input data                                 |
+| - [soilgrid_data_path](#platform_soilgrid_data_path )   | No      | string | No         | -          | Path to solgrid input data                             |
+| - [gmted2010_data_path](#platform_gmted2010_data_path ) | No      | string | No         | -          | Path to gmted2010 input                                |
+| - [ecosg_data_path](#platform_ecosg_data_path )         | No      | string | No         | -          | Path to ECOCLIMAP SG data                              |
+| - [climdata](#platform_climdata )                       | No      | string | No         | -          | Macro used in other platform paths                     |
+| - [static_data](#platform_static_data )                 | No      | string | No         | -          | Macro used in other platform paths                     |
+| - [e923_data](#platform_e923_data )                     | No      | string | No         | -          | Path to e923 input data                                |
+| - [ncdir](#platform_ncdir )                             | No      | string | No         | -          | Path to ECrad NetCDF data                              |
+| - [rrtm_dir](#platform_rrtm_dir )                       | No      | string | No         | -          | Path to RRTM input data                                |
+| - [scratch](#platform_scratch )                         | No      | string | No         | -          | Path used as macro for e.g. wrk and other directories. |
+| - [task_name](#platform_task_name )                     | No      | string | No         | -          | Placeholder macro.                                     |
+| - [flake_dir](#platform_flake_dir )                     | No      | string | No         | -          | Path to climate PGD dir.                               |
+| - [albnir_soil_dir](#platform_albnir_soil_dir )         | No      | string | No         | -          | Path to near-infrared spectrum soil data.              |
+| - [albnir_veg_dir](#platform_albnir_veg_dir )           | No      | string | No         | -          | Path to near-infrared spectrum vegetation data.        |
+| - [albvis_soil_dir](#platform_albvis_soil_dir )         | No      | string | No         | -          | Path to visible soil spectrum data.                    |
+| - [albvis_veg_dir](#platform_albvis_veg_dir )           | No      | string | No         | -          | Path to visible spectrum vegetation data.              |
+| - [lai_dir](#platform_lai_dir )                         | No      | string | No         | -          | TBA                                                    |
+| - [tree_height_dir](#platform_tree_height_dir )         | No      | string | No         | -          | Path to tree_height data.                              |
+| - [windfarm_path](#platform_windfarm_path )             | No      | string | No         | -          | Path to wind farm parameterisation input data.         |
+| - [archive_root](#platform_archive_root )               | No      | string | No         | -          | Path to the main archive directory                     |
+| - [](#platform_additionalProperties )                   | No      | object | No         | -          | -                                                      |
 
-### <a name="platform_ecoclim_data_path"></a>Property `Config > platform > ecoclim_data_path`
+### <a name="platform_ecoclim_data_path"></a>Property `DeodeConfig > platform > ecoclim_data_path`
 
 |              |          |
 | ------------ | -------- |
@@ -1309,7 +1309,7 @@ Must be one of:
 
 **Description:** Path to the ECOCLIMAP-II data
 
-### <a name="platform_deode_home"></a>Property `Config > platform > deode_home`
+### <a name="platform_deode_home"></a>Property `DeodeConfig > platform > deode_home`
 
 |              |          |
 | ------------ | -------- |
@@ -1318,7 +1318,7 @@ Must be one of:
 
 **Description:** Path to the deode code, normally no need to change
 
-### <a name="platform_pgd_data_path"></a>Property `Config > platform > pgd_data_path`
+### <a name="platform_pgd_data_path"></a>Property `DeodeConfig > platform > pgd_data_path`
 
 |              |          |
 | ------------ | -------- |
@@ -1327,7 +1327,7 @@ Must be one of:
 
 **Description:** Path to PGD input data
 
-### <a name="platform_soilgrid_data_path"></a>Property `Config > platform > soilgrid_data_path`
+### <a name="platform_soilgrid_data_path"></a>Property `DeodeConfig > platform > soilgrid_data_path`
 
 |              |          |
 | ------------ | -------- |
@@ -1336,7 +1336,7 @@ Must be one of:
 
 **Description:** Path to solgrid input data
 
-### <a name="platform_gmted2010_data_path"></a>Property `Config > platform > gmted2010_data_path`
+### <a name="platform_gmted2010_data_path"></a>Property `DeodeConfig > platform > gmted2010_data_path`
 
 |              |          |
 | ------------ | -------- |
@@ -1345,7 +1345,7 @@ Must be one of:
 
 **Description:** Path to gmted2010 input
 
-### <a name="platform_ecosg_data_path"></a>Property `Config > platform > ecosg_data_path`
+### <a name="platform_ecosg_data_path"></a>Property `DeodeConfig > platform > ecosg_data_path`
 
 |              |          |
 | ------------ | -------- |
@@ -1354,7 +1354,7 @@ Must be one of:
 
 **Description:** Path to ECOCLIMAP SG data
 
-### <a name="platform_climdata"></a>Property `Config > platform > climdata`
+### <a name="platform_climdata"></a>Property `DeodeConfig > platform > climdata`
 
 |              |          |
 | ------------ | -------- |
@@ -1363,7 +1363,7 @@ Must be one of:
 
 **Description:** Macro used in other platform paths
 
-### <a name="platform_static_data"></a>Property `Config > platform > static_data`
+### <a name="platform_static_data"></a>Property `DeodeConfig > platform > static_data`
 
 |              |          |
 | ------------ | -------- |
@@ -1372,7 +1372,7 @@ Must be one of:
 
 **Description:** Macro used in other platform paths
 
-### <a name="platform_e923_data"></a>Property `Config > platform > e923_data`
+### <a name="platform_e923_data"></a>Property `DeodeConfig > platform > e923_data`
 
 |              |          |
 | ------------ | -------- |
@@ -1381,7 +1381,7 @@ Must be one of:
 
 **Description:** Path to e923 input data
 
-### <a name="platform_ncdir"></a>Property `Config > platform > ncdir`
+### <a name="platform_ncdir"></a>Property `DeodeConfig > platform > ncdir`
 
 |              |          |
 | ------------ | -------- |
@@ -1390,7 +1390,7 @@ Must be one of:
 
 **Description:** Path to ECrad NetCDF data
 
-### <a name="platform_rrtm_dir"></a>Property `Config > platform > rrtm_dir`
+### <a name="platform_rrtm_dir"></a>Property `DeodeConfig > platform > rrtm_dir`
 
 |              |          |
 | ------------ | -------- |
@@ -1399,7 +1399,7 @@ Must be one of:
 
 **Description:** Path to RRTM input data
 
-### <a name="platform_scratch"></a>Property `Config > platform > scratch`
+### <a name="platform_scratch"></a>Property `DeodeConfig > platform > scratch`
 
 |              |          |
 | ------------ | -------- |
@@ -1408,7 +1408,7 @@ Must be one of:
 
 **Description:** Path used as macro for e.g. wrk and other directories.
 
-### <a name="platform_task_name"></a>Property `Config > platform > task_name`
+### <a name="platform_task_name"></a>Property `DeodeConfig > platform > task_name`
 
 |              |          |
 | ------------ | -------- |
@@ -1417,7 +1417,7 @@ Must be one of:
 
 **Description:** Placeholder macro.
 
-### <a name="platform_flake_dir"></a>Property `Config > platform > flake_dir`
+### <a name="platform_flake_dir"></a>Property `DeodeConfig > platform > flake_dir`
 
 |              |          |
 | ------------ | -------- |
@@ -1426,7 +1426,7 @@ Must be one of:
 
 **Description:** Path to climate PGD dir.
 
-### <a name="platform_albnir_soil_dir"></a>Property `Config > platform > albnir_soil_dir`
+### <a name="platform_albnir_soil_dir"></a>Property `DeodeConfig > platform > albnir_soil_dir`
 
 |              |          |
 | ------------ | -------- |
@@ -1435,7 +1435,7 @@ Must be one of:
 
 **Description:** Path to near-infrared spectrum soil data.
 
-### <a name="platform_albnir_veg_dir"></a>Property `Config > platform > albnir_veg_dir`
+### <a name="platform_albnir_veg_dir"></a>Property `DeodeConfig > platform > albnir_veg_dir`
 
 |              |          |
 | ------------ | -------- |
@@ -1444,7 +1444,7 @@ Must be one of:
 
 **Description:** Path to near-infrared spectrum vegetation data.
 
-### <a name="platform_albvis_soil_dir"></a>Property `Config > platform > albvis_soil_dir`
+### <a name="platform_albvis_soil_dir"></a>Property `DeodeConfig > platform > albvis_soil_dir`
 
 |              |          |
 | ------------ | -------- |
@@ -1453,7 +1453,7 @@ Must be one of:
 
 **Description:** Path to visible soil spectrum data.
 
-### <a name="platform_albvis_veg_dir"></a>Property `Config > platform > albvis_veg_dir`
+### <a name="platform_albvis_veg_dir"></a>Property `DeodeConfig > platform > albvis_veg_dir`
 
 |              |          |
 | ------------ | -------- |
@@ -1462,7 +1462,7 @@ Must be one of:
 
 **Description:** Path to visible spectrum vegetation data.
 
-### <a name="platform_lai_dir"></a>Property `Config > platform > lai_dir`
+### <a name="platform_lai_dir"></a>Property `DeodeConfig > platform > lai_dir`
 
 |              |          |
 | ------------ | -------- |
@@ -1471,7 +1471,7 @@ Must be one of:
 
 **Description:** TBA
 
-### <a name="platform_tree_height_dir"></a>Property `Config > platform > tree_height_dir`
+### <a name="platform_tree_height_dir"></a>Property `DeodeConfig > platform > tree_height_dir`
 
 |              |          |
 | ------------ | -------- |
@@ -1480,7 +1480,7 @@ Must be one of:
 
 **Description:** Path to tree_height data.
 
-### <a name="platform_windfarm_path"></a>Property `Config > platform > windfarm_path`
+### <a name="platform_windfarm_path"></a>Property `DeodeConfig > platform > windfarm_path`
 
 |              |          |
 | ------------ | -------- |
@@ -1489,7 +1489,7 @@ Must be one of:
 
 **Description:** Path to wind farm parameterisation input data.
 
-### <a name="platform_archive_root"></a>Property `Config > platform > archive_root`
+### <a name="platform_archive_root"></a>Property `DeodeConfig > platform > archive_root`
 
 |              |          |
 | ------------ | -------- |
@@ -1498,9 +1498,9 @@ Must be one of:
 
 **Description:** Path to the main archive directory
 
-## <a name="submission"></a>Property `Config > submission`
+## <a name="submission"></a>Property `DeodeConfig > submission`
 
-**Title:** Submission Section
+**Title:** SubmissionSection
 
 |                           |                                                                           |
 | ------------------------- | ------------------------------------------------------------------------- |
@@ -1510,12 +1510,12 @@ Must be one of:
 
 **Description:** Model for validation of the data in the 'submission' section of the config file.
 
-| Property                              | Type   | Required | Default | Title/Description    |
-| ------------------------------------- | ------ | -------- | ------- | -------------------- |
-| [bindir](#submission_bindir )         | string | No       | -       | Location of binaries |
-| [](#submission_additionalProperties ) | object | No       | -       | -                    |
+| Property                                | Pattern | Type   | Deprecated | Definition | Title/Description    |
+| --------------------------------------- | ------- | ------ | ---------- | ---------- | -------------------- |
+| - [bindir](#submission_bindir )         | No      | string | No         | -          | Location of binaries |
+| - [](#submission_additionalProperties ) | No      | object | No         | -          | -                    |
 
-### <a name="submission_bindir"></a>Property `Config > submission > bindir`
+### <a name="submission_bindir"></a>Property `DeodeConfig > submission > bindir`
 
 |              |          |
 | ------------ | -------- |
@@ -1524,9 +1524,9 @@ Must be one of:
 
 **Description:** Location of binaries
 
-## <a name="vertical_levels"></a>Property `Config > vertical_levels`
+## <a name="vertical_levels"></a>Property `DeodeConfig > vertical_levels`
 
-**Title:** Vertical Levels
+**Title:** VerticalLevels
 
 |                           |                                                                           |
 | ------------------------- | ------------------------------------------------------------------------- |
@@ -1536,14 +1536,14 @@ Must be one of:
 
 **Description:** Options for vertical levels
 
-| Property                                   | Type   | Required | Default | Title/Description                                     |
-| ------------------------------------------ | ------ | -------- | ------- | ----------------------------------------------------- |
-| [nlev](#vertical_levels_nlev )             | number | No       | -       | Number of vertical full levels                        |
-| [ahalf](#vertical_levels_ahalf )           | array  | No       | -       | Level definition for the a coefficient of half levels |
-| [bhalf](#vertical_levels_bhalf )           | array  | No       | -       | Level definition for the b coefficient of half levels |
-| [](#vertical_levels_additionalProperties ) | object | No       | -       | -                                                     |
+| Property                                     | Pattern | Type   | Deprecated | Definition | Title/Description                                     |
+| -------------------------------------------- | ------- | ------ | ---------- | ---------- | ----------------------------------------------------- |
+| - [nlev](#vertical_levels_nlev )             | No      | number | No         | -          | Number of vertical full levels                        |
+| - [ahalf](#vertical_levels_ahalf )           | No      | array  | No         | -          | Level definition for the a coefficient of half levels |
+| - [bhalf](#vertical_levels_bhalf )           | No      | array  | No         | -          | Level definition for the b coefficient of half levels |
+| - [](#vertical_levels_additionalProperties ) | No      | object | No         | -          | -                                                     |
 
-### <a name="vertical_levels_nlev"></a>Property `Config > vertical_levels > nlev`
+### <a name="vertical_levels_nlev"></a>Property `DeodeConfig > vertical_levels > nlev`
 
 |              |          |
 | ------------ | -------- |
@@ -1552,7 +1552,7 @@ Must be one of:
 
 **Description:** Number of vertical full levels
 
-### <a name="vertical_levels_ahalf"></a>Property `Config > vertical_levels > ahalf`
+### <a name="vertical_levels_ahalf"></a>Property `DeodeConfig > vertical_levels > ahalf`
 
 |              |         |
 | ------------ | ------- |
@@ -1576,7 +1576,7 @@ Must be one of:
 | **Type**     | `number` |
 | **Required** | No       |
 
-### <a name="vertical_levels_bhalf"></a>Property `Config > vertical_levels > bhalf`
+### <a name="vertical_levels_bhalf"></a>Property `DeodeConfig > vertical_levels > bhalf`
 
 |              |         |
 | ------------ | ------- |
