@@ -268,6 +268,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.os_utils.Search.find_files"><code class="docutils literal notranslate"><span class="pre">Search.find_files()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.os_utils.deodemakedirs"><code class="docutils literal notranslate"><span class="pre">deodemakedirs()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.os_utils.filepath_iterator"><code class="docutils literal notranslate"><span class="pre">filepath_iterator()</span></code></a></li>
 </ul>
 </li>
@@ -629,6 +630,7 @@
 
 <span class="kn">from</span> <span class="nn">.datetime_utils</span> <span class="kn">import</span> <span class="n">as_datetime</span><span class="p">,</span> <span class="n">as_timedelta</span>
 <span class="kn">from</span> <span class="nn">.logs</span> <span class="kn">import</span> <span class="n">LogDefaults</span><span class="p">,</span> <span class="n">logger</span>
+<span class="kn">from</span> <span class="nn">.os_utils</span> <span class="kn">import</span> <span class="n">deodemakedirs</span>
 <span class="kn">from</span> <span class="nn">.toolbox</span> <span class="kn">import</span> <span class="n">Platform</span>
 
 <span class="k">try</span><span class="p">:</span>
@@ -746,6 +748,10 @@
         <span class="n">config_file</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;source_file_path&quot;</span><span class="p">]</span>
         <span class="n">first_cycle</span> <span class="o">=</span> <span class="n">as_datetime</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.times.start&quot;</span><span class="p">])</span>
         <span class="n">deode_home</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">get_platform_value</span><span class="p">(</span><span class="s2">&quot;DEODE_HOME&quot;</span><span class="p">)</span>
+
+        <span class="n">unix_group</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">get_platform_value</span><span class="p">(</span><span class="s2">&quot;unix_group&quot;</span><span class="p">)</span>
+        <span class="n">deodemakedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">joboutdir</span><span class="p">,</span> <span class="n">unixgroup</span><span class="o">=</span><span class="n">unix_group</span><span class="p">)</span>
+
         <span class="n">keep_workdirs</span> <span class="o">=</span> <span class="s2">&quot;1&quot;</span> <span class="k">if</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.keep_workdirs&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="s2">&quot;0&quot;</span>
         <span class="n">loglevel</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;general.loglevel&quot;</span><span class="p">,</span> <span class="n">LogDefaults</span><span class="o">.</span><span class="n">LEVEL</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
         <span class="n">variables</span> <span class="o">=</span> <span class="p">{</span>

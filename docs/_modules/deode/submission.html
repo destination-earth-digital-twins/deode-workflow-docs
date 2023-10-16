@@ -268,6 +268,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.os_utils.Search.find_files"><code class="docutils literal notranslate"><span class="pre">Search.find_files()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.os_utils.deodemakedirs"><code class="docutils literal notranslate"><span class="pre">deodemakedirs()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.os_utils.filepath_iterator"><code class="docutils literal notranslate"><span class="pre">filepath_iterator()</span></code></a></li>
 </ul>
 </li>
@@ -631,8 +632,9 @@
 
 <span class="kn">from</span> <span class="nn">.derived_variables</span> <span class="kn">import</span> <span class="n">derived_variables</span>
 <span class="kn">from</span> <span class="nn">.logs</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span> <span class="nn">.os_utils</span> <span class="kn">import</span> <span class="n">deodemakedirs</span>
 <span class="kn">from</span> <span class="nn">.tasks.discover_task</span> <span class="kn">import</span> <span class="n">get_task</span>
-<span class="kn">from</span> <span class="nn">.toolbox</span> <span class="kn">import</span> <span class="n">Platform</span>
+<span class="kn">from</span> <span class="nn">.toolbox</span> <span class="kn">import</span> <span class="n">FileManager</span><span class="p">,</span> <span class="n">Platform</span>
 
 
 <div class="viewcode-block" id="ProcessorLayout"><a class="viewcode-back" href="../../deode.html#deode.submission.ProcessorLayout">[docs]</a><span class="k">class</span> <span class="nc">ProcessorLayout</span><span class="p">:</span>
@@ -706,6 +708,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">submission_defs</span> <span class="o">=</span> <span class="n">submission_defs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">job_type</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">processor_layout</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span> <span class="o">=</span> <span class="n">FileManager</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">platform</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">platform</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unix_group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;platform.unix_group&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TaskSettings.update_task_setting"><a class="viewcode-back" href="../../deode.html#deode.submission.TaskSettings.update_task_setting">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">update_task_setting</span><span class="p">(</span><span class="n">dic</span><span class="p">,</span> <span class="n">upd</span><span class="p">):</span>
@@ -882,7 +889,9 @@
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">input_template_job</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file_handler</span><span class="p">:</span>
             <span class="n">input_content</span> <span class="o">=</span> <span class="n">file_handler</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
         <span class="n">dir_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">task_job</span><span class="p">))</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">dir_name</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">deodemakedirs</span><span class="p">(</span><span class="n">dir_name</span><span class="p">,</span> <span class="n">unixgroup</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">unix_group</span><span class="p">)</span>
+
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">task_job</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file_handler</span><span class="p">:</span>
             <span class="n">file_handler</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">interpreter</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">batch_settings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_task_settings</span><span class="p">(</span>
@@ -900,10 +909,13 @@
                 <span class="n">python_task_env</span> <span class="o">=</span> <span class="n">python_task_env</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">e_setting</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="n">input_content</span> <span class="o">=</span> <span class="n">input_content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;# @ENV_SUB@&quot;</span><span class="p">,</span> <span class="n">python_task_env</span><span class="p">)</span>
             <span class="n">input_content</span> <span class="o">=</span> <span class="n">input_content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;@STAND_ALONE_TASK_NAME@&quot;</span><span class="p">,</span> <span class="n">task</span><span class="p">)</span>
+
             <span class="n">platform</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
             <span class="n">deode_home</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">get_platform_value</span><span class="p">(</span><span class="s2">&quot;DEODE_HOME&quot;</span><span class="p">)</span>
+
             <span class="n">input_content</span> <span class="o">=</span> <span class="n">input_content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;@STAND_ALONE_DEODE_HOME@&quot;</span><span class="p">,</span> <span class="n">deode_home</span><span class="p">)</span>
             <span class="n">config_file</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;source_file_path&quot;</span><span class="p">]</span>
+
             <span class="k">if</span> <span class="n">config_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">input_content</span> <span class="o">=</span> <span class="n">input_content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
                     <span class="s2">&quot;@STAND_ALONE_TASK_CONFIG@&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span>

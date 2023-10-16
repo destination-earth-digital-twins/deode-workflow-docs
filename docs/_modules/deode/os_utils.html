@@ -268,6 +268,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.os_utils.Search.find_files"><code class="docutils literal notranslate"><span class="pre">Search.find_files()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.os_utils.deodemakedirs"><code class="docutils literal notranslate"><span class="pre">deodemakedirs()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.os_utils.filepath_iterator"><code class="docutils literal notranslate"><span class="pre">filepath_iterator()</span></code></a></li>
 </ul>
 </li>
@@ -625,6 +626,7 @@
 <span></span><span class="sd">&quot;&quot;&quot;Utilities for simple tasks on OS level.&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
@@ -751,6 +753,51 @@
                     <span class="k">yield</span> <span class="n">subpath</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">yield</span> <span class="n">path</span></div>
+
+
+<div class="viewcode-block" id="deodemakedirs"><a class="viewcode-back" href="../../deode.html#deode.os_utils.deodemakedirs">[docs]</a><span class="k">def</span> <span class="nf">deodemakedirs</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">unixgroup</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create directories and change unix group as required.</span>
+
+<span class="sd">    For a given path the top directory that does not yet exist is searched for, created</span>
+<span class="sd">    and unix group is set, if required. Permissions are set such that all subdirectories</span>
+<span class="sd">    and new files inherit the unix group.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path (str): directory path that should be created if it doesn&#39;t already exist.</span>
+<span class="sd">        unixgroup (str, optional): unix group the newly created directories should belong to.</span>
+<span class="sd">        exist_ok (boolean, optional): Define whether directories may already exist or whether</span>
+<span class="sd">            an error should be raised.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        OSError  # noqa DAR401</span>
+
+<span class="sd">    Returns: Nothing</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="mo">0o2750</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="n">exist_ok</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">unixgroup</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">())</span> <span class="o">!=</span> <span class="nb">str</span><span class="p">(</span><span class="n">unixgroup</span><span class="p">)):</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">chown</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="n">unixgroup</span><span class="p">)</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="mo">0o2750</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot create </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> properly&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># check directory tree for top dir that has to be created</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="k">while</span> <span class="ow">not</span> <span class="n">p</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+                <span class="n">idx</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="mo">0o2750</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="n">exist_ok</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">unixgroup</span> <span class="ow">and</span> <span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">group</span><span class="p">())</span> <span class="o">!=</span> <span class="nb">str</span><span class="p">(</span><span class="n">unixgroup</span><span class="p">):</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">chown</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">group</span><span class="o">=</span><span class="n">unixgroup</span><span class="p">)</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="mo">0o2750</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot create </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> properly&quot;</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
