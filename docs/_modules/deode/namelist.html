@@ -182,7 +182,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.fullpos.Fullpos.update_selection"><code class="docutils literal notranslate"><span class="pre">Fullpos.update_selection()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.fullpos.InvalidSelectionCombination"><code class="docutils literal notranslate"><span class="pre">InvalidSelectionCombination</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.fullpos.InvalidSelectionCombinationError"><code class="docutils literal notranslate"><span class="pre">InvalidSelectionCombinationError</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.general_utils">deode.general_utils module</a><ul>
@@ -736,21 +736,21 @@
             <span class="n">valb</span> <span class="o">=</span> <span class="n">dbase</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">dcomp</span><span class="p">:</span>
                 <span class="n">valc</span> <span class="o">=</span> <span class="n">dcomp</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-                <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">valb</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">dict</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">valc</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">dict</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">valb</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">valc</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
                     <span class="k">if</span> <span class="ow">not</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">):</span>
                         <span class="c1"># Invoke ourselves recursively</span>
                         <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;recursive dict comp for </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span>
                         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
                         <span class="n">dout</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compare_dicts</span><span class="p">(</span><span class="n">dbase</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">dcomp</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">action</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">valb</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">valc</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">valb</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">valc</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
                     <span class="n">kl</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="n">sib</span> <span class="o">=</span> <span class="n">dbase</span><span class="p">[</span><span class="s2">&quot;_start_index&quot;</span><span class="p">][</span><span class="n">kl</span><span class="p">]</span>
-                    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                         <span class="n">sib</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="n">sic</span> <span class="o">=</span> <span class="n">dcomp</span><span class="p">[</span><span class="s2">&quot;_start_index&quot;</span><span class="p">][</span><span class="n">kl</span><span class="p">]</span>
-                    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                         <span class="n">sic</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
                     <span class="c1"># Start index in output depends on the action, thus:</span>
                     <span class="n">sio</span> <span class="o">=</span> <span class="p">[]</span>
@@ -790,7 +790,7 @@
             <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="s2">&quot;diff&quot;</span><span class="p">:</span>
                 <span class="n">todel</span> <span class="o">=</span> <span class="p">[]</span>
                 <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">dout</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">dout</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="ow">is</span> <span class="nb">dict</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">dout</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dout</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">dout</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                         <span class="n">todel</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
                 <span class="c1"># Delayed deletion to avoid &quot;dictionary changed size during iteration&quot;</span>
                 <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">todel</span><span class="p">:</span>
@@ -833,11 +833,11 @@
             <span class="n">valb</span> <span class="o">=</span> <span class="n">libase</span><span class="p">[</span><span class="n">ib</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">ic</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">licomp</span><span class="p">)):</span>
                 <span class="n">valc</span> <span class="o">=</span> <span class="n">licomp</span><span class="p">[</span><span class="n">ic</span><span class="p">]</span>
-                <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">valb</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">dict</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">valc</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">dict</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">valb</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">valc</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
                     <span class="n">list_set_at_index</span><span class="p">(</span>
                         <span class="n">liout</span><span class="p">,</span> <span class="n">io</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">compare_dicts</span><span class="p">(</span><span class="n">libase</span><span class="p">[</span><span class="n">ib</span><span class="p">],</span> <span class="n">licomp</span><span class="p">[</span><span class="n">ic</span><span class="p">],</span> <span class="n">action</span><span class="p">)</span>
                     <span class="p">)</span>
-                <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">valb</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">valc</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">valb</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">valc</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
                     <span class="c1"># Invoke ourselves recursively</span>
                     <span class="n">list_set_at_index</span><span class="p">(</span>
                         <span class="n">liout</span><span class="p">,</span>
@@ -1011,7 +1011,7 @@
                 <span class="n">post</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">repval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">nam</span><span class="p">)</span>
-                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                     <span class="n">repval</span> <span class="o">=</span> <span class="kc">None</span>
                 <span class="k">if</span> <span class="n">repval</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">defval</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
@@ -1045,9 +1045,9 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            node, with values replaced</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">traverse</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">traverse</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">node</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_replace_scalar</span><span class="p">(</span><span class="n">node</span><span class="p">)</span></div>
@@ -1057,9 +1057,6 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            target (str): task to generate namelists for</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            InvalidNamelistTargetError   # noqa: DAR401</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            nlres (f90nml.Namelist): Assembled namelist</span>
@@ -1094,7 +1091,7 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            nldict (dict): additional namelist dict</span>
-<span class="sd">            cndict_tag : name to be used for recognition</span>
+<span class="sd">            cndict_tag: name to be used for recognition</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cndict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cndict_tag</span><span class="p">)</span>
@@ -1124,7 +1121,7 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            target (str): task to generate namelists for</span>
-<span class="sd">            output_file : where to write the result (fort.4 or EXSEG1.nam typically)</span>
+<span class="sd">            output_file: where to write the result (fort.4 or EXSEG1.nam typically)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Generate namelist for: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
@@ -1217,7 +1214,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on Oct 18, 2023.
+      <span class="lastupdated">Last updated on Oct 19, 2023.
       </span></p>
   </div>
 

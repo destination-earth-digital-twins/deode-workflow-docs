@@ -182,7 +182,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.fullpos.Fullpos.update_selection"><code class="docutils literal notranslate"><span class="pre">Fullpos.update_selection()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.fullpos.InvalidSelectionCombination"><code class="docutils literal notranslate"><span class="pre">InvalidSelectionCombination</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.fullpos.InvalidSelectionCombinationError"><code class="docutils literal notranslate"><span class="pre">InvalidSelectionCombinationError</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.general_utils">deode.general_utils module</a><ul>
@@ -972,9 +972,9 @@
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">task_job</span><span class="si">}</span><span class="s2"> -o </span><span class="si">{</span><span class="n">output</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">cmd</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+            <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">cmd</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>  <span class="c1"># noqa S603</span>
         <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Submission failed with </span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">exc</span></div></div>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Submission failed with </span><span class="si">{</span><span class="n">exc</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">exc</span></div></div>
 </pre></div>
 
            </div>
@@ -985,7 +985,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on Oct 18, 2023.
+      <span class="lastupdated">Last updated on Oct 19, 2023.
       </span></p>
   </div>
 

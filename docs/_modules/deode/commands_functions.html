@@ -182,7 +182,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.fullpos.Fullpos.update_selection"><code class="docutils literal notranslate"><span class="pre">Fullpos.update_selection()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.fullpos.InvalidSelectionCombination"><code class="docutils literal notranslate"><span class="pre">InvalidSelectionCombination</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.fullpos.InvalidSelectionCombinationError"><code class="docutils literal notranslate"><span class="pre">InvalidSelectionCombinationError</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.general_utils">deode.general_utils module</a><ul>
@@ -626,6 +626,7 @@
   <h1>Source code for deode.commands_functions</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python3</span>
 <span class="sd">&quot;&quot;&quot;Implement the package&#39;s commands.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">contextlib</span>
 <span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">import</span> <span class="nn">difflib</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
@@ -728,7 +729,7 @@
 <span class="c1">#########################################</span>
 <span class="c1"># Code related to the &quot;show *&quot; commands #</span>
 <span class="c1">#########################################</span>
-<div class="viewcode-block" id="doc_config"><a class="viewcode-back" href="../../deode.html#deode.commands_functions.doc_config">[docs]</a><span class="k">def</span> <span class="nf">doc_config</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">ParsedConfig</span><span class="p">):</span>
+<div class="viewcode-block" id="doc_config"><a class="viewcode-back" href="../../deode.html#deode.commands_functions.doc_config">[docs]</a><span class="k">def</span> <span class="nf">doc_config</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">ParsedConfig</span><span class="p">):</span>  <span class="c1"># noqa ARG001</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Implement the &#39;doc_config&#39; command.</span>
 
 <span class="sd">    Args:</span>
@@ -777,7 +778,7 @@
         <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">dumps</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="show_config_schema"><a class="viewcode-back" href="../../deode.html#deode.commands_functions.show_config_schema">[docs]</a><span class="k">def</span> <span class="nf">show_config_schema</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+<div class="viewcode-block" id="show_config_schema"><a class="viewcode-back" href="../../deode.html#deode.commands_functions.show_config_schema">[docs]</a><span class="k">def</span> <span class="nf">show_config_schema</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>  <span class="c1"># noqa ARG001</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Implement the `show config-schema` command.</span>
 
 <span class="sd">    Args:</span>
@@ -885,15 +886,15 @@
 <span class="c1">#########################################</span>
 
 
-<div class="viewcode-block" id="toml_formatter"><a class="viewcode-back" href="../../deode.html#deode.commands_functions.toml_formatter">[docs]</a><span class="k">def</span> <span class="nf">toml_formatter</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+<div class="viewcode-block" id="toml_formatter"><a class="viewcode-back" href="../../deode.html#deode.commands_functions.toml_formatter">[docs]</a><span class="k">def</span> <span class="nf">toml_formatter</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>  <span class="c1"># noqa ARG001</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Implement the `deode toml-formatter` command.&quot;&quot;&quot;</span>
     <span class="n">pkg_configs</span> <span class="o">=</span> <span class="n">BasicConfig</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span>
         <span class="n">GeneralConstants</span><span class="o">.</span><span class="n">PACKAGE_DIRECTORY</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;pyproject.toml&quot;</span>
     <span class="p">)</span>
-    <span class="k">try</span><span class="p">:</span>
+
+    <span class="n">formatting_options</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">KeyError</span><span class="p">):</span>
         <span class="n">formatting_options</span> <span class="o">=</span> <span class="n">FormattingOptions</span><span class="p">(</span><span class="o">**</span><span class="n">pkg_configs</span><span class="p">[</span><span class="s2">&quot;tool.deode.toml_formatter&quot;</span><span class="p">])</span>
-    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-        <span class="n">formatting_options</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">_exclude_if_hidden</span><span class="p">(</span><span class="n">fpath</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">include_hidden</span><span class="p">:</span>
@@ -963,6 +964,10 @@
             <span class="p">)</span>
             <span class="k">for</span> <span class="n">fpath</span> <span class="ow">in</span> <span class="n">files_in_need_of_formatting</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;    </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">fpath</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s2">&quot;You may run `deode toml-formatter --fix-inplace .` to have&quot;</span>
+                <span class="o">+</span> <span class="s2">&quot;all TOML files under the current dir formatted.&quot;</span>
+            <span class="p">)</span>
             <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
 </pre></div>
 
@@ -974,7 +979,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on Oct 18, 2023.
+      <span class="lastupdated">Last updated on Oct 19, 2023.
       </span></p>
   </div>
 

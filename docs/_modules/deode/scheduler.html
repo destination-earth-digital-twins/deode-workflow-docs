@@ -182,7 +182,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.fullpos.Fullpos.update_selection"><code class="docutils literal notranslate"><span class="pre">Fullpos.update_selection()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.fullpos.InvalidSelectionCombination"><code class="docutils literal notranslate"><span class="pre">InvalidSelectionCombination</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.fullpos.InvalidSelectionCombinationError"><code class="docutils literal notranslate"><span class="pre">InvalidSelectionCombinationError</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.general_utils">deode.general_utils module</a><ul>
@@ -637,7 +637,7 @@
 <span class="kn">from</span> <span class="nn">.logs</span> <span class="kn">import</span> <span class="n">logger</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">ecflow</span>  <span class="c1"># noqa reportMissingImports</span>
+    <span class="kn">import</span> <span class="nn">ecflow</span>
 <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
     <span class="n">ecflow</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -703,19 +703,15 @@
 
 
 <div class="viewcode-block" id="EcflowServer"><a class="viewcode-back" href="../../deode.html#deode.scheduler.EcflowServer">[docs]</a><span class="k">class</span> <span class="nc">EcflowServer</span><span class="p">(</span><span class="n">Server</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Ecflow server.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        Server (Server): Is a child of the base server.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Ecflow server.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ecf_host</span><span class="p">,</span> <span class="n">ecf_port</span><span class="o">=</span><span class="mi">3141</span><span class="p">,</span> <span class="n">start_command</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct the EcflowServer.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            ecf_host(str): Ecflow server host.</span>
+<span class="sd">            ecf_host (str): Ecflow server host.</span>
 <span class="sd">            ecf_port (int): Ecflow server port.</span>
-<span class="sd">            start_command: Ecflow start server command.</span>
+<span class="sd">            start_command (str): Ecflow start server command.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            ModuleNotFoundError: If ecflow is not found.</span>
@@ -749,7 +745,7 @@
 
                 <span class="n">start_command</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_command</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_command</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">start_command</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;ecflow_start.sh -p </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_port</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="n">start_command</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;ecflow_start.sh -p </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_port</span><span class="si">!s}</span><span class="s2">&quot;</span>
 
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">start_command</span><span class="p">)</span>
                 <span class="c1"># TODO</span>
@@ -949,9 +945,7 @@
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;   Client:__exit__: ex_type: </span><span class="si">{}</span><span class="s2"> value: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">ex_type</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">ex_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Calling abort </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">at_time</span><span class="p">())</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">child_abort</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Aborted with exception type </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">ex_type</span><span class="p">)</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">child_abort</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Aborted with exception type </span><span class="si">{</span><span class="n">ex_type</span><span class="si">!s}</span><span class="s2">:</span><span class="si">{</span><span class="n">value</span><span class="si">!s}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">tback</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="n">tback</span><span class="p">)</span>
                 <span class="n">traceback</span><span class="o">.</span><span class="n">print_tb</span><span class="p">(</span><span class="n">tback</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
@@ -984,7 +978,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on Oct 18, 2023.
+      <span class="lastupdated">Last updated on Oct 19, 2023.
       </span></p>
   </div>
 

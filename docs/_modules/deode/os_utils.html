@@ -182,7 +182,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.fullpos.Fullpos.update_selection"><code class="docutils literal notranslate"><span class="pre">Fullpos.update_selection()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.fullpos.InvalidSelectionCombination"><code class="docutils literal notranslate"><span class="pre">InvalidSelectionCombination</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.fullpos.InvalidSelectionCombinationError"><code class="docutils literal notranslate"><span class="pre">InvalidSelectionCombinationError</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.general_utils">deode.general_utils module</a><ul>
@@ -679,7 +679,6 @@
                         <span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">file</span><span class="p">))</span>
 
         <span class="k">elif</span> <span class="ow">not</span> <span class="n">recursive</span><span class="p">:</span>
-
             <span class="k">if</span> <span class="n">onlyfiles</span><span class="p">:</span>
                 <span class="n">files</span> <span class="o">=</span> <span class="p">[</span>
                     <span class="n">f</span>
@@ -770,9 +769,8 @@
 <span class="sd">            an error should be raised.</span>
 
 <span class="sd">    Raises:</span>
-<span class="sd">        OSError  # noqa DAR401</span>
+<span class="sd">        OSError: If cannot create the directory.</span>
 
-<span class="sd">    Returns: Nothing</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">p</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
 
@@ -781,9 +779,10 @@
             <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="mo">0o2750</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="n">exist_ok</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">unixgroup</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">())</span> <span class="o">!=</span> <span class="nb">str</span><span class="p">(</span><span class="n">unixgroup</span><span class="p">)):</span>
                 <span class="n">shutil</span><span class="o">.</span><span class="n">chown</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="n">unixgroup</span><span class="p">)</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="mo">0o2750</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot create </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> properly&quot;</span><span class="p">)</span>
+                <span class="c1"># TODO: Check if we really need this permissive mask</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="mo">0o2750</span><span class="p">)</span>  <span class="c1"># noqa S103</span>
+        <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot create </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> properly&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># check directory tree for top dir that has to be created</span>
         <span class="k">try</span><span class="p">:</span>
@@ -795,10 +794,11 @@
             <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="mo">0o2750</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="n">exist_ok</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">unixgroup</span> <span class="ow">and</span> <span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">group</span><span class="p">())</span> <span class="o">!=</span> <span class="nb">str</span><span class="p">(</span><span class="n">unixgroup</span><span class="p">):</span>
                 <span class="n">shutil</span><span class="o">.</span><span class="n">chown</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">group</span><span class="o">=</span><span class="n">unixgroup</span><span class="p">)</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="mo">0o2750</span><span class="p">)</span>
+                <span class="c1"># TODO: Check if we really need this permissive mask</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="mo">0o2750</span><span class="p">)</span>  <span class="c1"># noqa S103</span>
             <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot create </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> properly&quot;</span><span class="p">)</span></div>
+        <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot create </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> properly&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span></div>
 </pre></div>
 
            </div>
@@ -809,7 +809,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on Oct 18, 2023.
+      <span class="lastupdated">Last updated on Oct 19, 2023.
       </span></p>
   </div>
 

@@ -185,7 +185,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#deode.fullpos.Fullpos.update_selection"><code class="docutils literal notranslate"><span class="pre">Fullpos.update_selection()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#deode.fullpos.InvalidSelectionCombination"><code class="docutils literal notranslate"><span class="pre">InvalidSelectionCombination</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deode.fullpos.InvalidSelectionCombinationError"><code class="docutils literal notranslate"><span class="pre">InvalidSelectionCombinationError</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-deode.general_utils">deode.general_utils module</a><ul>
@@ -887,7 +887,7 @@
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>path</strong> (<em>Union</em><em>[</em><em>pathlib.Path</em><em>, </em><em>str</em><em>]</em>) – Path to the config file.</p></li>
-<li><p><strong>kwargs</strong> – Arguments passed to the class constructor.</p></li>
+<li><p><strong>**kwargs</strong> – Arguments passed to the class constructor.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -1300,8 +1300,8 @@ i (int): parameter counter</p>
 </dd></dl>
 
 <dl class="py exception">
-<dt class="sig sig-object py" id="deode.fullpos.InvalidSelectionCombination">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">InvalidSelectionCombination</span></span><a class="reference internal" href="_modules/deode/fullpos.html#InvalidSelectionCombination"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.fullpos.InvalidSelectionCombination" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="deode.fullpos.InvalidSelectionCombinationError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">InvalidSelectionCombinationError</span></span><a class="reference internal" href="_modules/deode/fullpos.html#InvalidSelectionCombinationError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.fullpos.InvalidSelectionCombinationError" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ValueError</span></code></p>
 <p>Custom exception.</p>
 </dd></dl>
@@ -1609,14 +1609,11 @@ i (int): parameter counter</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>target</strong> (<em>str</em>) – task to generate namelists for</p>
 </dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>InvalidNamelistTargetError   # noqa</strong> – DAR401</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Assembled namelist</p>
 </dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Assembled namelist</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>nlres (f90nml.Namelist)</p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>nlres (f90nml.Namelist)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1841,10 +1838,9 @@ an error should be raised.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>OSError  # noqa DAR401</strong> – </p>
+<dd class="field-even"><p><strong>OSError</strong> – If cannot create the directory.</p>
 </dd>
 </dl>
-<p>Returns: Nothing</p>
 </dd></dl>
 
 <dl class="py function">
@@ -1924,11 +1920,6 @@ handle exceptions and signals, by calling the abort child command.
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">EcflowServer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ecf_host</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecf_port</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3141</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_command</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/scheduler.html#EcflowServer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.scheduler.EcflowServer" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#deode.scheduler.Server" title="deode.scheduler.Server"><code class="xref py py-class docutils literal notranslate"><span class="pre">Server</span></code></a></p>
 <p>Ecflow server.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>Server</strong> (<a class="reference internal" href="#deode.scheduler.Server" title="deode.scheduler.Server"><em>Server</em></a>) – Is a child of the base server.</p>
-</dd>
-</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="deode.scheduler.EcflowServer.begin_suite">
 <span class="sig-name descname"><span class="pre">begin_suite</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">suite_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/scheduler.html#EcflowServer.begin_suite"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.scheduler.EcflowServer.begin_suite" title="Permalink to this definition"></a></dt>
@@ -2248,11 +2239,6 @@ server specific way.</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">EcflowNodeContainer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecf_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trigger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">def_status</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/suites.html#EcflowNodeContainer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.suites.EcflowNodeContainer" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#deode.suites.EcflowNode" title="deode.suites.EcflowNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">EcflowNode</span></code></a></p>
 <p>Ecflow node container.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>EcflowNode</strong> (<a class="reference internal" href="#deode.suites.EcflowNode" title="deode.suites.EcflowNode"><em>EcflowNode</em></a>) – Parent class.</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py class">
@@ -2260,14 +2246,6 @@ server specific way.</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">EcflowSuite</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecf_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dry_run</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">def_status</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/suites.html#EcflowSuite"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.suites.EcflowSuite" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#deode.suites.EcflowNodeContainer" title="deode.suites.EcflowNodeContainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">EcflowNodeContainer</span></code></a></p>
 <p>EcflowSuite.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>EcflowNodeContainer</strong> – </p></li>
-<li><p><strong>(</strong><strong>EcflowNodeContainer</strong><strong>)</strong> – A child of the EcflowNodeContainer class.</p></li>
-</ul>
-</dd>
-</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="deode.suites.EcflowSuite.save_as_defs">
 <span class="sig-name descname"><span class="pre">save_as_defs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">def_file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/suites.html#EcflowSuite.save_as_defs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.suites.EcflowSuite.save_as_defs" title="Permalink to this definition"></a></dt>
@@ -2286,11 +2264,6 @@ server specific way.</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">EcflowSuiteFamily</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecf_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trigger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">def_status</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/suites.html#EcflowSuiteFamily"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.suites.EcflowSuiteFamily" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#deode.suites.EcflowNodeContainer" title="deode.suites.EcflowNodeContainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">EcflowNodeContainer</span></code></a></p>
 <p>A family in ecflow.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>EcflowNodeContainer</strong> (<em>_type_</em>) – _description_</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py class">
@@ -2298,11 +2271,6 @@ server specific way.</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">EcflowSuiteTask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task_settings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecf_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_template</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecf_micro</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'%'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trigger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">def_status</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/suites.html#EcflowSuiteTask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.suites.EcflowSuiteTask" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#deode.suites.EcflowNode" title="deode.suites.EcflowNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">EcflowNode</span></code></a></p>
 <p>A task in an ecflow suite/family.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>EcflowNode</strong> (<a class="reference internal" href="#deode.suites.EcflowNodeContainer" title="deode.suites.EcflowNodeContainer"><em>EcflowNodeContainer</em></a>) – The node container.</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py class">
@@ -3029,7 +2997,7 @@ server specific way.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="deode.toolbox.Resource">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Resource</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifier</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/toolbox.html#Resource"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.toolbox.Resource" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Resource</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifier</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/toolbox.html#Resource"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.toolbox.Resource" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Resource container.</p>
 </dd></dl>
@@ -3049,7 +3017,7 @@ server specific way.</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on Oct 18, 2023.
+      <span class="lastupdated">Last updated on Oct 19, 2023.
       </span></p>
   </div>
 

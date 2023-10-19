@@ -182,7 +182,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.fullpos.Fullpos.update_selection"><code class="docutils literal notranslate"><span class="pre">Fullpos.update_selection()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.fullpos.InvalidSelectionCombination"><code class="docutils literal notranslate"><span class="pre">InvalidSelectionCombination</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.fullpos.InvalidSelectionCombinationError"><code class="docutils literal notranslate"><span class="pre">InvalidSelectionCombinationError</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.general_utils">deode.general_utils module</a><ul>
@@ -782,7 +782,7 @@
         <span class="n">atomic_entries</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">previous_lines_failed_to_parse</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">new</span><span class="p">:</span>
-            <span class="n">str_to_parse</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">previous_lines_failed_to_parse</span> <span class="o">+</span> <span class="p">[</span><span class="n">line</span><span class="p">])</span>
+            <span class="n">str_to_parse</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="o">*</span><span class="n">previous_lines_failed_to_parse</span><span class="p">,</span> <span class="n">line</span><span class="p">])</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">new_entry</span> <span class="o">=</span> <span class="n">ParsedTomlFileEntry</span><span class="p">(</span><span class="n">str_to_parse</span><span class="p">)</span>
             <span class="k">except</span> <span class="p">(</span><span class="n">UnexpectedEofError</span><span class="p">,</span> <span class="n">UnexpectedCharError</span><span class="p">):</span>
@@ -957,7 +957,7 @@
     <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">toml_newline</span><span class="p">,)</span>
 
-    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">section</span><span class="p">[</span><span class="n">first_non_blank</span> <span class="p">:</span> <span class="n">last_non_blank</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="p">(</span><span class="n">toml_newline</span><span class="p">,)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="o">*</span><span class="nb">tuple</span><span class="p">(</span><span class="n">section</span><span class="p">[</span><span class="n">first_non_blank</span> <span class="p">:</span> <span class="n">last_non_blank</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">toml_newline</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_remove_consecutive_blanks</span><span class="p">(</span>
@@ -1020,7 +1020,7 @@
 
             <span class="k">if</span> <span class="n">new_section</span><span class="p">:</span>
                 <span class="n">sections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_section</span><span class="p">)</span>
-            <span class="n">new_section</span> <span class="o">=</span> <span class="n">comments_that_belong_to_next_section</span> <span class="o">+</span> <span class="p">[</span><span class="n">entry</span><span class="p">]</span>
+            <span class="n">new_section</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="n">comments_that_belong_to_next_section</span><span class="p">,</span> <span class="n">entry</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">new_section</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">new_section_start</span><span class="p">:</span>
@@ -1106,7 +1106,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on Oct 18, 2023.
+      <span class="lastupdated">Last updated on Oct 19, 2023.
       </span></p>
   </div>
 

@@ -182,7 +182,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.fullpos.Fullpos.update_selection"><code class="docutils literal notranslate"><span class="pre">Fullpos.update_selection()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.fullpos.InvalidSelectionCombination"><code class="docutils literal notranslate"><span class="pre">InvalidSelectionCombination</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.fullpos.InvalidSelectionCombinationError"><code class="docutils literal notranslate"><span class="pre">InvalidSelectionCombinationError</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.general_utils">deode.general_utils module</a><ul>
@@ -691,7 +691,7 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            path (typing.Union[pathlib.Path, str]): Path to the config file.</span>
-<span class="sd">            kwargs: Arguments passed to the class constructor.</span>
+<span class="sd">            **kwargs: Arguments passed to the class constructor.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            cls: Configs retrieved from the specified path.</span>
@@ -835,7 +835,7 @@
             <span class="k">return</span> <span class="n">tomli</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">config_path</span><span class="o">.</span><span class="n">suffix</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;.yaml&quot;</span><span class="p">,</span> <span class="s2">&quot;.yml&quot;</span><span class="p">]:</span>
-            <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">config_file</span><span class="p">,</span> <span class="n">Loader</span><span class="o">=</span><span class="n">yaml</span><span class="o">.</span><span class="n">loader</span><span class="o">.</span><span class="n">SafeLoader</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">config_path</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">&quot;.json&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span>
@@ -878,7 +878,7 @@
             <span class="n">include_path</span> <span class="o">=</span> <span class="n">config_include_search_dir</span> <span class="o">/</span> <span class="n">include_path</span>
         <span class="n">included_config_section</span> <span class="o">=</span> <span class="n">_read_raw_config_file</span><span class="p">(</span><span class="n">include_path</span><span class="p">)</span>
 
-        <span class="n">_sections_traversed</span> <span class="o">=</span> <span class="n">_parent_sections</span> <span class="o">+</span> <span class="p">(</span><span class="n">section_name</span><span class="p">,)</span>
+        <span class="n">_sections_traversed</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">_parent_sections</span><span class="p">,</span> <span class="n">section_name</span><span class="p">)</span>
         <span class="n">sections_traversed_str</span> <span class="o">=</span> <span class="s2">&quot; -&gt; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_sections_traversed</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">section_name</span> <span class="ow">in</span> <span class="n">json_schema</span><span class="p">[</span><span class="s2">&quot;properties&quot;</span><span class="p">]:</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Validation schema for `[include]` section &quot;</span><span class="si">{</span><span class="n">sections_traversed_str</span><span class="si">}</span><span class="s1">&quot; &#39;</span>
@@ -951,7 +951,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on Oct 18, 2023.
+      <span class="lastupdated">Last updated on Oct 19, 2023.
       </span></p>
   </div>
 

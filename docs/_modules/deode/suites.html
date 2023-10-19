@@ -182,7 +182,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.fullpos.Fullpos.update_selection"><code class="docutils literal notranslate"><span class="pre">Fullpos.update_selection()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.fullpos.InvalidSelectionCombination"><code class="docutils literal notranslate"><span class="pre">InvalidSelectionCombination</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.fullpos.InvalidSelectionCombinationError"><code class="docutils literal notranslate"><span class="pre">InvalidSelectionCombinationError</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.general_utils">deode.general_utils module</a><ul>
@@ -913,7 +913,6 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">do_prep</span> <span class="o">=</span> <span class="kc">False</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">interpolate_boundaries</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_prep</span><span class="p">:</span>
-
                 <span class="n">int_fam</span> <span class="o">=</span> <span class="n">EcflowSuiteFamily</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="s2">&quot;Interpolation&quot;</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
                     <span class="n">time_family</span><span class="p">,</span>
@@ -937,7 +936,6 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">do_prep</span> <span class="o">=</span> <span class="kc">False</span>
 
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">interpolate_boundaries</span><span class="p">:</span>
-
                     <span class="n">basetime</span> <span class="o">=</span> <span class="n">as_datetime</span><span class="p">(</span><span class="n">cycle</span><span class="p">[</span><span class="s2">&quot;basetime&quot;</span><span class="p">])</span>
                     <span class="n">forecast_range</span> <span class="o">=</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.times.forecast_range&quot;</span><span class="p">])</span>
                     <span class="n">endtime</span> <span class="o">=</span> <span class="n">basetime</span> <span class="o">+</span> <span class="n">forecast_range</span>
@@ -1317,11 +1315,7 @@
 
 
 <div class="viewcode-block" id="EcflowNodeContainer"><a class="viewcode-back" href="../../deode.html#deode.suites.EcflowNodeContainer">[docs]</a><span class="k">class</span> <span class="nc">EcflowNodeContainer</span><span class="p">(</span><span class="n">EcflowNode</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Ecflow node container.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        EcflowNode (EcflowNode): Parent class.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Ecflow node container.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -1358,12 +1352,7 @@
 
 
 <div class="viewcode-block" id="EcflowSuite"><a class="viewcode-back" href="../../deode.html#deode.suites.EcflowSuite">[docs]</a><span class="k">class</span> <span class="nc">EcflowSuite</span><span class="p">(</span><span class="n">EcflowNodeContainer</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;EcflowSuite.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        EcflowNodeContainer</span>
-<span class="sd">        (EcflowNodeContainer): A child of the EcflowNodeContainer class.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;EcflowSuite.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">ecf_files</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dry_run</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">def_status</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct the Ecflow suite.</span>
@@ -1403,11 +1392,7 @@
 
 
 <div class="viewcode-block" id="EcflowSuiteFamily"><a class="viewcode-back" href="../../deode.html#deode.suites.EcflowSuiteFamily">[docs]</a><span class="k">class</span> <span class="nc">EcflowSuiteFamily</span><span class="p">(</span><span class="n">EcflowNodeContainer</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A family in ecflow.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        EcflowNodeContainer (_type_): _description_</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A family in ecflow.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">ecf_files</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">trigger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">def_status</span><span class="o">=</span><span class="kc">None</span>
@@ -1439,11 +1424,7 @@
 
 
 <div class="viewcode-block" id="EcflowSuiteTask"><a class="viewcode-back" href="../../deode.html#deode.suites.EcflowSuiteTask">[docs]</a><span class="k">class</span> <span class="nc">EcflowSuiteTask</span><span class="p">(</span><span class="n">EcflowNode</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A task in an ecflow suite/family.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        EcflowNode (EcflowNodeContainer): The node container.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A task in an ecflow suite/family.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -1619,7 +1600,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on Oct 18, 2023.
+      <span class="lastupdated">Last updated on Oct 19, 2023.
       </span></p>
   </div>
 
