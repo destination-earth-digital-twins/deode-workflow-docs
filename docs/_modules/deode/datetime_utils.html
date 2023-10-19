@@ -164,6 +164,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.datetime_utils.cycle_offset"><code class="docutils literal notranslate"><span class="pre">cycle_offset()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.datetime_utils.dt2str"><code class="docutils literal notranslate"><span class="pre">dt2str()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.datetime_utils.expand_output_settings"><code class="docutils literal notranslate"><span class="pre">expand_output_settings()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.datetime_utils.get_decade"><code class="docutils literal notranslate"><span class="pre">get_decade()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.datetime_utils.oi2dt_list"><code class="docutils literal notranslate"><span class="pre">oi2dt_list()</span></code></a></li>
 </ul>
 </li>
@@ -496,6 +497,10 @@
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-boundaries-bd-has-surfex">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">bd_has_surfex</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-pgd">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">pgd</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-pgd-one-decade">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">pgd</span> <span class="pre">&gt;</span> <span class="pre">one_decade</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-fullpos">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">fullpos</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-fullpos-config-path">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">fullpos</span> <span class="pre">&gt;</span> <span class="pre">config_path</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-fullpos-selection">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">fullpos</span> <span class="pre">&gt;</span> <span class="pre">selection</span></code></a></li>
@@ -755,6 +760,33 @@
     <span class="n">shift_seconds</span> <span class="o">=</span> <span class="n">shift</span><span class="o">.</span><span class="n">days</span> <span class="o">*</span> <span class="mi">3600</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">+</span> <span class="n">shift</span><span class="o">.</span><span class="n">seconds</span>
     <span class="n">k</span> <span class="o">=</span> <span class="n">reftime</span> <span class="o">%</span> <span class="n">t</span> <span class="o">-</span> <span class="n">shift_seconds</span>
     <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">k</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_decade"><a class="viewcode-back" href="../../deode.html#deode.datetime_utils.get_decade">[docs]</a><span class="k">def</span> <span class="nf">get_decade</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="c1"># Extract month and day from datetime object</span>
+    <span class="n">dtg_mm</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">month</span><span class="p">)</span>
+    <span class="n">dtg_dd</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">day</span><span class="p">)</span>
+
+    <span class="c1"># Determine decades_mm and decades_dd based on dtg_dd</span>
+    <span class="k">if</span> <span class="n">dtg_dd</span> <span class="o">&lt;</span> <span class="mi">9</span><span class="p">:</span>
+        <span class="n">decades_mm</span> <span class="o">=</span> <span class="n">dtg_mm</span>
+        <span class="n">decades_dd</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="k">elif</span> <span class="mi">8</span> <span class="o">&lt;</span> <span class="n">dtg_dd</span> <span class="o">&lt;</span> <span class="mi">19</span><span class="p">:</span>
+        <span class="n">decades_mm</span> <span class="o">=</span> <span class="n">dtg_mm</span>
+        <span class="n">decades_dd</span> <span class="o">=</span> <span class="mi">15</span>
+    <span class="k">elif</span> <span class="mi">18</span> <span class="o">&lt;</span> <span class="n">dtg_dd</span> <span class="o">&lt;</span> <span class="mi">29</span><span class="p">:</span>
+        <span class="n">decades_mm</span> <span class="o">=</span> <span class="n">dtg_mm</span>
+        <span class="n">decades_dd</span> <span class="o">=</span> <span class="mi">25</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">decades_mm</span> <span class="o">=</span> <span class="n">dtg_mm</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">decades_mm</span> <span class="o">==</span> <span class="mi">13</span><span class="p">:</span>
+            <span class="n">decades_mm</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">decades_dd</span> <span class="o">=</span> <span class="mi">5</span>
+
+    <span class="n">decades_mm</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">decades_mm</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">decades_dd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">decades_dd</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">decades_mm</span><span class="si">}{</span><span class="n">decades_dd</span><span class="si">}</span><span class="s2">&quot;</span></div>
 </pre></div>
 
            </div>
