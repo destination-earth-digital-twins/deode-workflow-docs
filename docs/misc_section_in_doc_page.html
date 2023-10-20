@@ -590,6 +590,10 @@
 <li class="toctree-l3"><a class="reference internal" href="#add-your-own-namelist">Add your own namelist</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#configure-selection-of-timings-in-output-settings">Configure selection of timings in output settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#configure-selection-of-fields-from-fullpos">Configure selection of fields from fullpos</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#the-fullpos-config-files">The fullpos config files</a><ul>
@@ -630,7 +634,7 @@
              
   <section id="miscellaneous-documentation">
 <h1>Miscellaneous Documentation<a class="headerlink" href="#miscellaneous-documentation" title="Permalink to this heading"></a></h1>
-<p>This was automatically generated running <code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">doc</span> <span class="pre">config</span></code> on 2023-10-19T14:55:16.</p>
+<p>This was automatically generated running <code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">doc</span> <span class="pre">config</span></code> on 2023-10-20T14:35:41.</p>
 <section id="config">
 <h2>Config<a class="headerlink" href="#config" title="Permalink to this heading"></a></h2>
 <p><strong>Title:</strong> Config</p>
@@ -2637,7 +2641,7 @@
 <td><p>string</p></td>
 <td><p>No</p></td>
 <td><p>-</p></td>
-<td><p>Shift of boundary initial time. E.g. ‘-PT3H’ would mean use 3H old boundaries</p></td>
+<td><p>Shift of boundary initial time. E.g. ‘PT3H’ would mean use 3H old boundaries</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference external" href="#boundaries_bdcycle">bdcycle</a></p></td>
 <td><p>string</p></td>
@@ -2744,7 +2748,7 @@
 </tr>
 </tbody>
 </table>
-<p><strong>Description:</strong> Shift of boundary initial time. E.g. ‘-PT3H’ would mean use 3H old boundaries</p>
+<p><strong>Description:</strong> Shift of boundary initial time. E.g. ‘PT3H’ would mean use 3H old boundaries</p>
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Restrictions</p></th>
@@ -4996,6 +5000,32 @@ To copy or move, one only needs to add a provider_id:
 </div>
 </section>
 </section>
+<section id="configure-selection-of-timings-in-output-settings">
+<h2>Configure selection of timings in output settings<a class="headerlink" href="#configure-selection-of-timings-in-output-settings" title="Permalink to this heading"></a></h2>
+<p>Describes examples of timings in output settings for <code class="docutils literal notranslate"><span class="pre">[general.output_settings]</span></code> in the config file, see <a class="reference external" href="https://destination-earth-digital-twins.github.io/deode-prototype-docs/misc_section_in_doc_page.html#property-config-general-output-settings">output settings</a>.</p>
+<p>Output timings must be specified as follows:</p>
+<ul class="simple">
+<li><p>to configure a single output interval across the entire forecast length (e.g. outputs every hour, every 30 minutes and so on): a single string with format <code class="docutils literal notranslate"><span class="pre">&quot;PTnC&quot;</span></code>, where <code class="docutils literal notranslate"><span class="pre">n</span></code> is a positive integer number and <code class="docutils literal notranslate"><span class="pre">C</span></code> can be hours, <code class="docutils literal notranslate"><span class="pre">H</span></code>, or minutes, <code class="docutils literal notranslate"><span class="pre">M</span></code>.</p></li>
+<li><p>to configure different output intervals across the forecast length: a list of strings. Each string must be of the format <code class="docutils literal notranslate"><span class="pre">&quot;starttime:endtime:interval&quot;</span></code>, where each of <code class="docutils literal notranslate"><span class="pre">starttime</span></code>, <code class="docutils literal notranslate"><span class="pre">endtime</span></code>, <code class="docutils literal notranslate"><span class="pre">interval</span></code> have the format <code class="docutils literal notranslate"><span class="pre">PTnC</span></code> as described above. More explicitly, the string <code class="docutils literal notranslate"><span class="pre">starttime:endtime:interval</span></code> instructs to generate forecast outputs with frequency <code class="docutils literal notranslate"><span class="pre">interval</span></code> (hour or minute) from the forecast step <code class="docutils literal notranslate"><span class="pre">starttime</span></code> to the forecast step <code class="docutils literal notranslate"><span class="pre">endtime</span></code>.</p></li>
+</ul>
+<section id="example">
+<h3>Example<a class="headerlink" href="#example" title="Permalink to this heading"></a></h3>
+<p>Here we explain output intervals through an example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="n">fullpos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;PT0H:PT6H:PT15M&quot;</span><span class="p">,</span> <span class="s2">&quot;PT6H:PT9H:PT30M&quot;</span><span class="p">,</span> <span class="s2">&quot;PT1H&quot;</span><span class="p">]</span>
+  <span class="n">history</span> <span class="o">=</span> <span class="s2">&quot;PT1H&quot;</span>
+  <span class="n">nrazts</span> <span class="o">=</span> <span class="s2">&quot;PT1H&quot;</span>
+  <span class="n">surfex</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;PT0H:PT9H:PT10M&quot;</span><span class="p">,</span> <span class="s2">&quot;PT9H:PT24H:PT3H&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>With the above settings:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">fullpos</span></code> output will be created with a 15 minutes interval from the start until six hours, then with a 30 minutes interval until nine hours, then with a 1 hour interval onwards.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">history</span></code> output will be created with a 1 hour interval.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nrazts</span></code> instantaneous fluxes will be reset hourly.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">surfex</span></code> output will be created with a 10 minutes interval from the start until nine hours, then with a 3 hour interval until 24 hours.</p></li>
+</ul>
+</section>
+</section>
 <section id="configure-selection-of-fields-from-fullpos">
 <h2>Configure selection of fields from fullpos<a class="headerlink" href="#configure-selection-of-fields-from-fullpos" title="Permalink to this heading"></a></h2>
 <p>Describes how to select fields and output settings for fullpos. The scripting allows to select fields and levels without having to worry about how the namelist should be constructed, this is done by the system.</p>
@@ -5003,7 +5033,7 @@ To copy or move, one only needs to add a provider_id:
 <h3>Overview<a class="headerlink" href="#overview" title="Permalink to this heading"></a></h3>
 <p>The fullpos output is controlled by the following settings</p>
 <ul class="simple">
-<li><p>Output interval is set by <code class="docutils literal notranslate"><span class="pre">output_settings.fullpos</span></code> in the general section of the main config file. The interval is specified using the duration syntax and can be give down to a resolution of minutes.</p></li>
+<li><p>Output interval, see <a class="reference external" href="https://destination-earth-digital-twins.github.io/deode-prototype-docs/misc_section_in_doc_page.html#configure-selection-of-timings-in-output-settings">output settings</a></p></li>
 <li><p>Field selection and settings for different output times is done in the fullpos main selection, <code class="docutils literal notranslate"><span class="pre">deode/namelist_generation/CYCLE/master_selection.yml</span></code></p></li>
 </ul>
 <p>Currently it’s only implemented support for a single domain using the native geometry of the domain used for the model run.</p>
@@ -5093,7 +5123,7 @@ To copy or move, one only needs to add a provider_id:
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on Oct 19, 2023.
+      <span class="lastupdated">Last updated on Oct 20, 2023.
       </span></p>
   </div>
 
