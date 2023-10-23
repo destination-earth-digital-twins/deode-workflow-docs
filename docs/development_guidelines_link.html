@@ -12,11 +12,11 @@
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="_static/jquery.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -48,6 +48,8 @@
 <li class="toctree-l1"><a class="reference internal" href="readme_link.html">README</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="readme_link.html#about">About</a></li>
 <li class="toctree-l2"><a class="reference internal" href="readme_link.html#system-requirements">System Requirements</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="readme_link.html#prepare-your-environment-on-the-hpc-machines">Prepare your environment on the HPC machines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="readme_link.html#install-dependencies">Install Dependencies</a></li>
 <li class="toctree-l3"><a class="reference internal" href="readme_link.html#optional-system-requirements">Optional System Requirements</a></li>
 </ul>
 </li>
@@ -56,14 +58,15 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="readme_link.html#usage">Usage</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="readme_link.html#setting-up-the-environment-after-developer-mode-install">Setting up the Environment after Developer-Mode Install</a></li>
+<li class="toctree-l3"><a class="reference internal" href="readme_link.html#running-deode-after-developer-mode-install">Running <code class="docutils literal notranslate"><span class="pre">deode</span></code> after Developer-Mode Install</a></li>
 <li class="toctree-l3"><a class="reference internal" href="readme_link.html#the-configuration-file">The Configuration File</a></li>
 <li class="toctree-l3"><a class="reference internal" href="readme_link.html#command-line-options">Command line options</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="readme_link.html#examples">Examples</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="readme_link.html#example-running-a-ecflow-suite-from-server-ecflow-gen-user-001-on-atos">Example running a ecflow suite from server ecflow-gen-${USER}-001 on atos</a></li>
-<li class="toctree-l3"><a class="reference internal" href="readme_link.html#example-using-poetry-and-run-the-forecast-task-from-hpc-login-command-line">Example using poetry and run the forecast task from hpc-login command line</a></li>
+<li class="toctree-l3"><a class="reference internal" href="readme_link.html#running-an-ecflow-suite-from-server-ecflow-gen-user-001-on-atos">Running an <code class="docutils literal notranslate"><span class="pre">ecflow</span></code> suite from server <code class="docutils literal notranslate"><span class="pre">ecflow-gen-${USER}-001</span></code> on atos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="readme_link.html#running-the-forecast-task-from-the-hpc-login-s-command-line">Running the <code class="docutils literal notranslate"><span class="pre">&quot;forecast&quot;</span></code> task from the <code class="docutils literal notranslate"><span class="pre">hpc-login</span></code>’s command line</a></li>
+<li class="toctree-l3"><a class="reference internal" href="readme_link.html#running-a-stand-alone-task-with-an-example-config-file-on-lumi">Running a stand-alone task with an example config file on LUMI</a></li>
 </ul>
 </li>
 </ul>
@@ -75,7 +78,14 @@
 <li class="toctree-l3"><a class="reference internal" href="#checklist-for-assignees">Checklist for assignees</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#local-testing">Local testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#local-testing">Local testing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#run-linters-and-exit-with-an-error-if-non-linted-code-is-detected">Run linters and exit with an error if non-linted code is detected</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#run-linters-and-attempt-to-fix-eventually-encountered-errors">Run linters and <strong>attempt</strong> to fix eventually encountered errors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#runthe-typical-checks-for-things-you-need-to-fix-prior-to-a-push">Runthe typical checks for things you need to fix prior to a push</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#run-tests">Run tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#generate-and-view-the-documentation-to-be-published-to-our-docpages">Generate and view the documentation to be published to our docpages</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#branches">Branches</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#forks">Forks</a></li>
 </ul>
@@ -371,6 +381,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="deode.html#deode.toml_formatter.ParsedTomlFileEntry"><code class="docutils literal notranslate"><span class="pre">ParsedTomlFileEntry</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="deode.html#deode.toml_formatter.ParsedTomlFileEntry.defined_as_key_value"><code class="docutils literal notranslate"><span class="pre">ParsedTomlFileEntry.defined_as_key_value</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="deode.html#deode.toml_formatter.ParsedTomlFileEntry.indent"><code class="docutils literal notranslate"><span class="pre">ParsedTomlFileEntry.indent()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="deode.html#deode.toml_formatter.ParsedTomlFileEntry.item"><code class="docutils literal notranslate"><span class="pre">ParsedTomlFileEntry.item</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="deode.html#deode.toml_formatter.ParsedTomlFileEntry.key"><code class="docutils literal notranslate"><span class="pre">ParsedTomlFileEntry.key</span></code></a></li>
@@ -584,6 +595,7 @@
 <li class="toctree-l3"><a class="reference internal" href="misc_section_in_doc_page.html#how-to-specify-binaries">How to specify binaries</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="misc_section_in_doc_page.html#computational-parameters-in-config-file">Computational parameters in config file</a></li>
 <li class="toctree-l2"><a class="reference internal" href="misc_section_in_doc_page.html#adding-a-new-task">Adding a New Task</a></li>
 <li class="toctree-l2"><a class="reference internal" href="misc_section_in_doc_page.html#namelist-handling-in-deode">Namelist handling in deode</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="misc_section_in_doc_page.html#internal-usage">Internal usage</a></li>
@@ -604,6 +616,19 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="misc_section_in_doc_page.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="misc_section_in_doc_page.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="misc_section_in_doc_page.html#cannot-run-poetry">Cannot run <code class="docutils literal notranslate"><span class="pre">poetry</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="misc_section_in_doc_page.html#command-not-found-when-trying-to-run-deode-or-some-related-command"><code class="docutils literal notranslate"><span class="pre">Command</span> <span class="pre">not</span> <span class="pre">found</span></code> when trying to run <code class="docutils literal notranslate"><span class="pre">deode</span></code> or some related command</a></li>
+<li class="toctree-l3"><a class="reference internal" href="misc_section_in_doc_page.html#importerror-or-modulenotfounderror-when-running-the-package-s-executable"><code class="docutils literal notranslate"><span class="pre">ImportError</span></code> or <code class="docutils literal notranslate"><span class="pre">ModuleNotFoundError</span></code> when running the package’s executable</a></li>
+<li class="toctree-l3"><a class="reference internal" href="misc_section_in_doc_page.html#poetry-update-or-poetry-update-fail"><code class="docutils literal notranslate"><span class="pre">poetry</span> <span class="pre">update</span></code> or <code class="docutils literal notranslate"><span class="pre">poetry</span> <span class="pre">update</span></code> fail</a></li>
+<li class="toctree-l3"><a class="reference internal" href="misc_section_in_doc_page.html#failing-linting-checks">Failing linting checks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="misc_section_in_doc_page.html#failing-tests">Failing tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="misc_section_in_doc_page.html#failing-ci-checks-on-github">Failing CI checks on github</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="misc_section_in_doc_page.html#failing-coverage-checks-on-ci">Failing coverage checks on CI</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -634,28 +659,30 @@
            <div itemprop="articleBody">
              
   <section id="development-guidelines">
-<h1>Development guidelines<a class="headerlink" href="#development-guidelines" title="Permalink to this heading"></a></h1>
+<h1>Development guidelines<a class="headerlink" href="#development-guidelines" title="Link to this heading"></a></h1>
 <p>Describes best practices and guidelines for development in the Deode-Prototype repository.</p>
 <section id="best-practices">
-<h2>Best practices<a class="headerlink" href="#best-practices" title="Permalink to this heading"></a></h2>
+<h2>Best practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p>Authors of PRs should not merge themself - Instead request a reviewer and an assignee. Assignee is responsible for merging.</p></li>
-<li><p>Assignee and reviewer may be the same person.</p></li>
+<li><p>Assignee and reviewer may not be the same person.</p></li>
 <li><p>Authors of PRs are responsible for ensuring that the PR is up to date with the base branch before merging.</p></li>
 <li><p>Assignees should not merge PRs that have failing tests.</p></li>
 <li><p>Commits to <code class="docutils literal notranslate"><span class="pre">master</span></code> and <code class="docutils literal notranslate"><span class="pre">develop</span></code> branches should only be via PRs.</p></li>
 <li><p>We rely on the good sense of both author and reviewer.</p></li>
 </ul>
 <section id="checklist-for-authors">
-<h3>Checklist for authors<a class="headerlink" href="#checklist-for-authors" title="Permalink to this heading"></a></h3>
+<h3>Checklist for authors<a class="headerlink" href="#checklist-for-authors" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p>✔️ If not up-to-date, pull in the target branch.</p></li>
+<li><p>✔️  Make sure your local environment is correctly initialised as described in the <a class="reference external" href="https://github.com/destination-earth-digital-twins/Deode-Prototype/blob/develop/README.md">README</a> file.</p></li>
+<li><p>✔️  Use forks for your changes</p></li>
+<li><p>✔️ If not up-to-date, update your fork with the changes from the target branch (use <code class="docutils literal notranslate"><span class="pre">pull</span></code> with <code class="docutils literal notranslate"><span class="pre">--rebase</span></code> option if possible).</p></li>
 <li><p>✔️ Describe what the PR contains.</p></li>
 <li><p>✔️ Ensure your PR does not contain seperate features.</p></li>
 </ul>
 </section>
 <section id="checklist-for-reviewers">
-<h3>Checklist for reviewers<a class="headerlink" href="#checklist-for-reviewers" title="Permalink to this heading"></a></h3>
+<h3>Checklist for reviewers<a class="headerlink" href="#checklist-for-reviewers" title="Link to this heading"></a></h3>
 <p>Each PR comes with its own improvements and flaws. The reviewer should check the following:</p>
 <ul class="simple">
 <li><p>✔️ Is the code readable?</p></li>
@@ -665,7 +692,7 @@
 </ul>
 </section>
 <section id="checklist-for-assignees">
-<h3>Checklist for assignees<a class="headerlink" href="#checklist-for-assignees" title="Permalink to this heading"></a></h3>
+<h3>Checklist for assignees<a class="headerlink" href="#checklist-for-assignees" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>✔️ Is the PR up to date with the base branch?</p></li>
 <li><p>✔️ Are the tests passing?</p></li>
@@ -675,34 +702,57 @@
 </section>
 </section>
 <section id="local-testing">
-<h2>Local testing<a class="headerlink" href="#local-testing" title="Permalink to this heading"></a></h2>
-<p>No-one likes to wait for the CI to run tests. It is therefore recommended to run tests locally before pushing to the remote repository, and before creating a PR, but no one is enforced to this. How you work locally is entirely up to you.</p>
-<p>Here is a list of tests being run in the pipeline, that you can run locally from within a <code class="docutils literal notranslate"><span class="pre">poetry</span> <span class="pre">shell</span></code> at the root of the repo. If working outside a poetry shell, commands below should be typed as <code class="docutils literal notranslate"><span class="pre">poetry</span> <span class="pre">run</span> <span class="pre">[command]</span></code>.</p>
-<p><strong>Black:</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">black</span> <span class="pre">.</span></code></p></li>
-</ul>
-<p><strong>Isort:</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">isort</span> <span class="pre">.</span></code></p></li>
-</ul>
-<p><strong>Linting:</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">flakeheaven</span> <span class="pre">lint</span> <span class="pre">.</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">ruff</span> <span class="pre">check</span> <span class="pre">.</span></code></p></li>
-</ul>
-<p><strong>Unit Tests:</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">pytest</span> <span class="pre">--cov=./</span> <span class="pre">tests/</span></code> <em>(In the pipeline we run multiple versions of python)</em></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">pytest</span> <span class="pre">-n</span> <span class="pre">auto</span></code> <em>(runs exactly as in the post-commit only checks.)</em></p></li>
-</ul>
-<p><strong>Full Ecflow test:</strong></p>
-<ul class="simple">
-<li><p>We have a working, although simplified, setup on Atos that should be maintained. Run with <code class="docutils literal notranslate"><span class="pre">bash</span> <span class="pre">./Start</span></code>. The test produces output under <code class="docutils literal notranslate"><span class="pre">$SCRATCH/deode/deode_case</span></code>.</p></li>
-</ul>
+<h2>Local testing<a class="headerlink" href="#local-testing" title="Link to this heading"></a></h2>
+<p>No-one likes to wait for the CI to run tests. It is therefore recommended to run tests locally before pushing to the remote repository, and before creating a PR, but no one will force you to do this: how you work locally is entirely up to you.</p>
+<p>For convenience, however, we have added a few commands you can use to check that the code is linted, the tests pass, etc. Some of these are exemplified in the next subsections. Please run</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>devtools<span class="w"> </span>-h
+</pre></div>
+</div>
+<p>for more information.</p>
+<section id="run-linters-and-exit-with-an-error-if-non-linted-code-is-detected">
+<h3>Run linters and exit with an error if non-linted code is detected<a class="headerlink" href="#run-linters-and-exit-with-an-error-if-non-linted-code-is-detected" title="Link to this heading"></a></h3>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>devtools<span class="w"> </span>lint
+</pre></div>
+</div>
+</section>
+<section id="run-linters-and-attempt-to-fix-eventually-encountered-errors">
+<h3>Run linters and <strong>attempt</strong> to fix eventually encountered errors<a class="headerlink" href="#run-linters-and-attempt-to-fix-eventually-encountered-errors" title="Link to this heading"></a></h3>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>devtools<span class="w"> </span>lint<span class="w"> </span>--fix
+</pre></div>
+</div>
+<p>This will stop with an error if the encountered issues cannot be fixed.</p>
+</section>
+<section id="runthe-typical-checks-for-things-you-need-to-fix-prior-to-a-push">
+<h3>Runthe typical checks for things you need to fix prior to a push<a class="headerlink" href="#runthe-typical-checks-for-things-you-need-to-fix-prior-to-a-push" title="Link to this heading"></a></h3>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>devtools<span class="w"> </span>pre-push-checks
+</pre></div>
+</div>
+</section>
+<section id="run-tests">
+<h3>Run tests<a class="headerlink" href="#run-tests" title="Link to this heading"></a></h3>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pytest
+</pre></div>
+</div>
+<p>or</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>devtools<span class="w"> </span>pytest
+</pre></div>
+</div>
+</section>
+<section id="generate-and-view-the-documentation-to-be-published-to-our-docpages">
+<h3>Generate and view the documentation to be published to our <a class="reference external" href="https://destination-earth-digital-twins.github.io/deode-prototype-docs/">docpages</a><a class="headerlink" href="#generate-and-view-the-documentation-to-be-published-to-our-docpages" title="Link to this heading"></a></h3>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>devtools<span class="w"> </span>doc<span class="w"> </span>clean
+poetry<span class="w"> </span>devtools<span class="w"> </span>doc<span class="w"> </span>build
+poetry<span class="w"> </span>devtools<span class="w"> </span>doc<span class="w"> </span>view
+</pre></div>
+</div>
+<p>or, combining them all:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>devtools<span class="w"> </span>doc
+</pre></div>
+</div>
+</section>
 </section>
 <section id="branches">
-<h2>Branches<a class="headerlink" href="#branches" title="Permalink to this heading"></a></h2>
+<h2>Branches<a class="headerlink" href="#branches" title="Link to this heading"></a></h2>
 <p>As of now, the repository has two main branches:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">master</span></code> - This is the main branch. It is the branch that is deployed to production.</p></li>
@@ -711,39 +761,13 @@ As the project grows, we may add more branches, such as an <code class="docutils
 </ul>
 <img src="../figs/development_guide.png" alt="drawing" width="400"/>
 <section id="forks">
-<h3>Forks<a class="headerlink" href="#forks" title="Permalink to this heading"></a></h3>
+<h3>Forks<a class="headerlink" href="#forks" title="Link to this heading"></a></h3>
 <p>Forks are used to develop features and bug fixes. They are created from the <code class="docutils literal notranslate"><span class="pre">develop</span></code> branch by forking to a local repo. When a feature is ready, a PR is created to merge it to <code class="docutils literal notranslate"><span class="pre">develop</span></code>. When a bug fix is ready, a PR is created to merge it to <code class="docutils literal notranslate"><span class="pre">develop</span></code> and <code class="docutils literal notranslate"><span class="pre">master</span></code>.</p>
 </section>
 </section>
 <section id="run-on-lumi">
-<h2>Run on LUMI<a class="headerlink" href="#run-on-lumi" title="Permalink to this heading"></a></h2>
-<p>To run the project on LUMI, you need to have a LUMI account and add your SSH key to it. You can find instructions on how to do that <a class="reference external" href="https://docs.lumi-supercomputer.eu/firststeps/SSH-keys/">here</a>. Once you have your SSH key added, you can login to LUMI by running <code class="docutils literal notranslate"><span class="pre">ssh</span> <span class="pre">-i</span> <span class="pre">&lt;your-private-key&gt;</span> <span class="pre">&lt;username&gt;&#64;&#64;lumi.csc.fi</span></code>. Once logged in create a SSH key and add that to your GitHub account, so you can clone the repo. Then follow these steps (some of which can be put in your <code class="docutils literal notranslate"><span class="pre">.profile</span></code>)</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="c1"># Clone the repo</span>
-git<span class="w"> </span>clone<span class="w"> </span>git@github.com:destination-earth-digital-twins/Deode-Prototype.git
-
-<span class="c1"># Load modules</span>
-module<span class="w"> </span>load<span class="w"> </span>LUMI/22.06
-module<span class="w"> </span>load<span class="w"> </span>cray-python/3.9.12.1
-
-<span class="c1"># Install poetry</span>
-curl<span class="w"> </span>-sSL<span class="w"> </span>https://install.python-poetry.org<span class="w"> </span><span class="p">|</span><span class="w"> </span>python<span class="w"> </span>-
-<span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">&quot;/users/</span><span class="nv">$USER</span><span class="s2">/.local/bin:</span><span class="nv">$PATH</span><span class="s2">&quot;</span>
-
-<span class="c1"># Install project</span>
-<span class="nb">cd</span><span class="w"> </span>Deode-Prototype<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>poetry<span class="w"> </span>install
-<span class="c1"># Poetry will create a virtual environment for the project and install all dependencies in this environment.</span>
-<span class="c1"># It will be placed in something like: &quot;/users/$USER/.cache/pypoetry/virtualenvs/&lt;deode-&lt;hash&gt;&gt;/bin/:$PATH&quot;</span>
-
-<span class="c1"># To activate the environment run</span>
-poetry<span class="w"> </span>shell
-
-<span class="c1"># Check that the project runs</span>
-deode<span class="w"> </span>-h
-
-<span class="c1"># Run a stand-alone task with an example config file</span>
-deode<span class="w"> </span>run<span class="w"> </span>--config-file<span class="w"> </span><span class="nv">$PWD</span>/deode/data/config_files/config.toml<span class="w"> </span>--task<span class="w"> </span>Forecast<span class="w"> </span>--template<span class="w"> </span><span class="nv">$PWD</span>/deode/templates/stand_alone.py<span class="w"> </span>--job<span class="w"> </span><span class="nv">$PWD</span>/test.job<span class="w"> </span>--troika-config<span class="w"> </span><span class="nv">$PWD</span>/deode/data/config_files/troika.yml<span class="w"> </span>-o<span class="w"> </span><span class="nv">$PWD</span>/test.log
-</pre></div>
-</div>
+<h2>Run on LUMI<a class="headerlink" href="#run-on-lumi" title="Link to this heading"></a></h2>
+<p>To run the project on LUMI, you need to have a LUMI account and add your SSH key to it. Please check the <a class="reference external" href="https://docs.lumi-supercomputer.eu/firststeps/SSH-keys/">online instructions on how to do that</a>. Once you have your SSH key added, you can login to LUMI by running <code class="docutils literal notranslate"><span class="pre">ssh</span> <span class="pre">-i</span> <span class="pre">&lt;your-private-key&gt;</span> <span class="pre">&lt;username&gt;&#64;&#64;lumi.csc.fi</span></code>. Once logged in, create a SSH key and add that to your GitHub account so you can clone the repo. Then, please follow the download, install and usage instructions provided in the <a class="reference external" href="https://github.com/destination-earth-digital-twins/Deode-Prototype/blob/develop/README.md">README</a> file.</p>
 </section>
 </section>
 
@@ -759,7 +783,7 @@ deode<span class="w"> </span>run<span class="w"> </span>--config-file<span class
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on Oct 20, 2023.
+      <span class="lastupdated">Last updated on 2023-10-23T09:52:43Z.
       </span></p>
   </div>
 
