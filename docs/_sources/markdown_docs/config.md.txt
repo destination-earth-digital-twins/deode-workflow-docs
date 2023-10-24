@@ -1,4 +1,4 @@
-This was automatically generated running `deode doc config` on 2023-10-24T08:37:46.
+This was automatically generated running `deode doc config` on 2023-10-24T09:19:35.
 
 # Config
 
@@ -526,16 +526,16 @@ Must be one of:
 
 **Description:** Suite control options
 
-| Property                                                                  | Type    | Required | Default | Title/Description                                                     |
-| ------------------------------------------------------------------------- | ------- | -------- | ------- | --------------------------------------------------------------------- |
-| [do_soil](#suite_control_do_soil)                                         | boolean | No       | -       | Activate preparation of SOILGRID data as input for PGD                |
-| [do_pgd](#suite_control_do_pgd)                                           | boolean | No       | -       | Activate generation of a PGD file                                     |
-| [do_prep](#suite_control_do_prep)                                         | boolean | No       | -       | Run prep if cold start                                                |
-| [cold_start](#suite_control_cold_start)                                   | boolean | No       | -       | Run prep every run                                                    |
-| [interpolate_boundaries](#suite_control_interpolate_boundaries)           | boolean | No       | -       | Activates the boundary interpolation                                  |
-| [do_marsprep](#suite_control_do_marsprep)                                 | boolean | No       | -       | Run marsprep or skip extraction                                       |
-| [create_static_data](#suite_control_create_static_data)                   | boolean | No       | -       | Activate the generation of PGD and monthly climate files in the suite |
-| [create_time_dependent_suite](#suite_control_create_time_dependent_suite) | boolean | No       | -       | Activate the time dependent part of the suite                         |
+| Property                                                                  | Type    | Required | Default | Title/Description                                                                                                                                                                                                                                                       |
+| ------------------------------------------------------------------------- | ------- | -------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [do_soil](#suite_control_do_soil)                                         | boolean | No       | -       | Activate preparation of SOILGRID data as input for PGD                                                                                                                                                                                                                  |
+| [do_pgd](#suite_control_do_pgd)                                           | boolean | No       | -       | Activate generation of a PGD file                                                                                                                                                                                                                                       |
+| [do_prep](#suite_control_do_prep)                                         | boolean | No       | -       | Run prep if cold start                                                                                                                                                                                                                                                  |
+| [mode](#suite_control_mode)                                               | string  | No       | -       | Choose a strategy to achieve initial/initial_sfx files (start:  start from interpolated files and then propagate the FG between cycles, restart: start from a previous run and then propagate the FG between cycles, cold_start: always start from interpolated files). |
+| [interpolate_boundaries](#suite_control_interpolate_boundaries)           | boolean | No       | -       | Activates the boundary interpolation                                                                                                                                                                                                                                    |
+| [do_marsprep](#suite_control_do_marsprep)                                 | boolean | No       | -       | Run marsprep or skip extraction                                                                                                                                                                                                                                         |
+| [create_static_data](#suite_control_create_static_data)                   | boolean | No       | -       | Activate the generation of PGD and monthly climate files in the suite                                                                                                                                                                                                   |
+| [create_time_dependent_suite](#suite_control_create_time_dependent_suite) | boolean | No       | -       | Activate the time dependent part of the suite                                                                                                                                                                                                                           |
 
 <a name="suite_control_do_soil"></a>
 ### Property `Config > suite_control > do_soil`
@@ -567,15 +567,15 @@ Must be one of:
 
 **Description:** Run prep if cold start
 
-<a name="suite_control_cold_start"></a>
-### Property `Config > suite_control > cold_start`
+<a name="suite_control_mode"></a>
+### Property `Config > suite_control > mode`
 
-|              |           |
-| ------------ | --------- |
-| **Type**     | `boolean` |
-| **Required** | No        |
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
 
-**Description:** Run prep every run
+**Description:** Choose a strategy to achieve initial/initial_sfx files (start:  start from interpolated files and then propagate the FG between cycles, restart: start from a previous run and then propagate the FG between cycles, cold_start: always start from interpolated files).
 
 <a name="suite_control_interpolate_boundaries"></a>
 ### Property `Config > suite_control > interpolate_boundaries`
@@ -630,24 +630,25 @@ Must be one of:
 
 **Description:** DEODE system specific path settings
 
-| Property                                           | Type   | Required | Default | Title/Description                                                               |
-| -------------------------------------------------- | ------ | -------- | ------- | ------------------------------------------------------------------------------- |
-| [bdfile_sfx_template](#system_bdfile_sfx_template) | string | No       | -       | Name template for input initial surfex file for prep                            |
-| [bdfile_template](#system_bdfile_template)         | string | No       | -       | Name template for input boundary files                                          |
-| [bddir_sfx](#system_bddir_sfx)                     | string | No       | -       | Location of input intial file for surfex                                        |
-| [bddir](#system_bddir)                             | string | No       | -       | Location of input boundaries                                                    |
-| [intp_bddir](#system_intp_bddir)                   | string | No       | -       | Location of boundaries on the current domain, i.e. the output directory of e927 |
-| [climdir](#system_climdir)                         | string | No       | -       | Location of generated/used climate files (PGD/monthly files)                    |
-| [bindir](#system_bindir)                           | string | No       | -       | Location of binaries                                                            |
-| [bdclimdir](#system_bdclimdir)                     | string | No       | -       | Location of host model climate files used for e927/c903                         |
-| [wrk](#system_wrk)                                 | string | No       | -       | Location of date specific working directory                                     |
-| [fullpos_config_file](#system_fullpos_config_file) | string | No       | -       | Path to the fullpos yml config file                                             |
-| [archive](#system_archive)                         | string | No       | -       | Location of date specific archive                                               |
-| [logs](#system_logs)                               | string | No       | -       | Location of collected logfiles                                                  |
-| [namelists](#system_namelists)                     | string | No       | -       | Path to static namelists                                                        |
-| [marsdir](#system_marsdir)                         | string | No       | -       | Location input files extracted from MARS by Marsprep                            |
-| [global_sfcdir](#system_global_sfcdir)             | string | No       | -       | Path to SFC files needed for c903, which are not in MARS                        |
-| [sfx_input_defs](#system_sfx_input_defs)           | string | No       | -       | Path to the surfex json config file                                             |
+| Property                                           | Type   | Required | Default  | Title/Description                                                               |
+| -------------------------------------------------- | ------ | -------- | -------- | ------------------------------------------------------------------------------- |
+| [bdfile_sfx_template](#system_bdfile_sfx_template) | string | No       | -        | Name template for input initial surfex file for prep                            |
+| [bdfile_template](#system_bdfile_template)         | string | No       | -        | Name template for input boundary files                                          |
+| [bddir_sfx](#system_bddir_sfx)                     | string | No       | -        | Location of input intial file for surfex                                        |
+| [bddir](#system_bddir)                             | string | No       | -        | Location of input boundaries                                                    |
+| [intp_bddir](#system_intp_bddir)                   | string | No       | -        | Location of boundaries on the current domain, i.e. the output directory of e927 |
+| [climdir](#system_climdir)                         | string | No       | -        | Location of generated/used climate files (PGD/monthly files)                    |
+| [bindir](#system_bindir)                           | string | No       | -        | Location of binaries                                                            |
+| [bdclimdir](#system_bdclimdir)                     | string | No       | -        | Location of host model climate files used for e927/c903                         |
+| [wrk](#system_wrk)                                 | string | No       | -        | Location of date specific working directory                                     |
+| [fullpos_config_file](#system_fullpos_config_file) | string | No       | -        | Path to the fullpos yml config file                                             |
+| [archive](#system_archive)                         | string | No       | -        | Location of date specific archive                                               |
+| [logs](#system_logs)                               | string | No       | -        | Location of collected logfiles                                                  |
+| [namelists](#system_namelists)                     | string | No       | -        | Path to static namelists                                                        |
+| [marsdir](#system_marsdir)                         | string | No       | -        | Location input files extracted from MARS by Marsprep                            |
+| [global_sfcdir](#system_global_sfcdir)             | string | No       | -        | Path to SFC files needed for c903, which are not in MARS                        |
+| [sfx_input_defs](#system_sfx_input_defs)           | string | No       | -        | Path to the surfex json config file                                             |
+| [prev_case](#system_prev_case)                     | string | No       | "@CASE@" | Name of the previous experiment                                                 |
 
 <a name="system_bdfile_sfx_template"></a>
 ### Property `Config > system > bdfile_sfx_template`
@@ -808,6 +809,17 @@ Must be one of:
 | **Required** | No       |
 
 **Description:** Path to the surfex json config file
+
+<a name="system_prev_case"></a>
+### Property `Config > system > prev_case`
+
+|              |            |
+| ------------ | ---------- |
+| **Type**     | `string`   |
+| **Required** | No         |
+| **Default**  | `"@CASE@"` |
+
+**Description:** Name of the previous experiment
 
 <a name="boundaries"></a>
 ## Property `Config > boundaries`
