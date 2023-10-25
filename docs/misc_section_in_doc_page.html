@@ -85,6 +85,7 @@
 <li class="toctree-l3"><a class="reference internal" href="development_guidelines_link.html#generate-and-view-the-documentation-to-be-published-to-our-docpages">Generate and view the documentation to be published to our docpages</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="development_guidelines_link.html#testing-on-atos">Testing on Atos</a></li>
 <li class="toctree-l2"><a class="reference internal" href="development_guidelines_link.html#branches">Branches</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="development_guidelines_link.html#forks">Forks</a></li>
 </ul>
@@ -546,8 +547,13 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#property-config-file-templates">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#property-config-file-templates-duration-grib">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">duration_grib</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#property-config-file-templates-duration-fa">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">duration_fa</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#property-config-file-templates-duration">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">duration</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#property-config-file-templates-fullpos">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">fullpos</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#property-config-file-templates-history">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">history</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#property-config-file-templates-pgd">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">pgd</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#property-config-file-templates-pgd-prel">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">pgd_prel</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#property-config-file-templates-pgd-host">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">pgd_host</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#property-config-file-templates-surfex">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">surfex</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#property-config-macros">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">macros</span></code></a><ul>
@@ -665,7 +671,7 @@
              
   <section id="miscellaneous-documentation">
 <h1>Miscellaneous Documentation<a class="headerlink" href="#miscellaneous-documentation" title="Link to this heading"></a></h1>
-<p>This was automatically generated running <code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">doc</span> <span class="pre">config</span></code> on 2023-10-25T13:18:22.</p>
+<p>This was automatically generated running <code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">doc</span> <span class="pre">config</span></code> on 2023-10-25T15:04:44.</p>
 <section id="config">
 <h2>Config<a class="headerlink" href="#config" title="Link to this heading"></a></h2>
 <p><strong>Title:</strong> Config</p>
@@ -3849,11 +3855,11 @@
 <td><p>No</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>Additional properties</strong></p></td>
-<td><p><a class="reference external" href="#" title="Additional Properties of any type are allowed.">[Any type: allowed]</a></p></td>
+<td><p><a class="reference external" href="#" title="Additional Properties not allowed.">[Not allowed]</a></p></td>
 </tr>
 </tbody>
 </table>
-<p><strong>Description:</strong> Templates for file names</p>
+<p><strong>Description:</strong> Templates for file names. Each item contains of an archive and a model key where archive is the name template for files in the archive and model the name expected as input/output of the IAL code.</p>
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Property</p></th>
@@ -3864,23 +3870,100 @@
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><a class="reference external" href="#file_templates_duration_grib">duration_grib</a></p></td>
-<td><p>string</p></td>
+<tr class="row-even"><td><p><a class="reference external" href="#file_templates_duration">duration</a></p></td>
+<td><p>object</p></td>
 <td><p>No</p></td>
 <td><p>-</p></td>
-<td><p>Macros for duration representation in GRIB output files</p></td>
+<td><p>Duration</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference external" href="#file_templates_duration_fa">duration_fa</a></p></td>
-<td><p>string</p></td>
+<tr class="row-odd"><td><p><a class="reference external" href="#file_templates_fullpos">fullpos</a></p></td>
+<td><p>object</p></td>
 <td><p>No</p></td>
 <td><p>-</p></td>
-<td><p>Macros for duration representation of FA files, note that this is given by the IAL code.</p></td>
+<td><p>Fullpos</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="#file_templates_history">history</a></p></td>
+<td><p>object</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>History</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="#file_templates_pgd">pgd</a></p></td>
+<td><p>object</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>PGD</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="#file_templates_pgd_prel">pgd_prel</a></p></td>
+<td><p>object</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>Preliminary PGD</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="#file_templates_pgd_host">pgd_host</a></p></td>
+<td><p>object</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>Host PGD</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="#file_templates_surfex">surfex</a></p></td>
+<td><p>object</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>Surfex</p></td>
 </tr>
 </tbody>
 </table>
-<p><a name="file_templates_duration_grib"></a></p>
-<section id="property-config-file-templates-duration-grib">
-<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">duration_grib</span></code><a class="headerlink" href="#property-config-file-templates-duration-grib" title="Link to this heading"></a></h4>
+<p><a name="file_templates_duration"></a></p>
+<section id="property-config-file-templates-duration">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">duration</span></code><a class="headerlink" href="#property-config-file-templates-duration" title="Link to this heading"></a></h4>
+<p><strong>Title:</strong> Duration</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">object</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Additional properties</strong></p></td>
+<td><p><a class="reference external" href="#" title="Additional Properties of any type are allowed.">[Any type: allowed]</a></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> Time stamp templates for output files</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Title/Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="#file_templates_duration_archive">archive</a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>“&#64;LLLH&#64;h&#64;LM&#64;m&#64;LS&#64;s”</p></td>
+<td><p>File template as stored in the archive</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="#file_templates_duration_model">model</a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>“&#64;LLLH&#64;:&#64;LM&#64;:&#64;LS&#64;”</p></td>
+<td><p>File template as used by the model</p></td>
+</tr>
+</tbody>
+</table>
+<p><a name="file_templates_duration_archive"></a></p>
+<section id="property-config-file-templates-duration-archive">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">duration</span> <span class="pre">&gt;</span> <span class="pre">archive</span></code><a class="headerlink" href="#property-config-file-templates-duration-archive" title="Link to this heading"></a></h5>
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p></p></th>
@@ -3894,13 +3977,16 @@
 <tr class="row-odd"><td><p><strong>Required</strong></p></td>
 <td><p>No</p></td>
 </tr>
+<tr class="row-even"><td><p><strong>Default</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;&#64;LLLH&#64;h&#64;LM&#64;m&#64;LS&#64;s&quot;</span></code></p></td>
+</tr>
 </tbody>
 </table>
-<p><strong>Description:</strong> Macros for duration representation in GRIB output files</p>
-<p><a name="file_templates_duration_fa"></a></p>
+<p><strong>Description:</strong> File template as stored in the archive</p>
+<p><a name="file_templates_duration_model"></a></p>
 </section>
-<section id="property-config-file-templates-duration-fa">
-<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">duration_fa</span></code><a class="headerlink" href="#property-config-file-templates-duration-fa" title="Link to this heading"></a></h4>
+<section id="property-config-file-templates-duration-model">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">duration</span> <span class="pre">&gt;</span> <span class="pre">model</span></code><a class="headerlink" href="#property-config-file-templates-duration-model" title="Link to this heading"></a></h5>
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p></p></th>
@@ -3914,10 +4000,578 @@
 <tr class="row-odd"><td><p><strong>Required</strong></p></td>
 <td><p>No</p></td>
 </tr>
+<tr class="row-even"><td><p><strong>Default</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;&#64;LLLH&#64;:&#64;LM&#64;:&#64;LS&#64;&quot;</span></code></p></td>
+</tr>
 </tbody>
 </table>
-<p><strong>Description:</strong> Macros for duration representation of FA files, note that this is given by the IAL code.</p>
+<p><strong>Description:</strong> File template as used by the model</p>
+<p><a name="file_templates_fullpos"></a></p>
+</section>
+</section>
+<section id="property-config-file-templates-fullpos">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">fullpos</span></code><a class="headerlink" href="#property-config-file-templates-fullpos" title="Link to this heading"></a></h4>
+<p><strong>Title:</strong> Fullpos</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">object</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Additional properties</strong></p></td>
+<td><p><a class="reference external" href="#" title="Additional Properties of any type are allowed.">[Any type: allowed]</a></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> File name templates for fullpos files</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Title/Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="#file_templates_fullpos_archive">archive</a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>“GRIBPF&#64;CNMEXP&#64;&#64;DOMAIN&#64;+&#64;DURATION_ARCHIVE&#64;”</p></td>
+<td><p>File template as stored in the archive</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="#file_templates_fullpos_model">model</a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>“GRIBPF&#64;CNMEXP&#64;&#64;DOMAIN&#64;+&#64;DURATION_MODEL&#64;”</p></td>
+<td><p>File template as used by the model</p></td>
+</tr>
+</tbody>
+</table>
+<p><a name="file_templates_fullpos_archive"></a></p>
+<section id="property-config-file-templates-fullpos-archive">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">fullpos</span> <span class="pre">&gt;</span> <span class="pre">archive</span></code><a class="headerlink" href="#property-config-file-templates-fullpos-archive" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Default</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;GRIBPF&#64;CNMEXP&#64;&#64;DOMAIN&#64;+&#64;DURATION_ARCHIVE&#64;&quot;</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> File template as stored in the archive</p>
+<p><a name="file_templates_fullpos_model"></a></p>
+</section>
+<section id="property-config-file-templates-fullpos-model">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">fullpos</span> <span class="pre">&gt;</span> <span class="pre">model</span></code><a class="headerlink" href="#property-config-file-templates-fullpos-model" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Default</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;GRIBPF&#64;CNMEXP&#64;&#64;DOMAIN&#64;+&#64;DURATION_MODEL&#64;&quot;</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> File template as used by the model</p>
+<p><a name="file_templates_history"></a></p>
+</section>
+</section>
+<section id="property-config-file-templates-history">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">history</span></code><a class="headerlink" href="#property-config-file-templates-history" title="Link to this heading"></a></h4>
+<p><strong>Title:</strong> History</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">object</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Additional properties</strong></p></td>
+<td><p><a class="reference external" href="#" title="Additional Properties of any type are allowed.">[Any type: allowed]</a></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> File name templates for history files</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Title/Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="#file_templates_history_archive">archive</a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>“ICMSH&#64;CNMEXP&#64;+&#64;DURATION_ARCHIVE&#64;”</p></td>
+<td><p>File template as stored in the archive</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="#file_templates_history_model">model</a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>“ICMSH&#64;CNMEXP&#64;+&#64;DURATION_MODEL&#64;”</p></td>
+<td><p>File template as used by the model</p></td>
+</tr>
+</tbody>
+</table>
+<p><a name="file_templates_history_archive"></a></p>
+<section id="property-config-file-templates-history-archive">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">history</span> <span class="pre">&gt;</span> <span class="pre">archive</span></code><a class="headerlink" href="#property-config-file-templates-history-archive" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Default</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;ICMSH&#64;CNMEXP&#64;+&#64;DURATION_ARCHIVE&#64;&quot;</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> File template as stored in the archive</p>
+<p><a name="file_templates_history_model"></a></p>
+</section>
+<section id="property-config-file-templates-history-model">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">history</span> <span class="pre">&gt;</span> <span class="pre">model</span></code><a class="headerlink" href="#property-config-file-templates-history-model" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Default</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;ICMSH&#64;CNMEXP&#64;+&#64;DURATION_MODEL&#64;&quot;</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> File template as used by the model</p>
+<p><a name="file_templates_pgd"></a></p>
+</section>
+</section>
+<section id="property-config-file-templates-pgd">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">pgd</span></code><a class="headerlink" href="#property-config-file-templates-pgd" title="Link to this heading"></a></h4>
+<p><strong>Title:</strong> PGD</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">object</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Additional properties</strong></p></td>
+<td><p><a class="reference external" href="#" title="Additional Properties of any type are allowed.">[Any type: allowed]</a></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> File name templates for final PGD files</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Title/Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="#file_templates_pgd_archive">archive</a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>“Const.Clim&#64;ONE_DECADE&#64;.sfx”</p></td>
+<td><p>File template as stored in the archive</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="#file_templates_pgd_model">model</a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>“Const.Clim.sfx”</p></td>
+<td><p>File template as used by the model</p></td>
+</tr>
+</tbody>
+</table>
+<p><a name="file_templates_pgd_archive"></a></p>
+<section id="property-config-file-templates-pgd-archive">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">pgd</span> <span class="pre">&gt;</span> <span class="pre">archive</span></code><a class="headerlink" href="#property-config-file-templates-pgd-archive" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Default</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;Const.Clim&#64;ONE_DECADE&#64;.sfx&quot;</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> File template as stored in the archive</p>
+<p><a name="file_templates_pgd_model"></a></p>
+</section>
+<section id="property-config-file-templates-pgd-model">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">pgd</span> <span class="pre">&gt;</span> <span class="pre">model</span></code><a class="headerlink" href="#property-config-file-templates-pgd-model" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Default</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;Const.Clim.sfx&quot;</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> File template as used by the model</p>
+<p><a name="file_templates_pgd_prel"></a></p>
+</section>
+</section>
+<section id="property-config-file-templates-pgd-prel">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">pgd_prel</span></code><a class="headerlink" href="#property-config-file-templates-pgd-prel" title="Link to this heading"></a></h4>
+<p><strong>Title:</strong> Preliminary PGD</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">object</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Additional properties</strong></p></td>
+<td><p><a class="reference external" href="#" title="Additional Properties of any type are allowed.">[Any type: allowed]</a></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> File name templates for the preliminary PGD files</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Title/Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="#file_templates_pgd_prel_archive">archive</a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>“PGD_prel&#64;ONE_DECADE&#64;.fa”</p></td>
+<td><p>File template as stored in the archive</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="#file_templates_pgd_prel_model">model</a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>“PGD_prel.fa”</p></td>
+<td><p>File template as used by the model</p></td>
+</tr>
+</tbody>
+</table>
+<p><a name="file_templates_pgd_prel_archive"></a></p>
+<section id="property-config-file-templates-pgd-prel-archive">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">pgd_prel</span> <span class="pre">&gt;</span> <span class="pre">archive</span></code><a class="headerlink" href="#property-config-file-templates-pgd-prel-archive" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Default</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;PGD_prel&#64;ONE_DECADE&#64;.fa&quot;</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> File template as stored in the archive</p>
+<p><a name="file_templates_pgd_prel_model"></a></p>
+</section>
+<section id="property-config-file-templates-pgd-prel-model">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">pgd_prel</span> <span class="pre">&gt;</span> <span class="pre">model</span></code><a class="headerlink" href="#property-config-file-templates-pgd-prel-model" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Default</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;PGD_prel.fa&quot;</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> File template as used by the model</p>
+<p><a name="file_templates_pgd_host"></a></p>
+</section>
+</section>
+<section id="property-config-file-templates-pgd-host">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">pgd_host</span></code><a class="headerlink" href="#property-config-file-templates-pgd-host" title="Link to this heading"></a></h4>
+<p><strong>Title:</strong> Host PGD</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">object</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Additional properties</strong></p></td>
+<td><p><a class="reference external" href="#" title="Additional Properties of any type are allowed.">[Any type: allowed]</a></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> File name templates for potential PGD files from the host model. Used if host_surfex=true</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Title/Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="#file_templates_pgd_host_archive">archive</a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>“Const.Clim&#64;ONE_DECADE&#64;.sfx”</p></td>
+<td><p>File template as stored in the archive</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="#file_templates_pgd_host_model">model</a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>“Const.Clim.sfx”</p></td>
+<td><p>File template as used by the model</p></td>
+</tr>
+</tbody>
+</table>
+<p><a name="file_templates_pgd_host_archive"></a></p>
+<section id="property-config-file-templates-pgd-host-archive">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">pgd_host</span> <span class="pre">&gt;</span> <span class="pre">archive</span></code><a class="headerlink" href="#property-config-file-templates-pgd-host-archive" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Default</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;Const.Clim&#64;ONE_DECADE&#64;.sfx&quot;</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> File template as stored in the archive</p>
+<p><a name="file_templates_pgd_host_model"></a></p>
+</section>
+<section id="property-config-file-templates-pgd-host-model">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">pgd_host</span> <span class="pre">&gt;</span> <span class="pre">model</span></code><a class="headerlink" href="#property-config-file-templates-pgd-host-model" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Default</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;Const.Clim.sfx&quot;</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> File template as used by the model</p>
+<p><a name="file_templates_surfex"></a></p>
+</section>
+</section>
+<section id="property-config-file-templates-surfex">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">surfex</span></code><a class="headerlink" href="#property-config-file-templates-surfex" title="Link to this heading"></a></h4>
+<p><strong>Title:</strong> Surfex</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">object</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Additional properties</strong></p></td>
+<td><p><a class="reference external" href="#" title="Additional Properties of any type are allowed.">[Any type: allowed]</a></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> File name templates for surfex output files</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Title/Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="#file_templates_surfex_archive">archive</a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>“ICMSH&#64;CNMEXP&#64;+&#64;DURATION_ARCHIVE&#64;.sfx”</p></td>
+<td><p>File template as stored in the archive</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="#file_templates_surfex_model">model</a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>“ICMSH&#64;CNMEXP&#64;+&#64;DURATION_MODEL&#64;.sfx”</p></td>
+<td><p>File template as used by the model</p></td>
+</tr>
+</tbody>
+</table>
+<p><a name="file_templates_surfex_archive"></a></p>
+<section id="property-config-file-templates-surfex-archive">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">surfex</span> <span class="pre">&gt;</span> <span class="pre">archive</span></code><a class="headerlink" href="#property-config-file-templates-surfex-archive" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Default</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;ICMSH&#64;CNMEXP&#64;+&#64;DURATION_ARCHIVE&#64;.sfx&quot;</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> File template as stored in the archive</p>
+<p><a name="file_templates_surfex_model"></a></p>
+</section>
+<section id="property-config-file-templates-surfex-model">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">surfex</span> <span class="pre">&gt;</span> <span class="pre">model</span></code><a class="headerlink" href="#property-config-file-templates-surfex-model" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Default</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;ICMSH&#64;CNMEXP&#64;+&#64;DURATION_MODEL&#64;.sfx&quot;</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> File template as used by the model</p>
 <p><a name="macros"></a></p>
+</section>
 </section>
 </section>
 <section id="property-config-macros">
@@ -5336,7 +5990,7 @@ If you cannot execute <code class="docutils literal notranslate"><span class="pr
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2023-10-25T13:18:24Z.
+      <span class="lastupdated">Last updated on 2023-10-25T15:04:45Z.
       </span></p>
   </div>
 

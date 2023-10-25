@@ -1,4 +1,4 @@
-This was automatically generated running `deode doc config` on 2023-10-25T13:18:22.
+This was automatically generated running `deode doc config` on 2023-10-25T15:04:44.
 
 # Config
 
@@ -1316,38 +1316,303 @@ Must be one of:
 
 **Title:** File Templates
 
+|                           |                                                         |
+| ------------------------- | ------------------------------------------------------- |
+| **Type**                  | `object`                                                |
+| **Required**              | No                                                      |
+| **Additional properties** | [[Not allowed]](# "Additional Properties not allowed.") |
+
+**Description:** Templates for file names. Each item contains of an archive and a model key where archive is the name template for files in the archive and model the name expected as input/output of the IAL code.
+
+| Property                             | Type   | Required | Default | Title/Description |
+| ------------------------------------ | ------ | -------- | ------- | ----------------- |
+| [duration](#file_templates_duration) | object | No       | -       | Duration          |
+| [fullpos](#file_templates_fullpos)   | object | No       | -       | Fullpos           |
+| [history](#file_templates_history)   | object | No       | -       | History           |
+| [pgd](#file_templates_pgd)           | object | No       | -       | PGD               |
+| [pgd_prel](#file_templates_pgd_prel) | object | No       | -       | Preliminary PGD   |
+| [pgd_host](#file_templates_pgd_host) | object | No       | -       | Host PGD          |
+| [surfex](#file_templates_surfex)     | object | No       | -       | Surfex            |
+
+<a name="file_templates_duration"></a>
+### Property `Config > file_templates > duration`
+
+**Title:** Duration
+
 |                           |                                                                           |
 | ------------------------- | ------------------------------------------------------------------------- |
 | **Type**                  | `object`                                                                  |
 | **Required**              | No                                                                        |
 | **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
 
-**Description:** Templates for file names
+**Description:** Time stamp templates for output files
 
-| Property                                       | Type   | Required | Default | Title/Description                                                                        |
-| ---------------------------------------------- | ------ | -------- | ------- | ---------------------------------------------------------------------------------------- |
-| [duration_grib](#file_templates_duration_grib) | string | No       | -       | Macros for duration representation in GRIB output files                                  |
-| [duration_fa](#file_templates_duration_fa)     | string | No       | -       | Macros for duration representation of FA files, note that this is given by the IAL code. |
+| Property                                    | Type   | Required | Default             | Title/Description                      |
+| ------------------------------------------- | ------ | -------- | ------------------- | -------------------------------------- |
+| [archive](#file_templates_duration_archive) | string | No       | "@LLLH@h@LM@m@LS@s" | File template as stored in the archive |
+| [model](#file_templates_duration_model)     | string | No       | "@LLLH@:@LM@:@LS@"  | File template as used by the model     |
 
-<a name="file_templates_duration_grib"></a>
-### Property `Config > file_templates > duration_grib`
+<a name="file_templates_duration_archive"></a>
+#### Property `Config > file_templates > duration > archive`
 
-|              |          |
-| ------------ | -------- |
-| **Type**     | `string` |
-| **Required** | No       |
+|              |                       |
+| ------------ | --------------------- |
+| **Type**     | `string`              |
+| **Required** | No                    |
+| **Default**  | `"@LLLH@h@LM@m@LS@s"` |
 
-**Description:** Macros for duration representation in GRIB output files
+**Description:** File template as stored in the archive
 
-<a name="file_templates_duration_fa"></a>
-### Property `Config > file_templates > duration_fa`
+<a name="file_templates_duration_model"></a>
+#### Property `Config > file_templates > duration > model`
 
-|              |          |
-| ------------ | -------- |
-| **Type**     | `string` |
-| **Required** | No       |
+|              |                      |
+| ------------ | -------------------- |
+| **Type**     | `string`             |
+| **Required** | No                   |
+| **Default**  | `"@LLLH@:@LM@:@LS@"` |
 
-**Description:** Macros for duration representation of FA files, note that this is given by the IAL code.
+**Description:** File template as used by the model
+
+<a name="file_templates_fullpos"></a>
+### Property `Config > file_templates > fullpos`
+
+**Title:** Fullpos
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** File name templates for fullpos files
+
+| Property                                   | Type   | Required | Default                                     | Title/Description                      |
+| ------------------------------------------ | ------ | -------- | ------------------------------------------- | -------------------------------------- |
+| [archive](#file_templates_fullpos_archive) | string | No       | "GRIBPF@CNMEXP@@DOMAIN@+@DURATION_ARCHIVE@" | File template as stored in the archive |
+| [model](#file_templates_fullpos_model)     | string | No       | "GRIBPF@CNMEXP@@DOMAIN@+@DURATION_MODEL@"   | File template as used by the model     |
+
+<a name="file_templates_fullpos_archive"></a>
+#### Property `Config > file_templates > fullpos > archive`
+
+|              |                                               |
+| ------------ | --------------------------------------------- |
+| **Type**     | `string`                                      |
+| **Required** | No                                            |
+| **Default**  | `"GRIBPF@CNMEXP@@DOMAIN@+@DURATION_ARCHIVE@"` |
+
+**Description:** File template as stored in the archive
+
+<a name="file_templates_fullpos_model"></a>
+#### Property `Config > file_templates > fullpos > model`
+
+|              |                                             |
+| ------------ | ------------------------------------------- |
+| **Type**     | `string`                                    |
+| **Required** | No                                          |
+| **Default**  | `"GRIBPF@CNMEXP@@DOMAIN@+@DURATION_MODEL@"` |
+
+**Description:** File template as used by the model
+
+<a name="file_templates_history"></a>
+### Property `Config > file_templates > history`
+
+**Title:** History
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** File name templates for history files
+
+| Property                                   | Type   | Required | Default                            | Title/Description                      |
+| ------------------------------------------ | ------ | -------- | ---------------------------------- | -------------------------------------- |
+| [archive](#file_templates_history_archive) | string | No       | "ICMSH@CNMEXP@+@DURATION_ARCHIVE@" | File template as stored in the archive |
+| [model](#file_templates_history_model)     | string | No       | "ICMSH@CNMEXP@+@DURATION_MODEL@"   | File template as used by the model     |
+
+<a name="file_templates_history_archive"></a>
+#### Property `Config > file_templates > history > archive`
+
+|              |                                      |
+| ------------ | ------------------------------------ |
+| **Type**     | `string`                             |
+| **Required** | No                                   |
+| **Default**  | `"ICMSH@CNMEXP@+@DURATION_ARCHIVE@"` |
+
+**Description:** File template as stored in the archive
+
+<a name="file_templates_history_model"></a>
+#### Property `Config > file_templates > history > model`
+
+|              |                                    |
+| ------------ | ---------------------------------- |
+| **Type**     | `string`                           |
+| **Required** | No                                 |
+| **Default**  | `"ICMSH@CNMEXP@+@DURATION_MODEL@"` |
+
+**Description:** File template as used by the model
+
+<a name="file_templates_pgd"></a>
+### Property `Config > file_templates > pgd`
+
+**Title:** PGD
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** File name templates for final PGD files
+
+| Property                               | Type   | Required | Default                      | Title/Description                      |
+| -------------------------------------- | ------ | -------- | ---------------------------- | -------------------------------------- |
+| [archive](#file_templates_pgd_archive) | string | No       | "Const.Clim@ONE_DECADE@.sfx" | File template as stored in the archive |
+| [model](#file_templates_pgd_model)     | string | No       | "Const.Clim.sfx"             | File template as used by the model     |
+
+<a name="file_templates_pgd_archive"></a>
+#### Property `Config > file_templates > pgd > archive`
+
+|              |                                |
+| ------------ | ------------------------------ |
+| **Type**     | `string`                       |
+| **Required** | No                             |
+| **Default**  | `"Const.Clim@ONE_DECADE@.sfx"` |
+
+**Description:** File template as stored in the archive
+
+<a name="file_templates_pgd_model"></a>
+#### Property `Config > file_templates > pgd > model`
+
+|              |                    |
+| ------------ | ------------------ |
+| **Type**     | `string`           |
+| **Required** | No                 |
+| **Default**  | `"Const.Clim.sfx"` |
+
+**Description:** File template as used by the model
+
+<a name="file_templates_pgd_prel"></a>
+### Property `Config > file_templates > pgd_prel`
+
+**Title:** Preliminary PGD
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** File name templates for the preliminary PGD files
+
+| Property                                    | Type   | Required | Default                   | Title/Description                      |
+| ------------------------------------------- | ------ | -------- | ------------------------- | -------------------------------------- |
+| [archive](#file_templates_pgd_prel_archive) | string | No       | "PGD_prel@ONE_DECADE@.fa" | File template as stored in the archive |
+| [model](#file_templates_pgd_prel_model)     | string | No       | "PGD_prel.fa"             | File template as used by the model     |
+
+<a name="file_templates_pgd_prel_archive"></a>
+#### Property `Config > file_templates > pgd_prel > archive`
+
+|              |                             |
+| ------------ | --------------------------- |
+| **Type**     | `string`                    |
+| **Required** | No                          |
+| **Default**  | `"PGD_prel@ONE_DECADE@.fa"` |
+
+**Description:** File template as stored in the archive
+
+<a name="file_templates_pgd_prel_model"></a>
+#### Property `Config > file_templates > pgd_prel > model`
+
+|              |                 |
+| ------------ | --------------- |
+| **Type**     | `string`        |
+| **Required** | No              |
+| **Default**  | `"PGD_prel.fa"` |
+
+**Description:** File template as used by the model
+
+<a name="file_templates_pgd_host"></a>
+### Property `Config > file_templates > pgd_host`
+
+**Title:** Host PGD
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** File name templates for potential PGD files from the host model. Used if host_surfex=true
+
+| Property                                    | Type   | Required | Default                      | Title/Description                      |
+| ------------------------------------------- | ------ | -------- | ---------------------------- | -------------------------------------- |
+| [archive](#file_templates_pgd_host_archive) | string | No       | "Const.Clim@ONE_DECADE@.sfx" | File template as stored in the archive |
+| [model](#file_templates_pgd_host_model)     | string | No       | "Const.Clim.sfx"             | File template as used by the model     |
+
+<a name="file_templates_pgd_host_archive"></a>
+#### Property `Config > file_templates > pgd_host > archive`
+
+|              |                                |
+| ------------ | ------------------------------ |
+| **Type**     | `string`                       |
+| **Required** | No                             |
+| **Default**  | `"Const.Clim@ONE_DECADE@.sfx"` |
+
+**Description:** File template as stored in the archive
+
+<a name="file_templates_pgd_host_model"></a>
+#### Property `Config > file_templates > pgd_host > model`
+
+|              |                    |
+| ------------ | ------------------ |
+| **Type**     | `string`           |
+| **Required** | No                 |
+| **Default**  | `"Const.Clim.sfx"` |
+
+**Description:** File template as used by the model
+
+<a name="file_templates_surfex"></a>
+### Property `Config > file_templates > surfex`
+
+**Title:** Surfex
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** File name templates for surfex output files
+
+| Property                                  | Type   | Required | Default                                | Title/Description                      |
+| ----------------------------------------- | ------ | -------- | -------------------------------------- | -------------------------------------- |
+| [archive](#file_templates_surfex_archive) | string | No       | "ICMSH@CNMEXP@+@DURATION_ARCHIVE@.sfx" | File template as stored in the archive |
+| [model](#file_templates_surfex_model)     | string | No       | "ICMSH@CNMEXP@+@DURATION_MODEL@.sfx"   | File template as used by the model     |
+
+<a name="file_templates_surfex_archive"></a>
+#### Property `Config > file_templates > surfex > archive`
+
+|              |                                          |
+| ------------ | ---------------------------------------- |
+| **Type**     | `string`                                 |
+| **Required** | No                                       |
+| **Default**  | `"ICMSH@CNMEXP@+@DURATION_ARCHIVE@.sfx"` |
+
+**Description:** File template as stored in the archive
+
+<a name="file_templates_surfex_model"></a>
+#### Property `Config > file_templates > surfex > model`
+
+|              |                                        |
+| ------------ | -------------------------------------- |
+| **Type**     | `string`                               |
+| **Required** | No                                     |
+| **Default**  | `"ICMSH@CNMEXP@+@DURATION_MODEL@.sfx"` |
+
+**Description:** File template as used by the model
 
 <a name="macros"></a>
 ## Property `Config > macros`

@@ -84,6 +84,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../development_guidelines_link.html#generate-and-view-the-documentation-to-be-published-to-our-docpages">Generate and view the documentation to be published to our docpages</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../development_guidelines_link.html#testing-on-atos">Testing on Atos</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../development_guidelines_link.html#branches">Branches</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../development_guidelines_link.html#forks">Forks</a></li>
 </ul>
@@ -545,8 +546,13 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-file-templates">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-file-templates-duration-grib">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">duration_grib</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-file-templates-duration-fa">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">duration_fa</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-file-templates-duration">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">duration</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-file-templates-fullpos">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">fullpos</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-file-templates-history">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">history</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-file-templates-pgd">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">pgd</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-file-templates-pgd-prel">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">pgd_prel</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-file-templates-pgd-host">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">pgd_host</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-file-templates-surfex">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">surfex</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-macros">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">macros</span></code></a><ul>
@@ -755,6 +761,16 @@ poetry<span class="w"> </span>devtools<span class="w"> </span>doc<span class="w"
 </div>
 </section>
 </section>
+<section id="testing-on-atos">
+<h2>Testing on Atos<a class="headerlink" href="#testing-on-atos" title="Link to this heading"></a></h2>
+<p>The testing procedure above does not test the full functionality together with the IAL code. While waiting for a automated CI/CD system to be in place a few manual steps are required on atos to check the functionality.</p>
+<ul class="simple">
+<li><p>✔️ Run the default config file, using CY48t3, under ecflow following the instructions in the <a class="reference external" href="https://github.com/destination-earth-digital-twins/Deode-Prototype/blob/develop/README.md">README</a> file.</p></li>
+<li><p>✔️ Repeat the same using the config file for CY46h1, i.e. <code class="docutils literal notranslate"><span class="pre">deode/data/config_files/config_CY46h1.toml</span></code>.</p></li>
+<li><p>✔️ Test the nesting procedure for both CY46h1 and CY48t3 using the config files <code class="docutils literal notranslate"><span class="pre">deode/data/config_files/config_[CY46h1|CY48t3]_target.toml</span></code>. Both of the runs will use data from the first two tests.</p></li>
+<li><p>✔️ Test the stand alone task for the forecast following the instructions in the <a class="reference external" href="https://github.com/destination-earth-digital-twins/Deode-Prototype/blob/develop/README.md">README</a> file. ( This does not work at the moment )</p></li>
+</ul>
+</section>
 <section id="branches">
 <h2>Branches<a class="headerlink" href="#branches" title="Link to this heading"></a></h2>
 <p>As of now, the repository has two main branches:</p>
@@ -784,7 +800,7 @@ As the project grows, we may add more branches, such as an <code class="docutils
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2023-10-25T13:18:24Z.
+      <span class="lastupdated">Last updated on 2023-10-25T15:04:45Z.
       </span></p>
   </div>
 
