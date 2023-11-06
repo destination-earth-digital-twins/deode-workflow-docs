@@ -1,4 +1,4 @@
-This was automatically generated running `deode doc config` on 2023-10-27T12:13:41.
+This was automatically generated running `deode doc config` on 2023-11-06T19:13:41.
 
 # Config
 
@@ -25,6 +25,7 @@ This was automatically generated running `deode doc config` on 2023-10-27T12:13:
 | [domain](#domain)                   | object | No       | -       | Domain Section     |
 | [file_templates](#file_templates)   | object | No       | -       | File Templates     |
 | [macros](#macros)                   | object | No       | -       | Macros Section     |
+| [mars](#mars)                       | object | No       | -       | MarsSettings       |
 | [platform](#platform)               | object | No       | -       | Platform Section   |
 | [submission](#submission)           | object | No       | -       | Submission Section |
 | [vertical_levels](#vertical_levels) | object | No       | -       | Vertical Levels    |
@@ -831,6 +832,7 @@ Must be one of:
 | [bdcycle](#boundaries_bdcycle)                     | string           | No       | -               | Boundary model cycle interval                                                |
 | [bdtasks_per_batch](#boundaries_bdtasks_per_batch) | number           | No       | -               | Max number of parallel boundary interpolation tasks                          |
 | [bdmodel](#boundaries_bdmodel)                     | enum (of string) | No       | -               | Coupling model                                                               |
+| [ifs.selection](#boundaries_ifsselection)          | enum (of string) | No       | -               | Selection                                                                    |
 | [bd_has_surfex](#boundaries_bd_has_surfex)         | boolean          | No       | -               | Set to true if the host model runs with surfex                               |
 
 <a name="boundaries_bdstrategy"></a>
@@ -914,6 +916,22 @@ Must be one of:
 Must be one of:
 * "arome"
 * "ifs"
+
+<a name="boundaries_ifsselection"></a>
+### Property `Config > boundaries > ifs.selection`
+
+|              |                    |
+| ------------ | ------------------ |
+| **Type**     | `enum (of string)` |
+| **Required** | No                 |
+
+**Description:** Selection
+
+Must be one of:
+* "HRES"
+* "ATOS_DT"
+* "IFSENS"
+* "PARIS_RDP"
 
 <a name="boundaries_bd_has_surfex"></a>
 ### Property `Config > boundaries > bd_has_surfex`
@@ -1686,6 +1704,712 @@ Must be one of:
 | **Items unicity**    | False              |
 | **Additional items** | False              |
 | **Tuple validation** | N/A                |
+
+<a name="mars"></a>
+## Property `Config > mars`
+
+**Title:** MarsSettings
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Options for marse extraction
+
+| Property                       | Type   | Required | Default | Title/Description  |
+| ------------------------------ | ------ | -------- | ------- | ------------------ |
+| [HRES](#mars_HRES)             | object | No       | -       | SectionForOperData |
+| [ATOS_DT](#mars_ATOS_DT)       | object | No       | -       | SectionForDTData   |
+| [IFSENS](#mars_IFSENS)         | object | No       | -       | SectionForDTData   |
+| [RD_DEFAULT](#mars_RD_DEFAULT) | object | No       | -       | SectionForDTData   |
+
+<a name="mars_HRES"></a>
+### Property `Config > mars > HRES`
+
+**Title:** SectionForOperData
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Parameters for oper data
+
+| Property                            | Type   | Required | Default | Title/Description                                                       |
+| ----------------------------------- | ------ | -------- | ------- | ----------------------------------------------------------------------- |
+| [class](#mars_HRES_class)           | string | No       | -       | Class of expver                                                         |
+| [levelist](#mars_HRES_levelist)     | object | No       | -       | Dictionary (date:levels), with dates of change in the number of levels. |
+| [grid](#mars_HRES_grid)             | object | No       | -       | Dictionary (date:res0oution), with dates of change in the resolution.   |
+| [start_date](#mars_HRES_start_date) | string | No       | -       | Date from when are data available in Mars                               |
+| [GG](#mars_HRES_GG)                 | string | No       | -       | Parameters for grid point data                                          |
+| [GG_sea](#mars_HRES_GG_sea)         | string | No       | -       | Parameters for grid point sea data                                      |
+| [GG_soil](#mars_HRES_GG_soil)       | string | No       | -       | Parameters for grid point soil data                                     |
+| [GG1](#mars_HRES_GG1)               | string | No       | -       | Additional parameters for grid point data                               |
+| [grid_GG1](#mars_HRES_grid_GG1)     | object | No       | -       | Grid parametr for mars request                                          |
+| [grid_ML](#mars_HRES_grid_ML)       | string | No       | -       | Grid parametr for mars request                                          |
+| [SH](#mars_HRES_SH)                 | string | No       | -       | Parameters for spectral harmonic data                                   |
+| [SHZ](#mars_HRES_SHZ)               | string | No       | -       | Geopotential on ground                                                  |
+| [UA](#mars_HRES_UA)                 | string | No       | -       | Upper air parameters                                                    |
+| [SHZ_type](#mars_HRES_SHZ_type)     | string | No       | -       | Type for geopotential                                                   |
+| [stream](#mars_HRES_stream)         | object | No       | -       | Dictionary (run:stream) to use the right stream for a given run.        |
+
+<a name="mars_HRES_class"></a>
+#### Property `Config > mars > HRES > class`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Class of expver
+
+<a name="mars_HRES_levelist"></a>
+#### Property `Config > mars > HRES > levelist`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Dictionary (date:levels), with dates of change in the number of levels.
+
+| Property                                                         | Type   | Required | Default | Title/Description |
+| ---------------------------------------------------------------- | ------ | -------- | ------- | ----------------- |
+| [2006-02-01T00:00:00Z](#mars_HRES_levelist_2006-02-01T00:00:00Z) | string | No       | -       | -                 |
+| [2013-06-26T00:00:00Z](#mars_HRES_levelist_2013-06-26T00:00:00Z) | string | No       | -       | -                 |
+
+<a name="mars_HRES_levelist_2006-02-01T00:00:00Z"></a>
+##### Property `Config > mars > HRES > levelist > 2006-02-01T00:00:00Z`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+<a name="mars_HRES_levelist_2013-06-26T00:00:00Z"></a>
+##### Property `Config > mars > HRES > levelist > 2013-06-26T00:00:00Z`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+<a name="mars_HRES_grid"></a>
+#### Property `Config > mars > HRES > grid`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Dictionary (date:res0oution), with dates of change in the resolution.
+
+<a name="mars_HRES_start_date"></a>
+#### Property `Config > mars > HRES > start_date`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Date from when are data available in Mars
+
+<a name="mars_HRES_GG"></a>
+#### Property `Config > mars > HRES > GG`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Parameters for grid point data
+
+<a name="mars_HRES_GG_sea"></a>
+#### Property `Config > mars > HRES > GG_sea`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Parameters for grid point sea data
+
+<a name="mars_HRES_GG_soil"></a>
+#### Property `Config > mars > HRES > GG_soil`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Parameters for grid point soil data
+
+<a name="mars_HRES_GG1"></a>
+#### Property `Config > mars > HRES > GG1`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Additional parameters for grid point data
+
+<a name="mars_HRES_grid_GG1"></a>
+#### Property `Config > mars > HRES > grid_GG1`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Grid parametr for mars request
+
+<a name="mars_HRES_grid_ML"></a>
+#### Property `Config > mars > HRES > grid_ML`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Grid parametr for mars request
+
+<a name="mars_HRES_SH"></a>
+#### Property `Config > mars > HRES > SH`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Parameters for spectral harmonic data
+
+<a name="mars_HRES_SHZ"></a>
+#### Property `Config > mars > HRES > SHZ`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Geopotential on ground
+
+<a name="mars_HRES_UA"></a>
+#### Property `Config > mars > HRES > UA`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Upper air parameters
+
+<a name="mars_HRES_SHZ_type"></a>
+#### Property `Config > mars > HRES > SHZ_type`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Type for geopotential
+
+<a name="mars_HRES_stream"></a>
+#### Property `Config > mars > HRES > stream`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Dictionary (run:stream) to use the right stream for a given run.
+
+<a name="mars_ATOS_DT"></a>
+### Property `Config > mars > ATOS_DT`
+
+**Title:** SectionForDTData
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Parameters for DT data
+
+| Property                               | Type   | Required | Default | Title/Description                                                       |
+| -------------------------------------- | ------ | -------- | ------- | ----------------------------------------------------------------------- |
+| [class](#mars_ATOS_DT_class)           | string | No       | -       | Class of expver                                                         |
+| [levelist](#mars_ATOS_DT_levelist)     | string | No       | -       | Dictionary (date:levels), with dates of change in the number of levels. |
+| [grid](#mars_ATOS_DT_grid)             | string | No       | -       | Dictionary (date:res0oution), with dates of change in the resolution.   |
+| [start_date](#mars_ATOS_DT_start_date) | string | No       | -       | Date from when are data available in Mars                               |
+| [GG](#mars_ATOS_DT_GG)                 | string | No       | -       | Parameters for grid point data                                          |
+| [GG_sea](#mars_ATOS_DT_GG_sea)         | string | No       | -       | Parameters for grid point sea data                                      |
+| [grid_GG1](#mars_ATOS_DT_grid_GG1)     | string | No       | -       | Grid parametr for mars request                                          |
+| [grid_ML](#mars_ATOS_DT_grid_ML)       | string | No       | -       | Grid parametr for mars request                                          |
+| [SH](#mars_ATOS_DT_SH)                 | string | No       | -       | Parameters for spectral harmonic data                                   |
+| [SHZ](#mars_ATOS_DT_SHZ)               | string | No       | -       | Geopotential on ground                                                  |
+| [SHZ_type](#mars_ATOS_DT_SHZ_type)     | string | No       | -       | Type for geopotential                                                   |
+| [UA](#mars_ATOS_DT_UA)                 | string | No       | -       | Upper air parameters                                                    |
+| [stream](#mars_ATOS_DT_stream)         | object | No       | -       | Dictionary (run:stream) to use the right stream for a given run.        |
+
+<a name="mars_ATOS_DT_class"></a>
+#### Property `Config > mars > ATOS_DT > class`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Class of expver
+
+<a name="mars_ATOS_DT_levelist"></a>
+#### Property `Config > mars > ATOS_DT > levelist`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Dictionary (date:levels), with dates of change in the number of levels.
+
+<a name="mars_ATOS_DT_grid"></a>
+#### Property `Config > mars > ATOS_DT > grid`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Dictionary (date:res0oution), with dates of change in the resolution.
+
+<a name="mars_ATOS_DT_start_date"></a>
+#### Property `Config > mars > ATOS_DT > start_date`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Date from when are data available in Mars
+
+<a name="mars_ATOS_DT_GG"></a>
+#### Property `Config > mars > ATOS_DT > GG`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Parameters for grid point data
+
+<a name="mars_ATOS_DT_GG_sea"></a>
+#### Property `Config > mars > ATOS_DT > GG_sea`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Parameters for grid point sea data
+
+<a name="mars_ATOS_DT_grid_GG1"></a>
+#### Property `Config > mars > ATOS_DT > grid_GG1`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Grid parametr for mars request
+
+<a name="mars_ATOS_DT_grid_ML"></a>
+#### Property `Config > mars > ATOS_DT > grid_ML`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Grid parametr for mars request
+
+<a name="mars_ATOS_DT_SH"></a>
+#### Property `Config > mars > ATOS_DT > SH`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Parameters for spectral harmonic data
+
+<a name="mars_ATOS_DT_SHZ"></a>
+#### Property `Config > mars > ATOS_DT > SHZ`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Geopotential on ground
+
+<a name="mars_ATOS_DT_SHZ_type"></a>
+#### Property `Config > mars > ATOS_DT > SHZ_type`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Type for geopotential
+
+<a name="mars_ATOS_DT_UA"></a>
+#### Property `Config > mars > ATOS_DT > UA`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Upper air parameters
+
+<a name="mars_ATOS_DT_stream"></a>
+#### Property `Config > mars > ATOS_DT > stream`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Dictionary (run:stream) to use the right stream for a given run.
+
+<a name="mars_IFSENS"></a>
+### Property `Config > mars > IFSENS`
+
+**Title:** SectionForDTData
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Parameters for DT data
+
+| Property                              | Type   | Required | Default | Title/Description                                                       |
+| ------------------------------------- | ------ | -------- | ------- | ----------------------------------------------------------------------- |
+| [class](#mars_IFSENS_class)           | string | No       | -       | Class of expver                                                         |
+| [levelist](#mars_IFSENS_levelist)     | object | No       | -       | Dictionary (date:levels), with dates of change in the number of levels. |
+| [grid](#mars_IFSENS_grid)             | object | No       | -       | Dictionary (date:res0oution), with dates of change in the resolution.   |
+| [start_date](#mars_IFSENS_start_date) | string | No       | -       | Date from when are data available in Mars                               |
+| [GG](#mars_IFSENS_GG)                 | string | No       | -       | Parameters for grid point data                                          |
+| [GG_sea](#mars_IFSENS_GG_sea)         | string | No       | -       | Parameters for grid point sea data                                      |
+| [grid_GG1](#mars_IFSENS_grid_GG1)     | string | No       | -       | Grid parametr for mars request                                          |
+| [grid_ML](#mars_IFSENS_grid_ML)       | string | No       | -       | Grid parametr for mars request                                          |
+| [SH](#mars_IFSENS_SH)                 | string | No       | -       | Parameters for spectral harmonic data                                   |
+| [SHZ](#mars_IFSENS_SHZ)               | string | No       | -       | Geopotential on ground                                                  |
+| [SHZ_type](#mars_IFSENS_SHZ_type)     | string | No       | -       | Type for geopotential                                                   |
+| [UA](#mars_IFSENS_UA)                 | string | No       | -       | Upper air parameters                                                    |
+| [stream](#mars_IFSENS_stream)         | string | No       | -       | Dictionary (run:stream) to use the right stream for a given run.        |
+
+<a name="mars_IFSENS_class"></a>
+#### Property `Config > mars > IFSENS > class`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Class of expver
+
+<a name="mars_IFSENS_levelist"></a>
+#### Property `Config > mars > IFSENS > levelist`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Dictionary (date:levels), with dates of change in the number of levels.
+
+<a name="mars_IFSENS_grid"></a>
+#### Property `Config > mars > IFSENS > grid`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Dictionary (date:res0oution), with dates of change in the resolution.
+
+<a name="mars_IFSENS_start_date"></a>
+#### Property `Config > mars > IFSENS > start_date`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Date from when are data available in Mars
+
+<a name="mars_IFSENS_GG"></a>
+#### Property `Config > mars > IFSENS > GG`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Parameters for grid point data
+
+<a name="mars_IFSENS_GG_sea"></a>
+#### Property `Config > mars > IFSENS > GG_sea`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Parameters for grid point sea data
+
+<a name="mars_IFSENS_grid_GG1"></a>
+#### Property `Config > mars > IFSENS > grid_GG1`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Grid parametr for mars request
+
+<a name="mars_IFSENS_grid_ML"></a>
+#### Property `Config > mars > IFSENS > grid_ML`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Grid parametr for mars request
+
+<a name="mars_IFSENS_SH"></a>
+#### Property `Config > mars > IFSENS > SH`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Parameters for spectral harmonic data
+
+<a name="mars_IFSENS_SHZ"></a>
+#### Property `Config > mars > IFSENS > SHZ`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Geopotential on ground
+
+<a name="mars_IFSENS_SHZ_type"></a>
+#### Property `Config > mars > IFSENS > SHZ_type`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Type for geopotential
+
+<a name="mars_IFSENS_UA"></a>
+#### Property `Config > mars > IFSENS > UA`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Upper air parameters
+
+<a name="mars_IFSENS_stream"></a>
+#### Property `Config > mars > IFSENS > stream`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Dictionary (run:stream) to use the right stream for a given run.
+
+<a name="mars_RD_DEFAULT"></a>
+### Property `Config > mars > RD_DEFAULT`
+
+**Title:** SectionForDTData
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Parameters for DT data
+
+| Property                                  | Type   | Required | Default | Title/Description                                                       |
+| ----------------------------------------- | ------ | -------- | ------- | ----------------------------------------------------------------------- |
+| [class](#mars_RD_DEFAULT_class)           | string | No       | -       | Class of expver                                                         |
+| [levelist](#mars_RD_DEFAULT_levelist)     | string | No       | -       | Dictionary (date:levels), with dates of change in the number of levels. |
+| [grid](#mars_RD_DEFAULT_grid)             | string | No       | -       | Dictionary (date:res0oution), with dates of change in the resolution.   |
+| [start_date](#mars_RD_DEFAULT_start_date) | string | No       | -       | Date from when are data available in Mars                               |
+| [GG](#mars_RD_DEFAULT_GG)                 | string | No       | -       | Parameters for grid point data                                          |
+| [GG_sea](#mars_RD_DEFAULT_GG_sea)         | string | No       | -       | Parameters for grid point sea data                                      |
+| [grid_GG1](#mars_RD_DEFAULT_grid_GG1)     | string | No       | -       | Grid parametr for mars request                                          |
+| [grid_ML](#mars_RD_DEFAULT_grid_ML)       | string | No       | -       | Grid parametr for mars request                                          |
+| [SH](#mars_RD_DEFAULT_SH)                 | string | No       | -       | Parameters for spectral harmonic data                                   |
+| [SHZ](#mars_RD_DEFAULT_SHZ)               | string | No       | -       | Geopotential on ground                                                  |
+| [SHZ_type](#mars_RD_DEFAULT_SHZ_type)     | string | No       | -       | Type for geopotential                                                   |
+| [UA](#mars_RD_DEFAULT_UA)                 | string | No       | -       | Upper air parameters                                                    |
+| [stream](#mars_RD_DEFAULT_stream)         | string | No       | -       | Dictionary (run:stream) to use the right stream for a given run.        |
+
+<a name="mars_RD_DEFAULT_class"></a>
+#### Property `Config > mars > RD_DEFAULT > class`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Class of expver
+
+<a name="mars_RD_DEFAULT_levelist"></a>
+#### Property `Config > mars > RD_DEFAULT > levelist`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Dictionary (date:levels), with dates of change in the number of levels.
+
+<a name="mars_RD_DEFAULT_grid"></a>
+#### Property `Config > mars > RD_DEFAULT > grid`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Dictionary (date:res0oution), with dates of change in the resolution.
+
+<a name="mars_RD_DEFAULT_start_date"></a>
+#### Property `Config > mars > RD_DEFAULT > start_date`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Date from when are data available in Mars
+
+<a name="mars_RD_DEFAULT_GG"></a>
+#### Property `Config > mars > RD_DEFAULT > GG`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Parameters for grid point data
+
+<a name="mars_RD_DEFAULT_GG_sea"></a>
+#### Property `Config > mars > RD_DEFAULT > GG_sea`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Parameters for grid point sea data
+
+<a name="mars_RD_DEFAULT_grid_GG1"></a>
+#### Property `Config > mars > RD_DEFAULT > grid_GG1`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Grid parametr for mars request
+
+<a name="mars_RD_DEFAULT_grid_ML"></a>
+#### Property `Config > mars > RD_DEFAULT > grid_ML`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Grid parametr for mars request
+
+<a name="mars_RD_DEFAULT_SH"></a>
+#### Property `Config > mars > RD_DEFAULT > SH`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Parameters for spectral harmonic data
+
+<a name="mars_RD_DEFAULT_SHZ"></a>
+#### Property `Config > mars > RD_DEFAULT > SHZ`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Geopotential on ground
+
+<a name="mars_RD_DEFAULT_SHZ_type"></a>
+#### Property `Config > mars > RD_DEFAULT > SHZ_type`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Type for geopotential
+
+<a name="mars_RD_DEFAULT_UA"></a>
+#### Property `Config > mars > RD_DEFAULT > UA`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Upper air parameters
+
+<a name="mars_RD_DEFAULT_stream"></a>
+#### Property `Config > mars > RD_DEFAULT > stream`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Dictionary (run:stream) to use the right stream for a given run.
 
 <a name="platform"></a>
 ## Property `Config > platform`
