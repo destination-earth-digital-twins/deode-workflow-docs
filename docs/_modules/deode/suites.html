@@ -438,6 +438,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-suite-control-mode">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">suite_control</span> <span class="pre">&gt;</span> <span class="pre">mode</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-suite-control-interpolate-boundaries">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">suite_control</span> <span class="pre">&gt;</span> <span class="pre">interpolate_boundaries</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-suite-control-do-marsprep">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">suite_control</span> <span class="pre">&gt;</span> <span class="pre">do_marsprep</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-suite-control-do-extractsqlite">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">suite_control</span> <span class="pre">&gt;</span> <span class="pre">do_extractsqlite</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-suite-control-create-static-data">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">suite_control</span> <span class="pre">&gt;</span> <span class="pre">create_static_data</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-suite-control-create-time-dependent-suite">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">suite_control</span> <span class="pre">&gt;</span> <span class="pre">create_time_dependent_suite</span></code></a></li>
 </ul>
@@ -709,6 +710,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">interpolate_boundaries</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.interpolate_boundaries&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">do_prep</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.do_prep&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">do_marsprep</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.do_marsprep&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">do_extractsqlite</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.do_extractsqlite&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">do_archiving</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.do_archiving&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">surfex</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.surfex&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">suite_name</span> <span class="o">=</span> <span class="n">suite_name</span>
@@ -1090,6 +1092,20 @@
                 <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
                 <span class="n">trigger</span><span class="o">=</span><span class="n">creategrib_trigger</span><span class="p">,</span>
             <span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_extractsqlite</span><span class="p">:</span>
+                <span class="n">extractsqlite_trigger</span> <span class="o">=</span> <span class="n">EcflowSuiteTriggers</span><span class="p">(</span>
+                    <span class="p">[</span><span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">forecast_task</span><span class="p">)]</span>
+                <span class="p">)</span>
+                <span class="n">EcflowSuiteTask</span><span class="p">(</span>
+                    <span class="s2">&quot;ExtractSQLite&quot;</span><span class="p">,</span>
+                    <span class="n">forecasting</span><span class="p">,</span>
+                    <span class="n">config</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">task_settings</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
+                    <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
+                    <span class="n">trigger</span><span class="o">=</span><span class="n">extractsqlite_trigger</span><span class="p">,</span>
+                <span class="p">)</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_archiving</span><span class="p">:</span>
                 <span class="n">archiving_trigger</span> <span class="o">=</span> <span class="n">EcflowSuiteTriggers</span><span class="p">([</span><span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">cycle_fam</span><span class="p">)])</span>
@@ -1675,7 +1691,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2023-11-06T19:13:43Z.
+      <span class="lastupdated">Last updated on 2023-11-07T10:14:02Z.
       </span></p>
   </div>
 
