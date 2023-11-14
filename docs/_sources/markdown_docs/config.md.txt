@@ -1,4 +1,4 @@
-This was automatically generated running `deode doc config` on 2023-11-10T08:01:39.
+This was automatically generated running `deode doc config` on 2023-11-14T06:21:09.
 
 # Config
 
@@ -22,6 +22,7 @@ This was automatically generated running `deode doc config` on 2023-11-10T08:01:
 | [fullpos](#fullpos)                 | object | No       | -       | Fullpos Section    |
 | [troika](#troika)                   | object | No       | -       | Troika             |
 | [include](#include)                 | object | No       | -       | Include Section    |
+| [archiving](#archiving)             | object | No       | -       | Archiving Section  |
 | [domain](#domain)                   | object | No       | -       | Domain Section     |
 | [file_templates](#file_templates)   | object | No       | -       | File Templates     |
 | [macros](#macros)                   | object | No       | -       | Macros Section     |
@@ -1080,6 +1081,152 @@ Must be one of:
 | **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
 
 **Description:** Sections to be included from other config files. Specified as 'key = val' pairs, where the keys are the section names and the vals are the paths to the files containing them.
+
+<a name="archiving"></a>
+## Property `Config > archiving`
+
+**Title:** Archiving Section
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Archiving settings for ATOS to ECFS. Locations, and time intervals to archive for each file type
+
+| Property                                        | Type   | Required | Default | Title/Description       |
+| ----------------------------------------------- | ------ | -------- | ------- | ----------------------- |
+| [paths](#archiving_paths)                       | object | No       | -       | Paths                   |
+| [aoutput_settings](#archiving_aoutput_settings) | object | No       | -       | Archive Output Settings |
+
+<a name="archiving_paths"></a>
+### Property `Config > archiving > paths`
+
+**Title:** Paths
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Archives to use on atos, and locations where things will be stored.
+
+| Property                                    | Type   | Required | Default                          | Title/Description                                                       |
+| ------------------------------------------- | ------ | -------- | -------------------------------- | ----------------------------------------------------------------------- |
+| [aloc](#archiving_paths_aloc)               | string | No       | "ectmp:"                         | Actual archiving system. ATOS options > ectmp and ec. LUMI will differ. |
+| [apath](#archiving_paths_apath)             | string | No       | "deode/@CASE@/"                  | Archiving path to store files on archiving system                       |
+| [arch_cdate](#archiving_paths_arch_cdate)   | string | No       | "archive/@YYYY@/@MM@/@DD@/@HH@/" | Exact archiving location of forecast output files by YYYYMMDDHH         |
+| [arch_static](#archiving_paths_arch_static) | string | No       | "archive/static/"                | Exact archiving location of static data                                 |
+
+<a name="archiving_paths_aloc"></a>
+#### Property `Config > archiving > paths > aloc`
+
+|              |            |
+| ------------ | ---------- |
+| **Type**     | `string`   |
+| **Required** | No         |
+| **Default**  | `"ectmp:"` |
+
+**Description:** Actual archiving system. ATOS options > ectmp and ec. LUMI will differ.
+
+<a name="archiving_paths_apath"></a>
+#### Property `Config > archiving > paths > apath`
+
+|              |                   |
+| ------------ | ----------------- |
+| **Type**     | `string`          |
+| **Required** | No                |
+| **Default**  | `"deode/@CASE@/"` |
+
+**Description:** Archiving path to store files on archiving system
+
+<a name="archiving_paths_arch_cdate"></a>
+#### Property `Config > archiving > paths > arch_cdate`
+
+|              |                                    |
+| ------------ | ---------------------------------- |
+| **Type**     | `string`                           |
+| **Required** | No                                 |
+| **Default**  | `"archive/@YYYY@/@MM@/@DD@/@HH@/"` |
+
+**Description:** Exact archiving location of forecast output files by YYYYMMDDHH
+
+<a name="archiving_paths_arch_static"></a>
+#### Property `Config > archiving > paths > arch_static`
+
+|              |                     |
+| ------------ | ------------------- |
+| **Type**     | `string`            |
+| **Required** | No                  |
+| **Default**  | `"archive/static/"` |
+
+**Description:** Exact archiving location of static data
+
+<a name="archiving_aoutput_settings"></a>
+### Property `Config > archiving > aoutput_settings`
+
+**Title:** Archive Output Settings
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Archiving settings for each file type, specified as time interval. This will tell DEODE how often you want to archive output files under said file type. IF this field is completely empty, output_settings will be taken from main config file eg. config_CYCLE.toml
+
+| Property                                       | Type   | Required | Default | Title/Description                                        |
+| ---------------------------------------------- | ------ | -------- | ------- | -------------------------------------------------------- |
+| [history](#archiving_aoutput_settings_history) | object | No       | -       | Time interval to store history files                     |
+| [surfex](#archiving_aoutput_settings_surfex)   | object | No       | -       | Time interval to store surfex files                      |
+| [fullpos](#archiving_aoutput_settings_fullpos) | object | No       | -       | Time interval to store fullpos files                     |
+| [grib](#archiving_aoutput_settings_grib)       | object | No       | -       | Time interval to store grib files from CreateGrib output |
+
+<a name="archiving_aoutput_settings_history"></a>
+#### Property `Config > archiving > aoutput_settings > history`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Time interval to store history files
+
+<a name="archiving_aoutput_settings_surfex"></a>
+#### Property `Config > archiving > aoutput_settings > surfex`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Time interval to store surfex files
+
+<a name="archiving_aoutput_settings_fullpos"></a>
+#### Property `Config > archiving > aoutput_settings > fullpos`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Time interval to store fullpos files
+
+<a name="archiving_aoutput_settings_grib"></a>
+#### Property `Config > archiving > aoutput_settings > grib`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Time interval to store grib files from CreateGrib output
 
 <a name="domain"></a>
 ## Property `Config > domain`
