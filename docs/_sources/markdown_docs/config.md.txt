@@ -1,4 +1,4 @@
-This was automatically generated running `deode doc config` on 2023-11-22T07:08:31.
+This was automatically generated running `deode doc config` on 2023-11-22T10:20:39.
 
 # Config
 
@@ -12,24 +12,25 @@ This was automatically generated running `deode doc config` on 2023-11-22T07:08:
 
 **Description:** Model for validation of `deode`'s main config file.
 
-| Property                            | Type   | Required | Default | Title/Description  |
-| ----------------------------------- | ------ | -------- | ------- | ------------------ |
-| [general](#general)                 | object | Yes      | -       | General Section    |
-| [suite_control](#suite_control)     | object | No       | -       | Suite control      |
-| [system](#system)                   | object | No       | -       | System             |
-| [boundaries](#boundaries)           | object | No       | -       | Boundary Section   |
-| [pgd](#pgd)                         | object | No       | -       | Pgd Section        |
-| [fullpos](#fullpos)                 | object | No       | -       | Fullpos Section    |
-| [troika](#troika)                   | object | No       | -       | Troika             |
-| [include](#include)                 | object | No       | -       | Include Section    |
-| [archiving](#archiving)             | object | No       | -       | Archiving Section  |
-| [domain](#domain)                   | object | No       | -       | Domain Section     |
-| [file_templates](#file_templates)   | object | No       | -       | File Templates     |
-| [macros](#macros)                   | object | No       | -       | Macros Section     |
-| [mars](#mars)                       | object | No       | -       | MarsSettings       |
-| [platform](#platform)               | object | No       | -       | Platform Section   |
-| [submission](#submission)           | object | No       | -       | Submission Section |
-| [vertical_levels](#vertical_levels) | object | No       | -       | Vertical Levels    |
+| Property                            | Type   | Required | Default | Title/Description      |
+| ----------------------------------- | ------ | -------- | ------- | ---------------------- |
+| [general](#general)                 | object | Yes      | -       | General Section        |
+| [suite_control](#suite_control)     | object | No       | -       | Suite control          |
+| [system](#system)                   | object | No       | -       | System                 |
+| [boundaries](#boundaries)           | object | No       | -       | Boundary Section       |
+| [pgd](#pgd)                         | object | No       | -       | Pgd Section            |
+| [fullpos](#fullpos)                 | object | No       | -       | Fullpos Section        |
+| [troika](#troika)                   | object | No       | -       | Troika                 |
+| [include](#include)                 | object | No       | -       | Include Section        |
+| [archiving](#archiving)             | object | No       | -       | Archiving Section      |
+| [domain](#domain)                   | object | No       | -       | Domain Section         |
+| [extractsqlite](#extractsqlite)     | object | No       | -       | Extract sqlite Section |
+| [file_templates](#file_templates)   | object | No       | -       | File Templates         |
+| [macros](#macros)                   | object | No       | -       | Macros Section         |
+| [mars](#mars)                       | object | No       | -       | MarsSettings           |
+| [platform](#platform)               | object | No       | -       | Platform Section       |
+| [submission](#submission)           | object | No       | -       | Submission Section     |
+| [vertical_levels](#vertical_levels) | object | No       | -       | Vertical Levels        |
 
 <a name="general"></a>
 ## Property `Config > general`
@@ -1680,6 +1681,94 @@ Must be one of:
 | **Default**  | `0.0`    |
 
 **Description:** Rotation parameter for the conformal projection
+
+<a name="extractsqlite"></a>
+## Property `Config > extractsqlite`
+
+**Title:** Extract sqlite Section
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Model for validation of the data in the 'domain' section of the config file.
+
+| Property                                              | Type   | Required | Default                                                   | Title/Description                                                                                    |
+| ----------------------------------------------------- | ------ | -------- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| [parameter_list](#extractsqlite_parameter_list)       | string | No       | "@DEODE_HOME@/deode/data/sqlite/param_list.json"          | List of parameters to extract                                                                        |
+| [sqlite_model_name](#extractsqlite_sqlite_model_name) | string | No       | "@CNMEXP@"                                                | Model name used in the sqlite tables                                                                 |
+| [sqlite_path](#extractsqlite_sqlite_path)             | string | No       | "@ARCHIVE_ROOT@/sqlite/"                                  | Path to generated sqlite files                                                                       |
+| [sqlite_template](#extractsqlite_sqlite_template)     | string | No       | "FCTABLE_@PP@_@YYYY@@MM@_@HH@.sqlite"                     | File name template for generated sqlite files                                                        |
+| [station_list](#extractsqlite_station_list)           | string | No       | "@DEODE_HOME@/deode/data/sqlite/station_list_default.csv" | Station list used for extraction                                                                     |
+| [selection](#extractsqlite_selection)                 | string | No       | "PT1H"                                                    | Temporal selection. Same syntax as for output_settings. Leave empty to inherit the fullpos settings. |
+
+<a name="extractsqlite_parameter_list"></a>
+### Property `Config > extractsqlite > parameter_list`
+
+|              |                                                    |
+| ------------ | -------------------------------------------------- |
+| **Type**     | `string`                                           |
+| **Required** | No                                                 |
+| **Default**  | `"@DEODE_HOME@/deode/data/sqlite/param_list.json"` |
+
+**Description:** List of parameters to extract
+
+<a name="extractsqlite_sqlite_model_name"></a>
+### Property `Config > extractsqlite > sqlite_model_name`
+
+|              |              |
+| ------------ | ------------ |
+| **Type**     | `string`     |
+| **Required** | No           |
+| **Default**  | `"@CNMEXP@"` |
+
+**Description:** Model name used in the sqlite tables
+
+<a name="extractsqlite_sqlite_path"></a>
+### Property `Config > extractsqlite > sqlite_path`
+
+|              |                            |
+| ------------ | -------------------------- |
+| **Type**     | `string`                   |
+| **Required** | No                         |
+| **Default**  | `"@ARCHIVE_ROOT@/sqlite/"` |
+
+**Description:** Path to generated sqlite files
+
+<a name="extractsqlite_sqlite_template"></a>
+### Property `Config > extractsqlite > sqlite_template`
+
+|              |                                         |
+| ------------ | --------------------------------------- |
+| **Type**     | `string`                                |
+| **Required** | No                                      |
+| **Default**  | `"FCTABLE_@PP@_@YYYY@@MM@_@HH@.sqlite"` |
+
+**Description:** File name template for generated sqlite files
+
+<a name="extractsqlite_station_list"></a>
+### Property `Config > extractsqlite > station_list`
+
+|              |                                                             |
+| ------------ | ----------------------------------------------------------- |
+| **Type**     | `string`                                                    |
+| **Required** | No                                                          |
+| **Default**  | `"@DEODE_HOME@/deode/data/sqlite/station_list_default.csv"` |
+
+**Description:** Station list used for extraction
+
+<a name="extractsqlite_selection"></a>
+### Property `Config > extractsqlite > selection`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+| **Default**  | `"PT1H"` |
+
+**Description:** Temporal selection. Same syntax as for output_settings. Leave empty to inherit the fullpos settings.
 
 <a name="file_templates"></a>
 ## Property `Config > file_templates`
