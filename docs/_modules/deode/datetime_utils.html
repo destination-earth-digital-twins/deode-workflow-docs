@@ -745,7 +745,9 @@
     <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">output_settings</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="n">length</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Invalid argument </span><span class="si">{</span><span class="n">output_settings</span><span class="si">}</span><span class="s2"> for output_settings.</span><span class="se">\n</span><span class="s2">Please provide single time increment as a string or a list of &#39;starttime:endtime:interval&#39; choices&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Invalid argument </span><span class="si">{</span><span class="n">output_settings</span><span class="si">}</span><span class="s2"> for output_settings.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Please provide single time increment as a string &quot;</span>
+                <span class="s2">&quot;or a list of &#39;starttime:endtime:interval&#39; choices&quot;</span>
             <span class="p">)</span></div>
 
 
@@ -772,9 +774,7 @@
         <span class="n">check_syntax</span><span class="p">(</span><span class="n">output_settings</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
         <span class="n">oi</span> <span class="o">=</span> <span class="n">output_settings</span>
 
-    <span class="n">sections</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">oi</span><span class="p">:</span>
-        <span class="n">sections</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">as_timedelta</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)])</span>
+    <span class="n">sections</span> <span class="o">=</span> <span class="p">[[</span><span class="n">as_timedelta</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">oi</span><span class="p">]</span>
 
     <span class="k">return</span> <span class="n">sections</span></div>
 
@@ -792,7 +792,6 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        dt (list) : List of output occurences</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="n">sections</span> <span class="o">=</span> <span class="n">expand_output_settings</span><span class="p">(</span><span class="n">output_settings</span><span class="p">,</span> <span class="n">forecast_range</span><span class="p">)</span>
 
     <span class="n">dt</span> <span class="o">=</span> <span class="p">[]</span>
@@ -836,6 +835,7 @@
 <div class="viewcode-block" id="get_decade">
 <a class="viewcode-back" href="../../deode.html#deode.datetime_utils.get_decade">[docs]</a>
 <span class="k">def</span> <span class="nf">get_decade</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the decade given a datetime object.&quot;&quot;&quot;</span>
     <span class="c1"># Extract month and day from datetime object</span>
     <span class="n">dtg_mm</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">month</span><span class="p">)</span>
     <span class="n">dtg_dd</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">day</span><span class="p">)</span>
@@ -871,7 +871,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2023-11-23T20:59:31Z.
+      <span class="lastupdated">Last updated on 2023-11-26T06:21:33Z.
       </span></p>
   </div>
 

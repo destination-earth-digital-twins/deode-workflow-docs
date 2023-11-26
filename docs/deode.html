@@ -685,7 +685,7 @@
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="deode.GeneralConstants.VERSION">
-<span class="sig-name descname"><span class="pre">VERSION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'0.2.0'</span></em><a class="headerlink" href="#deode.GeneralConstants.VERSION" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">VERSION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'0.2.1'</span></em><a class="headerlink" href="#deode.GeneralConstants.VERSION" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1163,7 +1163,8 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="deode.datetime_utils.get_decade">
 <span class="sig-name descname"><span class="pre">get_decade</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/deode/datetime_utils.html#get_decade"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.datetime_utils.get_decade" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Return the decade given a datetime object.</p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="deode.datetime_utils.oi2dt_list">
@@ -1855,11 +1856,15 @@ cndict : Rules for dictionary</p>
 <li><p><strong>directory</strong> (<em>str</em>) – Directory to search in.</p></li>
 <li><p><strong>prefix</strong> (<em>str</em><em>, </em><em>optional</em>) – Only find files with this prefix. Defaults to “”.</p></li>
 <li><p><strong>postfix</strong> (<em>str</em><em>, </em><em>optional</em>) – Only find files with the postfix. Defaults to “”.</p></li>
-<li><p><strong>pattern</strong> (<em>str</em><em>, </em><em>optional</em>) – Only find files with matching pattern. Defaults to “”.</p></li>
-<li><p><strong>recursive</strong> (<em>bool</em><em>, </em><em>optional</em>) – Go into directories recursively. Defaults to True.</p></li>
+<li><p><strong>pattern</strong> (<em>str</em><em>, </em><em>optional</em>) – Only find files with matching pattern.
+Defaults to “”.</p></li>
+<li><p><strong>recursive</strong> (<em>bool</em><em>, </em><em>optional</em>) – Go into directories recursively.
+Defaults to True.</p></li>
 <li><p><strong>onlyfiles</strong> (<em>bool</em><em>, </em><em>optional</em>) – Show only files. Defaults to True.</p></li>
-<li><p><strong>fullpath</strong> (<em>bool</em><em>, </em><em>optional</em>) – Give full path. Defaults to False. If recursive=True, fullpath is given automatically.</p></li>
-<li><p><strong>olderthan</strong> (<em>int</em><em>, </em><em>optional</em>) – Match only files older than X seconds from now. Defaults to None.</p></li>
+<li><p><strong>fullpath</strong> (<em>bool</em><em>, </em><em>optional</em>) – Give full path. Defaults to False. If
+recursive=True, fullpath is given automatically.</p></li>
+<li><p><strong>olderthan</strong> (<em>int</em><em>, </em><em>optional</em>) – Match only files older than X seconds from now.
+Defaults to None.</p></li>
 <li><p><strong>inorder</strong> (<em>bool</em><em>, </em><em>optional</em>) – Return sorted list of filenames. Defaults to False.</p></li>
 </ul>
 </dd>
@@ -1871,7 +1876,10 @@ cndict : Rules for dictionary</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">files</span> <span class="o">=</span> <span class="n">find_files</span><span class="p">(</span><span class="s1">&#39;/foo/&#39;</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">postfix</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">onlyfiles</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fullpath</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">olderthan</span><span class="o">=</span><span class="mi">86400</span><span class="o">*</span><span class="mi">100</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">files</span> <span class="o">=</span> <span class="n">find_files</span><span class="p">(</span>
+<span class="go">                &#39;/foo/&#39;, prefix=&quot;&quot;, postfix=&quot;&quot;, recursive=False,</span>
+<span class="go">                onlyfiles=True, fullpath=True, olderthan=86400*100</span>
+<span class="go">            )</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1889,9 +1897,9 @@ and new files inherit the unix group.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>path</strong> (<em>str</em>) – directory path that should be created if it doesn’t already exist.</p></li>
-<li><p><strong>unixgroup</strong> (<em>str</em><em>, </em><em>optional</em>) – unix group the newly created directories should belong to.</p></li>
-<li><p><strong>exist_ok</strong> (<em>boolean</em><em>, </em><em>optional</em>) – Define whether directories may already exist or whether
-an error should be raised.</p></li>
+<li><p><strong>unixgroup</strong> (<em>str</em><em>, </em><em>optional</em>) – unix group the newly created dirs should belong to.</p></li>
+<li><p><strong>exist_ok</strong> (<em>boolean</em><em>, </em><em>optional</em>) – Define whether directories may already exist
+or whether an error should be raised.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
@@ -2937,7 +2945,7 @@ server specific way.</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2023-11-23T20:59:31Z.
+      <span class="lastupdated">Last updated on 2023-11-26T06:21:33Z.
       </span></p>
   </div>
 

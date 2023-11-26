@@ -784,6 +784,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to use for JSON schemas. Provides a `validate` method to validate data.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialise instance.&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">jsonref</span><span class="o">.</span><span class="n">replace_refs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
 
@@ -806,25 +807,26 @@
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;schema.json&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">schema_file</span><span class="p">:</span>
                 <span class="n">schema_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">()))</span>
 
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;schema_doc.md&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">doc_file</span><span class="p">:</span>
-                <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">redirect_stdout</span><span class="p">(</span><span class="kc">None</span><span class="p">):</span>
-                    <span class="n">generate_from_file_object</span><span class="p">(</span>
-                        <span class="n">schema_file</span><span class="o">=</span><span class="n">schema_file</span><span class="p">,</span>
-                        <span class="n">result_file</span><span class="o">=</span><span class="n">doc_file</span><span class="p">,</span>
-                        <span class="n">config</span><span class="o">=</span><span class="n">GenerationConfiguration</span><span class="p">(</span>
-                            <span class="n">template_name</span><span class="o">=</span><span class="s2">&quot;md&quot;</span><span class="p">,</span>
-                            <span class="n">show_toc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                            <span class="n">template_md_options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;show_heading_numbers&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-                            <span class="n">with_footer</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                            <span class="n">properties_table_columns</span><span class="o">=</span><span class="p">[</span>
-                                <span class="s2">&quot;property&quot;</span><span class="p">,</span>
-                                <span class="s2">&quot;type&quot;</span><span class="p">,</span>
-                                <span class="s2">&quot;required&quot;</span><span class="p">,</span>
-                                <span class="s2">&quot;default&quot;</span><span class="p">,</span>
-                                <span class="s2">&quot;title/description&quot;</span><span class="p">,</span>
-                            <span class="p">],</span>
-                        <span class="p">),</span>
-                    <span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span>
+                <span class="n">Path</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;schema_doc.md&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span>
+            <span class="p">)</span> <span class="k">as</span> <span class="n">doc_file</span><span class="p">,</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">redirect_stdout</span><span class="p">(</span><span class="kc">None</span><span class="p">):</span>
+                <span class="n">generate_from_file_object</span><span class="p">(</span>
+                    <span class="n">schema_file</span><span class="o">=</span><span class="n">schema_file</span><span class="p">,</span>
+                    <span class="n">result_file</span><span class="o">=</span><span class="n">doc_file</span><span class="p">,</span>
+                    <span class="n">config</span><span class="o">=</span><span class="n">GenerationConfiguration</span><span class="p">(</span>
+                        <span class="n">template_name</span><span class="o">=</span><span class="s2">&quot;md&quot;</span><span class="p">,</span>
+                        <span class="n">show_toc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                        <span class="n">template_md_options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;show_heading_numbers&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+                        <span class="n">with_footer</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                        <span class="n">properties_table_columns</span><span class="o">=</span><span class="p">[</span>
+                            <span class="s2">&quot;property&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;type&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;required&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;default&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;title/description&quot;</span><span class="p">,</span>
+                        <span class="p">],</span>
+                    <span class="p">),</span>
+                <span class="p">)</span>
 
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;schema_doc.md&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">doc_file</span><span class="p">:</span>
                 <span class="n">schema_doc</span> <span class="o">=</span> <span class="n">doc_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
@@ -960,8 +962,8 @@
         <span class="n">json_schema</span><span class="p">[</span><span class="s2">&quot;properties&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">config_include_search_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">config_include_search_dir</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
     <span class="n">config_include_sections</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">section_name</span><span class="p">,</span> <span class="n">include_path</span> <span class="ow">in</span> <span class="n">config_include_defs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="n">include_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">include_path</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">section_name</span><span class="p">,</span> <span class="n">include_path_</span> <span class="ow">in</span> <span class="n">config_include_defs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">include_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">include_path_</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">include_path</span><span class="o">.</span><span class="n">is_absolute</span><span class="p">():</span>
             <span class="n">include_path</span> <span class="o">=</span> <span class="n">config_include_search_dir</span> <span class="o">/</span> <span class="n">include_path</span>
         <span class="n">included_config_section</span> <span class="o">=</span> <span class="n">_read_raw_config_file</span><span class="p">(</span><span class="n">include_path</span><span class="p">)</span>
@@ -1039,7 +1041,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2023-11-23T20:59:31Z.
+      <span class="lastupdated">Last updated on 2023-11-26T06:21:33Z.
       </span></p>
   </div>
 

@@ -666,6 +666,7 @@
              
   <h1>Source code for deode.toolbox</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Toolbox handling e.g. input/output.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">contextlib</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
 
@@ -818,12 +819,7 @@
 <span class="sd">            dict: Macros to define.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">macro_list</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">macros</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;platform&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">macro</span> <span class="ow">in</span> <span class="n">macros</span><span class="p">:</span>
-            <span class="n">macro_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">macro</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Platform macro list: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">macro_list</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">macro_list</span></div>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;platform&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
 
 
 <div class="viewcode-block" id="Platform.get_system_macros">
@@ -835,12 +831,7 @@
 <span class="sd">            dict: Macros to define.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">macro_list</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">macros</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;system&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">macro</span> <span class="ow">in</span> <span class="n">macros</span><span class="p">:</span>
-            <span class="n">macro_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">macro</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;System macro list: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">macro_list</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">macro_list</span></div>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;system&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
 
 
 <div class="viewcode-block" id="Platform.get_os_macros">
@@ -887,14 +878,17 @@
         <span class="c1"># TODO handle platform differently archive etc</span>
         <span class="k">if</span> <span class="n">provider_id</span> <span class="o">==</span> <span class="s2">&quot;symlink&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">LocalFileSystemSymlink</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="n">fetch</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">provider_id</span> <span class="o">==</span> <span class="s2">&quot;copy&quot;</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="n">provider_id</span> <span class="o">==</span> <span class="s2">&quot;copy&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">LocalFileSystemCopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="n">fetch</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">provider_id</span> <span class="o">==</span> <span class="s2">&quot;move&quot;</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="n">provider_id</span> <span class="o">==</span> <span class="s2">&quot;move&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">LocalFileSystemMove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="n">fetch</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">provider_id</span> <span class="o">==</span> <span class="s2">&quot;ecfs&quot;</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="n">provider_id</span> <span class="o">==</span> <span class="s2">&quot;ecfs&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">ECFS</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="n">fetch</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Provider for </span><span class="si">{</span><span class="n">provider_id</span><span class="si">}</span><span class="s2"> not implemented&quot;</span><span class="p">)</span></div>
+
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Provider for </span><span class="si">{</span><span class="n">provider_id</span><span class="si">}</span><span class="s2"> not implemented&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Platform.sub_value">
@@ -949,10 +943,8 @@
                     <span class="n">all_macros</span><span class="p">[</span><span class="n">macro</span><span class="o">.</span><span class="n">upper</span><span class="p">()]</span> <span class="o">=</span> <span class="n">val</span>
 
             <span class="k">for</span> <span class="n">macro</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_os_macros</span><span class="p">()):</span>
-                <span class="k">try</span><span class="p">:</span>
+                <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">KeyError</span><span class="p">):</span>
                     <span class="n">all_macros</span><span class="p">[</span><span class="n">macro</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="n">macro</span><span class="p">]</span>
-                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                    <span class="k">pass</span>
 
             <span class="k">for</span> <span class="n">macro</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;macros.gen_macros&quot;</span><span class="p">]:</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">macro</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
@@ -970,13 +962,11 @@
                 <span class="n">sub_patterns</span> <span class="o">=</span> <span class="p">[</span><span class="n">pattern</span><span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:</span> <span class="n">i</span><span class="p">[</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="mi">2</span><span class="p">)]</span>
                 <span class="n">last_pattern</span> <span class="o">=</span> <span class="n">pattern</span>
                 <span class="k">for</span> <span class="n">sub_pattern</span> <span class="ow">in</span> <span class="n">sub_patterns</span><span class="p">:</span>
-                    <span class="k">try</span><span class="p">:</span>
+                    <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">KeyError</span><span class="p">):</span>
                         <span class="n">val</span> <span class="o">=</span> <span class="n">all_macros</span><span class="p">[</span><span class="n">sub_pattern</span><span class="o">.</span><span class="n">upper</span><span class="p">()]</span>
                         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;before replace macro=</span><span class="si">{}</span><span class="s2"> pattern=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">macro</span><span class="p">,</span> <span class="n">pattern</span><span class="p">)</span>
                         <span class="n">pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_value</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">sub_pattern</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
                         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;after replace macro=</span><span class="si">{}</span><span class="s2"> pattern=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">macro</span><span class="p">,</span> <span class="n">pattern</span><span class="p">)</span>
-                    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                        <span class="k">pass</span>
 
                 <span class="n">i</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">start</span><span class="p">()</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;@&quot;</span><span class="p">,</span> <span class="n">pattern</span><span class="p">)]</span>
 
@@ -1121,16 +1111,16 @@
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dest_file</span><span class="p">):</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Destination file already exists.&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="n">destination</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Checking provider_id </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">provider_id</span><span class="p">)</span>
-            <span class="n">sub_target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
-                <span class="n">target</span><span class="p">,</span> <span class="n">basetime</span><span class="o">=</span><span class="n">basetime</span><span class="p">,</span> <span class="n">validtime</span><span class="o">=</span><span class="n">validtime</span>
-            <span class="p">)</span>
-            <span class="n">provider</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_provider</span><span class="p">(</span><span class="n">provider_id</span><span class="p">,</span> <span class="n">sub_target</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">provider</span><span class="o">.</span><span class="n">create_resource</span><span class="p">(</span><span class="n">destination</span><span class="p">):</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Using provider_id </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">provider_id</span><span class="p">)</span>
-                <span class="k">return</span> <span class="n">provider</span><span class="p">,</span> <span class="n">destination</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Checking provider_id </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">provider_id</span><span class="p">)</span>
+        <span class="n">sub_target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
+            <span class="n">target</span><span class="p">,</span> <span class="n">basetime</span><span class="o">=</span><span class="n">basetime</span><span class="p">,</span> <span class="n">validtime</span><span class="o">=</span><span class="n">validtime</span>
+        <span class="p">)</span>
+        <span class="n">provider</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_provider</span><span class="p">(</span><span class="n">provider_id</span><span class="p">,</span> <span class="n">sub_target</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">provider</span><span class="o">.</span><span class="n">create_resource</span><span class="p">(</span><span class="n">destination</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Using provider_id </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">provider_id</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">provider</span><span class="p">,</span> <span class="n">destination</span>
 
         <span class="c1"># Try archive</span>
         <span class="c1"># TODO check for archive</span>
@@ -1150,8 +1140,8 @@
                 <span class="k">if</span> <span class="n">provider</span><span class="o">.</span><span class="n">create_resource</span><span class="p">(</span><span class="n">destination</span><span class="p">):</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Using provider_id </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">provider_id</span><span class="p">)</span>
                     <span class="k">return</span> <span class="n">provider</span><span class="p">,</span> <span class="n">destination</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Could not archive </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">destination</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
+
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Could not archive </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">destination</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
         <span class="c1"># Else raise exception</span>
         <span class="k">raise</span> <span class="n">ProviderError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;No provider found for </span><span class="si">{</span><span class="n">sub_target</span><span class="si">}</span><span class="s2"> and provider_id </span><span class="si">{</span><span class="n">provider_id</span><span class="si">}</span><span class="s2">&quot;</span>
@@ -1331,9 +1321,8 @@
                     <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">settings</span><span class="p">:</span>
                         <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="n">settings</span><span class="p">[</span><span class="n">key</span><span class="p">]})</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;kwargs=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">ftype</span> <span class="o">==</span> <span class="s2">&quot;input&quot;</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">destination</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="n">ftype</span> <span class="o">==</span> <span class="s2">&quot;output&quot;</span><span class="p">:</span>
+
+                <span class="k">if</span> <span class="n">ftype</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;input&quot;</span><span class="p">,</span> <span class="s2">&quot;output&quot;</span><span class="p">]:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">destination</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -1376,17 +1365,17 @@
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;ln -sf </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ln -sf </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># noqa S605</span>
                 <span class="k">return</span> <span class="kc">True</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;File is missing </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
-                <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">):</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;ln -sf </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ln -sf </span><span class="si">{</span><span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># noqa S605</span>
-                <span class="k">return</span> <span class="kc">True</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;File is missing </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
-                <span class="k">return</span> <span class="kc">False</span></div>
+
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;File is missing </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;ln -sf </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ln -sf </span><span class="si">{</span><span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># noqa S605</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;File is missing </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
 </div>
 
 
@@ -1424,17 +1413,17 @@
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;cp </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cp </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># noqa S605</span>
                 <span class="k">return</span> <span class="kc">True</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;File is missing </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
-                <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">):</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;cp </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cp </span><span class="si">{</span><span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># noqa S605</span>
-                <span class="k">return</span> <span class="kc">True</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;File is missing </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
-                <span class="k">return</span> <span class="kc">False</span></div>
+
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;File is missing </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;cp </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cp </span><span class="si">{</span><span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># noqa S605</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;File is missing </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
 </div>
 
 
@@ -1472,17 +1461,17 @@
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;mv </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;mv </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># noqa S605</span>
                 <span class="k">return</span> <span class="kc">True</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;File is missing </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
-                <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">):</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;mv </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;mv </span><span class="si">{</span><span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># noqa S605</span>
-                <span class="k">return</span> <span class="kc">True</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;File is missing </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
-                <span class="k">return</span> <span class="kc">False</span></div>
+
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;File is missing </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;mv </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;mv </span><span class="si">{</span><span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># noqa S605</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;File is missing </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
 </div>
 
 
@@ -1611,7 +1600,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2023-11-23T20:59:31Z.
+      <span class="lastupdated">Last updated on 2023-11-26T06:21:33Z.
       </span></p>
   </div>
 

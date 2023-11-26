@@ -666,6 +666,7 @@
              
   <h1>Source code for deode.os_utils</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Utilities for simple tasks on OS level.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">contextlib</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
@@ -702,18 +703,25 @@
 <span class="sd">            directory (str): Directory to search in.</span>
 <span class="sd">            prefix (str, optional): Only find files with this prefix. Defaults to &quot;&quot;.</span>
 <span class="sd">            postfix (str, optional): Only find files with the postfix. Defaults to &quot;&quot;.</span>
-<span class="sd">            pattern (str, optional): Only find files with matching pattern. Defaults to &quot;&quot;.</span>
-<span class="sd">            recursive (bool, optional): Go into directories recursively. Defaults to True.</span>
+<span class="sd">            pattern (str, optional): Only find files with matching pattern.</span>
+<span class="sd">                Defaults to &quot;&quot;.</span>
+<span class="sd">            recursive (bool, optional): Go into directories recursively.</span>
+<span class="sd">                Defaults to True.</span>
 <span class="sd">            onlyfiles (bool, optional): Show only files. Defaults to True.</span>
-<span class="sd">            fullpath (bool, optional): Give full path. Defaults to False. If recursive=True, fullpath is given automatically.</span>
-<span class="sd">            olderthan (int, optional): Match only files older than X seconds from now. Defaults to None.</span>
+<span class="sd">            fullpath (bool, optional): Give full path. Defaults to False. If</span>
+<span class="sd">                recursive=True, fullpath is given automatically.</span>
+<span class="sd">            olderthan (int, optional): Match only files older than X seconds from now.</span>
+<span class="sd">                Defaults to None.</span>
 <span class="sd">            inorder (bool, optional): Return sorted list of filenames. Defaults to False.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            list: List containing file names that matches criterias</span>
 
 <span class="sd">        Examples:</span>
-<span class="sd">            &gt;&gt;&gt; files = find_files(&#39;/foo/&#39;, prefix=&quot;&quot;, postfix=&quot;&quot;, recursive=False, onlyfiles=True, fullpath=True, olderthan=86400*100)</span>
+<span class="sd">            &gt;&gt;&gt; files = find_files(</span>
+<span class="sd">                            &#39;/foo/&#39;, prefix=&quot;&quot;, postfix=&quot;&quot;, recursive=False,</span>
+<span class="sd">                            onlyfiles=True, fullpath=True, olderthan=86400*100</span>
+<span class="sd">                        )</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">recursive</span><span class="p">:</span>
             <span class="n">fullpath</span> <span class="o">=</span> <span class="kc">False</span>
@@ -721,7 +729,7 @@
             <span class="k">for</span> <span class="n">r</span><span class="p">,</span> <span class="n">_d</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>  <span class="c1"># r=root, d=directories, f=files</span>
                 <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span> <span class="ow">and</span> <span class="n">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">postfix</span><span class="p">):</span>
-                        <span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">file</span><span class="p">))</span>
+                        <span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">file</span><span class="p">))</span>  <span class="c1"># noqa: PERF401</span>
 
         <span class="k">elif</span> <span class="ow">not</span> <span class="n">recursive</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">onlyfiles</span><span class="p">:</span>
@@ -750,17 +758,14 @@
             <span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
             <span class="n">tfiles</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
-                <span class="k">try</span><span class="p">:</span>
+                <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">FileNotFoundError</span><span class="p">):</span>
                     <span class="k">if</span> <span class="ow">not</span> <span class="n">fullpath</span><span class="p">:</span>
                         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getmtime</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">f</span><span class="p">))</span> <span class="o">&lt;</span> <span class="p">(</span>
                             <span class="n">now</span> <span class="o">-</span> <span class="n">olderthan</span>
                         <span class="p">):</span>
                             <span class="n">tfiles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getmtime</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">now</span> <span class="o">-</span> <span class="n">olderthan</span><span class="p">):</span>
-                            <span class="n">tfiles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-                <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
-                    <span class="k">continue</span>
+                    <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getmtime</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">now</span> <span class="o">-</span> <span class="n">olderthan</span><span class="p">):</span>
+                        <span class="n">tfiles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
             <span class="n">files</span> <span class="o">=</span> <span class="n">tfiles</span>
 
@@ -794,8 +799,8 @@
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">paths</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">)):</span>
         <span class="n">paths</span> <span class="o">=</span> <span class="p">[</span><span class="n">paths</span><span class="p">]</span>
 
-    <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">:</span>
-        <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">path_</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">:</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path_</span><span class="p">)</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
             <span class="k">for</span> <span class="n">subpath</span> <span class="ow">in</span> <span class="n">path</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="n">filename_pattern</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">subpath</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
@@ -816,9 +821,9 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        path (str): directory path that should be created if it doesn&#39;t already exist.</span>
-<span class="sd">        unixgroup (str, optional): unix group the newly created directories should belong to.</span>
-<span class="sd">        exist_ok (boolean, optional): Define whether directories may already exist or whether</span>
-<span class="sd">            an error should be raised.</span>
+<span class="sd">        unixgroup (str, optional): unix group the newly created dirs should belong to.</span>
+<span class="sd">        exist_ok (boolean, optional): Define whether directories may already exist</span>
+<span class="sd">            or whether an error should be raised.</span>
 
 <span class="sd">    Raises:</span>
 <span class="sd">        OSError: If cannot create the directory.</span>
@@ -862,7 +867,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2023-11-23T20:59:31Z.
+      <span class="lastupdated">Last updated on 2023-11-26T06:21:33Z.
       </span></p>
   </div>
 
