@@ -470,6 +470,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-boundaries-bdcycle">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">bdcycle</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-boundaries-bdtasks-per-batch">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">bdtasks_per_batch</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-boundaries-bdmodel">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">bdmodel</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-boundaries-humi-gp">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">humi_gp</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-boundaries-ifs-selection">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">ifs.selection</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-boundaries-ifs-bdmember">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">ifs.bdmember</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-boundaries-bd-has-surfex">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">bd_has_surfex</span></code></a></li>
@@ -738,6 +739,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">surfex</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.surfex&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">suite_name</span> <span class="o">=</span> <span class="n">suite_name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.mode&quot;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">creategrib</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="s2">&quot;task.creategrib&quot;</span> <span class="ow">in</span> <span class="n">config</span><span class="p">)</span>
 
         <span class="n">name</span> <span class="o">=</span> <span class="n">suite_name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">joboutdir</span> <span class="o">=</span> <span class="n">joboutdir</span>
@@ -1116,17 +1119,19 @@
                 <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="p">)</span>
 
-            <span class="n">creategrib_trigger</span> <span class="o">=</span> <span class="n">EcflowSuiteTriggers</span><span class="p">([</span><span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">forecast_task</span><span class="p">)])</span>
-
-            <span class="n">EcflowSuiteTask</span><span class="p">(</span>
-                <span class="s2">&quot;CreateGrib&quot;</span><span class="p">,</span>
-                <span class="n">forecasting</span><span class="p">,</span>
-                <span class="n">config</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">task_settings</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
-                <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
-                <span class="n">trigger</span><span class="o">=</span><span class="n">creategrib_trigger</span><span class="p">,</span>
-            <span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">creategrib</span><span class="p">:</span>
+                <span class="n">creategrib_trigger</span> <span class="o">=</span> <span class="n">EcflowSuiteTriggers</span><span class="p">(</span>
+                    <span class="p">[</span><span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">forecast_task</span><span class="p">)]</span>
+                <span class="p">)</span>
+                <span class="n">EcflowSuiteTask</span><span class="p">(</span>
+                    <span class="s2">&quot;CreateGrib&quot;</span><span class="p">,</span>
+                    <span class="n">forecasting</span><span class="p">,</span>
+                    <span class="n">config</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">task_settings</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
+                    <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
+                    <span class="n">trigger</span><span class="o">=</span><span class="n">creategrib_trigger</span><span class="p">,</span>
+                <span class="p">)</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_extractsqlite</span><span class="p">:</span>
                 <span class="n">extractsqlite_trigger</span> <span class="o">=</span> <span class="n">EcflowSuiteTriggers</span><span class="p">(</span>
@@ -1699,7 +1704,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2023-12-01T10:03:56Z.
+      <span class="lastupdated">Last updated on 2023-12-05T14:30:52Z.
       </span></p>
   </div>
 

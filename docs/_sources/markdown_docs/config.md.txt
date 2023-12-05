@@ -1,4 +1,4 @@
-This was automatically generated running `deode doc config` on 2023-12-01T10:03:55.
+This was automatically generated running `deode doc config` on 2023-12-05T14:30:50.
 
 # Config
 
@@ -1069,17 +1069,18 @@ Must be one of:
 
 **Description:** Settings for control of boundary treatment.
 
-| Property                                           | Type             | Required | Default         | Title/Description                                                            |
-| -------------------------------------------------- | ---------------- | -------- | --------------- | ---------------------------------------------------------------------------- |
-| [bdstrategy](#boundaries_bdstrategy)               | enum (of string) | No       | "same_forecast" | Boundary strategy                                                            |
-| [bdint](#boundaries_bdint)                         | string           | No       | -               | Boundary interval                                                            |
-| [bdshift](#boundaries_bdshift)                     | string           | No       | -               | Shift of boundary initial time. E.g. 'PT3H' would mean use 3H old boundaries |
-| [bdcycle](#boundaries_bdcycle)                     | string           | No       | -               | Boundary model cycle interval                                                |
-| [bdtasks_per_batch](#boundaries_bdtasks_per_batch) | number           | No       | -               | Max number of parallel boundary interpolation tasks                          |
-| [bdmodel](#boundaries_bdmodel)                     | enum (of string) | No       | -               | Coupling model                                                               |
-| [ifs.selection](#boundaries_ifsselection)          | enum (of string) | No       | -               | Selection                                                                    |
-| [ifs.bdmember](#boundaries_ifsbdmember)            | string           | No       | -               | The number of member in ensamble if selection is IFSENS, else empty string.  |
-| [bd_has_surfex](#boundaries_bd_has_surfex)         | boolean          | No       | -               | Set to true if the host model runs with surfex                               |
+| Property                                           | Type             | Required | Default         | Title/Description                                                             |
+| -------------------------------------------------- | ---------------- | -------- | --------------- | ----------------------------------------------------------------------------- |
+| [bdstrategy](#boundaries_bdstrategy)               | enum (of string) | No       | "same_forecast" | Boundary strategy                                                             |
+| [bdint](#boundaries_bdint)                         | string           | No       | -               | Boundary interval                                                             |
+| [bdshift](#boundaries_bdshift)                     | string           | No       | -               | Shift of boundary initial time. E.g. 'PT3H' would mean use 3H old boundaries  |
+| [bdcycle](#boundaries_bdcycle)                     | string           | No       | -               | Boundary model cycle interval                                                 |
+| [bdtasks_per_batch](#boundaries_bdtasks_per_batch) | number           | No       | -               | Max number of parallel boundary interpolation tasks                           |
+| [bdmodel](#boundaries_bdmodel)                     | enum (of string) | No       | -               | Coupling model                                                                |
+| [humi_gp](#boundaries_humi_gp)                     | boolean          | No       | -               | Value of TFP_Q%LLGP in domain namelist for c903. True for gridpoint humidity. |
+| [ifs.selection](#boundaries_ifsselection)          | enum (of string) | No       | -               | Selection                                                                     |
+| [ifs.bdmember](#boundaries_ifsbdmember)            | string           | No       | -               | The number of member in ensamble if selection is IFSENS, else empty string.   |
+| [bd_has_surfex](#boundaries_bd_has_surfex)         | boolean          | No       | -               | Set to true if the host model runs with surfex                                |
 
 <a name="boundaries_bdstrategy"></a>
 ### Property `Config > boundaries > bdstrategy`
@@ -1158,8 +1159,19 @@ Must be one of:
 **Description:** Coupling model
 
 Must be one of:
-* "arome"
-* "ifs"
+* "ALARO"
+* "AROME"
+* "IFS"
+
+<a name="boundaries_humi_gp"></a>
+### Property `Config > boundaries > humi_gp`
+
+|              |           |
+| ------------ | --------- |
+| **Type**     | `boolean` |
+| **Required** | No        |
+
+**Description:** Value of TFP_Q%LLGP in domain namelist for c903. True for gridpoint humidity.
 
 <a name="boundaries_ifsselection"></a>
 ### Property `Config > boundaries > ifs.selection`

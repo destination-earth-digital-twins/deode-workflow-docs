@@ -471,6 +471,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-boundaries-bdcycle">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">bdcycle</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-boundaries-bdtasks-per-batch">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">bdtasks_per_batch</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-boundaries-bdmodel">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">bdmodel</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-boundaries-humi-gp">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">humi_gp</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-boundaries-ifs-selection">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">ifs.selection</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-boundaries-ifs-bdmember">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">ifs.bdmember</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-boundaries-bd-has-surfex">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">bd_has_surfex</span></code></a></li>
@@ -662,7 +663,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <p>This was automatically generated running <code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">doc</span> <span class="pre">config</span></code> on 2023-12-01T10:03:55.</p>
+  <p>This was automatically generated running <code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">doc</span> <span class="pre">config</span></code> on 2023-12-05T14:30:50.</p>
 <section id="config">
 <h1>Config<a class="headerlink" href="#config" title="Link to this heading"></a></h1>
 <p><strong>Title:</strong> Config</p>
@@ -3319,19 +3320,25 @@
 <td><p>-</p></td>
 <td><p>Coupling model</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#boundaries_ifsselection"><span class="xref myst">ifs.selection</span></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#boundaries_humi_gp"><span class="xref myst">humi_gp</span></a></p></td>
+<td><p>boolean</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>Value of TFP_Q%LLGP in domain namelist for c903. True for gridpoint humidity.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#boundaries_ifsselection"><span class="xref myst">ifs.selection</span></a></p></td>
 <td><p>enum (of string)</p></td>
 <td><p>No</p></td>
 <td><p>-</p></td>
 <td><p>Selection</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#boundaries_ifsbdmember"><span class="xref myst">ifs.bdmember</span></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#boundaries_ifsbdmember"><span class="xref myst">ifs.bdmember</span></a></p></td>
 <td><p>string</p></td>
 <td><p>No</p></td>
 <td><p>-</p></td>
 <td><p>The number of member in ensamble if selection is IFSENS, else empty string.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#boundaries_bd_has_surfex"><span class="xref myst">bd_has_surfex</span></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#boundaries_bd_has_surfex"><span class="xref myst">bd_has_surfex</span></a></p></td>
 <td><p>boolean</p></td>
 <td><p>No</p></td>
 <td><p>-</p></td>
@@ -3503,9 +3510,30 @@
 <p><strong>Description:</strong> Coupling model</p>
 <p>Must be one of:</p>
 <ul class="simple">
-<li><p>“arome”</p></li>
-<li><p>“ifs”</p></li>
+<li><p>“ALARO”</p></li>
+<li><p>“AROME”</p></li>
+<li><p>“IFS”</p></li>
 </ul>
+<p><a name="boundaries_humi_gp"></a></p>
+</section>
+<section id="property-config-boundaries-humi-gp">
+<h3>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">humi_gp</span></code><a class="headerlink" href="#property-config-boundaries-humi-gp" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> Value of TFP_Q%LLGP in domain namelist for c903. True for gridpoint humidity.</p>
 <p><a name="boundaries_ifsselection"></a></p>
 </section>
 <section id="property-config-boundaries-ifs-selection">
@@ -9848,7 +9876,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2023-12-01T10:03:56Z.
+      <span class="lastupdated">Last updated on 2023-12-05T14:30:52Z.
       </span></p>
   </div>
 
