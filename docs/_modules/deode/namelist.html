@@ -258,6 +258,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.namelist.NamelistGenerator"><code class="docutils literal notranslate"><span class="pre">NamelistGenerator</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.namelist.NamelistGenerator.assemble_namelist"><code class="docutils literal notranslate"><span class="pre">NamelistGenerator.assemble_namelist()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.namelist.NamelistGenerator.check_replace_scalar"><code class="docutils literal notranslate"><span class="pre">NamelistGenerator.check_replace_scalar()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.namelist.NamelistGenerator.expand_cndict"><code class="docutils literal notranslate"><span class="pre">NamelistGenerator.expand_cndict()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.namelist.NamelistGenerator.generate_namelist"><code class="docutils literal notranslate"><span class="pre">NamelistGenerator.generate_namelist()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.namelist.NamelistGenerator.load"><code class="docutils literal notranslate"><span class="pre">NamelistGenerator.load()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.namelist.NamelistGenerator.load_user_namelist"><code class="docutils literal notranslate"><span class="pre">NamelistGenerator.load_user_namelist()</span></code></a></li>
@@ -1016,8 +1017,9 @@
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">ref_namelist</span><span class="p">):</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Use reference namelist </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ref_namelist</span><span class="p">)</span>
             <span class="n">nl</span> <span class="o">=</span> <span class="n">f90nml</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">ref_namelist</span><span class="p">)</span>
-            <span class="n">nldict</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">:</span> <span class="n">nl</span><span class="o">.</span><span class="n">todict</span><span class="p">()}</span>
-            <span class="n">cndict</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">]}</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="s2">&quot;user_namelist&quot;</span>
+            <span class="n">nldict</span> <span class="o">=</span> <span class="p">{</span><span class="n">target</span><span class="p">:</span> <span class="n">nl</span><span class="o">.</span><span class="n">todict</span><span class="p">()}</span>
+            <span class="n">cndict</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">:</span> <span class="p">[</span><span class="n">target</span><span class="p">]}</span>
             <span class="n">found</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
@@ -1154,6 +1156,39 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_replace_scalar</span><span class="p">(</span><span class="n">node</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="NamelistGenerator.expand_cndict">
+<a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistGenerator.expand_cndict">[docs]</a>
+    <span class="k">def</span> <span class="nf">expand_cndict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Recursively generates list of namelist groups to assemble.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            target (str): task to generate namelists for</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError:</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            cnlist (list): list of namelist groups</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cndt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cndict_targets</span>
+        <span class="k">if</span> <span class="n">target</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cndict_targets</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Target </span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2"> already in cnlist causing endless loop:</span><span class="si">{</span><span class="n">cndt</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cndict_targets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+
+        <span class="n">cnlist</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">flatten_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cndict</span><span class="p">[</span><span class="n">target</span><span class="p">])]</span>
+        <span class="n">cnlist_</span> <span class="o">=</span> <span class="n">cnlist</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">cnlist_</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cndict</span><span class="p">:</span>
+                <span class="n">i</span> <span class="o">=</span> <span class="n">cnlist</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                <span class="n">cnlist</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">expand_cndict</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="n">cnlist</span> <span class="o">=</span> <span class="n">flatten_list</span><span class="p">(</span><span class="n">cnlist</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cnlist</span></div>
+
+
 <div class="viewcode-block" id="NamelistGenerator.assemble_namelist">
 <a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistGenerator.assemble_namelist">[docs]</a>
     <span class="k">def</span> <span class="nf">assemble_namelist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
@@ -1168,12 +1203,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Start with empty result dictionary</span>
         <span class="n">nlres</span> <span class="o">=</span> <span class="p">{}</span>
-
         <span class="n">nldict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nldict</span>
+
         <span class="c1"># Assemble the target namelists based on the given category order</span>
-        <span class="n">cnlist</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">flatten_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cndict</span><span class="p">[</span><span class="n">target</span><span class="p">])]</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;cnlist:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">cnlist</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">catg</span> <span class="ow">in</span> <span class="n">cnlist</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cndict_targets</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">catg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">expand_cndict</span><span class="p">(</span><span class="n">target</span><span class="p">):</span>
             <span class="c1"># variable substitution removed at this level (may be resurrected)</span>
             <span class="c1"># assemble namelists for this category</span>
             <span class="k">if</span> <span class="n">catg</span> <span class="ow">in</span> <span class="n">nldict</span><span class="p">:</span>
@@ -1343,7 +1377,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2023-12-06T12:45:24Z.
+      <span class="lastupdated">Last updated on 2023-12-07T12:54:43Z.
       </span></p>
   </div>
 
