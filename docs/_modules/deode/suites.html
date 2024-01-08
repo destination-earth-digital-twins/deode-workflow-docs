@@ -61,7 +61,8 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../readme_link.html#examples">Examples</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../readme_link.html#running-an-ecflow-suite-from-server-ecflow-gen-user-001-on-atos">Running an <code class="docutils literal notranslate"><span class="pre">ecflow</span></code> suite from server <code class="docutils literal notranslate"><span class="pre">ecflow-gen-${USER}-001</span></code> on atos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../readme_link.html#running-ecflow-suite-on-atos">Running ecflow suite on ATOS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../readme_link.html#running-ecflow-suite-on-lumi">Running ecflow suite on LUMI</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../readme_link.html#running-the-forecast-task-from-the-hpc-login-s-command-line">Running the <code class="docutils literal notranslate"><span class="pre">&quot;forecast&quot;</span></code> task from the <code class="docutils literal notranslate"><span class="pre">hpc-login</span></code>’s command line</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../readme_link.html#running-a-stand-alone-task-with-an-example-config-file-on-lumi">Running a stand-alone task with an example config file on LUMI</a></li>
 </ul>
@@ -604,6 +605,15 @@
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-platform-unix-group">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">platform</span> <span class="pre">&gt;</span> <span class="pre">unix_group</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-scheduler">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-scheduler-ecf-host">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span> <span class="pre">&gt;</span> <span class="pre">ecf_host</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-scheduler-ecf-port">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span> <span class="pre">&gt;</span> <span class="pre">ecf_port</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-scheduler-ecf-jobout">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span> <span class="pre">&gt;</span> <span class="pre">ecf_jobout</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-scheduler-ecf-files">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span> <span class="pre">&gt;</span> <span class="pre">ecf_files</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-scheduler-ecf-files-remotely">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span> <span class="pre">&gt;</span> <span class="pre">ecf_files_remotely</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-scheduler-ecf-home">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span> <span class="pre">&gt;</span> <span class="pre">ecf_home</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-submission">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">submission</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-submission-bindir">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">submission</span> <span class="pre">&gt;</span> <span class="pre">bindir</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-submission-nproma">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">submission</span> <span class="pre">&gt;</span> <span class="pre">nproma</span></code></a></li>
@@ -718,11 +728,10 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">suite_name</span><span class="p">,</span>
-        <span class="n">joboutdir</span><span class="p">,</span>
-        <span class="n">ecf_files</span><span class="p">,</span>
         <span class="n">config</span><span class="p">,</span>
         <span class="n">task_settings</span><span class="p">,</span>
         <span class="n">ecf_home</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">ecf_include</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">ecf_out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">ecf_jobout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -739,6 +748,7 @@
 <span class="sd">            task_settings (TaskSettings): Submission configuration</span>
 <span class="sd">            config (deode.ParsedConfig): Configuration file</span>
 <span class="sd">            ecf_home (str, optional): ECF_HOME. Defaults to None.</span>
+<span class="sd">            ecf_files_remotely(str, optional): ECF_FILES on ecflow server</span>
 <span class="sd">            ecf_include (str, optional): ECF_INCLUDE.</span>
 <span class="sd">                                         Defaults to None which uses ecf_files.</span>
 <span class="sd">            ecf_out (str, optional): ECF_OUT. Defaults to None.</span>
@@ -752,6 +762,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">ecflow</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">dry_run</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ModuleNotFoundError</span><span class="p">(</span><span class="s2">&quot;Ecflow not found&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">platform</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">create_static_data</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.create_static_data&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">do_soil</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.do_soil&quot;</span><span class="p">]</span>
@@ -768,6 +781,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">surfex</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.surfex&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">suite_name</span> <span class="o">=</span> <span class="n">suite_name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.mode&quot;</span><span class="p">]</span>
+
+        <span class="n">ecf_files</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;scheduler.ecfvars.ecf_files&quot;</span><span class="p">]</span>
+        <span class="n">joboutdir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;scheduler.ecfvars.ecf_jobout&quot;</span><span class="p">]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">creategrib</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="s2">&quot;task.creategrib&quot;</span> <span class="ow">in</span> <span class="n">config</span><span class="p">)</span>
 
@@ -790,7 +806,9 @@
                 <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;/</span><span class="si">{</span><span class="n">ecf_micro</span><span class="si">}</span><span class="s2">ECF_NAME</span><span class="si">{</span><span class="n">ecf_micro</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">ecf_micro</span><span class="si">}</span><span class="s2">ECF_TRYNO</span><span class="si">{</span><span class="n">ecf_micro</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ecf_jobout</span> <span class="o">=</span> <span class="n">ecf_jobout</span>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span> <span class="o">=</span> <span class="n">ecf_files_remotely</span>
+        <span class="k">if</span> <span class="n">ecf_files_remotely</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">task_settings</span> <span class="o">=</span> <span class="n">task_settings</span>
 
         <span class="c1"># Commands started from the scheduler does not have full environment</span>
@@ -818,7 +836,7 @@
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ecf_kill_cmd</span> <span class="o">=</span> <span class="n">ecf_kill_cmd</span>
 
-        <span class="n">troika</span> <span class="o">=</span> <span class="s2">&quot;/opt/troika/bin/troika&quot;</span>
+        <span class="n">troika</span> <span class="o">=</span> <span class="s2">&quot;troika&quot;</span>
 
         <span class="n">platform</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
         <span class="n">troika_config</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;troika.config_file&quot;</span><span class="p">)</span>
@@ -833,7 +851,7 @@
         <span class="n">loglevel</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;general.loglevel&quot;</span><span class="p">,</span> <span class="n">LogDefaults</span><span class="o">.</span><span class="n">LEVEL</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
         <span class="n">variables</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;ECF_EXTN&quot;</span><span class="p">:</span> <span class="s2">&quot;.py&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;ECF_FILES&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
+            <span class="s2">&quot;ECF_FILES&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
             <span class="s2">&quot;ECF_INCLUDE&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_include</span><span class="p">,</span>
             <span class="s2">&quot;ECF_TRIES&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
             <span class="s2">&quot;ECF_HOME&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_home</span><span class="p">,</span>
@@ -860,7 +878,13 @@
 
         <span class="n">input_template</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;templates/ecflow/default.py&quot;</span>
         <span class="n">input_template</span> <span class="o">=</span> <span class="n">input_template</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">suite</span> <span class="o">=</span> <span class="n">EcflowSuite</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">ecf_files</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="n">variables</span><span class="p">,</span> <span class="n">dry_run</span><span class="o">=</span><span class="n">dry_run</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">suite</span> <span class="o">=</span> <span class="n">EcflowSuite</span><span class="p">(</span>
+            <span class="n">name</span><span class="p">,</span>
+            <span class="n">ecf_files</span><span class="p">,</span>
+            <span class="n">variables</span><span class="o">=</span><span class="n">variables</span><span class="p">,</span>
+            <span class="n">dry_run</span><span class="o">=</span><span class="n">dry_run</span><span class="p">,</span>
+            <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;restart&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">do_prep</span> <span class="o">=</span> <span class="kc">False</span>
@@ -887,6 +911,7 @@
                 <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
                 <span class="n">trigger</span><span class="o">=</span><span class="n">EcflowSuiteTriggers</span><span class="p">([</span><span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">static_data</span><span class="p">)]),</span>
                 <span class="n">variables</span><span class="o">=</span><span class="n">variables</span><span class="p">,</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
             <span class="p">)</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_archiving</span><span class="p">:</span>
@@ -957,7 +982,11 @@
 
             <span class="k">if</span> <span class="n">cycle_day</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">days</span><span class="p">:</span>
                 <span class="n">day_family</span> <span class="o">=</span> <span class="n">EcflowSuiteFamily</span><span class="p">(</span>
-                    <span class="n">cycle</span><span class="p">[</span><span class="s2">&quot;day&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">suite</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span> <span class="n">trigger</span><span class="o">=</span><span class="n">inputdata_trigger</span>
+                    <span class="n">cycle</span><span class="p">[</span><span class="s2">&quot;day&quot;</span><span class="p">],</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">suite</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
+                    <span class="n">trigger</span><span class="o">=</span><span class="n">inputdata_trigger</span><span class="p">,</span>
+                    <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
                 <span class="p">)</span>
                 <span class="n">days</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cycle_day</span><span class="p">)</span>
 
@@ -971,9 +1000,14 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
                 <span class="n">trigger</span><span class="o">=</span><span class="n">inputdata_trigger</span><span class="p">,</span>
                 <span class="n">variables</span><span class="o">=</span><span class="n">time_variables</span><span class="p">,</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">inputdata</span> <span class="o">=</span> <span class="n">EcflowSuiteFamily</span><span class="p">(</span>
-                <span class="s2">&quot;InputData&quot;</span><span class="p">,</span> <span class="n">time_family</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span> <span class="n">trigger</span><span class="o">=</span><span class="n">inputdata_trigger</span>
+                <span class="s2">&quot;InputData&quot;</span><span class="p">,</span>
+                <span class="n">time_family</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">trigger</span><span class="o">=</span><span class="n">inputdata_trigger</span><span class="p">,</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">inputdata_done</span> <span class="o">=</span> <span class="n">EcflowSuiteTriggers</span><span class="p">([</span><span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">inputdata</span><span class="p">)])</span>
             <span class="n">prepare_cycle</span> <span class="o">=</span> <span class="n">EcflowSuiteTask</span><span class="p">(</span>
@@ -1000,6 +1034,7 @@
                     <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
                     <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">trigger</span><span class="o">=</span><span class="n">ready_for_marsprep</span><span class="p">,</span>
+                    <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
                 <span class="p">)</span>
 
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">surfex</span><span class="p">:</span>
@@ -1012,6 +1047,7 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
                     <span class="n">trigger</span><span class="o">=</span><span class="n">inputdata_done</span><span class="p">,</span>
                     <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
                 <span class="p">)</span>
                 <span class="n">prev_interpolation_trigger</span> <span class="o">=</span> <span class="p">[</span><span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">int_fam</span><span class="p">)]</span>
 
@@ -1023,6 +1059,7 @@
                         <span class="bp">self</span><span class="o">.</span><span class="n">task_settings</span><span class="p">,</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
                         <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
+                        <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
                     <span class="p">)</span>
 
                     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">!=</span> <span class="s2">&quot;cold_start&quot;</span><span class="p">:</span>
@@ -1048,6 +1085,7 @@
                             <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
                             <span class="n">trigger</span><span class="o">=</span><span class="n">int_trig</span><span class="p">,</span>
                             <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                            <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
                         <span class="p">)</span>
                         <span class="k">while</span> <span class="n">bdtime</span> <span class="o">&lt;=</span> <span class="n">endtime</span><span class="p">:</span>
                             <span class="n">date_string</span> <span class="o">=</span> <span class="n">bdtime</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(</span><span class="n">sep</span><span class="o">=</span><span class="s2">&quot;T&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;+00:00&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">)</span>
@@ -1059,6 +1097,7 @@
                                 <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
                                 <span class="n">trigger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                 <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
                             <span class="p">)</span>
 
                             <span class="n">interpolation_task</span> <span class="o">=</span> <span class="s2">&quot;c903&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_marsprep</span> <span class="k">else</span> <span class="s2">&quot;e927&quot;</span>
@@ -1072,6 +1111,7 @@
                                 <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
                                 <span class="n">variables</span><span class="o">=</span><span class="n">variables</span><span class="p">,</span>
                                 <span class="n">trigger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
                             <span class="p">)</span>
 
                             <span class="n">bdnr</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -1088,7 +1128,11 @@
                 <span class="n">int_trig</span> <span class="o">=</span> <span class="n">inputdata_done</span>
 
             <span class="n">cycle_fam</span> <span class="o">=</span> <span class="n">EcflowSuiteFamily</span><span class="p">(</span>
-                <span class="s2">&quot;Cycle&quot;</span><span class="p">,</span> <span class="n">time_family</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span> <span class="n">trigger</span><span class="o">=</span><span class="n">int_trig</span>
+                <span class="s2">&quot;Cycle&quot;</span><span class="p">,</span>
+                <span class="n">time_family</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">trigger</span><span class="o">=</span><span class="n">int_trig</span><span class="p">,</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">triggers</span> <span class="o">=</span> <span class="p">[</span><span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">inputdata</span><span class="p">)]</span>
             <span class="k">if</span> <span class="n">prev_cycle_trigger</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -1096,7 +1140,11 @@
             <span class="n">ready_for_cycle</span> <span class="o">=</span> <span class="n">EcflowSuiteTriggers</span><span class="p">(</span><span class="n">triggers</span><span class="p">)</span>
             <span class="n">prev_cycle_trigger</span> <span class="o">=</span> <span class="p">[</span><span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">cycle_fam</span><span class="p">)]</span>
             <span class="n">initialization</span> <span class="o">=</span> <span class="n">EcflowSuiteFamily</span><span class="p">(</span>
-                <span class="s2">&quot;Initialization&quot;</span><span class="p">,</span> <span class="n">cycle_fam</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span> <span class="n">trigger</span><span class="o">=</span><span class="n">ready_for_cycle</span>
+                <span class="s2">&quot;Initialization&quot;</span><span class="p">,</span>
+                <span class="n">cycle_fam</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">trigger</span><span class="o">=</span><span class="n">ready_for_cycle</span><span class="p">,</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
             <span class="p">)</span>
 
             <span class="n">cday</span> <span class="o">=</span> <span class="n">cycle</span><span class="p">[</span><span class="s2">&quot;day&quot;</span><span class="p">]</span>
@@ -1119,6 +1167,7 @@
                 <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
                 <span class="n">trigger</span><span class="o">=</span><span class="n">EcflowSuiteTriggers</span><span class="p">([</span><span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">cycle_fam</span><span class="p">)]),</span>
                 <span class="n">variables</span><span class="o">=</span><span class="n">variables</span><span class="p">,</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
             <span class="p">)</span>
 
             <span class="n">EcflowSuiteTask</span><span class="p">(</span>
@@ -1130,11 +1179,16 @@
                 <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
                 <span class="n">trigger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                 <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
             <span class="p">)</span>
 
             <span class="n">forecast_trigger</span> <span class="o">=</span> <span class="n">EcflowSuiteTriggers</span><span class="p">([</span><span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">initialization</span><span class="p">)])</span>
             <span class="n">forecasting</span> <span class="o">=</span> <span class="n">EcflowSuiteFamily</span><span class="p">(</span>
-                <span class="s2">&quot;Forecasting&quot;</span><span class="p">,</span> <span class="n">cycle_fam</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span> <span class="n">trigger</span><span class="o">=</span><span class="n">forecast_trigger</span>
+                <span class="s2">&quot;Forecasting&quot;</span><span class="p">,</span>
+                <span class="n">cycle_fam</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">trigger</span><span class="o">=</span><span class="n">forecast_trigger</span><span class="p">,</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">task_settings</span><span class="o">.</span><span class="n">get_task_settings</span><span class="p">(</span><span class="s2">&quot;Forecast&quot;</span><span class="p">))</span>
 
@@ -1146,6 +1200,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
                 <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
                 <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
             <span class="p">)</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">creategrib</span><span class="p">:</span>
@@ -1160,6 +1215,7 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
                     <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
                     <span class="n">trigger</span><span class="o">=</span><span class="n">creategrib_trigger</span><span class="p">,</span>
+                    <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
                 <span class="p">)</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_extractsqlite</span><span class="p">:</span>
@@ -1189,6 +1245,7 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
                     <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
                     <span class="n">trigger</span><span class="o">=</span><span class="n">archiving_hour_trigger</span><span class="p">,</span>
+                    <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
                 <span class="p">)</span></div>
 
 
@@ -1205,10 +1262,20 @@
 <span class="sd">            static_data: EcflowFamily object used for triggering</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">static_data</span> <span class="o">=</span> <span class="n">EcflowSuiteFamily</span><span class="p">(</span><span class="s2">&quot;StaticData&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">suite</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">)</span>
+        <span class="n">static_data</span> <span class="o">=</span> <span class="n">EcflowSuiteFamily</span><span class="p">(</span>
+            <span class="s2">&quot;StaticData&quot;</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">suite</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
+            <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_pgd</span><span class="p">:</span>
-            <span class="n">pgd_input</span> <span class="o">=</span> <span class="n">EcflowSuiteFamily</span><span class="p">(</span><span class="s2">&quot;PgdInput&quot;</span><span class="p">,</span> <span class="n">static_data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">)</span>
+            <span class="n">pgd_input</span> <span class="o">=</span> <span class="n">EcflowSuiteFamily</span><span class="p">(</span>
+                <span class="s2">&quot;PgdInput&quot;</span><span class="p">,</span>
+                <span class="n">static_data</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+            <span class="p">)</span>
             <span class="n">EcflowSuiteTask</span><span class="p">(</span>
                 <span class="s2">&quot;Gmted&quot;</span><span class="p">,</span>
                 <span class="n">pgd_input</span><span class="p">,</span>
@@ -1217,6 +1284,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
                 <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
                 <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
             <span class="p">)</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_soil</span><span class="p">:</span>
@@ -1241,6 +1309,7 @@
                 <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
                 <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                 <span class="n">trigger</span><span class="o">=</span><span class="n">pgd_trigger</span><span class="p">,</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">e923_constant_trigger</span> <span class="o">=</span> <span class="n">EcflowSuiteTriggers</span><span class="p">([</span><span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">pgd</span><span class="p">)])</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1255,6 +1324,7 @@
             <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
             <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">trigger</span><span class="o">=</span><span class="n">e923_constant_trigger</span><span class="p">,</span>
+            <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="n">e923_monthly_family_trigger</span> <span class="o">=</span> <span class="n">EcflowSuiteTriggers</span><span class="p">(</span>
@@ -1265,6 +1335,7 @@
             <span class="n">static_data</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
             <span class="n">trigger</span><span class="o">=</span><span class="n">e923_monthly_family_trigger</span><span class="p">,</span>
+            <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="n">seasons</span> <span class="o">=</span> <span class="p">{</span>
@@ -1290,7 +1361,12 @@
             <span class="p">}</span>
 
         <span class="k">for</span> <span class="n">season</span><span class="p">,</span> <span class="n">months</span> <span class="ow">in</span> <span class="n">seasons</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">month_family</span> <span class="o">=</span> <span class="n">EcflowSuiteFamily</span><span class="p">(</span><span class="n">season</span><span class="p">,</span> <span class="n">e923_monthly_family</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">)</span>
+            <span class="n">month_family</span> <span class="o">=</span> <span class="n">EcflowSuiteFamily</span><span class="p">(</span>
+                <span class="n">season</span><span class="p">,</span>
+                <span class="n">e923_monthly_family</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+            <span class="p">)</span>
 
             <span class="n">EcflowSuiteTask</span><span class="p">(</span>
                 <span class="s2">&quot;E923Monthly&quot;</span><span class="p">,</span>
@@ -1300,11 +1376,12 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
                 <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
                 <span class="n">variables</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;ARGS&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;months=</span><span class="si">{</span><span class="n">months</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">},</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_pgd</span><span class="p">:</span>
             <span class="n">pgd_update_trigger</span> <span class="o">=</span> <span class="n">EcflowSuiteTriggers</span><span class="p">([</span><span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">e923constant</span><span class="p">)])</span>
-            <span class="n">EcflowSuiteTask</span><span class="p">(</span>
+            <span class="n">pgd_update</span> <span class="o">=</span> <span class="n">EcflowSuiteTask</span><span class="p">(</span>
                 <span class="s2">&quot;PgdUpdate&quot;</span><span class="p">,</span>
                 <span class="n">static_data</span><span class="p">,</span>
                 <span class="n">config</span><span class="p">,</span>
@@ -1313,8 +1390,37 @@
                 <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
                 <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                 <span class="n">trigger</span><span class="o">=</span><span class="n">pgd_update_trigger</span><span class="p">,</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
             <span class="p">)</span>
 
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_archiving</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_pgd</span><span class="p">:</span>
+            <span class="n">archive_static_trigger</span> <span class="o">=</span> <span class="n">EcflowSuiteTriggers</span><span class="p">([</span><span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">pgd_update</span><span class="p">)])</span>
+            <span class="n">EcflowSuiteTask</span><span class="p">(</span>
+                <span class="s2">&quot;ArchiveStatic&quot;</span><span class="p">,</span>
+                <span class="n">static_data</span><span class="p">,</span>
+                <span class="n">config</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">task_settings</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
+                <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">trigger</span><span class="o">=</span><span class="n">archive_static_trigger</span><span class="p">,</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_archiving</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">do_pgd</span><span class="p">):</span>
+            <span class="n">archive_static_trigger</span> <span class="o">=</span> <span class="n">EcflowSuiteTriggers</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">month_family</span><span class="p">)]</span>
+            <span class="p">)</span>
+            <span class="n">EcflowSuiteTask</span><span class="p">(</span>
+                <span class="s2">&quot;ArchiveStatic&quot;</span><span class="p">,</span>
+                <span class="n">static_data</span><span class="p">,</span>
+                <span class="n">config</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">task_settings</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
+                <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">trigger</span><span class="o">=</span><span class="n">archive_static_trigger</span><span class="p">,</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+            <span class="p">)</span>
         <span class="k">return</span> <span class="n">static_data</span></div>
 
 
@@ -1348,6 +1454,7 @@
         <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">trigger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">def_status</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct the EcflowNode.</span>
 
@@ -1359,6 +1466,7 @@
 <span class="sd">            variables (dict, optional): Variables to map. Defaults to None</span>
 <span class="sd">            trigger (EcflowSuiteTriggers): Trigger. Defaults to None</span>
 <span class="sd">            def_status (str, ecflow.Defstatus): Def status. Defaults to None</span>
+<span class="sd">            ecf_files_remotely(str, optional): Remote file prefix</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            NotImplementedError: Node type not implemented</span>
@@ -1395,7 +1503,17 @@
             <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_node</span><span class="o">.</span><span class="n">get_abs_node_path</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ecf_container_path</span> <span class="o">=</span> <span class="n">ecf_files</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;path=</span><span class="si">{}</span><span class="s2"> ecf_files_remotely=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">ecf_files_remotely</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ecf_files_remotely</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ecf_files_remotely</span> <span class="o">=</span> <span class="n">ecf_files</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ecf_local_container_path</span> <span class="o">=</span> <span class="n">ecf_files</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ecf_remote_container_path</span> <span class="o">=</span> <span class="n">ecf_files_remotely</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="s2">&quot;path=</span><span class="si">{}</span><span class="s2"> local_container=</span><span class="si">{}</span><span class="s2"> remote_container=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ecf_local_container_path</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ecf_remote_container_path</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="k">if</span> <span class="n">variables</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">variables</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;key=</span><span class="si">{}</span><span class="s2"> value=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
@@ -1439,6 +1557,7 @@
         <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">trigger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">def_status</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct EcflowNodeContainer.</span>
 
@@ -1450,6 +1569,7 @@
 <span class="sd">            variables (dict, optional): Variables to map. Defaults to None</span>
 <span class="sd">            trigger (EcflowSuiteTriggers): Trigger. Defaults to None</span>
 <span class="sd">            def_status (str, ecflow.Defstatus): Def status. Defaults to None</span>
+<span class="sd">            ecf_files_remotely(str, optional): ECF_FILES on ecflow server</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">EcflowNode</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
@@ -1461,6 +1581,7 @@
             <span class="n">ecf_files</span><span class="o">=</span><span class="n">ecf_files</span><span class="p">,</span>
             <span class="n">trigger</span><span class="o">=</span><span class="n">trigger</span><span class="p">,</span>
             <span class="n">def_status</span><span class="o">=</span><span class="n">def_status</span><span class="p">,</span>
+            <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 
@@ -1470,7 +1591,15 @@
 <span class="k">class</span> <span class="nc">EcflowSuite</span><span class="p">(</span><span class="n">EcflowNodeContainer</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;EcflowSuite.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">ecf_files</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dry_run</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">def_status</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">,</span>
+        <span class="n">ecf_files</span><span class="p">,</span>
+        <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">dry_run</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">def_status</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct the Ecflow suite.</span>
 
 <span class="sd">        Args:</span>
@@ -1479,6 +1608,7 @@
 <span class="sd">            variables (dict, optional): Variables to map. Defaults to None</span>
 <span class="sd">            dry_run (bool, optional): Dry run not using ecflow. Defaults to False.</span>
 <span class="sd">            def_status (str, ecflow.Defstatus): Def status. Defaults to None</span>
+<span class="sd">            ecf_files_remotely(str, optional): ECF_FILES on ecflow server</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">dry_run</span><span class="p">:</span>
@@ -1494,6 +1624,7 @@
             <span class="n">ecf_files</span><span class="p">,</span>
             <span class="n">variables</span><span class="o">=</span><span class="n">variables</span><span class="p">,</span>
             <span class="n">def_status</span><span class="o">=</span><span class="n">def_status</span><span class="p">,</span>
+            <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
         <span class="p">)</span>
 
 <div class="viewcode-block" id="EcflowSuite.save_as_defs">
@@ -1517,18 +1648,26 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A family in ecflow.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">ecf_files</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">trigger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">def_status</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">,</span>
+        <span class="n">parent</span><span class="p">,</span>
+        <span class="n">ecf_files</span><span class="p">,</span>
+        <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">trigger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">def_status</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct the family.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            name (str): Name of the family.</span>
-<span class="sd">            parent (EcflowNodeContainer): Parent node.</span>
-<span class="sd">            ecf_files (str): Location of ecf files</span>
-<span class="sd">            variables (dict, optional): Variables to map. Defaults to None</span>
-<span class="sd">            trigger (EcflowSuiteTriggers): Trigger. Defaults to None</span>
-<span class="sd">            def_status (str, ecflow.Defstatus): Def status. Defaults to None</span>
-
+<span class="sd">                    name (str): Name of the family.</span>
+<span class="sd">                    parent (EcflowNodeContainer): Parent node.</span>
+<span class="sd">                    ecf_files (str): Location of ecf files</span>
+<span class="sd">                    variables (dict, optional): Variables to map. Defaults to None</span>
+<span class="sd">                    trigger (EcflowSuiteTriggers): Trigger. Defaults to None</span>
+<span class="sd">                    def_status (str, ecflow.Defstatus): Def status. Defaults to None</span>
+<span class="sd">                    ecf_files_remotely(str, optional): ECF_FILES on ecflow server</span>
+<span class="sd">        f</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">EcflowNodeContainer</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
@@ -1539,10 +1678,11 @@
             <span class="n">variables</span><span class="o">=</span><span class="n">variables</span><span class="p">,</span>
             <span class="n">trigger</span><span class="o">=</span><span class="n">trigger</span><span class="p">,</span>
             <span class="n">def_status</span><span class="o">=</span><span class="n">def_status</span><span class="p">,</span>
+            <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_container_path</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_remote_container_path</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_node</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ecf_node</span><span class="o">.</span><span class="n">add_variable</span><span class="p">(</span><span class="s2">&quot;ECF_FILES&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_container_path</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ecf_node</span><span class="o">.</span><span class="n">add_variable</span><span class="p">(</span><span class="s2">&quot;ECF_FILES&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_remote_container_path</span><span class="p">)</span></div>
 
 
 
@@ -1564,6 +1704,7 @@
         <span class="n">ecf_micro</span><span class="o">=</span><span class="s2">&quot;%&quot;</span><span class="p">,</span>
         <span class="n">trigger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">def_status</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Constuct the EcflowSuiteTask.</span>
 
@@ -1580,6 +1721,7 @@
 <span class="sd">            ecf_micro (str, optional): ECF_MICRO. Defaults to %</span>
 <span class="sd">            trigger (EcflowSuiteTriggers): Trigger. Defaults to None</span>
 <span class="sd">            def_status (str, ecflow.Defstatus): Def status. Defaults to None</span>
+<span class="sd">            ecf_files_remotely(str, optional): ECF_FILES on ecflow server</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            ValueError: If input template is to be parsed but it is not passed.</span>
@@ -1595,11 +1737,12 @@
             <span class="n">variables</span><span class="o">=</span><span class="n">variables</span><span class="p">,</span>
             <span class="n">trigger</span><span class="o">=</span><span class="n">trigger</span><span class="p">,</span>
             <span class="n">def_status</span><span class="o">=</span><span class="n">def_status</span><span class="p">,</span>
+            <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">parent</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">parent</span><span class="o">.</span><span class="n">ecf_container_path</span><span class="p">)</span>
-        <span class="n">task_container</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">ecf_container_path</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;.py&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">parent</span><span class="o">.</span><span class="n">ecf_local_container_path</span><span class="p">)</span>
+        <span class="n">task_container</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">ecf_local_container_path</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;.py&quot;</span>
         <span class="k">if</span> <span class="n">parse</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">input_template</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Must pass input template if it is to be parsed&quot;</span><span class="p">)</span>
@@ -1733,7 +1876,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2023-12-19T07:01:33Z.
+      <span class="lastupdated">Last updated on 2024-01-08T11:21:49Z.
       </span></p>
   </div>
 

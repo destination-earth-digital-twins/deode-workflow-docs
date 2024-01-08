@@ -63,7 +63,8 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="readme_link.html#examples">Examples</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="readme_link.html#running-an-ecflow-suite-from-server-ecflow-gen-user-001-on-atos">Running an <code class="docutils literal notranslate"><span class="pre">ecflow</span></code> suite from server <code class="docutils literal notranslate"><span class="pre">ecflow-gen-${USER}-001</span></code> on atos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="readme_link.html#running-ecflow-suite-on-atos">Running ecflow suite on ATOS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="readme_link.html#running-ecflow-suite-on-lumi">Running ecflow suite on LUMI</a></li>
 <li class="toctree-l3"><a class="reference internal" href="readme_link.html#running-the-forecast-task-from-the-hpc-login-s-command-line">Running the <code class="docutils literal notranslate"><span class="pre">&quot;forecast&quot;</span></code> task from the <code class="docutils literal notranslate"><span class="pre">hpc-login</span></code>’s command line</a></li>
 <li class="toctree-l3"><a class="reference internal" href="readme_link.html#running-a-stand-alone-task-with-an-example-config-file-on-lumi">Running a stand-alone task with an example config file on LUMI</a></li>
 </ul>
@@ -606,6 +607,15 @@
 <li class="toctree-l4"><a class="reference internal" href="#property-config-platform-unix-group">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">platform</span> <span class="pre">&gt;</span> <span class="pre">unix_group</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#property-config-scheduler">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#property-config-scheduler-ecf-host">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span> <span class="pre">&gt;</span> <span class="pre">ecf_host</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#property-config-scheduler-ecf-port">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span> <span class="pre">&gt;</span> <span class="pre">ecf_port</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#property-config-scheduler-ecf-jobout">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span> <span class="pre">&gt;</span> <span class="pre">ecf_jobout</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#property-config-scheduler-ecf-files">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span> <span class="pre">&gt;</span> <span class="pre">ecf_files</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#property-config-scheduler-ecf-files-remotely">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span> <span class="pre">&gt;</span> <span class="pre">ecf_files_remotely</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#property-config-scheduler-ecf-home">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span> <span class="pre">&gt;</span> <span class="pre">ecf_home</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#property-config-submission">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">submission</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#property-config-submission-bindir">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">submission</span> <span class="pre">&gt;</span> <span class="pre">bindir</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#property-config-submission-nproma">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">submission</span> <span class="pre">&gt;</span> <span class="pre">nproma</span></code></a></li>
@@ -695,7 +705,7 @@
              
   <section id="miscellaneous-documentation">
 <h1>Miscellaneous Documentation<a class="headerlink" href="#miscellaneous-documentation" title="Link to this heading"></a></h1>
-<p>This was automatically generated running <code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">doc</span> <span class="pre">config</span></code> on 2023-12-19T07:01:32.</p>
+<p>This was automatically generated running <code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">doc</span> <span class="pre">config</span></code> on 2024-01-08T11:21:46.</p>
 <section id="config">
 <h2>Config<a class="headerlink" href="#config" title="Link to this heading"></a></h2>
 <p><strong>Title:</strong> Config</p>
@@ -818,13 +828,19 @@
 <td><p>-</p></td>
 <td><p>Platform Section</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference external" href="#submission">submission</a></p></td>
+<tr class="row-odd"><td><p><a class="reference external" href="#scheduler">scheduler</a></p></td>
+<td><p>object</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>Ecflow HPC scheduler Section</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="#submission">submission</a></p></td>
 <td><p>object</p></td>
 <td><p>No</p></td>
 <td><p>-</p></td>
 <td><p>Submission Section</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference external" href="#vertical_levels">vertical_levels</a></p></td>
+<tr class="row-odd"><td><p><a class="reference external" href="#vertical_levels">vertical_levels</a></p></td>
 <td><p>object</p></td>
 <td><p>No</p></td>
 <td><p>-</p></td>
@@ -9328,6 +9344,198 @@
 </tbody>
 </table>
 <p><strong>Description:</strong> Default unix group for directories created by deode, leave empty to use default group of user.</p>
+<p><a name="scheduler"></a></p>
+</section>
+</section>
+<section id="property-config-scheduler">
+<h3>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span></code><a class="headerlink" href="#property-config-scheduler" title="Link to this heading"></a></h3>
+<p><strong>Title:</strong> Ecflow HPC scheduler Section</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">object</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Additional properties</strong></p></td>
+<td><p><a class="reference external" href="#" title="Additional Properties of any type are allowed.">[Any type: allowed]</a></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> DEODE HPC specific ecflow settings</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Title/Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="#scheduler_ecf_host">ecf_host</a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>Ecflow host. HPC dependent.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="#scheduler_ecf_port">ecf_port</a></p></td>
+<td><p>integer</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>Ecflow port. HPC dependent.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="#scheduler_ecf_jobout">ecf_jobout</a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>Path to Ecflow job output.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="#scheduler_ecf_files">ecf_files</a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>Path to Ecflow operating files.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="#scheduler_ecf_files_remotely">ecf_files_remotely</a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>Path to Ecflow operating files if in remote location, different to ecf_files.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="#scheduler_ecf_home">ecf_home</a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>Path to Ecflow home.</p></td>
+</tr>
+</tbody>
+</table>
+<p><a name="scheduler_ecf_host"></a></p>
+<section id="property-config-scheduler-ecf-host">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span> <span class="pre">&gt;</span> <span class="pre">ecf_host</span></code><a class="headerlink" href="#property-config-scheduler-ecf-host" title="Link to this heading"></a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> Ecflow host. HPC dependent.</p>
+<p><a name="scheduler_ecf_port"></a></p>
+</section>
+<section id="property-config-scheduler-ecf-port">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span> <span class="pre">&gt;</span> <span class="pre">ecf_port</span></code><a class="headerlink" href="#property-config-scheduler-ecf-port" title="Link to this heading"></a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">integer</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> Ecflow port. HPC dependent.</p>
+<p><a name="scheduler_ecf_jobout"></a></p>
+</section>
+<section id="property-config-scheduler-ecf-jobout">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span> <span class="pre">&gt;</span> <span class="pre">ecf_jobout</span></code><a class="headerlink" href="#property-config-scheduler-ecf-jobout" title="Link to this heading"></a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> Path to Ecflow job output.</p>
+<p><a name="scheduler_ecf_files"></a></p>
+</section>
+<section id="property-config-scheduler-ecf-files">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span> <span class="pre">&gt;</span> <span class="pre">ecf_files</span></code><a class="headerlink" href="#property-config-scheduler-ecf-files" title="Link to this heading"></a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> Path to Ecflow operating files.</p>
+<p><a name="scheduler_ecf_files_remotely"></a></p>
+</section>
+<section id="property-config-scheduler-ecf-files-remotely">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span> <span class="pre">&gt;</span> <span class="pre">ecf_files_remotely</span></code><a class="headerlink" href="#property-config-scheduler-ecf-files-remotely" title="Link to this heading"></a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> Path to Ecflow operating files if in remote location, different to ecf_files.</p>
+<p><a name="scheduler_ecf_home"></a></p>
+</section>
+<section id="property-config-scheduler-ecf-home">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span> <span class="pre">&gt;</span> <span class="pre">ecf_home</span></code><a class="headerlink" href="#property-config-scheduler-ecf-home" title="Link to this heading"></a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> Path to Ecflow home.</p>
 <p><a name="submission"></a></p>
 </section>
 </section>
@@ -10348,7 +10556,7 @@ If you cannot execute <code class="docutils literal notranslate"><span class="pr
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2023-12-19T07:01:33Z.
+      <span class="lastupdated">Last updated on 2024-01-08T11:21:49Z.
       </span></p>
   </div>
 

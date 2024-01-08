@@ -61,7 +61,8 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../readme_link.html#examples">Examples</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../readme_link.html#running-an-ecflow-suite-from-server-ecflow-gen-user-001-on-atos">Running an <code class="docutils literal notranslate"><span class="pre">ecflow</span></code> suite from server <code class="docutils literal notranslate"><span class="pre">ecflow-gen-${USER}-001</span></code> on atos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../readme_link.html#running-ecflow-suite-on-atos">Running ecflow suite on ATOS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../readme_link.html#running-ecflow-suite-on-lumi">Running ecflow suite on LUMI</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../readme_link.html#running-the-forecast-task-from-the-hpc-login-s-command-line">Running the <code class="docutils literal notranslate"><span class="pre">&quot;forecast&quot;</span></code> task from the <code class="docutils literal notranslate"><span class="pre">hpc-login</span></code>’s command line</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../readme_link.html#running-a-stand-alone-task-with-an-example-config-file-on-lumi">Running a stand-alone task with an example config file on LUMI</a></li>
 </ul>
@@ -604,6 +605,15 @@
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-platform-unix-group">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">platform</span> <span class="pre">&gt;</span> <span class="pre">unix_group</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-scheduler">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-scheduler-ecf-host">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span> <span class="pre">&gt;</span> <span class="pre">ecf_host</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-scheduler-ecf-port">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span> <span class="pre">&gt;</span> <span class="pre">ecf_port</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-scheduler-ecf-jobout">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span> <span class="pre">&gt;</span> <span class="pre">ecf_jobout</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-scheduler-ecf-files">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span> <span class="pre">&gt;</span> <span class="pre">ecf_files</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-scheduler-ecf-files-remotely">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span> <span class="pre">&gt;</span> <span class="pre">ecf_files_remotely</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-scheduler-ecf-home">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span> <span class="pre">&gt;</span> <span class="pre">ecf_home</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-submission">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">submission</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-submission-bindir">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">submission</span> <span class="pre">&gt;</span> <span class="pre">bindir</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-submission-nproma">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">submission</span> <span class="pre">&gt;</span> <span class="pre">nproma</span></code></a></li>
@@ -703,6 +713,7 @@
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
 <span class="kn">from</span> <span class="nn">toml_formatter.formatter</span> <span class="kn">import</span> <span class="n">FormattedToml</span>
+<span class="kn">from</span> <span class="nn">troika.connections.ssh</span> <span class="kn">import</span> <span class="n">SSHConnection</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">GeneralConstants</span>
 <span class="kn">from</span> <span class="nn">.config_parser</span> <span class="kn">import</span> <span class="n">BasicConfig</span><span class="p">,</span> <span class="n">ParsedConfig</span>
@@ -779,24 +790,97 @@
 <span class="sd">        config (.config_parser.ParsedConfig): Parsed config file contents.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting suite...&quot;</span><span class="p">)</span>
-
     <span class="n">deode_home</span> <span class="o">=</span> <span class="n">set_deode_home</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
     <span class="n">config</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">update</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;platform&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;deode_home&quot;</span><span class="p">:</span> <span class="n">deode_home</span><span class="p">}})</span>
     <span class="n">config</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">update</span><span class="o">=</span><span class="n">set_times</span><span class="p">(</span><span class="n">config</span><span class="p">))</span>
+    <span class="n">platform</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+    <span class="n">update</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;scheduler&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;ecfvars&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;ecf_jobout&quot;</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;scheduler.ecfvars.ecf_jobout&quot;</span><span class="p">]),</span>
+                <span class="s2">&quot;ecf_files&quot;</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;scheduler.ecfvars.ecf_files&quot;</span><span class="p">]),</span>
+                <span class="s2">&quot;ecf_files_remotely&quot;</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
+                    <span class="n">config</span><span class="p">[</span><span class="s2">&quot;scheduler.ecfvars.ecf_files_remotely&quot;</span><span class="p">]</span>
+                <span class="p">),</span>
+                <span class="s2">&quot;ecf_home&quot;</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;scheduler.ecfvars.ecf_home&quot;</span><span class="p">]),</span>
+                <span class="s2">&quot;ecf_host&quot;</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;scheduler.ecfvars.ecf_host&quot;</span><span class="p">]),</span>
+            <span class="p">},</span>
+        <span class="p">},</span>
+    <span class="p">}</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">update</span><span class="o">=</span><span class="n">update</span><span class="p">)</span>
 
-    <span class="n">server</span> <span class="o">=</span> <span class="n">EcflowServer</span><span class="p">(</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">ecf_host</span><span class="p">,</span> <span class="n">ecf_port</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">ecf_port</span><span class="p">,</span> <span class="n">start_command</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">start_command</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting suite...&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Settings and paths loaded: &quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Config file: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">config_file</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Ecflow settings: &quot;</span><span class="p">)</span>
+
+    <span class="c1"># Check if user passed flags, and reiterate ecf vars to them</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="s2">&quot;ecf_jobout: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;scheduler.ecfvars.ecf_jobout&quot;</span><span class="p">]</span>
+    <span class="p">)</span> <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">joboutdir</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;ecf_jobout: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">joboutdir</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="s2">&quot;ecf_files: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;scheduler.ecfvars.ecf_files&quot;</span><span class="p">]</span>
+    <span class="p">)</span> <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">ecf_files</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;ecf_files: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="s2">&quot;ecf_files_remotely: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;scheduler.ecfvars.ecf_files_remotely&quot;</span><span class="p">]</span>
+    <span class="p">)</span> <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">ecf_files_remotely</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="s2">&quot;ecf_files_remotely: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">ecf_files_remotely</span>
     <span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="s2">&quot;ecf_home: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;scheduler.ecfvars.ecf_home&quot;</span><span class="p">]</span>
+    <span class="p">)</span> <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">ecf_home</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;ecf_home: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">ecf_home</span><span class="p">)</span>
+
+    <span class="n">server</span> <span class="o">=</span> <span class="n">EcflowServer</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">start_command</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">start_command</span><span class="p">)</span>
 
     <span class="n">suite_name</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.case&quot;</span><span class="p">]</span>
     <span class="n">suite_name</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">config</span><span class="p">)</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">suite_name</span><span class="p">)</span>
-    <span class="n">submission_defs</span> <span class="o">=</span> <span class="n">TaskSettings</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
-    <span class="n">defs</span> <span class="o">=</span> <span class="n">SuiteDefinition</span><span class="p">(</span>
-        <span class="n">suite_name</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">joboutdir</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">submission_defs</span>
+
+    <span class="c1"># Set ecf_home. If diff than joboutdir =&gt; we will copy it to server</span>
+    <span class="n">ecf_home</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">joboutdir</span> <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">ecf_home</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">args</span><span class="o">.</span><span class="n">ecf_home</span>
+    <span class="n">ecf_files_local</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">ecf_files</span>
+    <span class="n">ecf_files_remotely</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">ecf_files</span> <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">ecf_files_remotely</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">args</span><span class="o">.</span><span class="n">ecf_files_remotely</span>
     <span class="p">)</span>
+
+    <span class="n">remote_user</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">remote_user</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;ECF_HOME=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ecf_home</span><span class="p">)</span>
+    <span class="n">troika_config_file</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;troika.config_file&quot;</span><span class="p">]</span>
+    <span class="n">troika_config_file</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">config</span><span class="p">)</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">troika_config_file</span><span class="p">)</span>
+    <span class="n">local_troika_config_file</span> <span class="o">=</span> <span class="n">troika_config_file</span>
+    <span class="k">if</span> <span class="n">ecf_home</span> <span class="o">!=</span> <span class="n">args</span><span class="o">.</span><span class="n">joboutdir</span><span class="p">:</span>
+        <span class="n">local_troika_config_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ecf_files_remotely</span><span class="si">}</span><span class="s2">/troika.yml&quot;</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+        <span class="s2">&quot;troika config used: </span><span class="si">{}</span><span class="s2"> local file=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">troika_config_file</span><span class="p">,</span>
+        <span class="n">local_troika_config_file</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">update</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;troika&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;config_file&quot;</span><span class="p">:</span> <span class="n">local_troika_config_file</span><span class="p">}})</span>
+
+    <span class="n">server</span> <span class="o">=</span> <span class="n">EcflowServer</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">start_command</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">start_command</span><span class="p">)</span>
+    <span class="n">submission_defs</span> <span class="o">=</span> <span class="n">TaskSettings</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+    <span class="n">defs</span> <span class="o">=</span> <span class="n">SuiteDefinition</span><span class="p">(</span><span class="n">suite_name</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">submission_defs</span><span class="p">)</span>
     <span class="n">def_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">suite_name</span><span class="si">}</span><span class="s2">.def&quot;</span>
     <span class="n">defs</span><span class="o">.</span><span class="n">save_as_defs</span><span class="p">(</span><span class="n">def_file</span><span class="p">)</span>
+
+    <span class="c1"># Copy troika and containers</span>
+    <span class="k">if</span> <span class="n">ecf_home</span> <span class="o">!=</span> <span class="n">args</span><span class="o">.</span><span class="n">joboutdir</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s2">&quot;Copy ecflow files to host=</span><span class="si">{}</span><span class="s2"> and directory=</span><span class="si">{}</span><span class="s2"> remote_user=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">ecf_host</span><span class="p">,</span>
+            <span class="n">ecf_files_remotely</span><span class="p">,</span>
+            <span class="n">remote_user</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">cfg</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;host&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">ecf_host</span><span class="p">}</span>
+        <span class="n">ssh</span> <span class="o">=</span> <span class="n">SSHConnection</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="n">remote_user</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">__</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ecf_files_local</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">suite_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+                <span class="n">src</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">root</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">file</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">rpath</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ecf_files_local</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="n">ssh</span><span class="o">.</span><span class="n">execute</span><span class="p">([</span><span class="s2">&quot;mkdir&quot;</span><span class="p">,</span> <span class="s2">&quot;-p&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ecf_files_remotely</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">rpath</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">])</span>
+                <span class="n">dst</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ecf_files_remotely</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">rpath</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">file</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Copy src=</span><span class="si">{}</span><span class="s2"> to dst=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">)</span>
+                <span class="n">ssh</span><span class="o">.</span><span class="n">sendfile</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">)</span>
+            <span class="n">ssh</span><span class="o">.</span><span class="n">sendfile</span><span class="p">(</span><span class="n">troika_config_file</span><span class="p">,</span> <span class="n">local_troika_config_file</span><span class="p">)</span>
 
     <span class="n">server</span><span class="o">.</span><span class="n">start_suite</span><span class="p">(</span><span class="n">suite_name</span><span class="p">,</span> <span class="n">def_file</span><span class="p">,</span> <span class="n">begin</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">begin</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Done with suite.&quot;</span><span class="p">)</span></div>
@@ -981,7 +1065,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2023-12-19T07:01:33Z.
+      <span class="lastupdated">Last updated on 2024-01-08T11:21:49Z.
       </span></p>
   </div>
 

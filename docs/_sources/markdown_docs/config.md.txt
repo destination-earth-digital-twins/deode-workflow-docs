@@ -1,4 +1,4 @@
-This was automatically generated running `deode doc config` on 2023-12-19T07:01:32.
+This was automatically generated running `deode doc config` on 2024-01-08T11:21:46.
 
 # Config
 
@@ -12,25 +12,26 @@ This was automatically generated running `deode doc config` on 2023-12-19T07:01:
 
 **Description:** Model for validation of `deode`'s main config file.
 
-| Property                            | Type   | Required | Default | Title/Description      |
-| ----------------------------------- | ------ | -------- | ------- | ---------------------- |
-| [general](#general)                 | object | Yes      | -       | General Section        |
-| [suite_control](#suite_control)     | object | No       | -       | Suite control          |
-| [system](#system)                   | object | No       | -       | System                 |
-| [boundaries](#boundaries)           | object | No       | -       | Boundary Section       |
-| [pgd](#pgd)                         | object | No       | -       | Pgd Section            |
-| [fullpos](#fullpos)                 | object | No       | -       | Fullpos Section        |
-| [troika](#troika)                   | object | No       | -       | Troika                 |
-| [include](#include)                 | object | No       | -       | Include Section        |
-| [archiving](#archiving)             | object | No       | -       | Archiving Section      |
-| [domain](#domain)                   | object | No       | -       | Domain Section         |
-| [extractsqlite](#extractsqlite)     | object | No       | -       | Extract sqlite Section |
-| [file_templates](#file_templates)   | object | No       | -       | File Templates         |
-| [macros](#macros)                   | object | No       | -       | Macros Section         |
-| [mars](#mars)                       | object | No       | -       | MarsSettings           |
-| [platform](#platform)               | object | No       | -       | Platform Section       |
-| [submission](#submission)           | object | No       | -       | Submission Section     |
-| [vertical_levels](#vertical_levels) | object | No       | -       | Vertical Levels        |
+| Property                            | Type   | Required | Default | Title/Description            |
+| ----------------------------------- | ------ | -------- | ------- | ---------------------------- |
+| [general](#general)                 | object | Yes      | -       | General Section              |
+| [suite_control](#suite_control)     | object | No       | -       | Suite control                |
+| [system](#system)                   | object | No       | -       | System                       |
+| [boundaries](#boundaries)           | object | No       | -       | Boundary Section             |
+| [pgd](#pgd)                         | object | No       | -       | Pgd Section                  |
+| [fullpos](#fullpos)                 | object | No       | -       | Fullpos Section              |
+| [troika](#troika)                   | object | No       | -       | Troika                       |
+| [include](#include)                 | object | No       | -       | Include Section              |
+| [archiving](#archiving)             | object | No       | -       | Archiving Section            |
+| [domain](#domain)                   | object | No       | -       | Domain Section               |
+| [extractsqlite](#extractsqlite)     | object | No       | -       | Extract sqlite Section       |
+| [file_templates](#file_templates)   | object | No       | -       | File Templates               |
+| [macros](#macros)                   | object | No       | -       | Macros Section               |
+| [mars](#mars)                       | object | No       | -       | MarsSettings                 |
+| [platform](#platform)               | object | No       | -       | Platform Section             |
+| [scheduler](#scheduler)             | object | No       | -       | Ecflow HPC scheduler Section |
+| [submission](#submission)           | object | No       | -       | Submission Section           |
+| [vertical_levels](#vertical_levels) | object | No       | -       | Vertical Levels              |
 
 <a name="general"></a>
 ## Property `Config > general`
@@ -3544,6 +3545,88 @@ Must be one of:
 | **Default**  | `""`     |
 
 **Description:** Default unix group for directories created by deode, leave empty to use default group of user.
+
+<a name="scheduler"></a>
+## Property `Config > scheduler`
+
+**Title:** Ecflow HPC scheduler Section
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** DEODE HPC specific ecflow settings
+
+| Property                                            | Type    | Required | Default | Title/Description                                                             |
+| --------------------------------------------------- | ------- | -------- | ------- | ----------------------------------------------------------------------------- |
+| [ecf_host](#scheduler_ecf_host)                     | string  | No       | -       | Ecflow host. HPC dependent.                                                   |
+| [ecf_port](#scheduler_ecf_port)                     | integer | No       | -       | Ecflow port. HPC dependent.                                                   |
+| [ecf_jobout](#scheduler_ecf_jobout)                 | string  | No       | -       | Path to Ecflow job output.                                                    |
+| [ecf_files](#scheduler_ecf_files)                   | string  | No       | -       | Path to Ecflow operating files.                                               |
+| [ecf_files_remotely](#scheduler_ecf_files_remotely) | string  | No       | -       | Path to Ecflow operating files if in remote location, different to ecf_files. |
+| [ecf_home](#scheduler_ecf_home)                     | string  | No       | -       | Path to Ecflow home.                                                          |
+
+<a name="scheduler_ecf_host"></a>
+### Property `Config > scheduler > ecf_host`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Ecflow host. HPC dependent.
+
+<a name="scheduler_ecf_port"></a>
+### Property `Config > scheduler > ecf_port`
+
+|              |           |
+| ------------ | --------- |
+| **Type**     | `integer` |
+| **Required** | No        |
+
+**Description:** Ecflow port. HPC dependent.
+
+<a name="scheduler_ecf_jobout"></a>
+### Property `Config > scheduler > ecf_jobout`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Path to Ecflow job output.
+
+<a name="scheduler_ecf_files"></a>
+### Property `Config > scheduler > ecf_files`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Path to Ecflow operating files.
+
+<a name="scheduler_ecf_files_remotely"></a>
+### Property `Config > scheduler > ecf_files_remotely`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Path to Ecflow operating files if in remote location, different to ecf_files.
+
+<a name="scheduler_ecf_home"></a>
+### Property `Config > scheduler > ecf_home`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Path to Ecflow home.
 
 <a name="submission"></a>
 ## Property `Config > submission`
