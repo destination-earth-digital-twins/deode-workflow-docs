@@ -1,4 +1,4 @@
-This was automatically generated running `deode doc config` on 2024-01-08T11:21:46.
+This was automatically generated running `deode doc config` on 2024-01-08T16:07:58.
 
 # Config
 
@@ -3648,8 +3648,12 @@ Must be one of:
 | [module_initpath](#submission_module_initpath)         | string          | No       | -       | Path to the version of env_modules_python.py to be used in the module initialization                         |
 | [submit_types](#submission_submit_types)               | array of string | No       | -       | List of submit groups to be defined                                                                          |
 | [default_submit_type](#submission_default_submit_type) | string          | No       | -       | Defines the default submit type for tasks not listed in any defined type                                     |
-| [submission_group](#submission_submission_group)       | object          | No       | -       | Submission example group                                                                                     |
 | [task_exceptions](#submission_task_exceptions)         | object          | No       | -       | Allows to define task specific settings like BATCH, MODULES, NPROC. Use as task_exceptions.taskname.property |
+| [serial](#submission_serial)                           | object          | No       | -       | Submission group                                                                                             |
+| [parallel](#submission_parallel)                       | object          | No       | -       | Submission group                                                                                             |
+| [background_vm](#submission_background_vm)             | object          | No       | -       | Submission group                                                                                             |
+| [background_hpc](#submission_background_hpc)           | object          | No       | -       | Submission group                                                                                             |
+| [gnu](#submission_gnu)                                 | object          | No       | -       | Submission group                                                                                             |
 
 <a name="submission_bindir"></a>
 ### Property `Config > submission > bindir`
@@ -3722,102 +3726,6 @@ Must be one of:
 
 **Description:** Defines the default submit type for tasks not listed in any defined type
 
-<a name="submission_submission_group"></a>
-### Property `Config > submission > submission_group`
-
-**Title:** Submission example group
-
-|                           |                                                                           |
-| ------------------------- | ------------------------------------------------------------------------- |
-| **Type**                  | `object`                                                                  |
-| **Required**              | No                                                                        |
-| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
-
-**Description:** Defines the properties avilable for a submit group. See the existing submission files for examples
-
-| Property                                        | Type   | Required | Default | Title/Description                                                                                     |
-| ----------------------------------------------- | ------ | -------- | ------- | ----------------------------------------------------------------------------------------------------- |
-| [tasks](#submission_submission_group_tasks)     | string | No       | -       | List of tasks belonging to this group                                                                 |
-| [SCHOST](#submission_submission_group_SCHOST)   | string | No       | -       | Name of the host where the job runs                                                                   |
-| [NPROC](#submission_submission_group_NPROC)     | string | No       | -       | Number of processors for this task                                                                    |
-| [WRAPPER](#submission_submission_group_WRAPPER) | string | No       | -       | Prefix for binaries to be executed, e.g. srun                                                         |
-| [BATCH](#submission_submission_group_BATCH)     | object | No       | -       | Sets batch job arguments like walltime                                                                |
-| [ENV](#submission_submission_group_ENV)         | object | No       | -       | Sets environment variables                                                                            |
-| [MODULES](#submission_submission_group_MODULES) | object | No       | -       | Sets modules to load. To maintain the order decorate with comments to ovverride the automatic sorting |
-
-<a name="submission_submission_group_tasks"></a>
-#### Property `Config > submission > submission_group > tasks`
-
-|              |          |
-| ------------ | -------- |
-| **Type**     | `string` |
-| **Required** | No       |
-
-**Description:** List of tasks belonging to this group
-
-<a name="submission_submission_group_SCHOST"></a>
-#### Property `Config > submission > submission_group > SCHOST`
-
-|              |          |
-| ------------ | -------- |
-| **Type**     | `string` |
-| **Required** | No       |
-
-**Description:** Name of the host where the job runs
-
-<a name="submission_submission_group_NPROC"></a>
-#### Property `Config > submission > submission_group > NPROC`
-
-|              |          |
-| ------------ | -------- |
-| **Type**     | `string` |
-| **Required** | No       |
-
-**Description:** Number of processors for this task
-
-<a name="submission_submission_group_WRAPPER"></a>
-#### Property `Config > submission > submission_group > WRAPPER`
-
-|              |          |
-| ------------ | -------- |
-| **Type**     | `string` |
-| **Required** | No       |
-
-**Description:** Prefix for binaries to be executed, e.g. srun
-
-<a name="submission_submission_group_BATCH"></a>
-#### Property `Config > submission > submission_group > BATCH`
-
-|                           |                                                                           |
-| ------------------------- | ------------------------------------------------------------------------- |
-| **Type**                  | `object`                                                                  |
-| **Required**              | No                                                                        |
-| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
-
-**Description:** Sets batch job arguments like walltime
-
-<a name="submission_submission_group_ENV"></a>
-#### Property `Config > submission > submission_group > ENV`
-
-|                           |                                                                           |
-| ------------------------- | ------------------------------------------------------------------------- |
-| **Type**                  | `object`                                                                  |
-| **Required**              | No                                                                        |
-| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
-
-**Description:** Sets environment variables
-
-<a name="submission_submission_group_MODULES"></a>
-#### Property `Config > submission > submission_group > MODULES`
-
-|                           |                                                                           |
-| ------------------------- | ------------------------------------------------------------------------- |
-| **Type**                  | `object`                                                                  |
-| **Required**              | No                                                                        |
-| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
-
-**Description:** Sets modules to load. To maintain the order decorate with comments to ovverride the automatic sorting
-
 <a name="submission_task_exceptions"></a>
 ### Property `Config > submission > task_exceptions`
 
@@ -3828,6 +3736,761 @@ Must be one of:
 | **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
 
 **Description:** Allows to define task specific settings like BATCH, MODULES, NPROC. Use as task_exceptions.taskname.property
+
+<a name="submission_serial"></a>
+### Property `Config > submission > serial`
+
+**Title:** Submission group
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Defines the properties avilable for a submit group. See the existing submission files for examples
+
+| Property                              | Type            | Required | Default | Title/Description                                                                                                               |
+| ------------------------------------- | --------------- | -------- | ------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| [tasks](#submission_serial_tasks)     | array of string | No       | -       | List of tasks belonging to this group                                                                                           |
+| [SCHOST](#submission_serial_SCHOST)   | string          | No       | -       | Name of the host where the job runs                                                                                             |
+| [NPROC](#submission_serial_NPROC)     | number          | No       | -       | Number of processors for this task                                                                                              |
+| [WRAPPER](#submission_serial_WRAPPER) | string          | No       | -       | Prefix for binaries to be executed, e.g. srun                                                                                   |
+| [BATCH](#submission_serial_BATCH)     | object          | No       | -       | Sets batch job arguments like walltime                                                                                          |
+| [ENV](#submission_serial_ENV)         | object          | No       | -       | Sets environment variables                                                                                                      |
+| [MODULES](#submission_serial_MODULES) | object          | No       | -       | Sets modules to purge/use/unload/load or switch. To maintain the order decorate with comments to override the automatic sorting |
+
+<a name="submission_serial_tasks"></a>
+#### Property `Config > submission > serial > tasks`
+
+|              |                   |
+| ------------ | ----------------- |
+| **Type**     | `array of string` |
+| **Required** | No                |
+
+**Description:** List of tasks belonging to this group
+
+|                      | Array restrictions |
+| -------------------- | ------------------ |
+| **Min items**        | N/A                |
+| **Max items**        | N/A                |
+| **Items unicity**    | False              |
+| **Additional items** | False              |
+| **Tuple validation** | See below          |
+
+| Each item of this array must be               | Description |
+| --------------------------------------------- | ----------- |
+| [tasks items](#submission_serial_tasks_items) | -           |
+
+<a name="autogenerated_heading_24"></a>
+##### Config > submission > serial > tasks > tasks items
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+<a name="submission_serial_SCHOST"></a>
+#### Property `Config > submission > serial > SCHOST`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Name of the host where the job runs
+
+<a name="submission_serial_NPROC"></a>
+#### Property `Config > submission > serial > NPROC`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `number` |
+| **Required** | No       |
+
+**Description:** Number of processors for this task
+
+<a name="submission_serial_WRAPPER"></a>
+#### Property `Config > submission > serial > WRAPPER`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Prefix for binaries to be executed, e.g. srun
+
+<a name="submission_serial_BATCH"></a>
+#### Property `Config > submission > serial > BATCH`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Sets batch job arguments like walltime
+
+<a name="submission_serial_ENV"></a>
+#### Property `Config > submission > serial > ENV`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Sets environment variables
+
+<a name="submission_serial_MODULES"></a>
+#### Property `Config > submission > serial > MODULES`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Sets modules to purge/use/unload/load or switch. To maintain the order decorate with comments to override the automatic sorting
+
+| Property                                      | Type            | Required | Default | Title/Description |
+| --------------------------------------------- | --------------- | -------- | ------- | ----------------- |
+| [^(.*)$](#submission_serial_MODULES_pattern1) | array of string | No       | -       | -                 |
+
+<a name="submission_serial_MODULES_pattern1"></a>
+##### Pattern Property `Config > submission > serial > MODULES > ^(.*)$`
+> All properties whose name matches the regular expression
+```^(.*)$``` ([Test](https://regex101.com/?regex=%5E%28.%2A%29%24))
+must respect the following conditions
+
+|              |                   |
+| ------------ | ----------------- |
+| **Type**     | `array of string` |
+| **Required** | No                |
+
+|                      | Array restrictions |
+| -------------------- | ------------------ |
+| **Min items**        | 1                  |
+| **Max items**        | 3                  |
+| **Items unicity**    | False              |
+| **Additional items** | False              |
+| **Tuple validation** | See below          |
+
+| Each item of this array must be                           | Description |
+| --------------------------------------------------------- | ----------- |
+| [^(.*)$ items](#submission_serial_MODULES_pattern1_items) | -           |
+
+<a name="autogenerated_heading_25"></a>
+##### Config > submission > serial > MODULES > ^(.*)$ > ^(.*)$ items
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+<a name="submission_parallel"></a>
+### Property `Config > submission > parallel`
+
+**Title:** Submission group
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Defines the properties avilable for a submit group. See the existing submission files for examples
+
+| Property                                | Type            | Required | Default | Title/Description                                                                                                               |
+| --------------------------------------- | --------------- | -------- | ------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| [tasks](#submission_parallel_tasks)     | array of string | No       | -       | List of tasks belonging to this group                                                                                           |
+| [SCHOST](#submission_parallel_SCHOST)   | string          | No       | -       | Name of the host where the job runs                                                                                             |
+| [NPROC](#submission_parallel_NPROC)     | number          | No       | -       | Number of processors for this task                                                                                              |
+| [WRAPPER](#submission_parallel_WRAPPER) | string          | No       | -       | Prefix for binaries to be executed, e.g. srun                                                                                   |
+| [BATCH](#submission_parallel_BATCH)     | object          | No       | -       | Sets batch job arguments like walltime                                                                                          |
+| [ENV](#submission_parallel_ENV)         | object          | No       | -       | Sets environment variables                                                                                                      |
+| [MODULES](#submission_parallel_MODULES) | object          | No       | -       | Sets modules to purge/use/unload/load or switch. To maintain the order decorate with comments to override the automatic sorting |
+
+<a name="submission_parallel_tasks"></a>
+#### Property `Config > submission > parallel > tasks`
+
+|              |                   |
+| ------------ | ----------------- |
+| **Type**     | `array of string` |
+| **Required** | No                |
+
+**Description:** List of tasks belonging to this group
+
+|                      | Array restrictions |
+| -------------------- | ------------------ |
+| **Min items**        | N/A                |
+| **Max items**        | N/A                |
+| **Items unicity**    | False              |
+| **Additional items** | False              |
+| **Tuple validation** | See below          |
+
+| Each item of this array must be                 | Description |
+| ----------------------------------------------- | ----------- |
+| [tasks items](#submission_parallel_tasks_items) | -           |
+
+<a name="autogenerated_heading_26"></a>
+##### Config > submission > parallel > tasks > tasks items
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+<a name="submission_parallel_SCHOST"></a>
+#### Property `Config > submission > parallel > SCHOST`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Name of the host where the job runs
+
+<a name="submission_parallel_NPROC"></a>
+#### Property `Config > submission > parallel > NPROC`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `number` |
+| **Required** | No       |
+
+**Description:** Number of processors for this task
+
+<a name="submission_parallel_WRAPPER"></a>
+#### Property `Config > submission > parallel > WRAPPER`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Prefix for binaries to be executed, e.g. srun
+
+<a name="submission_parallel_BATCH"></a>
+#### Property `Config > submission > parallel > BATCH`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Sets batch job arguments like walltime
+
+<a name="submission_parallel_ENV"></a>
+#### Property `Config > submission > parallel > ENV`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Sets environment variables
+
+<a name="submission_parallel_MODULES"></a>
+#### Property `Config > submission > parallel > MODULES`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Sets modules to purge/use/unload/load or switch. To maintain the order decorate with comments to override the automatic sorting
+
+| Property                                        | Type            | Required | Default | Title/Description |
+| ----------------------------------------------- | --------------- | -------- | ------- | ----------------- |
+| [^(.*)$](#submission_parallel_MODULES_pattern1) | array of string | No       | -       | -                 |
+
+<a name="submission_parallel_MODULES_pattern1"></a>
+##### Pattern Property `Config > submission > parallel > MODULES > ^(.*)$`
+> All properties whose name matches the regular expression
+```^(.*)$``` ([Test](https://regex101.com/?regex=%5E%28.%2A%29%24))
+must respect the following conditions
+
+|              |                   |
+| ------------ | ----------------- |
+| **Type**     | `array of string` |
+| **Required** | No                |
+
+|                      | Array restrictions |
+| -------------------- | ------------------ |
+| **Min items**        | 1                  |
+| **Max items**        | 3                  |
+| **Items unicity**    | False              |
+| **Additional items** | False              |
+| **Tuple validation** | See below          |
+
+| Each item of this array must be                             | Description |
+| ----------------------------------------------------------- | ----------- |
+| [^(.*)$ items](#submission_parallel_MODULES_pattern1_items) | -           |
+
+<a name="autogenerated_heading_27"></a>
+##### Config > submission > parallel > MODULES > ^(.*)$ > ^(.*)$ items
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+<a name="submission_background_vm"></a>
+### Property `Config > submission > background_vm`
+
+**Title:** Submission group
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Defines the properties avilable for a submit group. See the existing submission files for examples
+
+| Property                                     | Type            | Required | Default | Title/Description                                                                                                               |
+| -------------------------------------------- | --------------- | -------- | ------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| [tasks](#submission_background_vm_tasks)     | array of string | No       | -       | List of tasks belonging to this group                                                                                           |
+| [SCHOST](#submission_background_vm_SCHOST)   | string          | No       | -       | Name of the host where the job runs                                                                                             |
+| [NPROC](#submission_background_vm_NPROC)     | number          | No       | -       | Number of processors for this task                                                                                              |
+| [WRAPPER](#submission_background_vm_WRAPPER) | string          | No       | -       | Prefix for binaries to be executed, e.g. srun                                                                                   |
+| [BATCH](#submission_background_vm_BATCH)     | object          | No       | -       | Sets batch job arguments like walltime                                                                                          |
+| [ENV](#submission_background_vm_ENV)         | object          | No       | -       | Sets environment variables                                                                                                      |
+| [MODULES](#submission_background_vm_MODULES) | object          | No       | -       | Sets modules to purge/use/unload/load or switch. To maintain the order decorate with comments to override the automatic sorting |
+
+<a name="submission_background_vm_tasks"></a>
+#### Property `Config > submission > background_vm > tasks`
+
+|              |                   |
+| ------------ | ----------------- |
+| **Type**     | `array of string` |
+| **Required** | No                |
+
+**Description:** List of tasks belonging to this group
+
+|                      | Array restrictions |
+| -------------------- | ------------------ |
+| **Min items**        | N/A                |
+| **Max items**        | N/A                |
+| **Items unicity**    | False              |
+| **Additional items** | False              |
+| **Tuple validation** | See below          |
+
+| Each item of this array must be                      | Description |
+| ---------------------------------------------------- | ----------- |
+| [tasks items](#submission_background_vm_tasks_items) | -           |
+
+<a name="autogenerated_heading_28"></a>
+##### Config > submission > background_vm > tasks > tasks items
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+<a name="submission_background_vm_SCHOST"></a>
+#### Property `Config > submission > background_vm > SCHOST`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Name of the host where the job runs
+
+<a name="submission_background_vm_NPROC"></a>
+#### Property `Config > submission > background_vm > NPROC`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `number` |
+| **Required** | No       |
+
+**Description:** Number of processors for this task
+
+<a name="submission_background_vm_WRAPPER"></a>
+#### Property `Config > submission > background_vm > WRAPPER`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Prefix for binaries to be executed, e.g. srun
+
+<a name="submission_background_vm_BATCH"></a>
+#### Property `Config > submission > background_vm > BATCH`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Sets batch job arguments like walltime
+
+<a name="submission_background_vm_ENV"></a>
+#### Property `Config > submission > background_vm > ENV`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Sets environment variables
+
+<a name="submission_background_vm_MODULES"></a>
+#### Property `Config > submission > background_vm > MODULES`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Sets modules to purge/use/unload/load or switch. To maintain the order decorate with comments to override the automatic sorting
+
+| Property                                             | Type            | Required | Default | Title/Description |
+| ---------------------------------------------------- | --------------- | -------- | ------- | ----------------- |
+| [^(.*)$](#submission_background_vm_MODULES_pattern1) | array of string | No       | -       | -                 |
+
+<a name="submission_background_vm_MODULES_pattern1"></a>
+##### Pattern Property `Config > submission > background_vm > MODULES > ^(.*)$`
+> All properties whose name matches the regular expression
+```^(.*)$``` ([Test](https://regex101.com/?regex=%5E%28.%2A%29%24))
+must respect the following conditions
+
+|              |                   |
+| ------------ | ----------------- |
+| **Type**     | `array of string` |
+| **Required** | No                |
+
+|                      | Array restrictions |
+| -------------------- | ------------------ |
+| **Min items**        | 1                  |
+| **Max items**        | 3                  |
+| **Items unicity**    | False              |
+| **Additional items** | False              |
+| **Tuple validation** | See below          |
+
+| Each item of this array must be                                  | Description |
+| ---------------------------------------------------------------- | ----------- |
+| [^(.*)$ items](#submission_background_vm_MODULES_pattern1_items) | -           |
+
+<a name="autogenerated_heading_29"></a>
+##### Config > submission > background_vm > MODULES > ^(.*)$ > ^(.*)$ items
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+<a name="submission_background_hpc"></a>
+### Property `Config > submission > background_hpc`
+
+**Title:** Submission group
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Defines the properties avilable for a submit group. See the existing submission files for examples
+
+| Property                                      | Type            | Required | Default | Title/Description                                                                                                               |
+| --------------------------------------------- | --------------- | -------- | ------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| [tasks](#submission_background_hpc_tasks)     | array of string | No       | -       | List of tasks belonging to this group                                                                                           |
+| [SCHOST](#submission_background_hpc_SCHOST)   | string          | No       | -       | Name of the host where the job runs                                                                                             |
+| [NPROC](#submission_background_hpc_NPROC)     | number          | No       | -       | Number of processors for this task                                                                                              |
+| [WRAPPER](#submission_background_hpc_WRAPPER) | string          | No       | -       | Prefix for binaries to be executed, e.g. srun                                                                                   |
+| [BATCH](#submission_background_hpc_BATCH)     | object          | No       | -       | Sets batch job arguments like walltime                                                                                          |
+| [ENV](#submission_background_hpc_ENV)         | object          | No       | -       | Sets environment variables                                                                                                      |
+| [MODULES](#submission_background_hpc_MODULES) | object          | No       | -       | Sets modules to purge/use/unload/load or switch. To maintain the order decorate with comments to override the automatic sorting |
+
+<a name="submission_background_hpc_tasks"></a>
+#### Property `Config > submission > background_hpc > tasks`
+
+|              |                   |
+| ------------ | ----------------- |
+| **Type**     | `array of string` |
+| **Required** | No                |
+
+**Description:** List of tasks belonging to this group
+
+|                      | Array restrictions |
+| -------------------- | ------------------ |
+| **Min items**        | N/A                |
+| **Max items**        | N/A                |
+| **Items unicity**    | False              |
+| **Additional items** | False              |
+| **Tuple validation** | See below          |
+
+| Each item of this array must be                       | Description |
+| ----------------------------------------------------- | ----------- |
+| [tasks items](#submission_background_hpc_tasks_items) | -           |
+
+<a name="autogenerated_heading_30"></a>
+##### Config > submission > background_hpc > tasks > tasks items
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+<a name="submission_background_hpc_SCHOST"></a>
+#### Property `Config > submission > background_hpc > SCHOST`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Name of the host where the job runs
+
+<a name="submission_background_hpc_NPROC"></a>
+#### Property `Config > submission > background_hpc > NPROC`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `number` |
+| **Required** | No       |
+
+**Description:** Number of processors for this task
+
+<a name="submission_background_hpc_WRAPPER"></a>
+#### Property `Config > submission > background_hpc > WRAPPER`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Prefix for binaries to be executed, e.g. srun
+
+<a name="submission_background_hpc_BATCH"></a>
+#### Property `Config > submission > background_hpc > BATCH`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Sets batch job arguments like walltime
+
+<a name="submission_background_hpc_ENV"></a>
+#### Property `Config > submission > background_hpc > ENV`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Sets environment variables
+
+<a name="submission_background_hpc_MODULES"></a>
+#### Property `Config > submission > background_hpc > MODULES`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Sets modules to purge/use/unload/load or switch. To maintain the order decorate with comments to override the automatic sorting
+
+| Property                                              | Type            | Required | Default | Title/Description |
+| ----------------------------------------------------- | --------------- | -------- | ------- | ----------------- |
+| [^(.*)$](#submission_background_hpc_MODULES_pattern1) | array of string | No       | -       | -                 |
+
+<a name="submission_background_hpc_MODULES_pattern1"></a>
+##### Pattern Property `Config > submission > background_hpc > MODULES > ^(.*)$`
+> All properties whose name matches the regular expression
+```^(.*)$``` ([Test](https://regex101.com/?regex=%5E%28.%2A%29%24))
+must respect the following conditions
+
+|              |                   |
+| ------------ | ----------------- |
+| **Type**     | `array of string` |
+| **Required** | No                |
+
+|                      | Array restrictions |
+| -------------------- | ------------------ |
+| **Min items**        | 1                  |
+| **Max items**        | 3                  |
+| **Items unicity**    | False              |
+| **Additional items** | False              |
+| **Tuple validation** | See below          |
+
+| Each item of this array must be                                   | Description |
+| ----------------------------------------------------------------- | ----------- |
+| [^(.*)$ items](#submission_background_hpc_MODULES_pattern1_items) | -           |
+
+<a name="autogenerated_heading_31"></a>
+##### Config > submission > background_hpc > MODULES > ^(.*)$ > ^(.*)$ items
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+<a name="submission_gnu"></a>
+### Property `Config > submission > gnu`
+
+**Title:** Submission group
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Defines the properties avilable for a submit group. See the existing submission files for examples
+
+| Property                           | Type            | Required | Default | Title/Description                                                                                                               |
+| ---------------------------------- | --------------- | -------- | ------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| [tasks](#submission_gnu_tasks)     | array of string | No       | -       | List of tasks belonging to this group                                                                                           |
+| [SCHOST](#submission_gnu_SCHOST)   | string          | No       | -       | Name of the host where the job runs                                                                                             |
+| [NPROC](#submission_gnu_NPROC)     | number          | No       | -       | Number of processors for this task                                                                                              |
+| [WRAPPER](#submission_gnu_WRAPPER) | string          | No       | -       | Prefix for binaries to be executed, e.g. srun                                                                                   |
+| [BATCH](#submission_gnu_BATCH)     | object          | No       | -       | Sets batch job arguments like walltime                                                                                          |
+| [ENV](#submission_gnu_ENV)         | object          | No       | -       | Sets environment variables                                                                                                      |
+| [MODULES](#submission_gnu_MODULES) | object          | No       | -       | Sets modules to purge/use/unload/load or switch. To maintain the order decorate with comments to override the automatic sorting |
+
+<a name="submission_gnu_tasks"></a>
+#### Property `Config > submission > gnu > tasks`
+
+|              |                   |
+| ------------ | ----------------- |
+| **Type**     | `array of string` |
+| **Required** | No                |
+
+**Description:** List of tasks belonging to this group
+
+|                      | Array restrictions |
+| -------------------- | ------------------ |
+| **Min items**        | N/A                |
+| **Max items**        | N/A                |
+| **Items unicity**    | False              |
+| **Additional items** | False              |
+| **Tuple validation** | See below          |
+
+| Each item of this array must be            | Description |
+| ------------------------------------------ | ----------- |
+| [tasks items](#submission_gnu_tasks_items) | -           |
+
+<a name="autogenerated_heading_32"></a>
+##### Config > submission > gnu > tasks > tasks items
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+<a name="submission_gnu_SCHOST"></a>
+#### Property `Config > submission > gnu > SCHOST`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Name of the host where the job runs
+
+<a name="submission_gnu_NPROC"></a>
+#### Property `Config > submission > gnu > NPROC`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `number` |
+| **Required** | No       |
+
+**Description:** Number of processors for this task
+
+<a name="submission_gnu_WRAPPER"></a>
+#### Property `Config > submission > gnu > WRAPPER`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Prefix for binaries to be executed, e.g. srun
+
+<a name="submission_gnu_BATCH"></a>
+#### Property `Config > submission > gnu > BATCH`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Sets batch job arguments like walltime
+
+<a name="submission_gnu_ENV"></a>
+#### Property `Config > submission > gnu > ENV`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Sets environment variables
+
+<a name="submission_gnu_MODULES"></a>
+#### Property `Config > submission > gnu > MODULES`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Sets modules to purge/use/unload/load or switch. To maintain the order decorate with comments to override the automatic sorting
+
+| Property                                   | Type            | Required | Default | Title/Description |
+| ------------------------------------------ | --------------- | -------- | ------- | ----------------- |
+| [^(.*)$](#submission_gnu_MODULES_pattern1) | array of string | No       | -       | -                 |
+
+<a name="submission_gnu_MODULES_pattern1"></a>
+##### Pattern Property `Config > submission > gnu > MODULES > ^(.*)$`
+> All properties whose name matches the regular expression
+```^(.*)$``` ([Test](https://regex101.com/?regex=%5E%28.%2A%29%24))
+must respect the following conditions
+
+|              |                   |
+| ------------ | ----------------- |
+| **Type**     | `array of string` |
+| **Required** | No                |
+
+|                      | Array restrictions |
+| -------------------- | ------------------ |
+| **Min items**        | 1                  |
+| **Max items**        | 3                  |
+| **Items unicity**    | False              |
+| **Additional items** | False              |
+| **Tuple validation** | See below          |
+
+| Each item of this array must be                        | Description |
+| ------------------------------------------------------ | ----------- |
+| [^(.*)$ items](#submission_gnu_MODULES_pattern1_items) | -           |
+
+<a name="autogenerated_heading_33"></a>
+##### Config > submission > gnu > MODULES > ^(.*)$ > ^(.*)$ items
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
 
 <a name="vertical_levels"></a>
 ## Property `Config > vertical_levels`
@@ -3876,7 +4539,7 @@ Must be one of:
 | **Additional items** | False              |
 | **Tuple validation** | See below          |
 
-<a name="autogenerated_heading_24"></a>
+<a name="autogenerated_heading_34"></a>
 #### At least one of the items must be
 
 |              |          |
@@ -3902,7 +4565,7 @@ Must be one of:
 | **Additional items** | False              |
 | **Tuple validation** | See below          |
 
-<a name="autogenerated_heading_25"></a>
+<a name="autogenerated_heading_35"></a>
 #### At least one of the items must be
 
 |              |          |
