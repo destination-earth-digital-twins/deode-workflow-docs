@@ -339,6 +339,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.sqlite_utils.parse_parameter_list"><code class="docutils literal notranslate"><span class="pre">parse_parameter_list()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.sqlite_utils.points_restrict"><code class="docutils literal notranslate"><span class="pre">points_restrict()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.sqlite_utils.proj4_to_string"><code class="docutils literal notranslate"><span class="pre">proj4_to_string()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.sqlite_utils.rotate_wind"><code class="docutils literal notranslate"><span class="pre">rotate_wind()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.sqlite_utils.sqlite_name"><code class="docutils literal notranslate"><span class="pre">sqlite_name()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.sqlite_utils.train_weights"><code class="docutils literal notranslate"><span class="pre">train_weights()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.sqlite_utils.write_to_sqlite"><code class="docutils literal notranslate"><span class="pre">write_to_sqlite()</span></code></a></li>
@@ -822,19 +823,37 @@
         <span class="n">proj4</span><span class="p">[</span><span class="s2">&quot;lon_0&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">p4</span><span class="p">[</span><span class="s2">&quot;LoVInDegrees&quot;</span><span class="p">]</span>
         <span class="n">proj4</span><span class="p">[</span><span class="s2">&quot;lat_1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">p4</span><span class="p">[</span><span class="s2">&quot;Latin1InDegrees&quot;</span><span class="p">]</span>
         <span class="n">proj4</span><span class="p">[</span><span class="s2">&quot;lat_2&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">p4</span><span class="p">[</span><span class="s2">&quot;Latin2InDegrees&quot;</span><span class="p">]</span>
+        <span class="c1"># TODO: Northern of Southern hemisphere? projectionCentreFlag (?)</span>
 
     <span class="k">elif</span> <span class="n">gridtype</span> <span class="o">==</span> <span class="s2">&quot;polar_steoreographic&quot;</span><span class="p">:</span>
         <span class="n">pkeys</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;LoVInDegrees&quot;</span><span class="p">]</span>
         <span class="n">p4</span> <span class="o">=</span> <span class="n">get_keylist</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="n">pkeys</span><span class="p">,</span> <span class="s2">&quot;double&quot;</span><span class="p">)</span>
         <span class="n">proj4</span><span class="p">[</span><span class="s2">&quot;proj&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;stere&quot;</span>
         <span class="n">proj4</span><span class="p">[</span><span class="s2">&quot;lon_0&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">p4</span><span class="p">[</span><span class="s2">&quot;LoVInDegrees&quot;</span><span class="p">]</span>
-        <span class="n">proj4</span><span class="p">[</span><span class="s2">&quot;lat_0&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">90.0</span>  <span class="c1"># NOTE: assuming Northern hemisphere!</span>
+        <span class="n">proj4</span><span class="p">[</span><span class="s2">&quot;lat_0&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">90.0</span>  <span class="c1"># FIXME: assuming Northern hemisphere!</span>
     <span class="k">elif</span> <span class="n">gridtype</span> <span class="o">==</span> <span class="s2">&quot;regular_ll&quot;</span><span class="p">:</span>
-        <span class="n">proj4</span><span class="p">[</span><span class="s2">&quot;proj&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;latlong&quot;</span>  <span class="c1"># FIXME</span>
+        <span class="c1"># CHECK</span>
+        <span class="n">proj4</span><span class="p">[</span><span class="s2">&quot;proj&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;latlong&quot;</span>
+    <span class="k">elif</span> <span class="n">gridtype</span> <span class="o">==</span> <span class="s2">&quot;rotated_ll&quot;</span><span class="p">:</span>
+        <span class="n">pkeys</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;angleOfRotationInDegrees&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;latitudeOfSouthernPoleInDegrees&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;longitudeOfSouthernPoleInDegrees&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="n">sp_lat</span> <span class="o">=</span> <span class="n">pkeys</span><span class="p">[</span><span class="s2">&quot;latitudeOfSouthernPoleInDegrees&quot;</span><span class="p">]</span>
+        <span class="n">sp_lon</span> <span class="o">=</span> <span class="n">pkeys</span><span class="p">[</span><span class="s2">&quot;longitudeOfSouthernPoleInDegrees&quot;</span><span class="p">]</span>
+        <span class="n">sp_angle</span> <span class="o">=</span> <span class="n">pkeys</span><span class="p">[</span><span class="s2">&quot;angleOfRotationInDegrees&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">sp_angle</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># TODO: I don&#39;t know how to handle this. Need examples!</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Rotated LatLon with SPangle not supported yet.&quot;</span><span class="p">)</span>
+        <span class="n">proj4</span><span class="p">[</span><span class="s2">&quot;proj&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ob_tran&quot;</span>
+        <span class="n">proj4</span><span class="p">[</span><span class="s2">&quot;o_proj&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;latlong&quot;</span>
+        <span class="n">proj4</span><span class="p">[</span><span class="s2">&quot;o_lat_p&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">sp_lat</span>
+        <span class="n">proj4</span><span class="p">[</span><span class="s2">&quot;o_lon_p&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">proj4</span><span class="p">[</span><span class="s2">&quot;lon_0&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sp_lon</span>
     <span class="c1">#  [rotated] mercator?</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>
-    <span class="c1"># FIXME: calling this seems to triger a deprecation warning in Numpy!</span>
     <span class="k">return</span> <span class="n">proj4</span></div>
 
 
@@ -852,19 +871,20 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># NOTE: is it OK to assume SW is the first point?</span>
     <span class="n">gridtype</span> <span class="o">=</span> <span class="n">get_keylist</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;gridType&quot;</span><span class="p">],</span> <span class="s2">&quot;string&quot;</span><span class="p">)[</span><span class="s2">&quot;gridType&quot;</span><span class="p">]</span>
+    <span class="n">gkeys</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;Nx&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ny&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;iScansPositively&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;jScansPositively&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;latitudeOfFirstGridPointInDegrees&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;longitudeOfFirstGridPointInDegrees&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;latitudeOfLastGridPointInDegrees&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;longitudeOfLastGridPointInDegrees&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
     <span class="k">if</span> <span class="n">gridtype</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;lambert&quot;</span><span class="p">,</span> <span class="s2">&quot;lambert_lam&quot;</span><span class="p">]:</span>
-        <span class="n">gkeys</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="s2">&quot;Nx&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;Ny&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;DxInMetres&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;DyInMetres&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;iScansPositively&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;jScansPositively&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;latitudeOfFirstGridPointInDegrees&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;longitudeOfFirstGridPointInDegrees&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;latitudeOfLastGridPointInDegrees&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;longitudeOfLastGridPointInDegrees&quot;</span><span class="p">,</span>
-        <span class="p">]</span>
+        <span class="n">gkeys</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">&quot;DxInMetres&quot;</span><span class="p">,</span> <span class="s2">&quot;DyInMetres&quot;</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="n">gridtype</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;regular_ll&quot;</span><span class="p">,</span> <span class="s2">&quot;rotated_ll&quot;</span><span class="p">]:</span>
+        <span class="n">gkeys</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">&quot;iDirectionIncrementInDegrees&quot;</span><span class="p">,</span> <span class="s2">&quot;jDirectionIncrementInDegrees&quot;</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>
     <span class="n">gg</span> <span class="o">=</span> <span class="n">get_keylist</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="n">gkeys</span><span class="p">,</span> <span class="s2">&quot;double&quot;</span><span class="p">)</span>
@@ -1259,11 +1279,16 @@
 
 <div class="viewcode-block" id="combine_fields">
 <a class="viewcode-back" href="../../deode.html#deode.sqlite_utils.combine_fields">[docs]</a>
-<span class="k">def</span> <span class="nf">combine_fields</span><span class="p">(</span><span class="n">param</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">combine_fields</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">station_list</span><span class="p">,</span> <span class="n">proj4</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Combine multiple decoded fields into one parameter.</span>
+
+<span class="sd">    We need lat/lon and proj4 values when calculating wind speed &amp; direction.</span>
+<span class="sd">    Because we should correct for the local rotation of the axes.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        param: full parameter descriptor</span>
+<span class="sd">        station_list: a pandas table with at least lon &amp; lat columns</span>
+<span class="sd">        proj4: a list with proj4 definition (not a single string)</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        a new data matrix that combines the input fields according to parameter descriptor</span>
@@ -1286,7 +1311,12 @@
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;WIND SPEED&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">ff</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nfields</span><span class="p">):</span>
             <span class="n">result</span> <span class="o">+=</span> <span class="n">param</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">ff</span><span class="p">]</span> <span class="o">*</span> <span class="n">param</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">ff</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+        <span class="n">lat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">station_list</span><span class="p">[</span><span class="s2">&quot;lat&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+        <span class="n">lon</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">station_list</span><span class="p">[</span><span class="s2">&quot;lon&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+        <span class="n">angle</span><span class="p">,</span> <span class="n">mapfactor</span> <span class="o">=</span> <span class="n">rotate_wind</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">proj4</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>  <span class="c1"># * mapfactor ???</span>
 
     <span class="k">if</span> <span class="n">param</span><span class="p">[</span><span class="s2">&quot;function&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;sum&quot;</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;SUM&quot;</span><span class="p">)</span>
@@ -1295,11 +1325,65 @@
         <span class="k">return</span> <span class="n">result</span>
 
     <span class="k">if</span> <span class="n">param</span><span class="p">[</span><span class="s2">&quot;function&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;vector_angle&quot;</span><span class="p">:</span>
-        <span class="c1"># FIXME</span>
-        <span class="n">param</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;deg&quot;</span>
-        <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;WIND DIRECTION&quot;</span><span class="p">)</span>
+        <span class="c1"># NOTE:  make sure we get the wind components in the right order?</span>
+        <span class="c1">#        They appear in the same order as in config.</span>
+        <span class="c1">#        So we assume the first entry is &quot;u&quot; (or equivalent).</span>
+        <span class="c1"># FIXME: do we need to rotate the wind first? DEPENDS ON GRIB!</span>
+        <span class="c1"># FIXME: param[&quot;units&quot;] should be set to &quot;deg&quot;?</span>
+
+        <span class="c1"># 1. check there are exactly 2 components</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">param</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">])</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;ERROR: angle always needs exactly two components.&quot;</span><span class="p">)</span>
+
+        <span class="n">u</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+        <span class="c1"># 2. Angle is not well defined if both components are too small (no wind).</span>
+        <span class="c1"># NOTE: numpy knows how to handle u==0. ( np.arctan2(+/-1, 0) == +/- np.pi / 2. )</span>
+        <span class="c1"># BUT if both u, v -&gt; 0, result depends significantly on sign of u (0 vs 180).</span>
+        <span class="c1"># FIXME: what should happen when wind speed is (close to) zero?</span>
+        <span class="c1">#        NaN ? Something else?</span>
+        <span class="n">wdir</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="mi">180</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="o">*</span> <span class="mf">180.0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">360</span><span class="p">)</span>
+        <span class="n">lat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">station_list</span><span class="p">[</span><span class="s2">&quot;lat&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+        <span class="n">lon</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">station_list</span><span class="p">[</span><span class="s2">&quot;lon&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+
+        <span class="n">angle</span><span class="p">,</span> <span class="n">mapfactor</span> <span class="o">=</span> <span class="n">rotate_wind</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">proj4</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">wdir</span> <span class="o">+</span> <span class="n">angle</span>
 
     <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="rotate_wind">
+<a class="viewcode-back" href="../../deode.html#deode.sqlite_utils.rotate_wind">[docs]</a>
+<span class="k">def</span> <span class="nf">rotate_wind</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">p4</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Rotate wind from projection grid to geographical axes for correct wind direction.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        lon: longitude (numpy vectors or single value)</span>
+<span class="sd">        lat: latitude (numpy vectors or single value)</span>
+<span class="sd">        p4: proj4 definition as a list (not single string)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        angle: correction angle in deg (vector) corresponding to every lat/lon location.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">p4</span><span class="p">[</span><span class="s2">&quot;proj&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;lcc&quot;</span><span class="p">:</span>
+        <span class="n">rad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span>
+        <span class="n">refcos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">p4</span><span class="p">[</span><span class="s2">&quot;lat_1&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">rad</span><span class="p">)</span>
+        <span class="n">refsin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">p4</span><span class="p">[</span><span class="s2">&quot;lat_1&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">rad</span><span class="p">)</span>
+        <span class="n">angle</span> <span class="o">=</span> <span class="n">refsin</span> <span class="o">*</span> <span class="p">(</span><span class="n">lon</span> <span class="o">-</span> <span class="n">p4</span><span class="p">[</span><span class="s2">&quot;lon_0&quot;</span><span class="p">])</span>  <span class="c1"># * rad</span>
+        <span class="n">mapfactor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">refcos</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">lat</span> <span class="o">*</span> <span class="n">rad</span><span class="p">),</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">refcos</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span>
+            <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">refsin</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">lat</span> <span class="o">*</span> <span class="n">rad</span><span class="p">)),</span> <span class="n">refsin</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="n">p4</span><span class="p">[</span><span class="s2">&quot;proj&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;lonlat&quot;</span><span class="p">:</span>
+        <span class="n">angle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lat</span><span class="p">))</span>
+        <span class="n">mapfactor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lat</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Unimplemented wind rotation.&quot;</span><span class="p">)</span>
+        <span class="n">angle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lat</span><span class="p">))</span>
+        <span class="n">mapfactor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lat</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">angle</span><span class="p">,</span> <span class="n">mapfactor</span></div>
 
 
 
@@ -1467,6 +1551,7 @@
 
     <span class="n">fcdate</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">leadtime</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">proj4</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">gi</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">gt</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">infile</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">gfile</span><span class="p">:</span>
@@ -1518,6 +1603,9 @@
                 <span class="c1"># create a list of interpolation weights</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;SQLITE: training interpolation weights.&quot;</span><span class="p">)</span>
                 <span class="n">weights</span> <span class="o">=</span> <span class="n">train_weights</span><span class="p">(</span><span class="n">station_list</span><span class="p">,</span> <span class="n">gid</span><span class="p">,</span> <span class="n">lsm</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="c1"># we will need the projection definition</span>
+                <span class="c1"># if we have to correct wind direction etc.</span>
+                <span class="n">proj4</span> <span class="o">=</span> <span class="n">get_proj4</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
 
             <span class="c1"># by default, we do bilinear interpolation</span>
             <span class="n">method</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;method&quot;</span> <span class="ow">in</span> <span class="n">param</span> <span class="k">else</span> <span class="s2">&quot;bilin&quot;</span>
@@ -1546,7 +1634,7 @@
     <span class="c1">#       but checking whether the combined field is None is enough</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;SQLITE: checking cached combined fields&quot;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">param_cmb_list</span><span class="p">:</span>
-        <span class="n">data_vector</span> <span class="o">=</span> <span class="n">combine_fields</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+        <span class="n">data_vector</span> <span class="o">=</span> <span class="n">combine_fields</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">station_list</span><span class="p">,</span> <span class="n">proj4</span><span class="p">)</span>
         <span class="c1"># only write to SQLite if ALL components were found!</span>
         <span class="k">if</span> <span class="n">data_vector</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;SQLITE: writing combined field&quot;</span><span class="p">)</span>
@@ -1784,7 +1872,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-01-19T17:01:38Z.
+      <span class="lastupdated">Last updated on 2024-01-19T17:02:47Z.
       </span></p>
   </div>
 
