@@ -1,4 +1,4 @@
-This was automatically generated running `deode doc config` on 2024-02-06T12:41:14.
+This was automatically generated running `deode doc config` on 2024-02-14T16:05:20.
 
 # Config
 
@@ -4533,20 +4533,31 @@ Must be one of:
 
 **Description:** Defines host dependent runtime settings such as binaries, batch job rules, modules and similar
 
-| Property                                               | Type            | Required | Default | Title/Description                                                                                            |
-| ------------------------------------------------------ | --------------- | -------- | ------- | ------------------------------------------------------------------------------------------------------------ |
-| [bindir](#submission_bindir)                           | string          | No       | -       | Location of binaries                                                                                         |
-| [nproma](#submission_nproma)                           | number          | No       | -32     | NPROMA size in the forecast model. See the namelists for where it is used                                    |
-| [lfftw](#submission_lfftw)                             | boolean         | No       | true    | Use of the FFTW library. See the namelists for where it is used                                              |
-| [module_initpath](#submission_module_initpath)         | string          | No       | -       | Path to the version of env_modules_python.py to be used in the module initialization                         |
-| [submit_types](#submission_submit_types)               | array of string | No       | -       | List of submit groups to be defined                                                                          |
-| [default_submit_type](#submission_default_submit_type) | string          | No       | -       | Defines the default submit type for tasks not listed in any defined type                                     |
-| [task_exceptions](#submission_task_exceptions)         | object          | No       | -       | Allows to define task specific settings like BATCH, MODULES, NPROC. Use as task_exceptions.taskname.property |
-| [serial](#submission_serial)                           | object          | No       | -       | Submission group                                                                                             |
-| [parallel](#submission_parallel)                       | object          | No       | -       | Submission group                                                                                             |
-| [background_vm](#submission_background_vm)             | object          | No       | -       | Submission group                                                                                             |
-| [background_hpc](#submission_background_hpc)           | object          | No       | -       | Submission group                                                                                             |
-| [gnu](#submission_gnu)                                 | object          | No       | -       | Submission group                                                                                             |
+| Property                                               | Type            | Required | Default | Title/Description                                                                                                                                        |
+| ------------------------------------------------------ | --------------- | -------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [account](#submission_account)                         | string          | No       | -       | Global setting of account to be used. E.g. \`#SBATCH -A some_account\` for slurm. Setting of account on group or task level overrides the global setting |
+| [bindir](#submission_bindir)                           | string          | No       | -       | Location of binaries                                                                                                                                     |
+| [nproma](#submission_nproma)                           | number          | No       | -32     | NPROMA size in the forecast model. See the namelists for where it is used                                                                                |
+| [lfftw](#submission_lfftw)                             | boolean         | No       | true    | Use of the FFTW library. See the namelists for where it is used                                                                                          |
+| [module_initpath](#submission_module_initpath)         | string          | No       | -       | Path to the version of env_modules_python.py to be used in the module initialization                                                                     |
+| [submit_types](#submission_submit_types)               | array of string | No       | -       | List of submit groups to be defined                                                                                                                      |
+| [default_submit_type](#submission_default_submit_type) | string          | No       | -       | Defines the default submit type for tasks not listed in any defined type                                                                                 |
+| [task_exceptions](#submission_task_exceptions)         | object          | No       | -       | Allows to define task specific settings like BATCH, MODULES, NPROC. Use as task_exceptions.taskname.property                                             |
+| [serial](#submission_serial)                           | object          | No       | -       | Submission group                                                                                                                                         |
+| [parallel](#submission_parallel)                       | object          | No       | -       | Submission group                                                                                                                                         |
+| [background_vm](#submission_background_vm)             | object          | No       | -       | Submission group                                                                                                                                         |
+| [background_hpc](#submission_background_hpc)           | object          | No       | -       | Submission group                                                                                                                                         |
+| [gnu](#submission_gnu)                                 | object          | No       | -       | Submission group                                                                                                                                         |
+
+<a name="submission_account"></a>
+### Property `Config > submission > account`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Global setting of account to be used. E.g. `#SBATCH -A some_account` for slurm. Setting of account on group or task level overrides the global setting
 
 <a name="submission_bindir"></a>
 ### Property `Config > submission > bindir`
