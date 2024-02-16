@@ -428,6 +428,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.toolbox.Platform.get_system_macros"><code class="docutils literal notranslate"><span class="pre">Platform.get_system_macros()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.toolbox.Platform.get_system_value"><code class="docutils literal notranslate"><span class="pre">Platform.get_system_value()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.toolbox.Platform.get_value"><code class="docutils literal notranslate"><span class="pre">Platform.get_value()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.toolbox.Platform.sub_str_dict"><code class="docutils literal notranslate"><span class="pre">Platform.sub_str_dict()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.toolbox.Platform.sub_value"><code class="docutils literal notranslate"><span class="pre">Platform.sub_value()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.toolbox.Platform.substitute"><code class="docutils literal notranslate"><span class="pre">Platform.substitute()</span></code></a></li>
 </ul>
@@ -969,6 +970,32 @@
 
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Substituted string: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">res</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">res</span></div>
+
+
+<div class="viewcode-block" id="Platform.sub_str_dict">
+<a class="viewcode-back" href="../../deode.html#deode.toolbox.Platform.sub_str_dict">[docs]</a>
+    <span class="k">def</span> <span class="nf">sub_str_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_dict</span><span class="p">,</span> <span class="n">basetime</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">validtime</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Substitute strings in dictionary.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            input_dict (dict): Dict to be parsed</span>
+<span class="sd">            basetime (datetime.datetime, optional): Base time. Defaults to None.</span>
+<span class="sd">            validtime (datetime.datetime, optional): Valid time. Defaults to None.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            d (dict): Updated dict</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">input_dict</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">input_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_str_dict</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">basetime</span><span class="p">,</span> <span class="n">validtime</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">basetime</span><span class="p">,</span> <span class="n">validtime</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+        <span class="k">return</span> <span class="n">d</span></div>
 
 
 <div class="viewcode-block" id="Platform.substitute">
@@ -1651,7 +1678,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-02-16T15:01:40Z.
+      <span class="lastupdated">Last updated on 2024-02-16T15:07:24Z.
       </span></p>
   </div>
 

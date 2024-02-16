@@ -428,6 +428,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.toolbox.Platform.get_system_macros"><code class="docutils literal notranslate"><span class="pre">Platform.get_system_macros()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.toolbox.Platform.get_system_value"><code class="docutils literal notranslate"><span class="pre">Platform.get_system_value()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.toolbox.Platform.get_value"><code class="docutils literal notranslate"><span class="pre">Platform.get_value()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.toolbox.Platform.sub_str_dict"><code class="docutils literal notranslate"><span class="pre">Platform.sub_str_dict()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.toolbox.Platform.sub_value"><code class="docutils literal notranslate"><span class="pre">Platform.sub_value()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.toolbox.Platform.substitute"><code class="docutils literal notranslate"><span class="pre">Platform.substitute()</span></code></a></li>
 </ul>
@@ -724,6 +725,7 @@
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
+<span class="kn">import</span> <span class="nn">yaml</span>
 <span class="kn">from</span> <span class="nn">toml_formatter.formatter</span> <span class="kn">import</span> <span class="n">FormattedToml</span>
 <span class="kn">from</span> <span class="nn">troika.connections.ssh</span> <span class="kn">import</span> <span class="n">SSHConnection</span>
 
@@ -889,17 +891,21 @@
     <span class="p">)</span>
 
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;ECF_HOME=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ecf_home</span><span class="p">)</span>
-    <span class="n">troika_config_file</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;troika.config_file&quot;</span><span class="p">]</span>
-    <span class="n">troika_config_file</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">config</span><span class="p">)</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">troika_config_file</span><span class="p">)</span>
-    <span class="n">local_troika_config_file</span> <span class="o">=</span> <span class="n">troika_config_file</span>
+    <span class="n">troika_config_file</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">config</span><span class="p">)</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;troika.config_file&quot;</span><span class="p">])</span>
     <span class="k">if</span> <span class="n">ecf_home</span> <span class="o">!=</span> <span class="n">args</span><span class="o">.</span><span class="n">joboutdir</span><span class="p">:</span>
-        <span class="n">local_troika_config_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ecf_files_remotely</span><span class="si">}</span><span class="s2">/troika.yml&quot;</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-        <span class="s2">&quot;troika config used: </span><span class="si">{}</span><span class="s2"> local file=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">remote_troika_config_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">ecf_files_remotely</span><span class="p">,</span> <span class="n">suite_name</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">troika_config_file</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">remote_troika_config_file</span> <span class="o">=</span> <span class="n">troika_config_file</span>
+
+    <span class="n">config</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">update</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;troika&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;config_file&quot;</span><span class="p">:</span> <span class="n">remote_troika_config_file</span><span class="p">}})</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="s2">&quot;troika config used: </span><span class="si">{}</span><span class="s2"> troika file=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="n">troika_config_file</span><span class="p">,</span>
-        <span class="n">local_troika_config_file</span><span class="p">,</span>
+        <span class="n">remote_troika_config_file</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">config</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">update</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;troika&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;config_file&quot;</span><span class="p">:</span> <span class="n">local_troika_config_file</span><span class="p">}})</span>
 
     <span class="n">server</span> <span class="o">=</span> <span class="n">EcflowServer</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">start_command</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">start_command</span><span class="p">)</span>
     <span class="n">submission_defs</span> <span class="o">=</span> <span class="n">TaskSettings</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
@@ -929,8 +935,18 @@
                 <span class="n">dst</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ecf_files_remotely</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">rpath</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">file</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Copy src=</span><span class="si">{}</span><span class="s2"> to dst=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">)</span>
                 <span class="n">ssh</span><span class="o">.</span><span class="n">sendfile</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">)</span>
-            <span class="n">ssh</span><span class="o">.</span><span class="n">sendfile</span><span class="p">(</span><span class="n">troika_config_file</span><span class="p">,</span> <span class="n">local_troika_config_file</span><span class="p">)</span>
+
+        <span class="c1"># Read and parse the troika config file</span>
+        <span class="n">temp_troika_config_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;parsed_</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">troika_config_file</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">troika_config_file</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">infile</span><span class="p">:</span>
+            <span class="n">troika_input</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span>
+        <span class="n">troika_output</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">sub_str_dict</span><span class="p">(</span><span class="n">troika_input</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">temp_troika_config_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">outfile</span><span class="p">:</span>
+            <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">troika_output</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+
+        <span class="n">ssh</span><span class="o">.</span><span class="n">sendfile</span><span class="p">(</span><span class="n">temp_troika_config_file</span><span class="p">,</span> <span class="n">remote_troika_config_file</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;--- LUMI -&gt; Ecflow server copy DONE ---&quot;</span><span class="p">)</span>
+
     <span class="n">server</span><span class="o">.</span><span class="n">start_suite</span><span class="p">(</span><span class="n">suite_name</span><span class="p">,</span> <span class="n">def_file</span><span class="p">,</span> <span class="n">begin</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">begin</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Done with suite.&quot;</span><span class="p">)</span></div>
 
@@ -1114,7 +1130,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-02-16T15:01:40Z.
+      <span class="lastupdated">Last updated on 2024-02-16T15:07:24Z.
       </span></p>
   </div>
 
