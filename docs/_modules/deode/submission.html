@@ -1008,17 +1008,15 @@
         <span class="n">interpreter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_task_settings</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="s2">&quot;INTERPRETER&quot;</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">interpreter</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">interpreter</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">interpreter</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;#!</span><span class="si">{</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">interpreter</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="si">}</span><span class="s2">&quot;</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">interpreter</span><span class="p">)</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">input_template_job</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file_handler</span><span class="p">:</span>
-            <span class="n">input_content</span> <span class="o">=</span> <span class="n">file_handler</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
         <span class="n">dir_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">task_job</span><span class="p">))</span>
 
         <span class="n">deodemakedirs</span><span class="p">(</span><span class="n">dir_name</span><span class="p">,</span> <span class="n">unixgroup</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">unix_group</span><span class="p">)</span>
 
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">task_job</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file_handler</span><span class="p">:</span>
-            <span class="n">file_handler</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">interpreter</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">file_handler</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;#!/bin/bash</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
             <span class="c1"># Batch settings</span>
             <span class="n">batch_settings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_task_settings</span><span class="p">(</span>
@@ -1032,7 +1030,29 @@
             <span class="k">for</span> <span class="n">b_setting</span> <span class="ow">in</span> <span class="n">batch_settings</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
                 <span class="n">file_handler</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">b_setting</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
-            <span class="n">python_task_env</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">ecf_vars</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="s2">&quot;ECF_HOST&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;ECF_PORT&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;ECF_NAME&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;ECF_PASS&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;ECF_TRYNO&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;ECF_RID&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;ECF_TIMEOUT&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;BASETIME&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;VALIDTIME&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;LOGLEVEL&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;ARGS&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;WRAPPER&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;NPROC&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;NPROC_IO&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;NPROCX&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;NPROCY&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;CONFIG&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;DEODE_HOME&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;KEEP_WORKDIRS&quot;</span><span class="p">,</span>
+            <span class="p">]</span>
+            <span class="k">for</span> <span class="n">ecf_var</span> <span class="ow">in</span> <span class="n">ecf_vars</span><span class="p">:</span>
+                <span class="n">file_handler</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;export </span><span class="si">{</span><span class="n">ecf_var</span><span class="si">}</span><span class="s1">=&quot;%</span><span class="si">{</span><span class="n">ecf_var</span><span class="si">}</span><span class="s1">%&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 
             <span class="c1"># Module settings</span>
             <span class="n">module_settings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_task_settings</span><span class="p">(</span>
@@ -1040,27 +1060,19 @@
             <span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;module settings </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">module_settings</span><span class="p">)</span>
 
-            <span class="n">m_settings</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;import os&quot;</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">module_settings</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">module_settings</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">env_file</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">submission_defs</span><span class="p">[</span><span class="s1">&#39;module_initpath&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">/env_modules_python.py&quot;</span>
-                <span class="p">)</span>
+                <span class="n">env_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">submission_defs</span><span class="p">[</span><span class="s1">&#39;module_initpath&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">/bash&quot;</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">env_file</span><span class="p">):</span>
                     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                         <span class="sa">f</span><span class="s2">&quot;Environment file </span><span class="si">{</span><span class="n">env_file</span><span class="si">}</span><span class="s2"> is not a file or does not exists&quot;</span>
                     <span class="p">)</span>
 
-                <span class="n">m_settings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;exec(open(&#39;</span><span class="si">{</span><span class="n">env_file</span><span class="si">}</span><span class="s2">&#39;).read())&quot;</span><span class="p">,</span>
-                <span class="p">)</span>
+                <span class="n">file_handler</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;. </span><span class="si">{</span><span class="n">env_file</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">module_settings</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
                     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
-                        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Module command has the wrong lenght:</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                    <span class="n">cmd</span> <span class="o">=</span> <span class="s2">&quot;module(&quot;</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">&#39;&quot;</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">key</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span>
-
-                    <span class="n">m_settings</span> <span class="o">+=</span> <span class="p">[</span><span class="n">cmd</span><span class="p">]</span>
-
-            <span class="n">python_task_env</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">m_settings</span><span class="p">)</span>
+                        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Module command has the wrong length:</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">cmd</span> <span class="o">=</span> <span class="s2">&quot;module &quot;</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">key</span><span class="p">])</span>
+                    <span class="n">file_handler</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cmd</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
             <span class="c1"># Environment settings</span>
             <span class="n">env_settings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_task_settings</span><span class="p">(</span>
@@ -1068,23 +1080,23 @@
             <span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">env_settings</span><span class="p">)</span>
 
-            <span class="n">python_task_env</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">env_settings</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="n">python_task_env</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;os.environ[&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&#39;] = &#39;</span><span class="si">{</span><span class="n">val</span><span class="si">}</span><span class="s2">&#39;</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="n">input_content</span> <span class="o">=</span> <span class="n">input_content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;# @ENV_SUB@&quot;</span><span class="p">,</span> <span class="n">python_task_env</span><span class="p">)</span>
-            <span class="n">input_content</span> <span class="o">=</span> <span class="n">input_content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;@STAND_ALONE_TASK_NAME@&quot;</span><span class="p">,</span> <span class="n">task</span><span class="p">)</span>
+                <span class="n">file_handler</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;export </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">=&quot;</span><span class="si">{</span><span class="n">val</span><span class="si">}</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="n">file_handler</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;export STAND_ALONE_TASK_NAME=&quot;</span><span class="si">{</span><span class="n">task</span><span class="si">}</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 
             <span class="n">platform</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
             <span class="n">deode_home</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">get_platform_value</span><span class="p">(</span><span class="s2">&quot;DEODE_HOME&quot;</span><span class="p">)</span>
 
-            <span class="n">input_content</span> <span class="o">=</span> <span class="n">input_content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;@STAND_ALONE_DEODE_HOME@&quot;</span><span class="p">,</span> <span class="n">deode_home</span><span class="p">)</span>
+            <span class="n">file_handler</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;export STAND_ALONE_DEODE_HOME=&quot;</span><span class="si">{</span><span class="n">deode_home</span><span class="si">}</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="n">config_file</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;source_file_path&quot;</span><span class="p">]</span>
 
             <span class="k">if</span> <span class="n">config_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">input_content</span> <span class="o">=</span> <span class="n">input_content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
-                    <span class="s2">&quot;@STAND_ALONE_TASK_CONFIG@&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span>
-                <span class="p">)</span>
-            <span class="n">file_handler</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">input_content</span><span class="p">)</span>
+                <span class="n">file_handler</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;export STAND_ALONE_TASK_CONFIG=&quot;</span><span class="si">{</span><span class="n">config_file</span><span class="si">!s}</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">file_handler</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;export STAND_ALONE_TASK_CONFIG=&quot;&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="n">file_handler</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">interpreter</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">input_template_job</span><span class="si">}</span><span class="s2"> || exit 1</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="c1"># Make file executable for user</span>
         <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">task_job</span><span class="p">,</span> <span class="mo">0o744</span><span class="p">)</span></div>
 </div>
@@ -1156,7 +1168,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-02-16T15:07:24Z.
+      <span class="lastupdated">Last updated on 2024-02-20T10:36:12Z.
       </span></p>
   </div>
 
