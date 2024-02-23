@@ -1017,7 +1017,14 @@
 <div class="viewcode-block" id="TaskSettings.parse_job">
 <a class="viewcode-back" href="../../deode.html#deode.submission.TaskSettings.parse_job">[docs]</a>
     <span class="k">def</span> <span class="nf">parse_job</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">input_template_job</span><span class="p">,</span> <span class="n">task_job</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ecf_micro</span><span class="o">=</span><span class="s2">&quot;%&quot;</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">task</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">,</span>
+        <span class="n">input_template_job</span><span class="p">,</span>
+        <span class="n">task_job</span><span class="p">,</span>
+        <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">ecf_micro</span><span class="o">=</span><span class="s2">&quot;%&quot;</span><span class="p">,</span>
+        <span class="n">scheduler</span><span class="o">=</span><span class="s2">&quot;ecflow&quot;</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read default job and change interpretor.</span>
 
@@ -1028,6 +1035,7 @@
 <span class="sd">            task_job (str): Task container</span>
 <span class="sd">            variables (_type_, optional): _description_. Defaults to None.</span>
 <span class="sd">            ecf_micro (str, optional): _description_.</span>
+<span class="sd">            scheduler (str, optional): Scheduler. Defaults to ecflow.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            RuntimeError: In case of missing module env file</span>
@@ -1058,29 +1066,30 @@
             <span class="k">for</span> <span class="n">b_setting</span> <span class="ow">in</span> <span class="n">batch_settings</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
                 <span class="n">file_handler</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">b_setting</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
-            <span class="n">ecf_vars</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="s2">&quot;ECF_HOST&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;ECF_PORT&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;ECF_NAME&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;ECF_PASS&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;ECF_TRYNO&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;ECF_RID&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;ECF_TIMEOUT&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;BASETIME&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;VALIDTIME&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;LOGLEVEL&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;ARGS&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;WRAPPER&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;NPROC&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;NPROC_IO&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;NPROCX&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;NPROCY&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;CONFIG&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;DEODE_HOME&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;KEEP_WORKDIRS&quot;</span><span class="p">,</span>
-            <span class="p">]</span>
-            <span class="k">for</span> <span class="n">ecf_var</span> <span class="ow">in</span> <span class="n">ecf_vars</span><span class="p">:</span>
-                <span class="n">file_handler</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;export </span><span class="si">{</span><span class="n">ecf_var</span><span class="si">}</span><span class="s1">=&quot;%</span><span class="si">{</span><span class="n">ecf_var</span><span class="si">}</span><span class="s1">%&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">scheduler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">scheduler</span> <span class="o">==</span> <span class="s2">&quot;ecflow&quot;</span><span class="p">:</span>
+                <span class="n">ecf_vars</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="s2">&quot;ECF_HOST&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;ECF_PORT&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;ECF_NAME&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;ECF_PASS&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;ECF_TRYNO&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;ECF_RID&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;ECF_TIMEOUT&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;BASETIME&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;VALIDTIME&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;LOGLEVEL&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;ARGS&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;WRAPPER&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;NPROC&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;NPROC_IO&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;NPROCX&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;NPROCY&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;CONFIG&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;DEODE_HOME&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;KEEP_WORKDIRS&quot;</span><span class="p">,</span>
+                <span class="p">]</span>
+                <span class="k">for</span> <span class="n">ecf_var</span> <span class="ow">in</span> <span class="n">ecf_vars</span><span class="p">:</span>
+                    <span class="n">file_handler</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;export </span><span class="si">{</span><span class="n">ecf_var</span><span class="si">}</span><span class="s1">=&quot;%</span><span class="si">{</span><span class="n">ecf_var</span><span class="si">}</span><span class="s1">%&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 
             <span class="c1"># Module settings</span>
             <span class="n">module_settings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_task_settings</span><span class="p">(</span>
@@ -1111,18 +1120,16 @@
             <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">env_settings</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="n">file_handler</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;export </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">=&quot;</span><span class="si">{</span><span class="n">val</span><span class="si">}</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 
-            <span class="n">file_handler</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;export STAND_ALONE_TASK_NAME=&quot;</span><span class="si">{</span><span class="n">task</span><span class="si">}</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">scheduler</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">file_handler</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;export STAND_ALONE_TASK_NAME=&quot;</span><span class="si">{</span><span class="n">task</span><span class="si">}</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 
-            <span class="n">platform</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
-            <span class="n">deode_home</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">get_platform_value</span><span class="p">(</span><span class="s2">&quot;DEODE_HOME&quot;</span><span class="p">)</span>
+                <span class="n">platform</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+                <span class="n">deode_home</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">get_platform_value</span><span class="p">(</span><span class="s2">&quot;DEODE_HOME&quot;</span><span class="p">)</span>
 
-            <span class="n">file_handler</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;export STAND_ALONE_DEODE_HOME=&quot;</span><span class="si">{</span><span class="n">deode_home</span><span class="si">}</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="n">config_file</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;source_file_path&quot;</span><span class="p">]</span>
+                <span class="n">file_handler</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;export STAND_ALONE_DEODE_HOME=&quot;</span><span class="si">{</span><span class="n">deode_home</span><span class="si">}</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">config_file</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;source_file_path&quot;</span><span class="p">]</span>
 
-            <span class="k">if</span> <span class="n">config_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">file_handler</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;export STAND_ALONE_TASK_CONFIG=&quot;</span><span class="si">{</span><span class="n">config_file</span><span class="si">!s}</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">file_handler</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;export STAND_ALONE_TASK_CONFIG=&quot;&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 
             <span class="n">file_handler</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">interpreter</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">input_template_job</span><span class="si">}</span><span class="s2"> || exit 1</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="c1"># Make file executable for user</span>
@@ -1175,6 +1182,7 @@
             <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
             <span class="n">input_template_job</span><span class="o">=</span><span class="n">template_job</span><span class="p">,</span>
             <span class="n">task_job</span><span class="o">=</span><span class="n">task_job</span><span class="p">,</span>
+            <span class="n">scheduler</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">cmd</span> <span class="o">=</span> <span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">troika</span><span class="si">}</span><span class="s2"> -c </span><span class="si">{</span><span class="n">troika_config</span><span class="si">}</span><span class="s2"> submit </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">task_settings</span><span class="o">.</span><span class="n">job_type</span><span class="si">}</span><span class="s2"> &quot;</span>
@@ -1196,7 +1204,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-02-22T16:53:05Z.
+      <span class="lastupdated">Last updated on 2024-02-23T17:45:42Z.
       </span></p>
   </div>
 
