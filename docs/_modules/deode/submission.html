@@ -762,7 +762,7 @@
 <span class="kn">from</span> <span class="nn">.derived_variables</span> <span class="kn">import</span> <span class="n">derived_variables</span>
 <span class="kn">from</span> <span class="nn">.logs</span> <span class="kn">import</span> <span class="n">logger</span>
 <span class="kn">from</span> <span class="nn">.os_utils</span> <span class="kn">import</span> <span class="n">deodemakedirs</span>
-<span class="kn">from</span> <span class="nn">.tasks.discover_task</span> <span class="kn">import</span> <span class="n">get_task</span>
+<span class="kn">from</span> <span class="nn">.tasks.discover_task</span> <span class="kn">import</span> <span class="n">available_tasks</span>
 <span class="kn">from</span> <span class="nn">.toolbox</span> <span class="kn">import</span> <span class="n">FileManager</span><span class="p">,</span> <span class="n">Platform</span>
 
 
@@ -1174,7 +1174,10 @@
 <span class="sd">        Raises:</span>
 <span class="sd">            RuntimeError: Submission failure.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">_</span> <span class="o">=</span> <span class="n">get_task</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+        <span class="n">known_tasks</span> <span class="o">=</span> <span class="n">available_tasks</span><span class="p">()</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">known_tasks</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Task </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> not implemented&quot;</span><span class="p">)</span>
         <span class="n">platform</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
 
         <span class="c1"># Update dervived variables (nproc etc)</span>
@@ -1211,7 +1214,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-03-07T14:39:24Z.
+      <span class="lastupdated">Last updated on 2024-03-11T14:49:03Z.
       </span></p>
   </div>
 
