@@ -1,4 +1,4 @@
-This was automatically generated running `deode doc config` on 2024-03-14T13:50:38.
+This was automatically generated running `deode doc config` on 2024-03-14T15:06:13.
 
 # Config
 
@@ -2135,34 +2135,34 @@ Must be one of:
 
 **Description:** Model for validation of the data in the 'sqlite' section of the config file.
 
-| Property                                              | Type   | Required | Default                                                   | Title/Description                                                                                    |
-| ----------------------------------------------------- | ------ | -------- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| [parameter_list](#extractsqlite_parameter_list)       | string | No       | "@DEODE_HOME@/deode/data/sqlite/param_list.json"          | List of parameters to extract                                                                        |
-| [sqlite_model_name](#extractsqlite_sqlite_model_name) | string | No       | "@CNMEXP@"                                                | Model name used in the sqlite tables                                                                 |
-| [sqlite_path](#extractsqlite_sqlite_path)             | string | No       | "@ARCHIVE_ROOT@/sqlite/"                                  | Path to generated sqlite files                                                                       |
-| [sqlite_template](#extractsqlite_sqlite_template)     | string | No       | "FCTABLE_@PP@_@YYYY@@MM@_@HH@.sqlite"                     | File name template for generated sqlite files                                                        |
-| [station_list](#extractsqlite_station_list)           | string | No       | "@DEODE_HOME@/deode/data/sqlite/station_list_default.csv" | Station list used for extraction                                                                     |
-| [selection](#extractsqlite_selection)                 | string | No       | "PT1H"                                                    | Temporal selection. Same syntax as for output_settings. Leave empty to inherit the fullpos settings. |
+| Property                                              | Type   | Required | Default                                                           | Title/Description                                                                                    |
+| ----------------------------------------------------- | ------ | -------- | ----------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| [parameter_list](#extractsqlite_parameter_list)       | string | No       | "@DEODE_HOME@/deode/data/sqlite/param_list_@CSC@.json"            | List of parameters to extract                                                                        |
+| [sqlite_model_name](#extractsqlite_sqlite_model_name) | string | No       | "@CASE@"                                                          | Model name used in the sqlite tables                                                                 |
+| [sqlite_path](#extractsqlite_sqlite_path)             | string | No       | "@ARCHIVE_ROOT@/sqlite/"                                          | Path to generated sqlite files                                                                       |
+| [sqlite_template](#extractsqlite_sqlite_template)     | string | No       | "FCTABLE/{MODEL}/{YYYY}/{MM}/FCTABLE_{PP}_{YYYY}{MM}_{HH}.sqlite" | File name template for generated sqlite files                                                        |
+| [station_list](#extractsqlite_station_list)           | string | No       | "@DEODE_HOME@/deode/data/sqlite/station_list_default.csv"         | Station list used for extraction                                                                     |
+| [selection](#extractsqlite_selection)                 | string | No       | "PT1H"                                                            | Temporal selection. Same syntax as for output_settings. Leave empty to inherit the fullpos settings. |
 
 <a name="extractsqlite_parameter_list"></a>
 ### Property `Config > extractsqlite > parameter_list`
 
-|              |                                                    |
-| ------------ | -------------------------------------------------- |
-| **Type**     | `string`                                           |
-| **Required** | No                                                 |
-| **Default**  | `"@DEODE_HOME@/deode/data/sqlite/param_list.json"` |
+|              |                                                          |
+| ------------ | -------------------------------------------------------- |
+| **Type**     | `string`                                                 |
+| **Required** | No                                                       |
+| **Default**  | `"@DEODE_HOME@/deode/data/sqlite/param_list_@CSC@.json"` |
 
 **Description:** List of parameters to extract
 
 <a name="extractsqlite_sqlite_model_name"></a>
 ### Property `Config > extractsqlite > sqlite_model_name`
 
-|              |              |
-| ------------ | ------------ |
-| **Type**     | `string`     |
-| **Required** | No           |
-| **Default**  | `"@CNMEXP@"` |
+|              |            |
+| ------------ | ---------- |
+| **Type**     | `string`   |
+| **Required** | No         |
+| **Default**  | `"@CASE@"` |
 
 **Description:** Model name used in the sqlite tables
 
@@ -2180,11 +2180,11 @@ Must be one of:
 <a name="extractsqlite_sqlite_template"></a>
 ### Property `Config > extractsqlite > sqlite_template`
 
-|              |                                         |
-| ------------ | --------------------------------------- |
-| **Type**     | `string`                                |
-| **Required** | No                                      |
-| **Default**  | `"FCTABLE_@PP@_@YYYY@@MM@_@HH@.sqlite"` |
+|              |                                                                     |
+| ------------ | ------------------------------------------------------------------- |
+| **Type**     | `string`                                                            |
+| **Required** | No                                                                  |
+| **Default**  | `"FCTABLE/{MODEL}/{YYYY}/{MM}/FCTABLE_{PP}_{YYYY}{MM}_{HH}.sqlite"` |
 
 **Description:** File name template for generated sqlite files
 
