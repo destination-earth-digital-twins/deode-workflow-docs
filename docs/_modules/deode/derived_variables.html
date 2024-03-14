@@ -207,6 +207,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.fullpos.Fullpos.expand"><code class="docutils literal notranslate"><span class="pre">Fullpos.expand()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.fullpos.Fullpos.load"><code class="docutils literal notranslate"><span class="pre">Fullpos.load()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.fullpos.Fullpos.merge_dict"><code class="docutils literal notranslate"><span class="pre">Fullpos.merge_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.fullpos.Fullpos.replace_rules"><code class="docutils literal notranslate"><span class="pre">Fullpos.replace_rules()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.fullpos.Fullpos.update_selection"><code class="docutils literal notranslate"><span class="pre">Fullpos.update_selection()</span></code></a></li>
 </ul>
 </li>
@@ -832,7 +833,12 @@
         <span class="n">fpdir</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">fpdir</span><span class="p">)</span>
         <span class="n">fpfiles</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;fullpos.selection&quot;</span><span class="p">]</span>
         <span class="n">domain</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain.name&quot;</span><span class="p">]</span>
-        <span class="n">fullpos</span> <span class="o">=</span> <span class="n">Fullpos</span><span class="p">(</span><span class="n">domain</span><span class="p">,</span> <span class="n">fpdir</span><span class="o">=</span><span class="n">fpdir</span><span class="p">,</span> <span class="n">fpfiles</span><span class="o">=</span><span class="n">fpfiles</span><span class="p">)</span>
+        <span class="n">nrfp3s</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;vertical_levels.nlev&quot;</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">rules</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;$</span><span class="si">{vertical_levels.nlev}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;vertical_levels.nlev&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;$</span><span class="si">{namelist.nrfp3s}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="n">nrfp3s</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">fullpos</span> <span class="o">=</span> <span class="n">Fullpos</span><span class="p">(</span><span class="n">domain</span><span class="p">,</span> <span class="n">fpdir</span><span class="o">=</span><span class="n">fpdir</span><span class="p">,</span> <span class="n">fpfiles</span><span class="o">=</span><span class="n">fpfiles</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="n">rules</span><span class="p">)</span>
         <span class="n">namfpc</span><span class="p">,</span> <span class="n">selections</span> <span class="o">=</span> <span class="n">fullpos</span><span class="o">.</span><span class="n">construct</span><span class="p">()</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Create fullpos selection for </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">selections</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
         <span class="k">for</span> <span class="n">head</span><span class="p">,</span> <span class="n">body</span> <span class="ow">in</span> <span class="n">selections</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -1009,7 +1015,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-03-11T14:49:03Z.
+      <span class="lastupdated">Last updated on 2024-03-14T13:32:46Z.
       </span></p>
   </div>
 

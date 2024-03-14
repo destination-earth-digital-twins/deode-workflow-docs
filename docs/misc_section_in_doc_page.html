@@ -209,6 +209,7 @@
 <li class="toctree-l4"><a class="reference internal" href="deode.html#deode.fullpos.Fullpos.expand"><code class="docutils literal notranslate"><span class="pre">Fullpos.expand()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="deode.html#deode.fullpos.Fullpos.load"><code class="docutils literal notranslate"><span class="pre">Fullpos.load()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="deode.html#deode.fullpos.Fullpos.merge_dict"><code class="docutils literal notranslate"><span class="pre">Fullpos.merge_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="deode.html#deode.fullpos.Fullpos.replace_rules"><code class="docutils literal notranslate"><span class="pre">Fullpos.replace_rules()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="deode.html#deode.fullpos.Fullpos.update_selection"><code class="docutils literal notranslate"><span class="pre">Fullpos.update_selection()</span></code></a></li>
 </ul>
 </li>
@@ -753,7 +754,7 @@
              
   <section id="miscellaneous-documentation">
 <h1>Miscellaneous Documentation<a class="headerlink" href="#miscellaneous-documentation" title="Link to this heading"></a></h1>
-<p>This was automatically generated running <code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">doc</span> <span class="pre">config</span></code> on 2024-03-11T14:49:02.</p>
+<p>This was automatically generated running <code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">doc</span> <span class="pre">config</span></code> on 2024-03-14T13:32:43.</p>
 <section id="config">
 <h2>Config<a class="headerlink" href="#config" title="Link to this heading"></a></h2>
 <p><strong>Title:</strong> Config</p>
@@ -14520,11 +14521,13 @@ To copy or move, one only needs to add a provider_id:
 </section>
 <section id="the-fullpos-config-files">
 <h3>The fullpos config files<a class="headerlink" href="#the-fullpos-config-files" title="Link to this heading"></a></h3>
-<p>There are three fullpos config file types under <code class="docutils literal notranslate"><span class="pre">deode/namelist_generation/fullpos/CYCLE/</span></code></p>
+<p>There are a number of  fullpos config file types under <code class="docutils literal notranslate"><span class="pre">deode/namelist_generation/fullpos/CYCLE/</span></code></p>
 <ul class="simple">
 <li><p>rules.yml sets <code class="docutils literal notranslate"><span class="pre">LEVEL_MAP</span></code> and <code class="docutils literal notranslate"><span class="pre">PARAM_MAP</span></code> and tells how settings in the selection part should be translated to settings in <code class="docutils literal notranslate"><span class="pre">NAMFPC</span></code>. Normally this does not have to be changed.</p></li>
 <li><p>namfpc_header.yml where we specify the non-field related settings in NAMFPC</p></li>
-<li><p>master_selection.yml where all fields and levels are specified per output type as defined by fullpos</p></li>
+<li><p>master_selection.yml where all fields and levels are specified per output type as defined by fullpos. This config file is for hourly output</p></li>
+<li><p>master_subhour_selection.yml defines similar as above but for subhourly output. The separation here allows a more fine grained control of the subhourly output streams.</p></li>
+<li><p>A number of impact model selections defined for all output steps.</p></li>
 </ul>
 <p>The settings done in the <code class="docutils literal notranslate"><span class="pre">selection</span></code> part will be used to fill <code class="docutils literal notranslate"><span class="pre">NAMFPC</span></code> and the correct level numbers will be filled in the final namelist.</p>
 <section id="namfpc-settings">
@@ -14575,7 +14578,7 @@ To copy or move, one only needs to add a provider_id:
 <h4>Combine selection files<a class="headerlink" href="#combine-selection-files" title="Link to this heading"></a></h4>
 <p>A number of selection files can be combined by extending the <code class="docutils literal notranslate"><span class="pre">selection</span></code> in the fullpos part of the config file</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">fullpos</span><span class="p">]</span>
- <span class="n">selection</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;rules&quot;</span><span class="p">,</span> <span class="s2">&quot;namfpc_header&quot;</span><span class="p">,</span> <span class="s2">&quot;master_selection&quot;</span> <span class="p">,</span><span class="s2">&quot;my_additions&quot;</span><span class="p">]</span>
+ <span class="n">selection</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;rules&quot;</span><span class="p">,</span> <span class="s2">&quot;namfpc_header&quot;</span><span class="p">,</span> <span class="s2">&quot;master_selection&quot;</span> <span class="p">,</span><span class="s2">&quot;aq_selection&quot;</span><span class="p">]</span>
 </pre></div>
 </div>
 <p>This allows to define different combination of output depending on other configuration choices.</p>
@@ -14640,7 +14643,7 @@ If you cannot execute <code class="docutils literal notranslate"><span class="pr
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-03-11T14:49:03Z.
+      <span class="lastupdated">Last updated on 2024-03-14T13:32:46Z.
       </span></p>
   </div>
 
