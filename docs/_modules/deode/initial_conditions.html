@@ -235,7 +235,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.initial_conditions.InitialConditions"><code class="docutils literal notranslate"><span class="pre">InitialConditions</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.initial_conditions.InitialConditions.check_if_found"><code class="docutils literal notranslate"><span class="pre">InitialConditions.check_if_found()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.initial_conditions.InitialConditions.find_initial_files"><code class="docutils literal notranslate"><span class="pre">InitialConditions.find_initial_files()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.initial_conditions.InitialConditions.nosuccess"><code class="docutils literal notranslate"><span class="pre">InitialConditions.nosuccess()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.initial_conditions.InitialConditions.success"><code class="docutils literal notranslate"><span class="pre">InitialConditions.success()</span></code></a></li>
 </ul>
 </li>
@@ -790,16 +789,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">source</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">source_sfx</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 
-<div class="viewcode-block" id="InitialConditions.nosuccess">
-<a class="viewcode-back" href="../../deode.html#deode.initial_conditions.InitialConditions.nosuccess">[docs]</a>
-    <span class="k">def</span> <span class="nf">nosuccess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Report of not success.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">surfex</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Could not find:</span><span class="se">\n</span><span class="s2">  </span><span class="si">{}</span><span class="se">\n</span><span class="s2">  </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_sfx</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Could not find:</span><span class="se">\n</span><span class="s2">  </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="p">)</span></div>
-
-
 <div class="viewcode-block" id="InitialConditions.success">
 <a class="viewcode-back" href="../../deode.html#deode.initial_conditions.InitialConditions.success">[docs]</a>
     <span class="k">def</span> <span class="nf">success</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -819,13 +808,21 @@
 <a class="viewcode-back" href="../../deode.html#deode.initial_conditions.InitialConditions.check_if_found">[docs]</a>
     <span class="k">def</span> <span class="nf">check_if_found</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if files are present.&quot;&quot;&quot;</span>
-        <span class="n">found</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="p">)</span>
+        <span class="n">found</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Could not find:</span><span class="se">\n</span><span class="s2">  </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">surfex</span><span class="p">:</span>
-            <span class="n">found</span> <span class="o">=</span> <span class="n">found</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">source_sfx</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">source_sfx</span><span class="p">):</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Could not find:</span><span class="se">\n</span><span class="s2">  </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_sfx</span><span class="p">)</span>
+                <span class="n">found</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">found</span> <span class="o">=</span> <span class="n">found</span> <span class="ow">and</span> <span class="kc">True</span>
+
         <span class="k">if</span> <span class="n">found</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">success</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">nosuccess</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Failed to find files for mode=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">found</span></div>
 
@@ -893,7 +890,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-04-16T06:31:22Z.
+      <span class="lastupdated">Last updated on 2024-04-16T08:06:17Z.
       </span></p>
   </div>
 
