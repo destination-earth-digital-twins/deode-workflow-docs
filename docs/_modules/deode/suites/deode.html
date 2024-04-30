@@ -1027,15 +1027,25 @@
                 <span class="n">args</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
                 <span class="n">int_trig</span> <span class="o">=</span> <span class="n">inputdata_done</span>
 
+                <span class="n">inthourbdint</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">bdint</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span> <span class="o">//</span> <span class="mi">3600</span><span class="p">)</span>
+                <span class="n">inthourbdintx</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">inthourbdint</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">inthourbdint</span>
+                <span class="n">intminbdint</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">bdint</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span> <span class="o">%</span> <span class="mi">3600</span> <span class="o">//</span> <span class="mi">60</span><span class="p">)</span>
+                <span class="n">intsecbdint</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">bdint</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span> <span class="o">%</span> <span class="mi">60</span><span class="p">)</span>
+
                 <span class="c1"># we don&#39;t need LBC000 if this is not first cycle or mode != cold_start</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;restart&quot;</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;start&quot;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_prep</span><span class="p">):</span>
                     <span class="n">bdtime</span> <span class="o">=</span> <span class="n">basetime</span> <span class="o">+</span> <span class="n">bdint</span>
-                    <span class="n">bdnr</span> <span class="o">=</span> <span class="mi">1</span>
+                    <span class="n">bdnr</span> <span class="o">=</span> <span class="n">inthourbdint</span>
+                    <span class="n">bd_nr</span> <span class="o">=</span> <span class="mi">1</span>
+                    <span class="n">subbdnr</span> <span class="o">=</span> <span class="n">intminbdint</span> <span class="k">if</span> <span class="p">(</span><span class="n">intminbdint</span> <span class="ow">or</span> <span class="n">intsecbdint</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+                    <span class="n">subminbdnr</span> <span class="o">=</span> <span class="n">intsecbdint</span> <span class="k">if</span> <span class="n">intsecbdint</span> <span class="k">else</span> <span class="kc">None</span>
+
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">bdtime</span> <span class="o">=</span> <span class="n">basetime</span>
                     <span class="n">bdnr</span> <span class="o">=</span> <span class="mi">0</span>
-
-                <span class="n">intbdint</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">bdint</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span> <span class="o">//</span> <span class="mi">3600</span><span class="p">)</span>
+                    <span class="n">bd_nr</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="n">subbdnr</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="p">(</span><span class="n">intminbdint</span> <span class="ow">or</span> <span class="n">intsecbdint</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+                    <span class="n">subminbdnr</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">intsecbdint</span> <span class="k">else</span> <span class="kc">None</span>
 
                 <span class="n">e923_update_done</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -1120,10 +1130,16 @@
                     <span class="p">)</span>
                     <span class="k">while</span> <span class="n">bdtime</span> <span class="o">&lt;=</span> <span class="n">endtime</span><span class="p">:</span>
                         <span class="n">date_string</span> <span class="o">=</span> <span class="n">bdtime</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(</span><span class="n">sep</span><span class="o">=</span><span class="s2">&quot;T&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;+00:00&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">)</span>
-                        <span class="n">args</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;bd_time=</span><span class="si">{</span><span class="n">date_string</span><span class="si">}</span><span class="s2">;bd_nr=</span><span class="si">{</span><span class="n">bdnr</span><span class="si">}</span><span class="s2">;prep_step=False&quot;</span>
+                        <span class="n">args</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;bd_time=</span><span class="si">{</span><span class="n">date_string</span><span class="si">}</span><span class="s2">;bd_nr=</span><span class="si">{</span><span class="n">bd_nr</span><span class="si">}</span><span class="s2">;prep_step=False&quot;</span>
                         <span class="n">variables</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;ARGS&quot;</span><span class="p">:</span> <span class="n">args</span><span class="p">}</span>
+                        <span class="n">lbc_fam_name</span> <span class="o">=</span> <span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;LBC</span><span class="si">{</span><span class="n">bdnr</span><span class="o">*</span><span class="n">inthourbdintx</span><span class="si">:</span><span class="s2">02</span><span class="si">}{</span><span class="n">subbdnr</span><span class="si">:</span><span class="s2">02</span><span class="si">}</span><span class="s2">&quot;</span>
+                            <span class="o">+</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">subminbdnr</span><span class="si">:</span><span class="s2">02</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">subminbdnr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="n">subbdnr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                            <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;LBC</span><span class="si">{</span><span class="n">bdnr</span><span class="o">*</span><span class="n">inthourbdintx</span><span class="si">:</span><span class="s2">02</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="p">)</span>
                         <span class="n">lbc_fam</span> <span class="o">=</span> <span class="n">EcflowSuiteFamily</span><span class="p">(</span>
-                            <span class="sa">f</span><span class="s2">&quot;LBC</span><span class="si">{</span><span class="n">bdnr</span><span class="o">*</span><span class="n">intbdint</span><span class="si">:</span><span class="s2">02</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="n">lbc_fam_name</span><span class="p">,</span>
                             <span class="n">bch_fam</span><span class="p">,</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
                             <span class="n">trigger</span><span class="o">=</span><span class="n">e923_update_done</span><span class="p">,</span>
@@ -1161,10 +1177,21 @@
                             <span class="n">trigger</span><span class="o">=</span><span class="n">split_mars_done</span><span class="p">,</span>
                             <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
                         <span class="p">)</span>
+                        <span class="k">if</span> <span class="n">subbdnr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="n">subbdnr</span> <span class="o">+=</span> <span class="n">intminbdint</span>
+                            <span class="k">if</span> <span class="n">subminbdnr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                                <span class="n">subminbdnr</span> <span class="o">+=</span> <span class="n">intsecbdint</span>
+                                <span class="k">if</span> <span class="n">subminbdnr</span> <span class="o">&gt;=</span> <span class="mi">60</span><span class="p">:</span>
+                                    <span class="n">subbdnr</span> <span class="o">+=</span> <span class="mi">1</span>
+                                    <span class="n">subminbdnr</span> <span class="o">-=</span> <span class="mi">60</span>
+                            <span class="k">if</span> <span class="n">subbdnr</span> <span class="o">&gt;=</span> <span class="mi">60</span><span class="p">:</span>
+                                <span class="n">bdnr</span> <span class="o">+=</span> <span class="mi">1</span>
+                                <span class="n">subbdnr</span> <span class="o">-=</span> <span class="mi">60</span>
 
-                        <span class="n">bdnr</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="n">bdnr</span> <span class="o">+=</span> <span class="n">inthourbdint</span>
                         <span class="n">bdtime</span> <span class="o">+=</span> <span class="n">bdint</span>
-                        <span class="k">if</span> <span class="n">bdnr</span> <span class="o">%</span> <span class="n">bdmax</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">bd_nr</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="k">if</span> <span class="n">bd_nr</span> <span class="o">%</span> <span class="n">bdmax</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                             <span class="n">intnr</span> <span class="o">+=</span> <span class="mi">1</span>
                             <span class="n">int_trig</span> <span class="o">=</span> <span class="n">EcflowSuiteTriggers</span><span class="p">([</span><span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">bch_fam</span><span class="p">)])</span>
                             <span class="k">break</span>
@@ -1541,7 +1568,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-04-25T10:25:16Z.
+      <span class="lastupdated">Last updated on 2024-04-30T09:02:54Z.
       </span></p>
   </div>
 
