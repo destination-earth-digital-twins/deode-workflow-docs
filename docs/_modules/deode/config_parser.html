@@ -144,6 +144,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.commands_functions">deode.commands_functions module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.commands_functions.create_exp"><code class="docutils literal notranslate"><span class="pre">create_exp()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.commands_functions.doc_config"><code class="docutils literal notranslate"><span class="pre">doc_config()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.commands_functions.namelist_integrate"><code class="docutils literal notranslate"><span class="pre">namelist_integrate()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.commands_functions.run_task"><code class="docutils literal notranslate"><span class="pre">run_task()</span></code></a></li>
@@ -160,6 +161,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.config_parser.BasicConfig.data"><code class="docutils literal notranslate"><span class="pre">BasicConfig.data</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.config_parser.BasicConfig.from_file"><code class="docutils literal notranslate"><span class="pre">BasicConfig.from_file()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.config_parser.BasicConfig.metadata"><code class="docutils literal notranslate"><span class="pre">BasicConfig.metadata</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.config_parser.BasicConfig.save_as"><code class="docutils literal notranslate"><span class="pre">BasicConfig.save_as()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.config_parser.ConfigFileValidationError"><code class="docutils literal notranslate"><span class="pre">ConfigFileValidationError</span></code></a></li>
@@ -212,6 +214,18 @@
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.derived_variables.set_times"><code class="docutils literal notranslate"><span class="pre">set_times()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.experiment">deode.experiment module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.experiment.Exp"><code class="docutils literal notranslate"><span class="pre">Exp</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.experiment.ExpFromFiles"><code class="docutils literal notranslate"><span class="pre">ExpFromFiles</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.experiment.ExpFromFiles.deep_update"><code class="docutils literal notranslate"><span class="pre">ExpFromFiles.deep_update()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.experiment.ExpFromFiles.setup_files"><code class="docutils literal notranslate"><span class="pre">ExpFromFiles.setup_files()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.experiment.ExpFromFiles.toml_dump"><code class="docutils literal notranslate"><span class="pre">ExpFromFiles.toml_dump()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.experiment.ExpFromFiles.toml_load"><code class="docutils literal notranslate"><span class="pre">ExpFromFiles.toml_load()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.experiment.case_setup"><code class="docutils literal notranslate"><span class="pre">case_setup()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.fullpos">deode.fullpos module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.fullpos.Fullpos"><code class="docutils literal notranslate"><span class="pre">Fullpos</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.fullpos.Fullpos.construct"><code class="docutils literal notranslate"><span class="pre">Fullpos.construct()</span></code></a></li>
@@ -238,6 +252,13 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.geo_utils.Projstring"><code class="docutils literal notranslate"><span class="pre">Projstring</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.geo_utils.Projstring.get_projstring"><code class="docutils literal notranslate"><span class="pre">Projstring.get_projstring()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.host_actions">deode.host_actions module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.host_actions.DeodeHost"><code class="docutils literal notranslate"><span class="pre">DeodeHost</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.host_actions.DeodeHost.detect_deode_host"><code class="docutils literal notranslate"><span class="pre">DeodeHost.detect_deode_host()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -781,12 +802,15 @@
 <span class="kn">import</span> <span class="nn">fastjsonschema</span>
 <span class="kn">import</span> <span class="nn">jsonref</span>
 <span class="kn">import</span> <span class="nn">tomli</span>
+<span class="kn">import</span> <span class="nn">tomlkit</span>
 <span class="kn">import</span> <span class="nn">yaml</span>
 <span class="kn">from</span> <span class="nn">fastjsonschema</span> <span class="kn">import</span> <span class="n">JsonSchemaValueException</span>
 <span class="kn">from</span> <span class="nn">json_schema_for_humans.generate</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">GenerationConfiguration</span><span class="p">,</span>
     <span class="n">generate_from_file_object</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">toml_formatter.formatter</span> <span class="kn">import</span> <span class="n">FormattedToml</span>
+<span class="kn">from</span> <span class="nn">toml_formatter.formatter_options</span> <span class="kn">import</span> <span class="n">FormatterOptions</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">GeneralConstants</span>
 <span class="kn">from</span> <span class="nn">.aux_types</span> <span class="kn">import</span> <span class="n">BaseMapping</span><span class="p">,</span> <span class="n">QuasiConstant</span>
@@ -857,6 +881,24 @@
         <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span>
         <span class="n">configs</span> <span class="o">=</span> <span class="n">_read_raw_config_file</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">configs</span><span class="p">,</span> <span class="n">_metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;source_file_path&quot;</span><span class="p">:</span> <span class="n">path</span><span class="p">},</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BasicConfig.save_as">
+<a class="viewcode-back" href="../../deode.html#deode.config_parser.BasicConfig.save_as">[docs]</a>
+    <span class="k">def</span> <span class="nf">save_as</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_file</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save config file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config_file (str): Path to config file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+            <span class="n">tomlkit</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(),</span> <span class="n">fh</span><span class="p">)</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">FormatterOptions</span><span class="o">.</span><span class="n">from_toml_file</span><span class="p">(</span><span class="s2">&quot;pyproject.toml&quot;</span><span class="p">)</span>
+        <span class="n">formatted_toml</span> <span class="o">=</span> <span class="n">FormattedToml</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span>
+            <span class="n">path</span><span class="o">=</span><span class="n">config_file</span><span class="p">,</span> <span class="n">formatter_options</span><span class="o">=</span><span class="n">config</span>
+        <span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">formatted_toml</span><span class="p">))</span></div>
 
 
     <span class="nd">@BaseMapping</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">setter</span>
@@ -1059,24 +1101,24 @@
     <span class="n">json_schema</span> <span class="o">=</span> <span class="n">modify_mappings</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="n">json_schema</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
 
     <span class="n">config_include_defs</span> <span class="o">=</span> <span class="n">_get_config_include_definitions</span><span class="p">(</span><span class="n">raw_config</span><span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">config_include_defs</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">raw_config</span><span class="p">,</span> <span class="n">json_schema</span>
 
     <span class="k">if</span> <span class="s2">&quot;properties&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">json_schema</span><span class="p">:</span>
         <span class="n">json_schema</span><span class="p">[</span><span class="s2">&quot;properties&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">config_include_search_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">config_include_search_dir</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
     <span class="n">config_include_sections</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">section_name</span><span class="p">,</span> <span class="n">include_path_</span> <span class="ow">in</span> <span class="n">config_include_defs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="n">include_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">include_path_</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">include_path</span><span class="o">.</span><span class="n">is_absolute</span><span class="p">():</span>
-            <span class="n">include_path</span> <span class="o">=</span> <span class="n">config_include_search_dir</span> <span class="o">/</span> <span class="n">include_path</span>
-        <span class="n">included_config_section</span> <span class="o">=</span> <span class="n">_read_raw_config_file</span><span class="p">(</span><span class="n">include_path</span><span class="p">)</span>
-
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">include_path_</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">include_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">include_path_</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">include_path</span><span class="o">.</span><span class="n">is_absolute</span><span class="p">():</span>
+                <span class="n">include_path</span> <span class="o">=</span> <span class="n">config_include_search_dir</span> <span class="o">/</span> <span class="n">include_path</span>
+            <span class="n">included_config_section</span> <span class="o">=</span> <span class="n">_read_raw_config_file</span><span class="p">(</span><span class="n">include_path</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">included_config_section</span> <span class="o">=</span> <span class="n">include_path_</span>
         <span class="n">_sections_traversed</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">_parent_sections</span><span class="p">,</span> <span class="n">section_name</span><span class="p">)</span>
         <span class="n">sections_traversed_str</span> <span class="o">=</span> <span class="s2">&quot; -&gt; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_sections_traversed</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">section_name</span> <span class="ow">in</span> <span class="n">json_schema</span><span class="p">[</span><span class="s2">&quot;properties&quot;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="s2">&quot;include&quot;</span> <span class="ow">in</span> <span class="n">raw_config</span> <span class="ow">and</span> <span class="n">section_name</span> <span class="ow">in</span> <span class="n">json_schema</span><span class="p">[</span><span class="s2">&quot;properties&quot;</span><span class="p">]:</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Validation schema for `[include]` section &quot;</span><span class="si">{</span><span class="n">sections_traversed_str</span><span class="si">}</span><span class="s1">&quot; &#39;</span>
-            <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot;also detected in its parent section&#39;s schehma. &quot;</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot;also detected in its parent section&#39;s schema. &quot;</span>
             <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot;`[include]` schemas must NOT be added to their parent&#39;s schemas, but &quot;</span>
             <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot;rather in their own separate files.&quot;</span>
             <span class="k">raise</span> <span class="n">ConflictingValidationSchemasError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
@@ -1096,11 +1138,12 @@
             <span class="n">schemas_path</span><span class="o">=</span><span class="n">schemas_path</span><span class="p">,</span>
             <span class="n">_parent_sections</span><span class="o">=</span><span class="n">_sections_traversed</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">config_include_sections</span><span class="p">[</span><span class="n">section_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">updated_config</span>
-        <span class="n">json_schema</span><span class="p">[</span><span class="s2">&quot;properties&quot;</span><span class="p">][</span><span class="n">section_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">updated_schema</span>
+        <span class="n">config_include_sections</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">updated_config</span><span class="p">)</span>
+        <span class="n">json_schema</span><span class="p">[</span><span class="s2">&quot;properties&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">section_name</span><span class="p">:</span> <span class="n">updated_schema</span><span class="p">})</span>
 
     <span class="n">raw_config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">config_include_sections</span><span class="p">)</span>
-    <span class="n">raw_config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;include&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">&quot;include&quot;</span> <span class="ow">in</span> <span class="n">raw_config</span><span class="p">:</span>
+        <span class="n">raw_config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;include&quot;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">raw_config</span><span class="p">,</span> <span class="n">json_schema</span>
 
@@ -1145,7 +1188,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-05-07T22:03:02Z.
+      <span class="lastupdated">Last updated on 2024-05-14T12:36:50Z.
       </span></p>
   </div>
 

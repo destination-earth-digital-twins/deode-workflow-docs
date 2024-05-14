@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>deode.derived_variables &mdash; Deode Prototype Docs  documentation</title>
+  <title>deode.experiment &mdash; Deode Prototype Docs  documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
@@ -780,7 +780,7 @@
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
           <li class="breadcrumb-item"><a href="../deode.html">deode</a></li>
-      <li class="breadcrumb-item active">deode.derived_variables</li>
+      <li class="breadcrumb-item active">deode.experiment</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -789,258 +789,254 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>Source code for deode.derived_variables</h1><div class="highlight"><pre>
-<span></span><span class="ch">#!/usr/bin/env python3</span>
-<span class="sd">&quot;&quot;&quot;Derive runtime variables.&quot;&quot;&quot;</span>
+  <h1>Source code for deode.experiment</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Experiment tools.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">os</span>
 
-<span class="kn">import</span> <span class="nn">shutil</span>
-<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">atan</span><span class="p">,</span> <span class="n">floor</span><span class="p">,</span> <span class="n">sin</span>
+<span class="kn">import</span> <span class="nn">tomlkit</span>
 
-<span class="kn">from</span> <span class="nn">.datetime_utils</span> <span class="kn">import</span> <span class="n">as_datetime</span><span class="p">,</span> <span class="n">as_timedelta</span><span class="p">,</span> <span class="n">oi2dt_list</span>
-<span class="kn">from</span> <span class="nn">.fullpos</span> <span class="kn">import</span> <span class="n">Fullpos</span>
+<span class="kn">from</span> <span class="nn">.config_parser</span> <span class="kn">import</span> <span class="n">ConfigParserDefaults</span><span class="p">,</span> <span class="n">ParsedConfig</span>
 <span class="kn">from</span> <span class="nn">.logs</span> <span class="kn">import</span> <span class="n">logger</span>
-<span class="kn">from</span> <span class="nn">.os_utils</span> <span class="kn">import</span> <span class="n">Search</span>
-<span class="kn">from</span> <span class="nn">.toolbox</span> <span class="kn">import</span> <span class="n">Platform</span>
 
 
-<div class="viewcode-block" id="set_times">
-<a class="viewcode-back" href="../../deode.html#deode.derived_variables.set_times">[docs]</a>
-<span class="k">def</span> <span class="nf">set_times</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Set basetime/validtime if not present.</span>
+<div class="viewcode-block" id="Exp">
+<a class="viewcode-back" href="../../deode.html#deode.experiment.Exp">[docs]</a>
+<span class="k">class</span> <span class="nc">Exp</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Experiment class.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">,</span>
+        <span class="n">merged_config</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Instanciate an object of the main experiment class.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config (.config_parser.ParsedConfig): Parsed config file contents.</span>
+<span class="sd">            merged_config (dict): Experiment configuration</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Construct Exp&quot;</span><span class="p">)</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">update</span><span class="o">=</span><span class="n">merged_config</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span></div>
+
+
+
+<div class="viewcode-block" id="ExpFromFiles">
+<a class="viewcode-back" href="../../deode.html#deode.experiment.ExpFromFiles">[docs]</a>
+<span class="k">class</span> <span class="nc">ExpFromFiles</span><span class="p">(</span><span class="n">Exp</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate Exp object from existing files. Use config files from a setup.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">exp_dependencies</span><span class="p">,</span> <span class="n">mod_files</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">merged_config</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct an Exp object from files.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config (.config_parser.ParsedConfig): Parsed config file contents.</span>
+<span class="sd">            exp_dependencies (dict): Exp dependencies</span>
+<span class="sd">            mod_files (list): Case modifications</span>
+<span class="sd">            host (DeodeHost, optional): Deode host. Defaults to None.</span>
+<span class="sd">            merged_config (dict, optional): Possible merged input configuration.</span>
+<span class="sd">                                            Defaults to None.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            FileNotFoundError: If host file(s) not found</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Construct ExpFromFiles&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Experiment dependencies: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">exp_dependencies</span><span class="p">)</span>
+
+        <span class="n">config_dir</span> <span class="o">=</span> <span class="n">exp_dependencies</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;config_dir&quot;</span><span class="p">)</span>
+        <span class="n">include_paths</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">host</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">host</span> <span class="o">=</span> <span class="n">host</span><span class="o">.</span><span class="n">detect_deode_host</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Setting up for host </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">host</span><span class="p">)</span>
+            <span class="n">include_paths</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;scheduler&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">config_dir</span><span class="si">}</span><span class="s2">/include/scheduler/ecflow_</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2">.toml&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;platform&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">config_dir</span><span class="si">}</span><span class="s2">/include/platform_paths/</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2">.toml&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;submission&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">config_dir</span><span class="si">}</span><span class="s2">/include/submission/</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2">.toml&quot;</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">incp</span> <span class="ow">in</span> <span class="n">include_paths</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">incp</span><span class="p">):</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Input file requested </span><span class="si">{}</span><span class="s2"> is not found&quot;</span><span class="p">,</span> <span class="n">incp</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="n">incp</span><span class="p">)</span>
+
+        <span class="n">config_dict</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">inct</span><span class="p">,</span> <span class="n">incp</span> <span class="ow">in</span> <span class="n">include_paths</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">inct</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;platform&quot;</span><span class="p">,</span> <span class="s2">&quot;submission&quot;</span><span class="p">]:</span>
+                <span class="k">del</span> <span class="n">config_dict</span><span class="p">[</span><span class="n">inct</span><span class="p">]</span>
+                <span class="n">config_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">inct</span><span class="p">:</span> <span class="p">{}})</span>
+
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">incp</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+                <span class="n">mod_config</span> <span class="o">=</span> <span class="n">tomlkit</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
+
+            <span class="n">config_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deep_update</span><span class="p">(</span><span class="n">config_dict</span><span class="p">,</span> <span class="n">mod_config</span><span class="p">)</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">ParsedConfig</span><span class="p">(</span>
+            <span class="n">config_dict</span><span class="p">,</span> <span class="n">json_schema</span><span class="o">=</span><span class="n">ConfigParserDefaults</span><span class="o">.</span><span class="n">MAIN_CONFIG_JSON_SCHEMA</span>
+        <span class="p">)</span>
+
+        <span class="n">mods</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">mod</span> <span class="ow">in</span> <span class="n">mod_files</span><span class="p">:</span>
+            <span class="n">lmod</span> <span class="o">=</span> <span class="n">ExpFromFiles</span><span class="o">.</span><span class="n">toml_load</span><span class="p">(</span><span class="n">mod</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Merging modifications from </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">mod</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;-&gt; </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">lmod</span><span class="p">)</span>
+            <span class="n">mods</span> <span class="o">=</span> <span class="n">ExpFromFiles</span><span class="o">.</span><span class="n">deep_update</span><span class="p">(</span><span class="n">mods</span><span class="p">,</span> <span class="n">lmod</span><span class="p">)</span>
+
+        <span class="n">case</span> <span class="o">=</span> <span class="n">exp_dependencies</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;case&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">case</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;general&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">mods</span><span class="p">:</span>
+                <span class="n">mods</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;general&quot;</span><span class="p">:</span> <span class="p">{}})</span>
+            <span class="n">mods</span><span class="p">[</span><span class="s2">&quot;general&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;case&quot;</span><span class="p">:</span> <span class="n">case</span><span class="p">})</span>
+
+        <span class="c1"># Merge with possible incoming modifications</span>
+        <span class="k">if</span> <span class="n">merged_config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">merged_config</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">merged_config</span> <span class="o">=</span> <span class="n">ExpFromFiles</span><span class="o">.</span><span class="n">deep_update</span><span class="p">(</span><span class="n">merged_config</span><span class="p">,</span> <span class="n">mods</span><span class="p">)</span>
+        <span class="n">Exp</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">config</span><span class="p">,</span>
+            <span class="n">merged_config</span><span class="p">,</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="ExpFromFiles.toml_load">
+<a class="viewcode-back" href="../../deode.html#deode.experiment.ExpFromFiles.toml_load">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">toml_load</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load from toml file.</span>
+
+<span class="sd">        Using tomlkit to preserve stucture</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            fname (str): Filename</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: Loaded toml file</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_h</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">tomlkit</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">f_h</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">res</span></div>
+
+
+<div class="viewcode-block" id="ExpFromFiles.toml_dump">
+<a class="viewcode-back" href="../../deode.html#deode.experiment.ExpFromFiles.toml_dump">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">toml_dump</span><span class="p">(</span><span class="n">to_dump</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Dump toml to file.</span>
+
+<span class="sd">        Using tomlkit to preserve stucture</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            to_dump (dict): Data to save</span>
+<span class="sd">            fname (str): Filename</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_h</span><span class="p">:</span>
+            <span class="n">f_h</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">tomlkit</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">to_dump</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="ExpFromFiles.deep_update">
+<a class="viewcode-back" href="../../deode.html#deode.experiment.ExpFromFiles.deep_update">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">deep_update</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">overrides</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update a nested dictionary or similar mapping.</span>
+
+<span class="sd">        Modify ``source`` in place.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            source (dict): Source</span>
+<span class="sd">            overrides (dict): Updates</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: Updated dictionary</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">overrides</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Mapping</span><span class="p">)</span> <span class="ow">and</span> <span class="n">value</span><span class="p">:</span>
+                <span class="n">returned</span> <span class="o">=</span> <span class="n">ExpFromFiles</span><span class="o">.</span><span class="n">deep_update</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="p">{}),</span> <span class="n">value</span><span class="p">)</span>
+                <span class="n">source</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">returned</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">override</span> <span class="o">=</span> <span class="n">overrides</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+                <span class="n">source</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">override</span>
+
+        <span class="k">return</span> <span class="n">source</span></div>
+
+
+<div class="viewcode-block" id="ExpFromFiles.setup_files">
+<a class="viewcode-back" href="../../deode.html#deode.experiment.ExpFromFiles.setup_files">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">setup_files</span><span class="p">(</span>
+        <span class="n">output_file</span><span class="p">,</span>
+        <span class="n">case</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">config_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set up the files for an experiment.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            output_file (str): Output file</span>
+<span class="sd">            case (str, optional): Experiment name. Defaults to None.</span>
+<span class="sd">            config_dir (str, optional): Config directory. Defaults to None.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            exp_dependencies(dict): Experiment dependencies from setup.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">exp_dependencies</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">config_dir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">config_dir</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span><span class="si">}</span><span class="s2">/deode/data/config_files&quot;</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s2">&quot;Setting config_dir from current working directory: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">config_dir</span>
+            <span class="p">)</span>
+
+        <span class="n">exp_dependencies</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;tmp_outfile&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">output_file</span><span class="si">}</span><span class="s2">.tmp.</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">()</span><span class="si">}</span><span class="s2">.toml&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;config_dir&quot;</span><span class="p">:</span> <span class="n">config_dir</span><span class="p">,</span>
+                <span class="s2">&quot;case&quot;</span><span class="p">:</span> <span class="n">case</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">exp_dependencies</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="case_setup">
+<a class="viewcode-back" href="../../deode.html#deode.experiment.case_setup">[docs]</a>
+<span class="k">def</span> <span class="nf">case_setup</span><span class="p">(</span>
+    <span class="n">config</span><span class="p">,</span>
+    <span class="n">output_file</span><span class="p">,</span>
+    <span class="n">mod_files</span><span class="p">,</span>
+    <span class="n">case</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">host</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">config_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Do experiment setup.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        config (.config_parser.ParsedConfig): Parsed config file contents.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        update (dict): Dict of corrected basetime/validtime</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">times</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.times&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
-    <span class="k">if</span> <span class="s2">&quot;basetime&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">times</span><span class="p">:</span>
-        <span class="n">times</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;basetime&quot;</span><span class="p">:</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;general&quot;</span><span class="p">][</span><span class="s2">&quot;times&quot;</span><span class="p">][</span><span class="s2">&quot;start&quot;</span><span class="p">]})</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Set basetime to </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">times</span><span class="p">[</span><span class="s2">&quot;basetime&quot;</span><span class="p">])</span>
-    <span class="k">if</span> <span class="s2">&quot;validtime&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">times</span><span class="p">:</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">times</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;validtime&quot;</span><span class="p">:</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;general&quot;</span><span class="p">][</span><span class="s2">&quot;times&quot;</span><span class="p">][</span><span class="s2">&quot;basetime&quot;</span><span class="p">]})</span>
-        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="n">times</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;validtime&quot;</span><span class="p">:</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;general&quot;</span><span class="p">][</span><span class="s2">&quot;times&quot;</span><span class="p">][</span><span class="s2">&quot;start&quot;</span><span class="p">]})</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Set validtime to </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">times</span><span class="p">[</span><span class="s2">&quot;validtime&quot;</span><span class="p">])</span>
-    <span class="k">if</span> <span class="s2">&quot;start&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">times</span><span class="p">:</span>
-        <span class="n">times</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;general&quot;</span><span class="p">][</span><span class="s2">&quot;times&quot;</span><span class="p">][</span><span class="s2">&quot;basetime&quot;</span><span class="p">]})</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Set start to </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">times</span><span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">])</span>
-    <span class="k">if</span> <span class="s2">&quot;end&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">times</span><span class="p">:</span>
-        <span class="n">times</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;general&quot;</span><span class="p">][</span><span class="s2">&quot;times&quot;</span><span class="p">][</span><span class="s2">&quot;basetime&quot;</span><span class="p">]})</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Set end to </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">times</span><span class="p">[</span><span class="s2">&quot;end&quot;</span><span class="p">])</span>
-
-    <span class="n">update</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;general&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;times&quot;</span><span class="p">:</span> <span class="n">times</span><span class="p">}}</span>
-    <span class="k">return</span> <span class="n">update</span></div>
-
-
-
-<div class="viewcode-block" id="check_fullpos_namelist">
-<a class="viewcode-back" href="../../deode.html#deode.derived_variables.check_fullpos_namelist">[docs]</a>
-<span class="k">def</span> <span class="nf">check_fullpos_namelist</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">nlgen</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Find existing fullpos select files or generate them.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        config (deode.ParsedConfig): Configuration</span>
-<span class="sd">        nlgen (dict): master forecast namelist</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        nlgen (dict) : Possibly updated forecast namelist</span>
+<span class="sd">        output_file (str): Output config file.</span>
+<span class="sd">        mod_files (list): Modifications. Defaults to None.</span>
+<span class="sd">        case (str, optional): Case identifier. Defaults to None.</span>
+<span class="sd">        host (str, optional): host name. Defaults to None.</span>
+<span class="sd">        config_dir (str, optional): Configuration directory. Defaults to None.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">platform</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
-    <span class="n">accept_static_namelists</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.accept_static_namelists&quot;</span><span class="p">]</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;************ CaseSetup ******************&quot;</span><span class="p">)</span>
 
-    <span class="n">generate_namelist</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="k">if</span> <span class="n">accept_static_namelists</span><span class="p">:</span>
-        <span class="n">namelists</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">get_system_value</span><span class="p">(</span><span class="s2">&quot;namelists&quot;</span><span class="p">)</span>
-        <span class="n">fullpos_select_files</span> <span class="o">=</span> <span class="n">Search</span><span class="o">.</span><span class="n">find_files</span><span class="p">(</span>
-            <span class="n">namelists</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;xxt&quot;</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fullpath</span><span class="o">=</span><span class="kc">True</span>
-        <span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fullpos_select_files</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">fullpos_select_files</span><span class="p">:</span>
-                <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;.&quot;</span><span class="p">)</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Copy fullpos select file </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+    <span class="n">exp_dependencies</span> <span class="o">=</span> <span class="n">ExpFromFiles</span><span class="o">.</span><span class="n">setup_files</span><span class="p">(</span>
+        <span class="n">output_file</span><span class="p">,</span>
+        <span class="n">case</span><span class="o">=</span><span class="n">case</span><span class="p">,</span>
+        <span class="n">config_dir</span><span class="o">=</span><span class="n">config_dir</span><span class="p">,</span>
+    <span class="p">)</span>
 
-            <span class="n">generate_namelist</span> <span class="o">=</span> <span class="kc">False</span>
-
-    <span class="k">if</span> <span class="n">generate_namelist</span><span class="p">:</span>
-        <span class="n">fpdir</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;fullpos.config_path&quot;</span><span class="p">]</span>
-        <span class="n">fpdir</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">fpdir</span><span class="p">)</span>
-        <span class="n">fpfiles</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;fullpos.selection&quot;</span><span class="p">]</span>
-        <span class="n">domain</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain.name&quot;</span><span class="p">]</span>
-        <span class="n">nrfp3s</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;vertical_levels.nlev&quot;</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
-        <span class="n">rules</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;$</span><span class="si">{vertical_levels.nlev}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;vertical_levels.nlev&quot;</span><span class="p">],</span>
-            <span class="s2">&quot;$</span><span class="si">{namelist.nrfp3s}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="n">nrfp3s</span><span class="p">,</span>
-        <span class="p">}</span>
-        <span class="n">fullpos</span> <span class="o">=</span> <span class="n">Fullpos</span><span class="p">(</span><span class="n">domain</span><span class="p">,</span> <span class="n">fpdir</span><span class="o">=</span><span class="n">fpdir</span><span class="p">,</span> <span class="n">fpfiles</span><span class="o">=</span><span class="n">fpfiles</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="n">rules</span><span class="p">)</span>
-        <span class="n">namfpc</span><span class="p">,</span> <span class="n">selections</span> <span class="o">=</span> <span class="n">fullpos</span><span class="o">.</span><span class="n">construct</span><span class="p">()</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Create fullpos selection for </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">selections</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
-        <span class="k">for</span> <span class="n">head</span><span class="p">,</span> <span class="n">body</span> <span class="ow">in</span> <span class="n">selections</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">nlgen</span><span class="o">.</span><span class="n">write_namelist</span><span class="p">(</span><span class="n">body</span><span class="p">,</span> <span class="n">head</span><span class="p">)</span>
-
-        <span class="n">nlgen</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">namfpc</span><span class="p">,</span> <span class="s2">&quot;fullpos&quot;</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">nlgen</span></div>
-
-
-
-<div class="viewcode-block" id="derived_variables">
-<a class="viewcode-back" href="../../deode.html#deode.derived_variables.derived_variables">[docs]</a>
-<span class="k">def</span> <span class="nf">derived_variables</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">processor_layout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Derive some variables required in the namelists.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        config (deode.ParsedConfig): Configuration</span>
-<span class="sd">        processor_layout (ProcessorLayout, optional): Processor layout object</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        update (dict) : Derived config update</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Geometry</span>
-    <span class="n">nbzonl</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain.nbzonl&quot;</span><span class="p">])</span>
-    <span class="k">if</span> <span class="n">nbzonl</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-        <span class="n">xdx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain.xdx&quot;</span><span class="p">])</span>
-        <span class="n">nbzonl</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2000</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span> <span class="o">*</span> <span class="n">xdx</span> <span class="o">&gt;=</span> <span class="mi">20000</span><span class="p">)</span>
-        <span class="n">nbzonl</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">nbzonl</span><span class="p">)</span> <span class="k">if</span> <span class="p">((</span><span class="nb">int</span><span class="p">(</span><span class="n">nbzonl</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="k">else</span> <span class="nb">int</span><span class="p">(</span><span class="n">nbzonl</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
-        <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain.nimax&quot;</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mi">250</span><span class="p">:</span>
-            <span class="n">nbzonl</span> <span class="o">=</span> <span class="mi">8</span>
-
-    <span class="n">nbzong</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain.nbzong&quot;</span><span class="p">])</span>
-    <span class="k">if</span> <span class="n">nbzong</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-        <span class="n">xdy</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain.xdy&quot;</span><span class="p">])</span>
-        <span class="n">nbzong</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">y</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2000</span><span class="p">)</span> <span class="k">if</span> <span class="n">y</span> <span class="o">*</span> <span class="n">xdy</span> <span class="o">&gt;=</span> <span class="mi">20000</span><span class="p">)</span>
-        <span class="n">nbzong</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">nbzong</span><span class="p">)</span> <span class="k">if</span> <span class="p">((</span><span class="nb">int</span><span class="p">(</span><span class="n">nbzong</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="k">else</span> <span class="nb">int</span><span class="p">(</span><span class="n">nbzong</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
-        <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain.njmax&quot;</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mi">250</span><span class="p">:</span>
-            <span class="n">nbzong</span> <span class="o">=</span> <span class="mi">8</span>
-
-    <span class="n">truncation</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;linear&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;quadratic&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;cubic&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;custom&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
-    <span class="n">lspsmoro</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;linear&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;quadratic&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;cubic&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;custom&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
-
-    <span class="n">ndguxg</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain.nimax&quot;</span><span class="p">])</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain.ilone&quot;</span><span class="p">])</span>
-    <span class="n">ndglg</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain.njmax&quot;</span><span class="p">])</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain.ilate&quot;</span><span class="p">])</span>
-
-    <span class="n">gridtype</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain.gridtype&quot;</span><span class="p">]</span>
-
-    <span class="k">if</span> <span class="n">gridtype</span> <span class="o">==</span> <span class="s2">&quot;custom&quot;</span><span class="p">:</span>
-        <span class="n">truncation</span><span class="p">[</span><span class="n">gridtype</span><span class="p">]</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain.custom_truncation&quot;</span><span class="p">]</span>
-
-    <span class="n">nsmax</span> <span class="o">=</span> <span class="n">floor</span><span class="p">((</span><span class="n">ndglg</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">truncation</span><span class="p">[</span><span class="n">gridtype</span><span class="p">])</span>
-    <span class="n">nmsmax</span> <span class="o">=</span> <span class="n">floor</span><span class="p">((</span><span class="n">ndguxg</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">truncation</span><span class="p">[</span><span class="n">gridtype</span><span class="p">])</span>
-
-    <span class="n">pi</span> <span class="o">=</span> <span class="mf">4.0</span> <span class="o">*</span> <span class="n">atan</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
-    <span class="n">xrpk</span> <span class="o">=</span> <span class="n">sin</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain.xlat0&quot;</span><span class="p">])</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span><span class="p">)</span>
-
-    <span class="c1"># Vertical levels</span>
-    <span class="n">nrfp3s</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;vertical_levels.nlev&quot;</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
-
-    <span class="c1"># Current time</span>
-    <span class="n">basetime</span> <span class="o">=</span> <span class="n">as_datetime</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.times.basetime&quot;</span><span class="p">])</span>
-    <span class="n">year</span> <span class="o">=</span> <span class="n">basetime</span><span class="o">.</span><span class="n">year</span>
-    <span class="n">month</span> <span class="o">=</span> <span class="n">basetime</span><span class="o">.</span><span class="n">month</span>
-    <span class="n">day</span> <span class="o">=</span> <span class="n">basetime</span><span class="o">.</span><span class="n">day</span>
-    <span class="n">time</span> <span class="o">=</span> <span class="n">basetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%H%M&quot;</span><span class="p">)</span>
-
-    <span class="c1"># Time ranges</span>
-    <span class="n">tstep</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain.tstep&quot;</span><span class="p">])</span>
-    <span class="n">bdint</span> <span class="o">=</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;boundaries.bdint&quot;</span><span class="p">])</span>
-    <span class="n">forecast_range</span> <span class="o">=</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.times.forecast_range&quot;</span><span class="p">])</span>
-    <span class="n">cstop</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">forecast_range</span><span class="o">.</span><span class="n">days</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">3600</span> <span class="o">+</span> <span class="n">forecast_range</span><span class="o">.</span><span class="n">seconds</span><span class="p">)</span> <span class="o">/</span> <span class="mi">60</span><span class="p">)</span>
-    <span class="n">radiation_frequency</span> <span class="o">=</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.times.radiation_frequency&quot;</span><span class="p">])</span>
-    <span class="n">nradfr</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">radiation_frequency</span><span class="o">.</span><span class="n">seconds</span> <span class="o">/</span> <span class="n">tstep</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">cstop</span> <span class="o">%</span> <span class="mi">60</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">cstop</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">cstop</span> <span class="o">/</span> <span class="mi">60</span><span class="p">)</span>
-        <span class="n">cstop</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;h</span><span class="si">{</span><span class="n">cstop</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">cstop</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;m</span><span class="si">{</span><span class="n">cstop</span><span class="si">}</span><span class="s2">&quot;</span>
-
-    <span class="c1"># Output settings</span>
-    <span class="n">namoutput</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;history&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span>
-        <span class="s2">&quot;fullpos&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span>
-        <span class="s2">&quot;surfex&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span>
-        <span class="s2">&quot;nrazts&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span>
-    <span class="p">}</span>
-    <span class="n">oi</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.output_settings&quot;</span><span class="p">]</span>
-
-    <span class="n">forecast_range_org</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.times.forecast_range&quot;</span><span class="p">]</span>
-    <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">oi</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="n">dtlist</span> <span class="o">=</span> <span class="n">oi2dt_list</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">forecast_range_org</span><span class="p">)</span>
-        <span class="n">output_timesteps</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="nb">int</span><span class="p">((</span><span class="n">dt</span><span class="o">.</span><span class="n">days</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">3600</span> <span class="o">+</span> <span class="n">dt</span><span class="o">.</span><span class="n">seconds</span><span class="p">)</span> <span class="o">/</span> <span class="n">tstep</span><span class="p">)</span> <span class="k">for</span> <span class="n">dt</span> <span class="ow">in</span> <span class="n">dtlist</span>
-        <span class="p">]</span>
-
-        <span class="n">output_timesteps</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">output_timesteps</span><span class="p">))</span>
-        <span class="n">namoutput</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">output_timesteps</span>
-
-    <span class="c1"># Wind farm parameterization</span>
-    <span class="k">if</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.windfarm&quot;</span><span class="p">]:</span>
-        <span class="n">selection</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;fullpos.selection&quot;</span><span class="p">])</span>
-        <span class="n">selection</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;windfarm&quot;</span><span class="p">)</span>
-
-    <span class="c1"># Turn boolean to strings and macros</span>
-    <span class="n">gen_macros</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;macros.gen_macros&quot;</span><span class="p">])</span>
-
-    <span class="n">decades</span> <span class="o">=</span> <span class="s2">&quot;one_decade&quot;</span> <span class="k">if</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;pgd.one_decade&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="s2">&quot;all_decade&quot;</span>
-    <span class="n">gen_macros</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;namelist.decades&quot;</span><span class="p">)</span>
-
-    <span class="n">sg_input</span> <span class="o">=</span> <span class="s2">&quot;osm&quot;</span> <span class="k">if</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;pgd.use_osm&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
-    <span class="n">gen_macros</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;namelist.sg_input&quot;</span><span class="p">)</span>
-
-    <span class="c1"># Update config and namelist settings</span>
-    <span class="n">update</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;domain&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;nbzong&quot;</span><span class="p">:</span> <span class="n">nbzong</span><span class="p">,</span>
-            <span class="s2">&quot;nbzonl&quot;</span><span class="p">:</span> <span class="n">nbzonl</span><span class="p">,</span>
-            <span class="s2">&quot;ndguxg&quot;</span><span class="p">:</span> <span class="n">ndguxg</span><span class="p">,</span>
-            <span class="s2">&quot;ndglg&quot;</span><span class="p">:</span> <span class="n">ndglg</span><span class="p">,</span>
-            <span class="s2">&quot;xrpk&quot;</span><span class="p">:</span> <span class="n">xrpk</span><span class="p">,</span>
-            <span class="s2">&quot;xtrunc&quot;</span><span class="p">:</span> <span class="n">truncation</span><span class="p">[</span><span class="n">gridtype</span><span class="p">],</span>
-            <span class="s2">&quot;nsmax&quot;</span><span class="p">:</span> <span class="n">nsmax</span><span class="p">,</span>
-            <span class="s2">&quot;nmsmax&quot;</span><span class="p">:</span> <span class="n">nmsmax</span><span class="p">,</span>
-            <span class="s2">&quot;lspsmoro&quot;</span><span class="p">:</span> <span class="n">lspsmoro</span><span class="p">[</span><span class="n">gridtype</span><span class="p">],</span>
-        <span class="p">},</span>
-        <span class="s2">&quot;macros&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;gen_macros&quot;</span><span class="p">:</span> <span class="n">gen_macros</span><span class="p">,</span>
-        <span class="p">},</span>
-        <span class="s2">&quot;namelist&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;nradfr&quot;</span><span class="p">:</span> <span class="n">nradfr</span><span class="p">,</span>
-            <span class="s2">&quot;nrazts&quot;</span><span class="p">:</span> <span class="n">namoutput</span><span class="p">[</span><span class="s2">&quot;nrazts&quot;</span><span class="p">],</span>
-            <span class="s2">&quot;nhists&quot;</span><span class="p">:</span> <span class="n">namoutput</span><span class="p">[</span><span class="s2">&quot;history&quot;</span><span class="p">],</span>
-            <span class="s2">&quot;nposts&quot;</span><span class="p">:</span> <span class="n">namoutput</span><span class="p">[</span><span class="s2">&quot;fullpos&quot;</span><span class="p">],</span>
-            <span class="s2">&quot;nsfxhists&quot;</span><span class="p">:</span> <span class="n">namoutput</span><span class="p">[</span><span class="s2">&quot;surfex&quot;</span><span class="p">],</span>
-            <span class="s2">&quot;cstop&quot;</span><span class="p">:</span> <span class="n">cstop</span><span class="p">,</span>
-            <span class="s2">&quot;tefrcl&quot;</span><span class="p">:</span> <span class="n">bdint</span><span class="o">.</span><span class="n">seconds</span><span class="p">,</span>
-            <span class="s2">&quot;nrfp3s&quot;</span><span class="p">:</span> <span class="n">nrfp3s</span><span class="p">,</span>
-            <span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="n">year</span><span class="p">,</span>
-            <span class="s2">&quot;month&quot;</span><span class="p">:</span> <span class="n">month</span><span class="p">,</span>
-            <span class="s2">&quot;day&quot;</span><span class="p">:</span> <span class="n">day</span><span class="p">,</span>
-            <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="p">),</span>
-            <span class="s2">&quot;sg_input&quot;</span><span class="p">:</span> <span class="n">sg_input</span><span class="p">,</span>
-            <span class="s2">&quot;decades&quot;</span><span class="p">:</span> <span class="n">decades</span><span class="p">,</span>
-        <span class="p">},</span>
-        <span class="s2">&quot;namelist_update&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;master&quot;</span><span class="p">:</span> <span class="p">{}},</span>
-    <span class="p">}</span>
-
-    <span class="c1"># Wind farm parameterization</span>
-    <span class="k">if</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.windfarm&quot;</span><span class="p">]:</span>
-        <span class="n">selection</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;fullpos.selection&quot;</span><span class="p">])</span>
-        <span class="n">selection</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;windfarm&quot;</span><span class="p">)</span>
-        <span class="n">update</span><span class="p">[</span><span class="s2">&quot;fullpos&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;selection&quot;</span><span class="p">:</span> <span class="n">selection</span><span class="p">}</span>
-
-    <span class="k">if</span> <span class="n">processor_layout</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">procs</span> <span class="o">=</span> <span class="n">processor_layout</span><span class="o">.</span><span class="n">get_proc_dict</span><span class="p">()</span>
-        <span class="c1"># Update namelist dicts</span>
-        <span class="k">if</span> <span class="n">procs</span><span class="p">:</span>
-            <span class="n">update</span><span class="p">[</span><span class="s2">&quot;namelist&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">procs</span><span class="p">)</span>
-        <span class="n">update</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
-            <span class="p">{</span><span class="s2">&quot;submission&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;task&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;wrapper&quot;</span><span class="p">:</span> <span class="n">processor_layout</span><span class="o">.</span><span class="n">get_wrapper</span><span class="p">()}}}</span>
-        <span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">update</span></div>
+    <span class="n">exp</span> <span class="o">=</span> <span class="n">ExpFromFiles</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">exp_dependencies</span><span class="p">,</span> <span class="n">mod_files</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">)</span>
+    <span class="n">exp</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">save_as</span><span class="p">(</span><span class="n">output_file</span><span class="p">)</span></div>
 
 </pre></div>
 
