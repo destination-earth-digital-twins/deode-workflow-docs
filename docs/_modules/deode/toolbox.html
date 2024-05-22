@@ -489,6 +489,10 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.toolbox.ProviderError"><code class="docutils literal notranslate"><span class="pre">ProviderError</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.toolbox.Resource"><code class="docutils literal notranslate"><span class="pre">Resource</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.toolbox.SCP"><code class="docutils literal notranslate"><span class="pre">SCP</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.toolbox.SCP.create_resource"><code class="docutils literal notranslate"><span class="pre">SCP.create_resource()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -800,6 +804,8 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
 
+<span class="kn">from</span> <span class="nn">troika.connections.ssh</span> <span class="kn">import</span> <span class="n">SSHConnection</span>
+
 <span class="kn">from</span> <span class="nn">.datetime_utils</span> <span class="kn">import</span> <span class="n">as_datetime</span><span class="p">,</span> <span class="n">get_decade</span>
 <span class="kn">from</span> <span class="nn">.logs</span> <span class="kn">import</span> <span class="n">logger</span>
 
@@ -1020,6 +1026,9 @@
 
         <span class="k">if</span> <span class="n">provider_id</span> <span class="o">==</span> <span class="s2">&quot;fdb&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">FDB</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="n">fetch</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">provider_id</span> <span class="o">==</span> <span class="s2">&quot;scp&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">SCP</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="n">fetch</span><span class="p">)</span>
 
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Provider for </span><span class="si">{</span><span class="n">provider_id</span><span class="si">}</span><span class="s2"> not implemented&quot;</span><span class="p">)</span></div>
 
@@ -1660,8 +1669,7 @@
 <span class="sd">            fetch (bool, optional): Fetch the data. Defaults to True.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fetch</span> <span class="o">=</span> <span class="n">fetch</span>
-        <span class="n">Provider</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">pattern</span><span class="p">)</span>
+        <span class="n">Provider</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="n">fetch</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ArchiveProvider.create_resource">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.ArchiveProvider.create_resource">[docs]</a>
@@ -1718,6 +1726,51 @@
             <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;ecp -pu </span><span class="si">{</span><span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span>  <span class="c1"># noqa S605, E800</span>
             <span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="SCP">
+<a class="viewcode-back" href="../../deode.html#deode.toolbox.SCP">[docs]</a>
+<span class="k">class</span> <span class="nc">SCP</span><span class="p">(</span><span class="n">ArchiveProvider</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Transfer data with SCP.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct SCP provider.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config (deode.ParsedConfig): Configuration</span>
+<span class="sd">            pattern (str): Filepattern</span>
+<span class="sd">            fetch (bool, optional): Fetch the data. Defaults to True.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ArchiveProvider</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="n">fetch</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SCP.create_resource">
+<a class="viewcode-back" href="../../deode.html#deode.toolbox.SCP.create_resource">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_resource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the resource.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource (Resource): Resource.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if success</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Assumes self.identifier=host:full_file_path</span>
+        <span class="n">remote_host</span><span class="p">,</span> <span class="n">remote_file</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+        <span class="n">remote_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">remote_file</span><span class="p">)</span>
+
+        <span class="n">ssh</span> <span class="o">=</span> <span class="n">SSHConnection</span><span class="p">({</span><span class="s2">&quot;host&quot;</span><span class="p">:</span> <span class="n">remote_host</span><span class="p">},</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;scp src=</span><span class="si">{}</span><span class="s2"> to dst=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
+            <span class="n">ssh</span><span class="o">.</span><span class="n">sendfile</span><span class="p">(</span><span class="n">remote_file</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;scp src=</span><span class="si">{}</span><span class="s2"> to dst=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
+            <span class="n">ssh</span><span class="o">.</span><span class="n">execute</span><span class="p">([</span><span class="s2">&quot;mkdir&quot;</span><span class="p">,</span> <span class="s2">&quot;-p&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">remote_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">])</span>
+            <span class="n">ssh</span><span class="o">.</span><span class="n">sendfile</span><span class="p">(</span><span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="n">remote_file</span><span class="p">)</span>
+
         <span class="k">return</span> <span class="kc">True</span></div>
 </div>
 
@@ -1808,7 +1861,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-05-21T12:59:03Z.
+      <span class="lastupdated">Last updated on 2024-05-22T08:55:47Z.
       </span></p>
   </div>
 
