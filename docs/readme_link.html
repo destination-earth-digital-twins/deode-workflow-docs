@@ -64,7 +64,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#running-ecflow-suite-on-atos">Running ecflow suite on ATOS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#running-ecflow-suite-on-atos-or-lumi">Running ecflow suite on ATOS or LUMI</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#running-the-forecast-task-from-the-hpc-login-s-command-line">Running the <code class="docutils literal notranslate"><span class="pre">&quot;forecast&quot;</span></code> task from the <code class="docutils literal notranslate"><span class="pre">hpc-login</span></code>’s command line</a></li>
 </ul>
 </li>
@@ -72,15 +72,18 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="lumi_link.html">LUMI</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="lumi_link.html#getting-on-lumi">Getting on LUMI</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lumi_link.html#ecflow-initial-setup">Ecflow:  Initial setup</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="lumi_link.html#testing-ecflow-server-connection">Testing Ecflow server connection</a></li>
-<li class="toctree-l3"><a class="reference internal" href="lumi_link.html#setting-up-ecflow-ui">Setting up Ecflow UI</a></li>
-<li class="toctree-l3"><a class="reference internal" href="lumi_link.html#troubleshooting">Troubleshooting</a></li>
-</ul>
-</li>
 <li class="toctree-l2"><a class="reference internal" href="lumi_link.html#running-deode-on-lumi">Running DEODE on LUMI</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="lumi_link.html#ecflow-server-selection">Ecflow server selection</a></li>
 <li class="toctree-l3"><a class="reference internal" href="lumi_link.html#data">Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="lumi_link.html#standalone-task-example-forecast">Standalone task example (forecast)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="lumi_link.html#ecflow-server-setup">Ecflow Server Setup</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="lumi_link.html#ecflow-servers-production-develop">Ecflow Servers: Production &amp; Develop</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lumi_link.html#initial-setup">Initial setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lumi_link.html#testing-ecflow-server-connection">Testing Ecflow server connection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lumi_link.html#ecflow-ui">Ecflow UI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lumi_link.html#troubleshooting">Troubleshooting</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="lumi_link.html#contacts">Contacts</a></li>
@@ -951,14 +954,13 @@ that the <code class="docutils literal notranslate"><span class="pre">-h</span><
 <h2>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
 <p>These examples assume that you have successfully <a class="reference external" href="#prepare-your-environment-on-the-hpc-machines">initialised your environment</a> and <a class="reference external" href="#installation">installed <code class="docutils literal notranslate"><span class="pre">deode</span></code></a>. They should be run from the root level of your <code class="docutils literal notranslate"><span class="pre">deode</span></code> install directory. The examples also assume that the necessary
 input data is in place.</p>
-<section id="running-ecflow-suite-on-atos">
-<h3>Running ecflow suite on ATOS<a class="headerlink" href="#running-ecflow-suite-on-atos" title="Link to this heading"></a></h3>
-<p>The following commands will launch a run under ecflow on atos (<code class="docutils literal notranslate"><span class="pre">hpc-login.ecmwf.int</span></code>) using the default experiment:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>deode<span class="w"> </span>start<span class="w"> </span>suite<span class="w"> </span><span class="se">\</span>
-<span class="w">      </span>--config-file<span class="w"> </span><span class="nv">$PWD</span>/deode/data/config_files/config.toml
+<section id="running-ecflow-suite-on-atos-or-lumi">
+<h3>Running ecflow suite on ATOS or LUMI<a class="headerlink" href="#running-ecflow-suite-on-atos-or-lumi" title="Link to this heading"></a></h3>
+<p>The following command with run using the default experiment:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>deode<span class="w"> </span><span class="k">case</span><span class="w"> </span>?deode/data/config_files/configurations/cy48t3_arome<span class="w"> </span>-o<span class="w"> </span>cy48t3_arome.toml<span class="w"> </span>--start-suite
 </pre></div>
 </div>
-<p>The ecflow_scheduler variables live inside <code class="docutils literal notranslate"><span class="pre">deode/data/config_files/include/scheduler/ecflow_atos_bologna.toml</span></code>:</p>
+<p>The ecflow_scheduler variables live inside <code class="docutils literal notranslate"><span class="pre">deode/data/config_files/include/scheduler/ecflow_atos_bologna.toml</span> <span class="pre">or</span> <span class="pre">deode/data/config_files/include/scheduler/ecflow_lumi.toml</span></code>:</p>
 <div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[ecfvars]</span>
 <span class="w">  </span><span class="n">ecf_files</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;@HOME@/deode_ecflow/ecf_files&quot;</span>
 <span class="w">  </span><span class="n">ecf_files_remotely</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;@HOME@/deode_ecflow/ecf_files&quot;</span>
@@ -974,7 +976,6 @@ input data is in place.</p>
 </pre></div>
 </div>
 <p>which are set to default values. These can be changed in the file as required.</p>
-<p>After this, open <code class="docutils literal notranslate"><span class="pre">ecflow_ui</span></code> and add <code class="docutils literal notranslate"><span class="pre">ecflow-gen-${USER}-001</span></code> as the server with port <code class="docutils literal notranslate"><span class="pre">3141</span></code>. The default config will place the working directory under <code class="docutils literal notranslate"><span class="pre">$SCRATCH/deode</span></code>.</p>
 </section>
 <section id="running-the-forecast-task-from-the-hpc-login-s-command-line">
 <h3>Running the <code class="docutils literal notranslate"><span class="pre">&quot;forecast&quot;</span></code> task from the <code class="docutils literal notranslate"><span class="pre">hpc-login</span></code>’s command line<a class="headerlink" href="#running-the-forecast-task-from-the-hpc-login-s-command-line" title="Link to this heading"></a></h3>
@@ -1005,7 +1006,7 @@ input data is in place.</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-05-22T08:55:47Z.
+      <span class="lastupdated">Last updated on 2024-05-22T15:54:39Z.
       </span></p>
   </div>
 

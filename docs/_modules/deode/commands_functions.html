@@ -61,7 +61,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../readme_link.html#examples">Examples</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../readme_link.html#running-ecflow-suite-on-atos">Running ecflow suite on ATOS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../readme_link.html#running-ecflow-suite-on-atos-or-lumi">Running ecflow suite on ATOS or LUMI</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../readme_link.html#running-the-forecast-task-from-the-hpc-login-s-command-line">Running the <code class="docutils literal notranslate"><span class="pre">&quot;forecast&quot;</span></code> task from the <code class="docutils literal notranslate"><span class="pre">hpc-login</span></code>’s command line</a></li>
 </ul>
 </li>
@@ -69,15 +69,18 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../lumi_link.html">LUMI</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../lumi_link.html#getting-on-lumi">Getting on LUMI</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../lumi_link.html#ecflow-initial-setup">Ecflow:  Initial setup</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../lumi_link.html#testing-ecflow-server-connection">Testing Ecflow server connection</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../lumi_link.html#setting-up-ecflow-ui">Setting up Ecflow UI</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../lumi_link.html#troubleshooting">Troubleshooting</a></li>
-</ul>
-</li>
 <li class="toctree-l2"><a class="reference internal" href="../../lumi_link.html#running-deode-on-lumi">Running DEODE on LUMI</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../lumi_link.html#ecflow-server-selection">Ecflow server selection</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../lumi_link.html#data">Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../lumi_link.html#standalone-task-example-forecast">Standalone task example (forecast)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../lumi_link.html#ecflow-server-setup">Ecflow Server Setup</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../lumi_link.html#ecflow-servers-production-develop">Ecflow Servers: Production &amp; Develop</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../lumi_link.html#initial-setup">Initial setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../lumi_link.html#testing-ecflow-server-connection">Testing Ecflow server connection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../lumi_link.html#ecflow-ui">Ecflow UI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../lumi_link.html#troubleshooting">Troubleshooting</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../lumi_link.html#contacts">Contacts</a></li>
@@ -1002,6 +1005,16 @@
     <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
         <span class="n">suite_def</span> <span class="o">=</span> <span class="s2">&quot;DeodeSuiteDefinition&quot;</span>
 
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;ecf_host: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ecf_host</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;ecf_jobout: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">joboutdir</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;ecf_files: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ecf_files</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;ecf_files_remotely: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ecf_files_remotely</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;ecf_home: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ecf_home</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;ecf_remoteuser: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ecf_remoteuser</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;suite definition: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">suite_def</span><span class="p">)</span>
+
+    <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;ECF_HOST&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ecf_host</span>
+
     <span class="n">server</span> <span class="o">=</span> <span class="n">EcflowServer</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">start_command</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">start_command</span><span class="p">)</span>
 
     <span class="n">suite_name</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.case&quot;</span><span class="p">]</span>
@@ -1283,7 +1296,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-05-22T08:55:47Z.
+      <span class="lastupdated">Last updated on 2024-05-22T15:54:39Z.
       </span></p>
   </div>
 
