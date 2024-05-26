@@ -1,4 +1,4 @@
-This was automatically generated running `deode doc config` on 2024-05-22T15:54:37.
+This was automatically generated running `deode doc config` on 2024-05-26T06:39:16.
 
 # Config
 
@@ -12,26 +12,26 @@ This was automatically generated running `deode doc config` on 2024-05-22T15:54:
 
 **Description:** Model for validation of `deode`'s main config file.
 
-| Property                            | Type   | Required | Default | Title/Description                                                      |
-| ----------------------------------- | ------ | -------- | ------- | ---------------------------------------------------------------------- |
-| [general](#general)                 | object | Yes      | -       | General Section                                                        |
-| [suite_control](#suite_control)     | object | No       | -       | Suite control                                                          |
-| [system](#system)                   | object | No       | -       | System                                                                 |
-| [boundaries](#boundaries)           | object | No       | -       | Boundary Section                                                       |
-| [pgd](#pgd)                         | object | No       | -       | Pgd Section                                                            |
-| [fullpos](#fullpos)                 | object | No       | -       | Fullpos Section                                                        |
-| [troika](#troika)                   | object | No       | -       | Troika                                                                 |
-| [include](#include)                 | object | No       | -       | Include Section                                                        |
-| [archiving](#archiving)             | object | No       | -       | Archiving Section, defined in include/archiving.toml                   |
-| [domain](#domain)                   | object | No       | -       | Domain Section, defined in files under include/domains                 |
-| [extractsqlite](#extractsqlite)     | object | No       | -       | Extract sqlite Section, defined in include/sqlite.toml                 |
-| [file_templates](#file_templates)   | object | No       | -       | File Templates, defined in include/file_templates.toml                 |
-| [macros](#macros)                   | object | No       | -       | Macros Section, defined in include/macros.toml                         |
-| [mars](#mars)                       | object | No       | -       | MARS settings, defined in include/mars_settings.toml                   |
-| [platform](#platform)               | object | No       | -       | Platform Section, defined in files under include/platform_paths        |
-| [scheduler](#scheduler)             | object | No       | -       | Ecflow HPC scheduler Section, defined in files under include/scheduler |
-| [submission](#submission)           | object | No       | -       | Submission Section, defined in files under include/submission          |
-| [vertical_levels](#vertical_levels) | object | No       | -       | Vertical Levels, defined in files under include/vertica_levels         |
+| Property                            | Type   | Required | Default | Title/Description                                               |
+| ----------------------------------- | ------ | -------- | ------- | --------------------------------------------------------------- |
+| [general](#general)                 | object | Yes      | -       | General Section                                                 |
+| [suite_control](#suite_control)     | object | No       | -       | Suite control                                                   |
+| [system](#system)                   | object | No       | -       | System                                                          |
+| [boundaries](#boundaries)           | object | No       | -       | Boundary Section                                                |
+| [pgd](#pgd)                         | object | No       | -       | Pgd Section                                                     |
+| [fullpos](#fullpos)                 | object | No       | -       | Fullpos Section                                                 |
+| [troika](#troika)                   | object | No       | -       | Troika                                                          |
+| [include](#include)                 | object | No       | -       | Include Section                                                 |
+| [archiving](#archiving)             | object | No       | -       | Archiving Section, defined in include/archiving.toml            |
+| [domain](#domain)                   | object | No       | -       | Domain Section, defined in files under include/domains          |
+| [extractsqlite](#extractsqlite)     | object | No       | -       | Extract sqlite Section, defined in include/sqlite.toml          |
+| [file_templates](#file_templates)   | object | No       | -       | File Templates, defined in include/file_templates.toml          |
+| [macros](#macros)                   | object | No       | -       | Macros Section, defined in include/macros.toml                  |
+| [mars](#mars)                       | object | No       | -       | MARS settings, defined in include/mars_settings.toml            |
+| [platform](#platform)               | object | No       | -       | Platform Section, defined in files under include/platform_paths |
+| [scheduler](#scheduler)             | object | No       | -       | Scheduler Section, defined in files under include/scheduler     |
+| [submission](#submission)           | object | No       | -       | Submission Section, defined in files under include/submission   |
+| [vertical_levels](#vertical_levels) | object | No       | -       | Vertical Levels, defined in files under include/vertica_levels  |
 
 <a name="general"></a>
 ## Property `Config > general`
@@ -4538,6 +4538,23 @@ Must be one of:
 <a name="scheduler"></a>
 ## Property `Config > scheduler`
 
+**Title:** Scheduler Section, defined in files under include/scheduler
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Settings for implemented schedulers
+
+| Property                      | Type   | Required | Default | Title/Description                                                      |
+| ----------------------------- | ------ | -------- | ------- | ---------------------------------------------------------------------- |
+| [ecfvars](#scheduler_ecfvars) | object | No       | -       | Ecflow HPC scheduler Section, defined in files under include/scheduler |
+
+<a name="scheduler_ecfvars"></a>
+### Property `Config > scheduler > ecfvars`
+
 **Title:** Ecflow HPC scheduler Section, defined in files under include/scheduler
 
 |                           |                                                                           |
@@ -4548,17 +4565,17 @@ Must be one of:
 
 **Description:** DEODE HPC specific ecflow settings
 
-| Property                                            | Type    | Required | Default | Title/Description                                                             |
-| --------------------------------------------------- | ------- | -------- | ------- | ----------------------------------------------------------------------------- |
-| [ecf_host](#scheduler_ecf_host)                     | string  | No       | -       | Ecflow host. HPC dependent.                                                   |
-| [ecf_port](#scheduler_ecf_port)                     | integer | No       | -       | Ecflow port. HPC dependent.                                                   |
-| [ecf_jobout](#scheduler_ecf_jobout)                 | string  | No       | -       | Path to Ecflow job output.                                                    |
-| [ecf_files](#scheduler_ecf_files)                   | string  | No       | -       | Path to Ecflow operating files.                                               |
-| [ecf_files_remotely](#scheduler_ecf_files_remotely) | string  | No       | -       | Path to Ecflow operating files if in remote location, different to ecf_files. |
-| [ecf_home](#scheduler_ecf_home)                     | string  | No       | -       | Path to Ecflow home.                                                          |
+| Property                                                    | Type        | Required | Default | Title/Description                                                                                                                                        |
+| ----------------------------------------------------------- | ----------- | -------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [ecf_host](#scheduler_ecfvars_ecf_host)                     | string      | No       | -       | Ecflow host. HPC dependent.                                                                                                                              |
+| [ecf_port](#scheduler_ecfvars_ecf_port)                     | Combination | No       | -       | Ecflow port, HPC or user dependet. To set depending on userid use \`_set_port_from_user(offset)\` where offset is an interger to be added to the userid  |
+| [ecf_jobout](#scheduler_ecfvars_ecf_jobout)                 | string      | No       | -       | Path to Ecflow job output.                                                                                                                               |
+| [ecf_files](#scheduler_ecfvars_ecf_files)                   | string      | No       | -       | Path to Ecflow operating files.                                                                                                                          |
+| [ecf_files_remotely](#scheduler_ecfvars_ecf_files_remotely) | string      | No       | -       | Path to Ecflow operating files if in remote location, different to ecf_files.                                                                            |
+| [ecf_home](#scheduler_ecfvars_ecf_home)                     | string      | No       | -       | Path to Ecflow home.                                                                                                                                     |
 
-<a name="scheduler_ecf_host"></a>
-### Property `Config > scheduler > ecf_host`
+<a name="scheduler_ecfvars_ecf_host"></a>
+#### Property `Config > scheduler > ecfvars > ecf_host`
 
 |              |          |
 | ------------ | -------- |
@@ -4567,18 +4584,43 @@ Must be one of:
 
 **Description:** Ecflow host. HPC dependent.
 
-<a name="scheduler_ecf_port"></a>
-### Property `Config > scheduler > ecf_port`
+<a name="scheduler_ecfvars_ecf_port"></a>
+#### Property `Config > scheduler > ecfvars > ecf_port`
+
+|              |             |
+| ------------ | ----------- |
+| **Type**     | `combining` |
+| **Required** | No          |
+
+**Description:** Ecflow port, HPC or user dependet. To set depending on userid use `_set_port_from_user(offset)` where offset is an interger to be added to the userid 
+
+| Any of(Option)                                 |
+| ---------------------------------------------- |
+| [item 0](#scheduler_ecfvars_ecf_port_anyOf_i0) |
+| [item 1](#scheduler_ecfvars_ecf_port_anyOf_i1) |
+
+<a name="scheduler_ecfvars_ecf_port_anyOf_i0"></a>
+##### Property `Config > scheduler > ecfvars > ecf_port > anyOf > item 0`
 
 |              |           |
 | ------------ | --------- |
 | **Type**     | `integer` |
 | **Required** | No        |
 
-**Description:** Ecflow port. HPC dependent.
+<a name="scheduler_ecfvars_ecf_port_anyOf_i1"></a>
+##### Property `Config > scheduler > ecfvars > ecf_port > anyOf > item 1`
 
-<a name="scheduler_ecf_jobout"></a>
-### Property `Config > scheduler > ecf_jobout`
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+| Restrictions                      |                                                                                                                 |
+| --------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| **Must match regular expression** | ```_set_port_by_user\((\d+)\)``` [Test](https://regex101.com/?regex=_set_port_by_user%5C%28%28%5Cd%2B%29%5C%29) |
+
+<a name="scheduler_ecfvars_ecf_jobout"></a>
+#### Property `Config > scheduler > ecfvars > ecf_jobout`
 
 |              |          |
 | ------------ | -------- |
@@ -4587,8 +4629,8 @@ Must be one of:
 
 **Description:** Path to Ecflow job output.
 
-<a name="scheduler_ecf_files"></a>
-### Property `Config > scheduler > ecf_files`
+<a name="scheduler_ecfvars_ecf_files"></a>
+#### Property `Config > scheduler > ecfvars > ecf_files`
 
 |              |          |
 | ------------ | -------- |
@@ -4597,8 +4639,8 @@ Must be one of:
 
 **Description:** Path to Ecflow operating files.
 
-<a name="scheduler_ecf_files_remotely"></a>
-### Property `Config > scheduler > ecf_files_remotely`
+<a name="scheduler_ecfvars_ecf_files_remotely"></a>
+#### Property `Config > scheduler > ecfvars > ecf_files_remotely`
 
 |              |          |
 | ------------ | -------- |
@@ -4607,8 +4649,8 @@ Must be one of:
 
 **Description:** Path to Ecflow operating files if in remote location, different to ecf_files.
 
-<a name="scheduler_ecf_home"></a>
-### Property `Config > scheduler > ecf_home`
+<a name="scheduler_ecfvars_ecf_home"></a>
+#### Property `Config > scheduler > ecfvars > ecf_home`
 
 |              |          |
 | ------------ | -------- |
@@ -4636,6 +4678,7 @@ Must be one of:
 | [bindir](#submission_bindir)                           | string          | No       | -       | Location of binaries                                                                                                                                     |
 | [nproma](#submission_nproma)                           | number          | No       | -32     | NPROMA size in the forecast model. See the namelists for where it is used                                                                                |
 | [lfftw](#submission_lfftw)                             | boolean         | No       | true    | Use of the FFTW library. See the namelists for where it is used                                                                                          |
+| [module_initfile](#submission_module_initfile)         | string          | No       | -       | File to use for module initialization, overrides module_initpath                                                                                         |
 | [module_initpath](#submission_module_initpath)         | string          | No       | -       | Path to the version of env_modules_python.py to be used in the module initialization                                                                     |
 | [submit_types](#submission_submit_types)               | array of string | No       | -       | List of submit groups to be defined                                                                                                                      |
 | [default_submit_type](#submission_default_submit_type) | string          | No       | -       | Defines the default submit type for tasks not listed in any defined type                                                                                 |
@@ -4687,6 +4730,16 @@ Must be one of:
 | **Default**  | `true`    |
 
 **Description:** Use of the FFTW library. See the namelists for where it is used
+
+<a name="submission_module_initfile"></a>
+### Property `Config > submission > module_initfile`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** File to use for module initialization, overrides module_initpath
 
 <a name="submission_module_initpath"></a>
 ### Property `Config > submission > module_initpath`
@@ -5517,19 +5570,19 @@ must respect the following conditions
 
 **Description:** Options for vertical levels
 
-| Property                        | Type   | Required | Default | Title/Description                                     |
-| ------------------------------- | ------ | -------- | ------- | ----------------------------------------------------- |
-| [nlev](#vertical_levels_nlev)   | number | No       | -       | Number of vertical full levels                        |
-| [ahalf](#vertical_levels_ahalf) | array  | No       | -       | Level definition for the a coefficient of half levels |
-| [bhalf](#vertical_levels_bhalf) | array  | No       | -       | Level definition for the b coefficient of half levels |
+| Property                        | Type    | Required | Default | Title/Description                                     |
+| ------------------------------- | ------- | -------- | ------- | ----------------------------------------------------- |
+| [nlev](#vertical_levels_nlev)   | integer | No       | -       | Number of vertical full levels                        |
+| [ahalf](#vertical_levels_ahalf) | array   | No       | -       | Level definition for the a coefficient of half levels |
+| [bhalf](#vertical_levels_bhalf) | array   | No       | -       | Level definition for the b coefficient of half levels |
 
 <a name="vertical_levels_nlev"></a>
 ### Property `Config > vertical_levels > nlev`
 
-|              |          |
-| ------------ | -------- |
-| **Type**     | `number` |
-| **Required** | No       |
+|              |           |
+| ------------ | --------- |
+| **Type**     | `integer` |
+| **Required** | No        |
 
 **Description:** Number of vertical full levels
 

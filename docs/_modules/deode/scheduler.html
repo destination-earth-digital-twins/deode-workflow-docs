@@ -674,12 +674,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-scheduler">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-scheduler-ecf-host">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span> <span class="pre">&gt;</span> <span class="pre">ecf_host</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-scheduler-ecf-port">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span> <span class="pre">&gt;</span> <span class="pre">ecf_port</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-scheduler-ecf-jobout">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span> <span class="pre">&gt;</span> <span class="pre">ecf_jobout</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-scheduler-ecf-files">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span> <span class="pre">&gt;</span> <span class="pre">ecf_files</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-scheduler-ecf-files-remotely">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span> <span class="pre">&gt;</span> <span class="pre">ecf_files_remotely</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-scheduler-ecf-home">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span> <span class="pre">&gt;</span> <span class="pre">ecf_home</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-scheduler-ecfvars">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span> <span class="pre">&gt;</span> <span class="pre">ecfvars</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-submission">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">submission</span></code></a><ul>
@@ -687,6 +682,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-submission-bindir">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">submission</span> <span class="pre">&gt;</span> <span class="pre">bindir</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-submission-nproma">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">submission</span> <span class="pre">&gt;</span> <span class="pre">nproma</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-submission-lfftw">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">submission</span> <span class="pre">&gt;</span> <span class="pre">lfftw</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-submission-module-initfile">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">submission</span> <span class="pre">&gt;</span> <span class="pre">module_initfile</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-submission-module-initpath">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">submission</span> <span class="pre">&gt;</span> <span class="pre">module_initpath</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-submission-submit-types">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">submission</span> <span class="pre">&gt;</span> <span class="pre">submit_types</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-submission-default-submit-type">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">submission</span> <span class="pre">&gt;</span> <span class="pre">default_submit_type</span></code></a></li>
@@ -911,6 +907,7 @@
 
 <span class="sd">        Raises:</span>
 <span class="sd">            ModuleNotFoundError: If ecflow is not found.</span>
+<span class="sd">            RuntimeError: If ecf_port is not set</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">ecflow</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -925,15 +922,35 @@
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Please set ecf_host in ecflow_HPC.toml&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">error</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ecf_port</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;scheduler.ecfvars.ecf_port&quot;</span><span class="p">]</span>
+            <span class="n">ecf_port</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;scheduler.ecfvars.ecf_port&quot;</span><span class="p">]</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ecf_port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ecf_port</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="n">func</span><span class="p">,</span> <span class="n">arg</span> <span class="o">=</span> <span class="n">ecf_port</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;(&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
+                    <span class="n">function</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">ecf_port</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="n">arg</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
         <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Please set ecf_port in ecflow_HPC.toml&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">error</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Please set ecf_port&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">error</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">start_command</span> <span class="o">=</span> <span class="n">start_command</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;self.ecf_host=</span><span class="si">{}</span><span class="s2"> self.ecf_port=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_port</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ecf_client</span> <span class="o">=</span> <span class="n">ecflow</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_port</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;self.ecf_client </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_client</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">settings</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;ECF_HOST&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_host</span><span class="p">,</span> <span class="s2">&quot;ECF_PORT&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_port</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_set_port_from_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set ecf_port from user id.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            offset (int): Number to offset the user id with</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            port (int): Derived port number</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">port</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getuid</span><span class="p">()</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">port</span>
 
 <div class="viewcode-block" id="EcflowServer.start_server">
 <a class="viewcode-back" href="../../deode.html#deode.scheduler.EcflowServer.start_server">[docs]</a>
@@ -1217,7 +1234,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-05-22T15:54:39Z.
+      <span class="lastupdated">Last updated on 2024-05-26T06:39:18Z.
       </span></p>
   </div>
 
