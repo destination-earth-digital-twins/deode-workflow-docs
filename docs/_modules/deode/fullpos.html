@@ -233,6 +233,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.fullpos">deode.fullpos module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.fullpos.Fullpos"><code class="docutils literal notranslate"><span class="pre">Fullpos</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.fullpos.Fullpos.check_non_instant_fields"><code class="docutils literal notranslate"><span class="pre">Fullpos.check_non_instant_fields()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.fullpos.Fullpos.construct"><code class="docutils literal notranslate"><span class="pre">Fullpos.construct()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.fullpos.Fullpos.expand"><code class="docutils literal notranslate"><span class="pre">Fullpos.expand()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.fullpos.Fullpos.load"><code class="docutils literal notranslate"><span class="pre">Fullpos.load()</span></code></a></li>
@@ -1097,7 +1098,40 @@
                 <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">selection</span><span class="p">[</span><span class="n">kk</span><span class="p">]:</span>
                     <span class="n">selection</span><span class="p">[</span><span class="n">kk</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
 
+        <span class="k">if</span> <span class="s2">&quot;xxt00000000&quot;</span> <span class="ow">in</span> <span class="n">selection</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">check_non_instant_fields</span><span class="p">(</span><span class="n">selection</span><span class="p">,</span> <span class="s2">&quot;xxt00000000&quot;</span><span class="p">)</span>
+
         <span class="k">return</span> <span class="n">namfpc_out</span><span class="p">,</span> <span class="n">selection</span></div>
+
+
+<div class="viewcode-block" id="Fullpos.check_non_instant_fields">
+<a class="viewcode-back" href="../../deode.html#deode.fullpos.Fullpos.check_non_instant_fields">[docs]</a>
+    <span class="k">def</span> <span class="nf">check_non_instant_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">time_selection</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search for non instant fields.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            selection (dict): Dict with fullpos settings to be examined</span>
+<span class="sd">            time_selection (str): Which selection time rules to check</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: Non instant fields found</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">field_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">parlist</span> <span class="ow">in</span> <span class="n">selection</span><span class="p">[</span><span class="n">time_selection</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">parlist</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                    <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">var</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nldict</span><span class="p">[</span><span class="s2">&quot;NON_INSTANT_FIELDS&quot;</span><span class="p">]]</span>
+                    <span class="n">field_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span>
+
+        <span class="n">field_list</span> <span class="o">=</span> <span class="n">flatten_list</span><span class="p">(</span><span class="n">field_list</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">field_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Non instant fields found for </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">time_selection</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">field_list</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s2">&quot;Change selection or empty `NON_INSTANT_FIELDS` in rules.yml to override&quot;</span>
+            <span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Non instant fields found&quot;</span><span class="p">)</span></div>
 </div>
 
 </pre></div>
@@ -1110,7 +1144,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-05-27T11:04:08Z.
+      <span class="lastupdated">Last updated on 2024-05-27T11:49:57Z.
       </span></p>
   </div>
 
