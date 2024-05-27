@@ -503,6 +503,15 @@
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Misc</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#local-installations">Local installations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#adding-a-new-host">Adding a new host</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#freja">freja</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#installing-under-mamba">Installing under mamba</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#contact">Contact</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#config">Config</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#property-config-general">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">general</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#property-config-general-times">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">general</span> <span class="pre">&gt;</span> <span class="pre">times</span></code></a></li>
@@ -799,7 +808,71 @@
              
   <section id="miscellaneous-documentation">
 <h1>Miscellaneous Documentation<a class="headerlink" href="#miscellaneous-documentation" title="Link to this heading"></a></h1>
-<p>This was automatically generated running <code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">doc</span> <span class="pre">config</span></code> on 2024-05-27T07:25:18.</p>
+<p><a class="reference external" href="https://github.com/destination-earth-digital-twins/Deode-Prototype"><img alt="GitHub" src="https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&amp;logo=github&amp;logoColor=white" /></a>
+<a class="reference external" href="https://destination-earth-digital-twins.github.io/deode-prototype-docs/"><img alt="Github Pages" src="https://img.shields.io/badge/github%20pages-121013?style=for-the-badge&amp;logo=github&amp;logoColor=white" /></a></p>
+<p><a class="reference external" href="https://github.com/destination-earth-digital-twins/Deode-Prototype/actions/workflows/linting.yaml"><img alt="Linting" src="https://github.com/destination-earth-digital-twins/Deode-Prototype/actions/workflows/linting.yaml/badge.svg" /></a>
+<a class="reference external" href="https://github.com/destination-earth-digital-twins/Deode-Prototype/actions/workflows/tests.yaml"><img alt="Tests" src="https://github.com/destination-earth-digital-twins/Deode-Prototype/actions/workflows/tests.yaml/badge.svg" /></a>
+<a class="reference external" href="https://codecov.io/github/destination-earth-digital-twins/Deode-Prototype"><img alt="codecov" src="https://codecov.io/github/destination-earth-digital-twins/Deode-Prototype/branch/develop/graph/badge.svg?token=4PRUK8DMZF" /></a></p>
+<section id="local-installations">
+<h2>Local installations<a class="headerlink" href="#local-installations" title="Link to this heading"></a></h2>
+<p>In  the following we have gathered instructions for all known platforms. If a platform is missing please add instructions.</p>
+<section id="adding-a-new-host">
+<h3>Adding a new host<a class="headerlink" href="#adding-a-new-host" title="Link to this heading"></a></h3>
+<p>In  the following we have gathered instructions for all known platforms. A host/platform can be recognized either through the host name or by identifying a specific environment variable. This is configured in <code class="docutils literal notranslate"><span class="pre">deode/data/config_files/known_hosts.yml</span></code>. In the example below we see how <code class="docutils literal notranslate"><span class="pre">atos_bologna</span></code> and <code class="docutils literal notranslate"><span class="pre">lumi</span></code> are regonized via a hostname regular expression whereas <code class="docutils literal notranslate"><span class="pre">freja</span></code> is recognized from a specfici environment variable.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">atos_bologna</span> <span class="p">:</span>
+  <span class="n">hostname</span> <span class="p">:</span> <span class="s2">&quot;ac</span><span class="se">\\</span><span class="s2">d-</span><span class="se">\\</span><span class="s2">d</span><span class="se">\\</span><span class="s2">d</span><span class="se">\\</span><span class="s2">d&quot;</span>
+<span class="n">lumi</span> <span class="p">:</span>
+  <span class="n">hostname</span> <span class="p">:</span> <span class="s2">&quot;uan</span><span class="se">\\</span><span class="s2">d</span><span class="se">\\</span><span class="s2">d&quot;</span>
+<span class="n">freja</span><span class="p">:</span>
+  <span class="n">env</span><span class="p">:</span>
+   <span class="n">SNIC_RESOURCE</span><span class="p">:</span> <span class="s2">&quot;freja&quot;</span>
+</pre></div>
+</div>
+<p>Any new host should be added in the same way and the names for the configuration files for <code class="docutils literal notranslate"><span class="pre">platform</span></code>, <code class="docutils literal notranslate"><span class="pre">scheduler</span></code> and submission should be named using the given hostname.</p>
+</section>
+<section id="freja">
+<h3>freja<a class="headerlink" href="#freja" title="Link to this heading"></a></h3>
+<p>Freja is the SMHI research cluster operated by NSC. For more details see https://nsc.liu.se/systems/freja</p>
+<section id="installing-under-mamba">
+<h4>Installing under mamba<a class="headerlink" href="#installing-under-mamba" title="Link to this heading"></a></h4>
+<p>Get the code</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="nd">@github</span><span class="o">.</span><span class="n">com</span><span class="p">:</span><span class="n">destination</span><span class="o">-</span><span class="n">earth</span><span class="o">-</span><span class="n">digital</span><span class="o">-</span><span class="n">twins</span><span class="o">/</span><span class="n">Deode</span><span class="o">-</span><span class="n">Prototype</span><span class="o">.</span><span class="n">git</span>
+<span class="n">cd</span> <span class="n">Deode</span><span class="o">-</span><span class="n">Prototype</span>
+</pre></div>
+</div>
+<p>Create a conda environment and install ecflow, gdal and poetry.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ module purge
+$ module load Mambaforge/23.3.1-1-hpc1
+$ mamba create -p .conda ecflow gdal=3.5.0 poetry python=3.10.4
+...
+$ mamba activate .conda/
+</pre></div>
+</div>
+<p>Install deode and all it’s dependencies</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(deode-py3.10) $ poetry install
+</pre></div>
+</div>
+<p>Now we’re ready to go!</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>deode-py3.10) $ deode --version
+2024-05-20 13:00:19 | INFO     | Start deode v0.5.0 --&gt; &quot;deode --version&quot;
+deode v0.5.0
+mamba deactivate
+</pre></div>
+</div>
+<p>To load your new environment do</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cd Deode-Prototype
+$ mamba activate .conda/
+</pre></div>
+</div>
+<p>Note that for the time being ( until the mamba/poetry usage is better understood ) it’s recommended to make this procedure, with a new mamba name, for each new deode clone.</p>
+</section>
+<section id="contact">
+<h4>Contact<a class="headerlink" href="#contact" title="Link to this heading"></a></h4>
+<p>Have a chat with Ulf Andrae, FoU-Met</p>
+</section>
+</section>
+</section>
+<p>This was automatically generated running <code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">doc</span> <span class="pre">config</span></code> on 2024-05-27T09:06:14.</p>
 <section id="config">
 <h2>Config<a class="headerlink" href="#config" title="Link to this heading"></a></h2>
 <p><strong>Title:</strong> Config</p>
@@ -14986,7 +15059,7 @@ If you cannot execute <code class="docutils literal notranslate"><span class="pr
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-05-27T07:25:20Z.
+      <span class="lastupdated">Last updated on 2024-05-27T09:06:16Z.
       </span></p>
   </div>
 
