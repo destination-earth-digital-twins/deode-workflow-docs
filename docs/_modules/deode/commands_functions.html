@@ -76,7 +76,6 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../lumi_link.html#ecflow-server-setup">Ecflow Server Setup</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../lumi_link.html#ecflow-servers-production-develop">Ecflow Servers: Production &amp; Develop</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../lumi_link.html#initial-setup">Initial setup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../lumi_link.html#testing-ecflow-server-connection">Testing Ecflow server connection</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../lumi_link.html#ecflow-ui">Ecflow UI</a></li>
@@ -1042,11 +1041,13 @@
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Ecflow settings: &quot;</span><span class="p">)</span>
 
     <span class="c1"># Assign Ecfvars</span>
+    <span class="n">ecf_user</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;scheduler.ecfvars.ecf_user&quot;</span><span class="p">]</span>
     <span class="n">joboutdir</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;scheduler.ecfvars.ecf_jobout&quot;</span><span class="p">]</span>
     <span class="n">ecf_files</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;scheduler.ecfvars.ecf_files&quot;</span><span class="p">]</span>
     <span class="n">ecf_files_remotely</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;scheduler.ecfvars.ecf_files_remotely&quot;</span><span class="p">]</span>
     <span class="n">ecf_home</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;scheduler.ecfvars.ecf_home&quot;</span><span class="p">]</span>
     <span class="n">ecf_host</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;scheduler.ecfvars.ecf_host&quot;</span><span class="p">]</span>
+    <span class="n">ecf_port</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;scheduler.ecfvars.ecf_port&quot;</span><span class="p">]</span>
     <span class="n">ecf_remoteuser</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;scheduler.ecfvars.ecf_remoteuser&quot;</span><span class="p">]</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">suite_def</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.suite_definition&quot;</span><span class="p">]</span>
@@ -1061,7 +1062,10 @@
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;ecf_remoteuser: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ecf_remoteuser</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;suite definition: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">suite_def</span><span class="p">)</span>
 
-    <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;ECF_HOST&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ecf_host</span>
+    <span class="k">if</span> <span class="s2">&quot;uan&quot;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;HOST&quot;</span><span class="p">]:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;ECF_HOST&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ecf_host</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;ECF_PORT&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ecf_port</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;ECF_USER&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ecf_user</span>
 
     <span class="n">server</span> <span class="o">=</span> <span class="n">EcflowServer</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">start_command</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">start_command</span><span class="p">)</span>
 
@@ -1344,7 +1348,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-05-28T12:45:41Z.
+      <span class="lastupdated">Last updated on 2024-05-28T14:55:35Z.
       </span></p>
   </div>
 
