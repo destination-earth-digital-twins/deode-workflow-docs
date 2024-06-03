@@ -542,6 +542,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#property-config-suite-control-create-static-data">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">suite_control</span> <span class="pre">&gt;</span> <span class="pre">create_static_data</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#property-config-suite-control-create-time-dependent-suite">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">suite_control</span> <span class="pre">&gt;</span> <span class="pre">create_time_dependent_suite</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#property-config-suite-control-split-mars">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">suite_control</span> <span class="pre">&gt;</span> <span class="pre">split_mars</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#property-config-suite-control-do-cleaning">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">suite_control</span> <span class="pre">&gt;</span> <span class="pre">do_cleaning</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#property-config-system">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">system</span></code></a><ul>
@@ -601,6 +602,12 @@
 <li class="toctree-l4"><a class="reference internal" href="#property-config-archiving-hour">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">hour</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#property-config-archiving-static">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">static</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#property-config-archiving-settings">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">settings</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#property-config-cleaning">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#property-config-cleaning-defaults">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span> <span class="pre">&gt;</span> <span class="pre">defaults</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#property-config-cleaning-wrk">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span> <span class="pre">&gt;</span> <span class="pre">wrk</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#property-config-cleaning-archive">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span> <span class="pre">&gt;</span> <span class="pre">archive</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#property-config-domain">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">domain</span></code></a><ul>
@@ -780,6 +787,13 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#cleaning-of-experiment">Cleaning of experiment</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#cleaning-task-to-clean-experiment-files">Cleaning task to clean experiment files .</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cleaning-settings-are-separeted-to-general-default-settings-and-folder-specific-settings">Cleaning settings are separeted to general default settings and folder specific settings:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#settings-for-the-working-folder">Settings for the working folder.</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#settings-for-the-archive-folder">Settings for the archive folder.</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="changelog_link.html">CHANGELOG</a><ul>
@@ -915,7 +929,7 @@ $ mamba activate .conda/
 </section>
 </section>
 </section>
-<p>This was automatically generated running <code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">doc</span> <span class="pre">config</span></code> on 2024-06-03T10:25:57.</p>
+<p>This was automatically generated running <code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">doc</span> <span class="pre">config</span></code> on 2024-06-03T10:28:05.</p>
 <section id="config">
 <h2>Config<a class="headerlink" href="#config" title="Link to this heading"></a></h2>
 <p><strong>Title:</strong> Config</p>
@@ -1002,55 +1016,61 @@ $ mamba activate .conda/
 <td><p>-</p></td>
 <td><p>Archiving Section, defined in include/archiving.toml</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference external" href="#domain">domain</a></p></td>
+<tr class="row-odd"><td><p><a class="reference external" href="#cleaning">cleaning</a></p></td>
+<td><p>object</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>CleaningSection</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="#domain">domain</a></p></td>
 <td><p>object</p></td>
 <td><p>No</p></td>
 <td><p>-</p></td>
 <td><p>Domain Section, defined in files under include/domains</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference external" href="#extractsqlite">extractsqlite</a></p></td>
+<tr class="row-odd"><td><p><a class="reference external" href="#extractsqlite">extractsqlite</a></p></td>
 <td><p>object</p></td>
 <td><p>No</p></td>
 <td><p>-</p></td>
 <td><p>Extract sqlite Section, defined in include/sqlite.toml</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference external" href="#file_templates">file_templates</a></p></td>
+<tr class="row-even"><td><p><a class="reference external" href="#file_templates">file_templates</a></p></td>
 <td><p>object</p></td>
 <td><p>No</p></td>
 <td><p>-</p></td>
 <td><p>File Templates, defined in include/file_templates.toml</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference external" href="#macros">macros</a></p></td>
+<tr class="row-odd"><td><p><a class="reference external" href="#macros">macros</a></p></td>
 <td><p>object</p></td>
 <td><p>No</p></td>
 <td><p>-</p></td>
 <td><p>Macros Section, defined in include/macros.toml</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference external" href="#mars">mars</a></p></td>
+<tr class="row-even"><td><p><a class="reference external" href="#mars">mars</a></p></td>
 <td><p>object</p></td>
 <td><p>No</p></td>
 <td><p>-</p></td>
 <td><p>MARS settings, defined in include/mars_settings.toml</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference external" href="#platform">platform</a></p></td>
+<tr class="row-odd"><td><p><a class="reference external" href="#platform">platform</a></p></td>
 <td><p>object</p></td>
 <td><p>No</p></td>
 <td><p>-</p></td>
 <td><p>Platform Section, defined in files under include/platform_paths</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference external" href="#scheduler">scheduler</a></p></td>
+<tr class="row-even"><td><p><a class="reference external" href="#scheduler">scheduler</a></p></td>
 <td><p>object</p></td>
 <td><p>No</p></td>
 <td><p>-</p></td>
 <td><p>Scheduler Section, defined in files under include/scheduler</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference external" href="#submission">submission</a></p></td>
+<tr class="row-odd"><td><p><a class="reference external" href="#submission">submission</a></p></td>
 <td><p>object</p></td>
 <td><p>No</p></td>
 <td><p>-</p></td>
 <td><p>Submission Section, defined in files under include/submission</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference external" href="#vertical_levels">vertical_levels</a></p></td>
+<tr class="row-even"><td><p><a class="reference external" href="#vertical_levels">vertical_levels</a></p></td>
 <td><p>object</p></td>
 <td><p>No</p></td>
 <td><p>-</p></td>
@@ -3049,6 +3069,12 @@ $ mamba activate .conda/
 <td><p>false</p></td>
 <td><p>Do marsprep only for one step before c903</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference external" href="#suite_control_do_cleaning">do_cleaning</a></p></td>
+<td><p>boolean</p></td>
+<td><p>No</p></td>
+<td><p>false</p></td>
+<td><p>Do file cleaning</p></td>
+</tr>
 </tbody>
 </table>
 <p><a name="suite_control_suite_definition"></a></p>
@@ -3262,6 +3288,29 @@ $ mamba activate .conda/
 </tbody>
 </table>
 <p><strong>Description:</strong> Do marsprep only for one step before c903</p>
+<p><a name="suite_control_do_cleaning"></a></p>
+</section>
+<section id="property-config-suite-control-do-cleaning">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">suite_control</span> <span class="pre">&gt;</span> <span class="pre">do_cleaning</span></code><a class="headerlink" href="#property-config-suite-control-do-cleaning" title="Link to this heading"></a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Default</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">false</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> Do file cleaning</p>
 <p><a name="system"></a></p>
 </section>
 </section>
@@ -5698,8 +5747,792 @@ $ mamba activate .conda/
 </tr>
 </tbody>
 </table>
-<p><a name="domain"></a></p>
+<p><a name="cleaning"></a></p>
 </section>
+</section>
+</section>
+</section>
+<section id="property-config-cleaning">
+<h3>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span></code><a class="headerlink" href="#property-config-cleaning" title="Link to this heading"></a></h3>
+<p><strong>Title:</strong> CleaningSection</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">object</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Additional properties</strong></p></td>
+<td><p><a class="reference external" href="#" title="Additional Properties of any type are allowed.">[Any type: allowed]</a></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> Model for validation of the cleaning configuration.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Title/Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="#cleaning_defaults">defaults</a></p></td>
+<td><p>object</p></td>
+<td><p>Yes</p></td>
+<td><p>-</p></td>
+<td><p>-</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="#cleaning_wrk">wrk</a></p></td>
+<td><p>object</p></td>
+<td><p>Yes</p></td>
+<td><p>-</p></td>
+<td><p>-</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="#cleaning_archive">archive</a></p></td>
+<td><p>object</p></td>
+<td><p>Yes</p></td>
+<td><p>-</p></td>
+<td><p>-</p></td>
+</tr>
+</tbody>
+</table>
+<p><a name="cleaning_defaults"></a></p>
+<section id="property-config-cleaning-defaults">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span> <span class="pre">&gt;</span> <span class="pre">defaults</span></code><a class="headerlink" href="#property-config-cleaning-defaults" title="Link to this heading"></a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">object</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Additional properties</strong></p></td>
+<td><p><a class="reference external" href="#" title="Additional Properties of any type are allowed.">[Any type: allowed]</a></p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Title/Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="#cleaning_defaults_include">include</a></p></td>
+<td><p>string</p></td>
+<td><p>Yes</p></td>
+<td><p>-</p></td>
+<td><p>regular experssion according to it which files to clean</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="#cleaning_defaults_cleaning_delay">cleaning_delay</a></p></td>
+<td><p>string</p></td>
+<td><p>Yes</p></td>
+<td><p>-</p></td>
+<td><p>time period with which the cleaning is shifted to the experiment start day to the past</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="#cleaning_defaults_cleaning_max_delay">cleaning_max_delay</a></p></td>
+<td><p>string</p></td>
+<td><p>Yes</p></td>
+<td><p>-</p></td>
+<td><p>time period which defines the cleaning according to the cleaning_delay to the past</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="#cleaning_defaults_step">step</a></p></td>
+<td><p>string</p></td>
+<td><p>Yes</p></td>
+<td><p>-</p></td>
+<td><p>time step which determines moments when to make a cleaning</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="#cleaning_defaults_active">active</a></p></td>
+<td><p>boolean</p></td>
+<td><p>Yes</p></td>
+<td><p>-</p></td>
+<td><p>Activate cleaning files</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="#cleaning_defaults_dry_run">dry_run</a></p></td>
+<td><p>boolean</p></td>
+<td><p>Yes</p></td>
+<td><p>-</p></td>
+<td><p>test cleaning without to  delete files</p></td>
+</tr>
+</tbody>
+</table>
+<p><a name="cleaning_defaults_include"></a></p>
+<section id="property-config-cleaning-defaults-include">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span> <span class="pre">&gt;</span> <span class="pre">defaults</span> <span class="pre">&gt;</span> <span class="pre">include</span></code><a class="headerlink" href="#property-config-cleaning-defaults-include" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>Yes</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> regular experssion according to it which files to clean</p>
+<p><a name="cleaning_defaults_cleaning_delay"></a></p>
+</section>
+<section id="property-config-cleaning-defaults-cleaning-delay">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span> <span class="pre">&gt;</span> <span class="pre">defaults</span> <span class="pre">&gt;</span> <span class="pre">cleaning_delay</span></code><a class="headerlink" href="#property-config-cleaning-defaults-cleaning-delay" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>Yes</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> time period with which the cleaning is shifted to the experiment start day to the past</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Restrictions</p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Must match regular expression</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$</span></code> <a class="reference external" href="https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24">Test</a></p></td>
+</tr>
+</tbody>
+</table>
+<p><a name="cleaning_defaults_cleaning_max_delay"></a></p>
+</section>
+<section id="property-config-cleaning-defaults-cleaning-max-delay">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span> <span class="pre">&gt;</span> <span class="pre">defaults</span> <span class="pre">&gt;</span> <span class="pre">cleaning_max_delay</span></code><a class="headerlink" href="#property-config-cleaning-defaults-cleaning-max-delay" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>Yes</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> time period which defines the cleaning according to the cleaning_delay to the past</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Restrictions</p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Must match regular expression</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$</span></code> <a class="reference external" href="https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24">Test</a></p></td>
+</tr>
+</tbody>
+</table>
+<p><a name="cleaning_defaults_step"></a></p>
+</section>
+<section id="property-config-cleaning-defaults-step">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span> <span class="pre">&gt;</span> <span class="pre">defaults</span> <span class="pre">&gt;</span> <span class="pre">step</span></code><a class="headerlink" href="#property-config-cleaning-defaults-step" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>Yes</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> time step which determines moments when to make a cleaning</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Restrictions</p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Must match regular expression</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$</span></code> <a class="reference external" href="https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24">Test</a></p></td>
+</tr>
+</tbody>
+</table>
+<p><a name="cleaning_defaults_active"></a></p>
+</section>
+<section id="property-config-cleaning-defaults-active">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span> <span class="pre">&gt;</span> <span class="pre">defaults</span> <span class="pre">&gt;</span> <span class="pre">active</span></code><a class="headerlink" href="#property-config-cleaning-defaults-active" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>Yes</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> Activate cleaning files</p>
+<p><a name="cleaning_defaults_dry_run"></a></p>
+</section>
+<section id="property-config-cleaning-defaults-dry-run">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span> <span class="pre">&gt;</span> <span class="pre">defaults</span> <span class="pre">&gt;</span> <span class="pre">dry_run</span></code><a class="headerlink" href="#property-config-cleaning-defaults-dry-run" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>Yes</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> test cleaning without to  delete files</p>
+<p><a name="cleaning_wrk"></a></p>
+</section>
+</section>
+<section id="property-config-cleaning-wrk">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span> <span class="pre">&gt;</span> <span class="pre">wrk</span></code><a class="headerlink" href="#property-config-cleaning-wrk" title="Link to this heading"></a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">object</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Additional properties</strong></p></td>
+<td><p><a class="reference external" href="#" title="Additional Properties of any type are allowed.">[Any type: allowed]</a></p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Title/Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="#cleaning_wrk_path">path</a></p></td>
+<td><p>string</p></td>
+<td><p>Yes</p></td>
+<td><p>-</p></td>
+<td><p>path to the folder where files will be cleaned</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="#cleaning_wrk_include">include</a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>regular experssion according to it which files to clean</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="#cleaning_wrk_cleaning_delay">cleaning_delay</a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>time period with which the cleaning is shifted to the experiment start day to the past</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="#cleaning_wrk_cleaning_max_delay">cleaning_max_delay</a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>time period which defines the cleaning according to the cleaning_delay to the past</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="#cleaning_wrk_step">step</a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>time step which determines moments when to make a cleaning</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="#cleaning_wrk_active">active</a></p></td>
+<td><p>boolean</p></td>
+<td><p>Yes</p></td>
+<td><p>-</p></td>
+<td><p>Activate cleaning files</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="#cleaning_wrk_dry_run">dry_run</a></p></td>
+<td><p>boolean</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>test cleaning without to  delete files</p></td>
+</tr>
+</tbody>
+</table>
+<p><a name="cleaning_wrk_path"></a></p>
+<section id="property-config-cleaning-wrk-path">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span> <span class="pre">&gt;</span> <span class="pre">wrk</span> <span class="pre">&gt;</span> <span class="pre">path</span></code><a class="headerlink" href="#property-config-cleaning-wrk-path" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>Yes</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> path to the folder where files will be cleaned</p>
+<p><a name="cleaning_wrk_include"></a></p>
+</section>
+<section id="property-config-cleaning-wrk-include">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span> <span class="pre">&gt;</span> <span class="pre">wrk</span> <span class="pre">&gt;</span> <span class="pre">include</span></code><a class="headerlink" href="#property-config-cleaning-wrk-include" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> regular experssion according to it which files to clean</p>
+<p><a name="cleaning_wrk_cleaning_delay"></a></p>
+</section>
+<section id="property-config-cleaning-wrk-cleaning-delay">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span> <span class="pre">&gt;</span> <span class="pre">wrk</span> <span class="pre">&gt;</span> <span class="pre">cleaning_delay</span></code><a class="headerlink" href="#property-config-cleaning-wrk-cleaning-delay" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> time period with which the cleaning is shifted to the experiment start day to the past</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Restrictions</p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Must match regular expression</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$</span></code> <a class="reference external" href="https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24">Test</a></p></td>
+</tr>
+</tbody>
+</table>
+<p><a name="cleaning_wrk_cleaning_max_delay"></a></p>
+</section>
+<section id="property-config-cleaning-wrk-cleaning-max-delay">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span> <span class="pre">&gt;</span> <span class="pre">wrk</span> <span class="pre">&gt;</span> <span class="pre">cleaning_max_delay</span></code><a class="headerlink" href="#property-config-cleaning-wrk-cleaning-max-delay" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> time period which defines the cleaning according to the cleaning_delay to the past</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Restrictions</p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Must match regular expression</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$</span></code> <a class="reference external" href="https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24">Test</a></p></td>
+</tr>
+</tbody>
+</table>
+<p><a name="cleaning_wrk_step"></a></p>
+</section>
+<section id="property-config-cleaning-wrk-step">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span> <span class="pre">&gt;</span> <span class="pre">wrk</span> <span class="pre">&gt;</span> <span class="pre">step</span></code><a class="headerlink" href="#property-config-cleaning-wrk-step" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> time step which determines moments when to make a cleaning</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Restrictions</p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Must match regular expression</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$</span></code> <a class="reference external" href="https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24">Test</a></p></td>
+</tr>
+</tbody>
+</table>
+<p><a name="cleaning_wrk_active"></a></p>
+</section>
+<section id="property-config-cleaning-wrk-active">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span> <span class="pre">&gt;</span> <span class="pre">wrk</span> <span class="pre">&gt;</span> <span class="pre">active</span></code><a class="headerlink" href="#property-config-cleaning-wrk-active" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>Yes</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> Activate cleaning files</p>
+<p><a name="cleaning_wrk_dry_run"></a></p>
+</section>
+<section id="property-config-cleaning-wrk-dry-run">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span> <span class="pre">&gt;</span> <span class="pre">wrk</span> <span class="pre">&gt;</span> <span class="pre">dry_run</span></code><a class="headerlink" href="#property-config-cleaning-wrk-dry-run" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> test cleaning without to  delete files</p>
+<p><a name="cleaning_archive"></a></p>
+</section>
+</section>
+<section id="property-config-cleaning-archive">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span> <span class="pre">&gt;</span> <span class="pre">archive</span></code><a class="headerlink" href="#property-config-cleaning-archive" title="Link to this heading"></a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">object</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Additional properties</strong></p></td>
+<td><p><a class="reference external" href="#" title="Additional Properties of any type are allowed.">[Any type: allowed]</a></p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Title/Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="#cleaning_archive_path">path</a></p></td>
+<td><p>string</p></td>
+<td><p>Yes</p></td>
+<td><p>-</p></td>
+<td><p>path to the folder where files will be cleaned</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="#cleaning_archive_include">include</a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>regular experssion according to it which files to clean</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="#cleaning_archive_cleaning_delay">cleaning_delay</a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>time period with which the cleaning is shifted to the experiment start day to the past</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="#cleaning_archive_cleaning_max_delay">cleaning_max_delay</a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>time period which defines the cleaning according to the cleaning_delay to the past</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="#cleaning_archive_step">step</a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>time step which determines moments when to make a cleaning</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="#cleaning_archive_active">active</a></p></td>
+<td><p>boolean</p></td>
+<td><p>Yes</p></td>
+<td><p>-</p></td>
+<td><p>Activate cleaning files</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="#cleaning_archive_dry_run">dry_run</a></p></td>
+<td><p>boolean</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>test cleaning without to  delete files</p></td>
+</tr>
+</tbody>
+</table>
+<p><a name="cleaning_archive_path"></a></p>
+<section id="property-config-cleaning-archive-path">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span> <span class="pre">&gt;</span> <span class="pre">archive</span> <span class="pre">&gt;</span> <span class="pre">path</span></code><a class="headerlink" href="#property-config-cleaning-archive-path" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>Yes</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> path to the folder where files will be cleaned</p>
+<p><a name="cleaning_archive_include"></a></p>
+</section>
+<section id="property-config-cleaning-archive-include">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span> <span class="pre">&gt;</span> <span class="pre">archive</span> <span class="pre">&gt;</span> <span class="pre">include</span></code><a class="headerlink" href="#property-config-cleaning-archive-include" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> regular experssion according to it which files to clean</p>
+<p><a name="cleaning_archive_cleaning_delay"></a></p>
+</section>
+<section id="property-config-cleaning-archive-cleaning-delay">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span> <span class="pre">&gt;</span> <span class="pre">archive</span> <span class="pre">&gt;</span> <span class="pre">cleaning_delay</span></code><a class="headerlink" href="#property-config-cleaning-archive-cleaning-delay" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> time period with which the cleaning is shifted to the experiment start day to the past</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Restrictions</p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Must match regular expression</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$</span></code> <a class="reference external" href="https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24">Test</a></p></td>
+</tr>
+</tbody>
+</table>
+<p><a name="cleaning_archive_cleaning_max_delay"></a></p>
+</section>
+<section id="property-config-cleaning-archive-cleaning-max-delay">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span> <span class="pre">&gt;</span> <span class="pre">archive</span> <span class="pre">&gt;</span> <span class="pre">cleaning_max_delay</span></code><a class="headerlink" href="#property-config-cleaning-archive-cleaning-max-delay" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> time period which defines the cleaning according to the cleaning_delay to the past</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Restrictions</p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Must match regular expression</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$</span></code> <a class="reference external" href="https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24">Test</a></p></td>
+</tr>
+</tbody>
+</table>
+<p><a name="cleaning_archive_step"></a></p>
+</section>
+<section id="property-config-cleaning-archive-step">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span> <span class="pre">&gt;</span> <span class="pre">archive</span> <span class="pre">&gt;</span> <span class="pre">step</span></code><a class="headerlink" href="#property-config-cleaning-archive-step" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> time step which determines moments when to make a cleaning</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Restrictions</p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Must match regular expression</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$</span></code> <a class="reference external" href="https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24">Test</a></p></td>
+</tr>
+</tbody>
+</table>
+<p><a name="cleaning_archive_active"></a></p>
+</section>
+<section id="property-config-cleaning-archive-active">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span> <span class="pre">&gt;</span> <span class="pre">archive</span> <span class="pre">&gt;</span> <span class="pre">active</span></code><a class="headerlink" href="#property-config-cleaning-archive-active" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>Yes</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> Activate cleaning files</p>
+<p><a name="cleaning_archive_dry_run"></a></p>
+</section>
+<section id="property-config-cleaning-archive-dry-run">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span> <span class="pre">&gt;</span> <span class="pre">archive</span> <span class="pre">&gt;</span> <span class="pre">dry_run</span></code><a class="headerlink" href="#property-config-cleaning-archive-dry-run" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> test cleaning without to  delete files</p>
+<p><a name="domain"></a></p>
 </section>
 </section>
 </section>
@@ -15147,6 +15980,72 @@ If you cannot execute <code class="docutils literal notranslate"><span class="pr
 </section>
 </section>
 </section>
+<section id="cleaning-of-experiment">
+<h2>Cleaning of experiment<a class="headerlink" href="#cleaning-of-experiment" title="Link to this heading"></a></h2>
+<p>The forecast suite  produces a lot of files in the working and output folders. To avoid increased usage of file storage, it is needed to have a cleaning feature, which allows configurable options to delete files.</p>
+<p>Each forecast experiment has a start and end dates and cycle length. These settings define the experiment timeline and used folders:</p>
+<img src="../figs/experiment_timeline.jpg" alt="drawing"/>
+<p>working folder - contains the workings folder of each suite task: wrk=”&#64;CASEDIR&#64;/&#64;YYYY&#64;&#64;MM&#64;&#64;DD&#64;_&#64;HH&#64;&#64;mm&#64;/”</p>
+<p>archive folder - contains the forecast result folders: archive=”&#64;ARCHIVE_ROOT&#64;/&#64;ARCHIVE_TIMESTAMP&#64;”=”&#64;ARCHIVE_ROOT&#64;/&#64;YYYY&#64;/&#64;MM&#64;/&#64;DD&#64;/&#64;HH&#64;/”</p>
+<p>These folder paths are parameterized by settings in the config file and its include setting files. Here  for working folder the time parameters are from the experiment start date.
+For the archive folder the time parameters are specific for each cycle.
+Regular usage of suite forecast for different start dates produces a series of specific folders and files in the experiment working and archive folders.</p>
+<section id="cleaning-task-to-clean-experiment-files">
+<h3>Cleaning task to clean experiment files .<a class="headerlink" href="#cleaning-task-to-clean-experiment-files" title="Link to this heading"></a></h3>
+<p>It is added an option in the suite_control setting section of the config file, which allows to add or not an ecflow cleaning task.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">do_cleaning</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span>
+</pre></div>
+</div>
+<p>To use the cleanig task it is created a ecflow task which is the last task in the forecast suite. It is triggered after successfully execution of the previous suite tasks.</p>
+<p>Cleaning settings are grouped in the cleaning include file, which is referred as a setting in the include setting section of the config file.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">cleaning</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;include/cleaning.toml&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="cleaning-settings-are-separeted-to-general-default-settings-and-folder-specific-settings">
+<h3>Cleaning settings are separeted to general default settings and folder specific settings:<a class="headerlink" href="#cleaning-settings-are-separeted-to-general-default-settings-and-folder-specific-settings" title="Link to this heading"></a></h3>
+<img src="../figs/cleaning_image.jpg"  alt="cleaning scheme"/>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>defaults
+<span class="w">  </span><span class="nv">active</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="w">  </span>-<span class="w"> </span>turn<span class="w"> </span>on<span class="w"> </span>or<span class="w"> </span>turn<span class="w"> </span>off<span class="w"> </span>the<span class="w"> </span>cleaning<span class="w"> </span>task
+<span class="w">  </span><span class="nv">dry_run</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="w">  </span>-<span class="w"> </span>testing<span class="w"> </span>mode<span class="w"> </span>-<span class="w"> </span>to<span class="w"> </span>see<span class="w"> </span>which<span class="w"> </span>files<span class="w"> </span>would<span class="w"> </span>be<span class="w"> </span>deleted<span class="w"> </span>without<span class="w"> </span>their<span class="w"> </span>actual<span class="w"> </span>deletion.<span class="w"> </span>This<span class="w"> </span>could<span class="w"> </span>be<span class="w"> </span>seen<span class="w"> </span><span class="k">in</span><span class="w"> </span>the<span class="w"> </span>task<span class="w"> </span>log<span class="w"> </span>file.
+<span class="w">  </span><span class="nv">include</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;(.*)&quot;</span><span class="w"> </span>-<span class="w"> </span>regular<span class="w"> </span>expression<span class="w"> </span>which<span class="w"> </span>specifies<span class="w"> </span>which<span class="w"> </span>files<span class="w"> </span>to<span class="w"> </span>delete.<span class="w"> </span><span class="s2">&quot;(.*)&quot;</span><span class="w"> </span>is<span class="w"> </span>regular<span class="w"> </span>expesion<span class="w"> </span>which<span class="w"> </span>matches<span class="w"> </span>all<span class="w"> </span>files
+<span class="w">  </span><span class="nv">cleaning_delay</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;P1D&quot;</span>
+<span class="w">  </span><span class="nv">cleaning_max_delay</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;P2D&quot;</span>
+<span class="w">  </span><span class="nv">step</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;PT6H&quot;</span>
+</pre></div>
+</div>
+<p>cleaning_delay and cleanig_max_delay are period settings which define the cleaning time interval according to the expiriment start date</p>
+<p>step - defines the time moments in the cleaning interval when to clean files</p>
+<p>All of the default settings are required. But these values could be changed in the specific folder settings.</p>
+</section>
+<section id="settings-for-the-working-folder">
+<h3>Settings for the working folder.<a class="headerlink" href="#settings-for-the-working-folder" title="Link to this heading"></a></h3>
+<p>Required settings are “active” and “path”. “path” defines the working folder path - the root folder which contains all working files and folders.
+Example value of the working path: “/ec/res4/scratch/bgmt/deode/CY48t3_AROME/20230916_0000/”</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>wrk<span class="o">]</span>
+<span class="w">  </span><span class="nv">active</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span>
+<span class="w">  </span><span class="nv">dry_run</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span>
+<span class="w">  </span><span class="nv">include</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;ELS*&quot;</span>
+<span class="w">  </span><span class="nv">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;@WRK@&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="settings-for-the-archive-folder">
+<h3>Settings for the archive folder.<a class="headerlink" href="#settings-for-the-archive-folder" title="Link to this heading"></a></h3>
+<p>Required settings are “active” and “path”.
+Example value of the archive folder path is “/ec/res4/scratch/bgmt/deode/CY48t3_AROME/archive/2023/09/16/00/”</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>archive<span class="o">]</span>
+<span class="w">  </span><span class="nv">active</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span>
+<span class="w">  </span><span class="nv">dry_run</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span>
+<span class="w">  </span><span class="nv">include</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;GRIBDEOD*&quot;</span>
+<span class="w">  </span><span class="nv">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;@ARCHIVE@&quot;</span>
+<span class="w">  </span><span class="nv">cleaning_delay</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;P1D&quot;</span>
+<span class="w">  </span><span class="nv">step</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;PT6H&quot;</span>
+</pre></div>
+</div>
+<p>The cleaning settings allow to define the cleaning time interval and step and which files to delete.</p>
+</section>
+</section>
 </section>
 
 
@@ -15161,7 +16060,7 @@ If you cannot execute <code class="docutils literal notranslate"><span class="pr
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-06-03T10:25:59Z.
+      <span class="lastupdated">Last updated on 2024-06-03T10:28:07Z.
       </span></p>
   </div>
 

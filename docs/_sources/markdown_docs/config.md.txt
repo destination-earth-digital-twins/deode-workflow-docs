@@ -1,4 +1,4 @@
-This was automatically generated running `deode doc config` on 2024-06-03T10:25:57.
+This was automatically generated running `deode doc config` on 2024-06-03T10:28:05.
 
 # Config
 
@@ -23,6 +23,7 @@ This was automatically generated running `deode doc config` on 2024-06-03T10:25:
 | [troika](#troika)                   | object | No       | -       | Troika                                                          |
 | [include](#include)                 | object | No       | -       | Include Section                                                 |
 | [archiving](#archiving)             | object | No       | -       | Archiving Section, defined in include/archiving.toml            |
+| [cleaning](#cleaning)               | object | No       | -       | CleaningSection                                                 |
 | [domain](#domain)                   | object | No       | -       | Domain Section, defined in files under include/domains          |
 | [extractsqlite](#extractsqlite)     | object | No       | -       | Extract sqlite Section, defined in include/sqlite.toml          |
 | [file_templates](#file_templates)   | object | No       | -       | File Templates, defined in include/file_templates.toml          |
@@ -831,6 +832,7 @@ Must be one of:
 | [create_static_data](#suite_control_create_static_data)                   | boolean          | No       | -                      | Activate the generation of PGD and monthly climate files in the suite                                                                                                                                                                                                   |
 | [create_time_dependent_suite](#suite_control_create_time_dependent_suite) | boolean          | No       | -                      | Activate the time dependent part of the suite                                                                                                                                                                                                                           |
 | [split_mars](#suite_control_split_mars)                                   | boolean          | No       | false                  | Do marsprep only for one step before c903                                                                                                                                                                                                                               |
+| [do_cleaning](#suite_control_do_cleaning)                                 | boolean          | No       | false                  | Do file cleaning                                                                                                                                                                                                                                                        |
 
 <a name="suite_control_suite_definition"></a>
 ### Property `Config > suite_control > suite_definition`
@@ -938,6 +940,17 @@ Must be one of:
 | **Default**  | `false`   |
 
 **Description:** Do marsprep only for one step before c903
+
+<a name="suite_control_do_cleaning"></a>
+### Property `Config > suite_control > do_cleaning`
+
+|              |           |
+| ------------ | --------- |
+| **Type**     | `boolean` |
+| **Required** | No        |
+| **Default**  | `false`   |
+
+**Description:** Do file cleaning
 
 <a name="system"></a>
 ## Property `Config > system`
@@ -1942,6 +1955,317 @@ Must be one of:
 | Restrictions                      |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Must match regular expression** | ```^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?:P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?:P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$``` [Test](https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%3AP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%3AP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24) |
+
+<a name="cleaning"></a>
+## Property `Config > cleaning`
+
+**Title:** CleaningSection
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Model for validation of the cleaning configuration.
+
+| Property                       | Type   | Required | Default | Title/Description |
+| ------------------------------ | ------ | -------- | ------- | ----------------- |
+| [defaults](#cleaning_defaults) | object | Yes      | -       | -                 |
+| [wrk](#cleaning_wrk)           | object | Yes      | -       | -                 |
+| [archive](#cleaning_archive)   | object | Yes      | -       | -                 |
+
+<a name="cleaning_defaults"></a>
+### Property `Config > cleaning > defaults`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | Yes                                                                       |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+| Property                                                    | Type    | Required | Default | Title/Description                                                                      |
+| ----------------------------------------------------------- | ------- | -------- | ------- | -------------------------------------------------------------------------------------- |
+| [include](#cleaning_defaults_include)                       | string  | Yes      | -       | regular experssion according to it which files to clean                                |
+| [cleaning_delay](#cleaning_defaults_cleaning_delay)         | string  | Yes      | -       | time period with which the cleaning is shifted to the experiment start day to the past |
+| [cleaning_max_delay](#cleaning_defaults_cleaning_max_delay) | string  | Yes      | -       | time period which defines the cleaning according to the cleaning_delay to the past     |
+| [step](#cleaning_defaults_step)                             | string  | Yes      | -       | time step which determines moments when to make a cleaning                             |
+| [active](#cleaning_defaults_active)                         | boolean | Yes      | -       | Activate cleaning files                                                                |
+| [dry_run](#cleaning_defaults_dry_run)                       | boolean | Yes      | -       | test cleaning without to  delete files                                                 |
+
+<a name="cleaning_defaults_include"></a>
+#### Property `Config > cleaning > defaults > include`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | Yes      |
+
+**Description:** regular experssion according to it which files to clean
+
+<a name="cleaning_defaults_cleaning_delay"></a>
+#### Property `Config > cleaning > defaults > cleaning_delay`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | Yes      |
+
+**Description:** time period with which the cleaning is shifted to the experiment start day to the past
+
+| Restrictions                      |                                                                                                                                                                                                                                                                                                         |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Must match regular expression** | ```^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$``` [Test](https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24) |
+
+<a name="cleaning_defaults_cleaning_max_delay"></a>
+#### Property `Config > cleaning > defaults > cleaning_max_delay`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | Yes      |
+
+**Description:** time period which defines the cleaning according to the cleaning_delay to the past 
+
+| Restrictions                      |                                                                                                                                                                                                                                                                                                         |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Must match regular expression** | ```^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$``` [Test](https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24) |
+
+<a name="cleaning_defaults_step"></a>
+#### Property `Config > cleaning > defaults > step`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | Yes      |
+
+**Description:** time step which determines moments when to make a cleaning
+
+| Restrictions                      |                                                                                                                                                                                                                                                                                                         |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Must match regular expression** | ```^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$``` [Test](https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24) |
+
+<a name="cleaning_defaults_active"></a>
+#### Property `Config > cleaning > defaults > active`
+
+|              |           |
+| ------------ | --------- |
+| **Type**     | `boolean` |
+| **Required** | Yes       |
+
+**Description:** Activate cleaning files
+
+<a name="cleaning_defaults_dry_run"></a>
+#### Property `Config > cleaning > defaults > dry_run`
+
+|              |           |
+| ------------ | --------- |
+| **Type**     | `boolean` |
+| **Required** | Yes       |
+
+**Description:** test cleaning without to  delete files
+
+<a name="cleaning_wrk"></a>
+### Property `Config > cleaning > wrk`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | Yes                                                                       |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+| Property                                               | Type    | Required | Default | Title/Description                                                                      |
+| ------------------------------------------------------ | ------- | -------- | ------- | -------------------------------------------------------------------------------------- |
+| [path](#cleaning_wrk_path)                             | string  | Yes      | -       | path to the folder where files will be cleaned                                         |
+| [include](#cleaning_wrk_include)                       | string  | No       | -       | regular experssion according to it which files to clean                                |
+| [cleaning_delay](#cleaning_wrk_cleaning_delay)         | string  | No       | -       | time period with which the cleaning is shifted to the experiment start day to the past |
+| [cleaning_max_delay](#cleaning_wrk_cleaning_max_delay) | string  | No       | -       | time period which defines the cleaning according to the cleaning_delay to the past     |
+| [step](#cleaning_wrk_step)                             | string  | No       | -       | time step which determines moments when to make a cleaning                             |
+| [active](#cleaning_wrk_active)                         | boolean | Yes      | -       | Activate cleaning files                                                                |
+| [dry_run](#cleaning_wrk_dry_run)                       | boolean | No       | -       | test cleaning without to  delete files                                                 |
+
+<a name="cleaning_wrk_path"></a>
+#### Property `Config > cleaning > wrk > path`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | Yes      |
+
+**Description:** path to the folder where files will be cleaned
+
+<a name="cleaning_wrk_include"></a>
+#### Property `Config > cleaning > wrk > include`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** regular experssion according to it which files to clean
+
+<a name="cleaning_wrk_cleaning_delay"></a>
+#### Property `Config > cleaning > wrk > cleaning_delay`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** time period with which the cleaning is shifted to the experiment start day to the past
+
+| Restrictions                      |                                                                                                                                                                                                                                                                                                         |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Must match regular expression** | ```^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$``` [Test](https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24) |
+
+<a name="cleaning_wrk_cleaning_max_delay"></a>
+#### Property `Config > cleaning > wrk > cleaning_max_delay`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** time period which defines the cleaning according to the cleaning_delay to the past 
+
+| Restrictions                      |                                                                                                                                                                                                                                                                                                         |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Must match regular expression** | ```^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$``` [Test](https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24) |
+
+<a name="cleaning_wrk_step"></a>
+#### Property `Config > cleaning > wrk > step`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** time step which determines moments when to make a cleaning
+
+| Restrictions                      |                                                                                                                                                                                                                                                                                                         |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Must match regular expression** | ```^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$``` [Test](https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24) |
+
+<a name="cleaning_wrk_active"></a>
+#### Property `Config > cleaning > wrk > active`
+
+|              |           |
+| ------------ | --------- |
+| **Type**     | `boolean` |
+| **Required** | Yes       |
+
+**Description:** Activate cleaning files
+
+<a name="cleaning_wrk_dry_run"></a>
+#### Property `Config > cleaning > wrk > dry_run`
+
+|              |           |
+| ------------ | --------- |
+| **Type**     | `boolean` |
+| **Required** | No        |
+
+**Description:** test cleaning without to  delete files
+
+<a name="cleaning_archive"></a>
+### Property `Config > cleaning > archive`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | Yes                                                                       |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+| Property                                                   | Type    | Required | Default | Title/Description                                                                      |
+| ---------------------------------------------------------- | ------- | -------- | ------- | -------------------------------------------------------------------------------------- |
+| [path](#cleaning_archive_path)                             | string  | Yes      | -       | path to the folder where files will be cleaned                                         |
+| [include](#cleaning_archive_include)                       | string  | No       | -       | regular experssion according to it which files to clean                                |
+| [cleaning_delay](#cleaning_archive_cleaning_delay)         | string  | No       | -       | time period with which the cleaning is shifted to the experiment start day to the past |
+| [cleaning_max_delay](#cleaning_archive_cleaning_max_delay) | string  | No       | -       | time period which defines the cleaning according to the cleaning_delay to the past     |
+| [step](#cleaning_archive_step)                             | string  | No       | -       | time step which determines moments when to make a cleaning                             |
+| [active](#cleaning_archive_active)                         | boolean | Yes      | -       | Activate cleaning files                                                                |
+| [dry_run](#cleaning_archive_dry_run)                       | boolean | No       | -       | test cleaning without to  delete files                                                 |
+
+<a name="cleaning_archive_path"></a>
+#### Property `Config > cleaning > archive > path`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | Yes      |
+
+**Description:** path to the folder where files will be cleaned
+
+<a name="cleaning_archive_include"></a>
+#### Property `Config > cleaning > archive > include`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** regular experssion according to it which files to clean
+
+<a name="cleaning_archive_cleaning_delay"></a>
+#### Property `Config > cleaning > archive > cleaning_delay`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** time period with which the cleaning is shifted to the experiment start day to the past
+
+| Restrictions                      |                                                                                                                                                                                                                                                                                                         |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Must match regular expression** | ```^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$``` [Test](https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24) |
+
+<a name="cleaning_archive_cleaning_max_delay"></a>
+#### Property `Config > cleaning > archive > cleaning_max_delay`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** time period which defines the cleaning according to the cleaning_delay to the past 
+
+| Restrictions                      |                                                                                                                                                                                                                                                                                                         |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Must match regular expression** | ```^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$``` [Test](https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24) |
+
+<a name="cleaning_archive_step"></a>
+#### Property `Config > cleaning > archive > step`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** time step which determines moments when to make a cleaning
+
+| Restrictions                      |                                                                                                                                                                                                                                                                                                         |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Must match regular expression** | ```^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$``` [Test](https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24) |
+
+<a name="cleaning_archive_active"></a>
+#### Property `Config > cleaning > archive > active`
+
+|              |           |
+| ------------ | --------- |
+| **Type**     | `boolean` |
+| **Required** | Yes       |
+
+**Description:** Activate cleaning files
+
+<a name="cleaning_archive_dry_run"></a>
+#### Property `Config > cleaning > archive > dry_run`
+
+|              |           |
+| ------------ | --------- |
+| **Type**     | `boolean` |
+| **Required** | No        |
+
+**Description:** test cleaning without to  delete files
 
 <a name="domain"></a>
 ## Property `Config > domain`
