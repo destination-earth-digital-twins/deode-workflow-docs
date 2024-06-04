@@ -568,6 +568,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-boundaries-bdint">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">bdint</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-boundaries-bdshift">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">bdshift</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-boundaries-bdcycle">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">bdcycle</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-boundaries-bdcycle-start">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">bdcycle_start</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-boundaries-bdtasks-per-batch">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">bdtasks_per_batch</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-boundaries-bdmodel">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">bdmodel</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-boundaries-humi-gp">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">humi_gp</span></code></a></li>
@@ -1019,21 +1020,30 @@
 
 <div class="viewcode-block" id="cycle_offset">
 <a class="viewcode-back" href="../../deode.html#deode.datetime_utils.cycle_offset">[docs]</a>
-<span class="k">def</span> <span class="nf">cycle_offset</span><span class="p">(</span><span class="n">basetime</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="n">DatetimeConstants</span><span class="o">.</span><span class="n">DEFAULT_SHIFT</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">cycle_offset</span><span class="p">(</span>
+    <span class="n">basetime</span><span class="p">,</span>
+    <span class="n">bdcycle</span><span class="p">,</span>
+    <span class="n">bdcycle_start</span><span class="o">=</span><span class="n">DatetimeConstants</span><span class="o">.</span><span class="n">DEFAULT_SHIFT</span><span class="p">,</span>
+    <span class="n">bdshift</span><span class="o">=</span><span class="n">DatetimeConstants</span><span class="o">.</span><span class="n">DEFAULT_SHIFT</span><span class="p">,</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculcate offset from a reference time.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        basetime (datetime): Reference time</span>
-<span class="sd">        dt (timedelta): duration</span>
-<span class="sd">        shift (timedelta): shift</span>
+<span class="sd">        bdcycle (timedelta): Interval between cycles</span>
+<span class="sd">        bdcycle_start (timedelta): Time of day when bdcycle starts</span>
+<span class="sd">        bdshift (timedelta): shift of boundary usage</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        timedelta : a timdelta object of the offset</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">reftime</span> <span class="o">=</span> <span class="n">basetime</span><span class="o">.</span><span class="n">hour</span> <span class="o">*</span> <span class="mi">3600</span> <span class="o">+</span> <span class="n">basetime</span><span class="o">.</span><span class="n">minute</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">+</span> <span class="n">basetime</span><span class="o">.</span><span class="n">second</span>
-    <span class="n">k</span> <span class="o">=</span> <span class="n">reftime</span> <span class="o">%</span> <span class="nb">int</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">())</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="n">shift</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">())</span>
-    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">k</span><span class="p">)</span></div>
+    <span class="n">bdcycle_shift</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">reftime</span> <span class="o">-</span> <span class="n">bdcycle_start</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span> <span class="o">%</span> <span class="n">bdcycle</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
+    <span class="p">)</span> <span class="o">%</span> <span class="n">bdcycle</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
+    <span class="n">final_shift</span> <span class="o">=</span> <span class="n">bdcycle_shift</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="n">bdshift</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">final_shift</span><span class="p">)</span></div>
 
 
 
@@ -1115,7 +1125,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-06-03T20:41:54Z.
+      <span class="lastupdated">Last updated on 2024-06-04T08:44:31Z.
       </span></p>
   </div>
 
