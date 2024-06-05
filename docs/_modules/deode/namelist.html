@@ -149,6 +149,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.commands_functions">deode.commands_functions module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.commands_functions.create_exp"><code class="docutils literal notranslate"><span class="pre">create_exp()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.commands_functions.doc_config"><code class="docutils literal notranslate"><span class="pre">doc_config()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.commands_functions.namelist_convert"><code class="docutils literal notranslate"><span class="pre">namelist_convert()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.commands_functions.namelist_format"><code class="docutils literal notranslate"><span class="pre">namelist_format()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.commands_functions.namelist_integrate"><code class="docutils literal notranslate"><span class="pre">namelist_integrate()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.commands_functions.run_task"><code class="docutils literal notranslate"><span class="pre">run_task()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.commands_functions.set_deode_home"><code class="docutils literal notranslate"><span class="pre">set_deode_home()</span></code></a></li>
@@ -308,6 +310,16 @@
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.namelist.NamelistComparator.compare_lists"><code class="docutils literal notranslate"><span class="pre">NamelistComparator.compare_lists()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.namelist.NamelistConverter"><code class="docutils literal notranslate"><span class="pre">NamelistConverter</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.namelist.NamelistConverter.apply_tnt_directives_to_ftn_namelist"><code class="docutils literal notranslate"><span class="pre">NamelistConverter.apply_tnt_directives_to_ftn_namelist()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.namelist.NamelistConverter.apply_tnt_directives_to_namelist_dict"><code class="docutils literal notranslate"><span class="pre">NamelistConverter.apply_tnt_directives_to_namelist_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.namelist.NamelistConverter.convert_ftn"><code class="docutils literal notranslate"><span class="pre">NamelistConverter.convert_ftn()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.namelist.NamelistConverter.convert_yml"><code class="docutils literal notranslate"><span class="pre">NamelistConverter.convert_yml()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.namelist.NamelistConverter.get_known_cycles"><code class="docutils literal notranslate"><span class="pre">NamelistConverter.get_known_cycles()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.namelist.NamelistConverter.get_tnt_files_list"><code class="docutils literal notranslate"><span class="pre">NamelistConverter.get_tnt_files_list()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.namelist.NamelistConverter.get_to_next_version_tnt_filenames"><code class="docutils literal notranslate"><span class="pre">NamelistConverter.get_to_next_version_tnt_filenames()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.namelist.NamelistGenerator"><code class="docutils literal notranslate"><span class="pre">NamelistGenerator</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.namelist.NamelistGenerator.assemble_namelist"><code class="docutils literal notranslate"><span class="pre">NamelistGenerator.assemble_namelist()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.namelist.NamelistGenerator.check_replace_scalar"><code class="docutils literal notranslate"><span class="pre">NamelistGenerator.check_replace_scalar()</span></code></a></li>
@@ -330,6 +342,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.namelist.flatten_list"><code class="docutils literal notranslate"><span class="pre">flatten_list()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.namelist.list_set_at_index"><code class="docutils literal notranslate"><span class="pre">list_set_at_index()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.namelist.represent_ordereddict"><code class="docutils literal notranslate"><span class="pre">represent_ordereddict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.namelist.write_namelist"><code class="docutils literal notranslate"><span class="pre">write_namelist()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.os_utils">deode.os_utils module</a><ul>
@@ -866,8 +879,10 @@
   <h1>Source code for deode.namelist</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python3</span>
 <span class="sd">&quot;&quot;&quot;Namelist handling for MASTERODB w/SURFEX.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
@@ -932,6 +947,29 @@
         <span class="n">vm</span> <span class="o">=</span> <span class="n">dumper</span><span class="o">.</span><span class="n">represent_data</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
         <span class="n">my_od</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">km</span><span class="p">,</span> <span class="n">vm</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">MappingNode</span><span class="p">(</span><span class="s2">&quot;tag:yaml.org,2002:map&quot;</span><span class="p">,</span> <span class="n">my_od</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="write_namelist">
+<a class="viewcode-back" href="../../deode.html#deode.namelist.write_namelist">[docs]</a>
+<span class="k">def</span> <span class="nf">write_namelist</span><span class="p">(</span><span class="n">nml</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Write namelist using f90nml.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        nml (f90nml.Namelist): namelist to write</span>
+<span class="sd">        output_file (str) : namelist file name</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nml</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="n">nml</span> <span class="o">=</span> <span class="n">f90nml</span><span class="o">.</span><span class="n">Namelist</span><span class="p">(</span><span class="n">nml</span><span class="p">)</span>
+    <span class="c1"># Write result.</span>
+    <span class="n">nml</span><span class="o">.</span><span class="n">uppercase</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">nml</span><span class="o">.</span><span class="n">true_repr</span> <span class="o">=</span> <span class="s2">&quot;.TRUE.&quot;</span>
+    <span class="n">nml</span><span class="o">.</span><span class="n">false_repr</span> <span class="o">=</span> <span class="s2">&quot;.FALSE.&quot;</span>
+    <span class="n">nml</span><span class="o">.</span><span class="n">end_comma</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># AD: temp fix for IO_SERVER bug</span>
+    <span class="n">nml</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Wrote: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">output_file</span><span class="p">)</span></div>
 
 
 
@@ -1397,6 +1435,18 @@
         <span class="k">return</span> <span class="n">f90nml</span><span class="o">.</span><span class="n">Namelist</span><span class="p">(</span><span class="n">nlsubst</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="NamelistGenerator.write_namelist">
+<a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistGenerator.write_namelist">[docs]</a>
+    <span class="k">def</span> <span class="nf">write_namelist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nml</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write namelist using f90nml.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            nml (f90nml.Namelist): namelist to write</span>
+<span class="sd">            output_file (str) : namelist file name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">write_namelist</span><span class="p">(</span><span class="n">nml</span><span class="p">,</span> <span class="n">output_file</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="NamelistGenerator.update">
 <a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistGenerator.update">[docs]</a>
     <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nldict</span><span class="p">,</span> <span class="n">cndict_tag</span><span class="p">):</span>
@@ -1409,28 +1459,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cndict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cndict_tag</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nldict</span><span class="p">[</span><span class="n">cndict_tag</span><span class="p">]</span> <span class="o">=</span> <span class="n">nldict</span></div>
-
-
-<div class="viewcode-block" id="NamelistGenerator.write_namelist">
-<a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistGenerator.write_namelist">[docs]</a>
-    <span class="k">def</span> <span class="nf">write_namelist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nml</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write namelist using f90nml.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            nml (f90nml.Namelist): namelist to write</span>
-<span class="sd">            output_file (str) : namelist file name</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nml</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="n">nml</span> <span class="o">=</span> <span class="n">f90nml</span><span class="o">.</span><span class="n">Namelist</span><span class="p">(</span><span class="n">nml</span><span class="p">)</span>
-        <span class="c1"># Write result.</span>
-        <span class="n">nml</span><span class="o">.</span><span class="n">uppercase</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="n">nml</span><span class="o">.</span><span class="n">true_repr</span> <span class="o">=</span> <span class="s2">&quot;.TRUE.&quot;</span>
-        <span class="n">nml</span><span class="o">.</span><span class="n">false_repr</span> <span class="o">=</span> <span class="s2">&quot;.FALSE.&quot;</span>
-        <span class="n">nml</span><span class="o">.</span><span class="n">end_comma</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># AD: temp fix for IO_SERVER bug</span>
-        <span class="n">nml</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Wrote: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">output_file</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="NamelistGenerator.generate_namelist">
@@ -1522,7 +1550,8 @@
 
 <div class="viewcode-block" id="NamelistIntegrator.yml2dict">
 <a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistIntegrator.yml2dict">[docs]</a>
-    <span class="k">def</span> <span class="nf">yml2dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ymlfile</span><span class="p">):</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">yml2dict</span><span class="p">(</span><span class="n">ymlfile</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read yaml namelist file and return as dict.&quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">ymlfile</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;rt&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
             <span class="n">ynml</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
@@ -1531,10 +1560,327 @@
 
 <div class="viewcode-block" id="NamelistIntegrator.dict2yml">
 <a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistIntegrator.dict2yml">[docs]</a>
-    <span class="k">def</span> <span class="nf">dict2yml</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nmldict</span><span class="p">,</span> <span class="n">ymlfile</span><span class="p">):</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">dict2yml</span><span class="p">(</span><span class="n">nmldict</span><span class="p">,</span> <span class="n">ymlfile</span><span class="p">,</span> <span class="n">ordered_sections</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Write dict as yaml file.&quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">ymlfile</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-            <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">nmldict</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="n">default_flow_style</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+            <span class="k">if</span> <span class="n">ordered_sections</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="n">ordered_sections</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">section</span> <span class="ow">in</span> <span class="n">nmldict</span><span class="p">:</span>
+                        <span class="n">output_dict</span> <span class="o">=</span> <span class="p">{}</span>
+                        <span class="n">output_dict</span><span class="p">[</span><span class="n">section</span><span class="p">]</span> <span class="o">=</span> <span class="n">nmldict</span><span class="p">[</span><span class="n">section</span><span class="p">]</span>
+                        <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span>
+                            <span class="n">output_dict</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="n">default_flow_style</span><span class="o">=</span><span class="kc">False</span>
+                        <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">nmldict</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="n">default_flow_style</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="NamelistConverter">
+<a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistConverter">[docs]</a>
+<span class="k">class</span> <span class="nc">NamelistConverter</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper class to convert namelists between cycles, based on thenamelisttool.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="NamelistConverter.get_known_cycles">
+<a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistConverter.get_known_cycles">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_known_cycles</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the cycles handled by the converter.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;CY48t2&quot;</span><span class="p">,</span> <span class="s2">&quot;CY48t3&quot;</span><span class="p">,</span> <span class="s2">&quot;CY49&quot;</span><span class="p">,</span> <span class="s2">&quot;CY49t1&quot;</span><span class="p">,</span> <span class="s2">&quot;CY49t2&quot;</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="NamelistConverter.get_to_next_version_tnt_filenames">
+<a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistConverter.get_to_next_version_tnt_filenames">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_to_next_version_tnt_filenames</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the tnt file names between get_known_cycles().&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="kc">None</span><span class="p">,</span>  <span class="c1"># CY48t2 to CY48t3</span>
+            <span class="s2">&quot;cy48t2_to_cy49.yaml&quot;</span><span class="p">,</span>  <span class="c1"># CY48t3 to CY49</span>
+            <span class="s2">&quot;cy49_to_cy49t1.yaml&quot;</span><span class="p">,</span>  <span class="c1"># CY49   to CY49t1</span>
+            <span class="kc">None</span><span class="p">,</span>  <span class="c1"># CY49t1 to CY49t2</span>
+        <span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="NamelistConverter.get_tnt_files_list">
+<a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistConverter.get_tnt_files_list">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_tnt_files_list</span><span class="p">(</span><span class="n">from_cycle</span><span class="p">,</span> <span class="n">to_cycle</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the list of tnt directive files required for the conversion.&quot;&quot;&quot;</span>
+        <span class="c1"># definitions of the conversion to apply between cycles</span>
+        <span class="n">tnt_directives_folder</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;namelist_generation_input/tnt_directives/&quot;</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">from_cycle</span> <span class="ow">and</span> <span class="n">to_cycle</span><span class="p">:</span>
+            <span class="n">known_cycles</span> <span class="o">=</span> <span class="n">NamelistConverter</span><span class="o">.</span><span class="n">get_known_cycles</span><span class="p">()</span>
+            <span class="n">to_next_version_tnt_filenames</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">NamelistConverter</span><span class="o">.</span><span class="n">get_to_next_version_tnt_filenames</span><span class="p">()</span>
+            <span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">start_index</span> <span class="o">=</span> <span class="n">known_cycles</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">from_cycle</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;ERROR: from-cycle </span><span class="si">{</span><span class="n">from_cycle</span><span class="si">}</span><span class="s2"> unknown&quot;</span>
+                <span class="p">)</span> <span class="kn">from</span> <span class="nn">ValueError</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">target_index</span> <span class="o">=</span> <span class="n">known_cycles</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">to_cycle</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ERROR: to-cycle </span><span class="si">{</span><span class="n">to_cycle</span><span class="si">}</span><span class="s2"> unknown&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">ValueError</span>
+
+            <span class="c1"># Verify that to_cycle is older than from_cycle</span>
+            <span class="k">if</span> <span class="n">start_index</span> <span class="o">&gt;</span> <span class="n">target_index</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;ERROR: No conversion possible between </span><span class="si">{</span><span class="n">from_cycle</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">to_cycle</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">start_index</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">target_index</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">if</span> <span class="n">start_index</span> <span class="o">==</span> <span class="n">target_index</span><span class="p">:</span>
+            <span class="c1"># Apply empty conversion</span>
+            <span class="n">tnt_files</span> <span class="o">=</span> <span class="p">[</span><span class="n">tnt_directives_folder</span> <span class="o">/</span> <span class="s2">&quot;empty.yaml&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Apply all the intermediate conversions</span>
+            <span class="n">tnt_files</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">tnt_directives_folder</span> <span class="o">/</span> <span class="n">to_next_version_tnt_filenames</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start_index</span><span class="p">,</span> <span class="n">target_index</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">to_next_version_tnt_filenames</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+            <span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">tnt_files</span></div>
+
+
+<div class="viewcode-block" id="NamelistConverter.convert_yml">
+<a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistConverter.convert_yml">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">convert_yml</span><span class="p">(</span><span class="n">input_yml</span><span class="p">,</span> <span class="n">output_yml</span><span class="p">,</span> <span class="n">from_cycle</span><span class="p">,</span> <span class="n">to_cycle</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert a namelist in yml file between two cycles.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            input_yml: the input yaml filename</span>
+<span class="sd">            output_yml: the output yaml filename</span>
+<span class="sd">            from_cycle: the input cycle</span>
+<span class="sd">            to_cycle: the target cycle</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            SystemExit: when conversion failed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tnt_files</span> <span class="o">=</span> <span class="n">NamelistConverter</span><span class="o">.</span><span class="n">get_tnt_files_list</span><span class="p">(</span><span class="n">from_cycle</span><span class="p">,</span> <span class="n">to_cycle</span><span class="p">)</span>
+
+        <span class="c1"># Read the input namelist file (yaml)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Read </span><span class="si">{</span><span class="n">input_yml</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">nmldict</span> <span class="o">=</span> <span class="n">NamelistIntegrator</span><span class="o">.</span><span class="n">yml2dict</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">input_yml</span><span class="p">))</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">input_yml</span><span class="p">),</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;rt&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">ordered_sections</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">file</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+                <span class="k">if</span> <span class="s2">&quot;:&quot;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">nmldict</span>
+            <span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">tnt_file</span> <span class="ow">in</span> <span class="n">tnt_files</span><span class="p">:</span>
+            <span class="n">nmldict</span> <span class="o">=</span> <span class="n">NamelistConverter</span><span class="o">.</span><span class="n">apply_tnt_directives_to_namelist_dict</span><span class="p">(</span>
+                <span class="n">tnt_file</span><span class="p">,</span> <span class="n">nmldict</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">nmldict</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="s2">&quot;Name list conversion failed.  &quot;</span><span class="p">)</span>
+
+        <span class="c1"># Write the output namelist file (yaml)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Write </span><span class="si">{</span><span class="n">output_yml</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;empty&quot;</span> <span class="ow">in</span> <span class="n">nmldict</span> <span class="ow">and</span> <span class="s2">&quot;empty&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ordered_sections</span><span class="p">:</span>
+            <span class="n">ordered_sections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;empty&quot;</span><span class="p">)</span>
+
+        <span class="n">NamelistIntegrator</span><span class="o">.</span><span class="n">dict2yml</span><span class="p">(</span><span class="n">nmldict</span><span class="p">,</span> <span class="n">Path</span><span class="p">(</span><span class="n">output_yml</span><span class="p">),</span> <span class="n">ordered_sections</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="NamelistConverter.convert_ftn">
+<a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistConverter.convert_ftn">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">convert_ftn</span><span class="p">(</span><span class="n">input_ftn</span><span class="p">,</span> <span class="n">output_ftn</span><span class="p">,</span> <span class="n">from_cycle</span><span class="p">,</span> <span class="n">to_cycle</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert a namelist in fortran file between two cycles.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            input_ftn: the input fortran filename</span>
+<span class="sd">            output_ftn: the output fortran filename</span>
+<span class="sd">            from_cycle: the input cycle</span>
+<span class="sd">            to_cycle: the target cycle</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tnt_files</span> <span class="o">=</span> <span class="n">NamelistConverter</span><span class="o">.</span><span class="n">get_tnt_files_list</span><span class="p">(</span><span class="n">from_cycle</span><span class="p">,</span> <span class="n">to_cycle</span><span class="p">)</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Read </span><span class="si">{</span><span class="n">input_ftn</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">ftn_file</span> <span class="o">=</span> <span class="n">input_ftn</span>
+        <span class="n">temporary_files</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">tnt_file</span> <span class="ow">in</span> <span class="n">tnt_files</span><span class="p">:</span>
+            <span class="n">NamelistConverter</span><span class="o">.</span><span class="n">apply_tnt_directives_to_ftn_namelist</span><span class="p">(</span><span class="n">tnt_file</span><span class="p">,</span> <span class="n">ftn_file</span><span class="p">)</span>
+            <span class="n">ftn_file</span> <span class="o">=</span> <span class="n">ftn_file</span> <span class="o">+</span> <span class="s2">&quot;.tnt&quot;</span>
+            <span class="n">temporary_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ftn_file</span><span class="p">)</span>
+
+        <span class="n">nl</span> <span class="o">=</span> <span class="n">f90nml</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">ftn_file</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Write </span><span class="si">{</span><span class="n">output_ftn</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">write_namelist</span><span class="p">(</span><span class="n">nl</span><span class="p">,</span> <span class="n">output_ftn</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">temporary_files</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">file</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="NamelistConverter.apply_tnt_directives_to_namelist_dict">
+<a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistConverter.apply_tnt_directives_to_namelist_dict">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">apply_tnt_directives_to_namelist_dict</span><span class="p">(</span><span class="n">tnt_directive_filename</span><span class="p">,</span> <span class="n">namelist_dict</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply the tnt directives to a namelist as dictionary.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tnt_directive_filename: the tnt directive filename</span>
+<span class="sd">            namelist_dict: the namelist dictionary</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            new_namelist: the converted namelist dictionary</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            SystemExit: when conversion failed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Apply </span><span class="si">{</span><span class="n">tnt_directive_filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="c1"># Open the directive file</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">tnt_directive_filename</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;rt&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">tnt_directives</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="c1"># Use a copy to be able to modify dictionaries during iterations</span>
+        <span class="n">new_namelist</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">namelist_dict</span><span class="p">)</span>
+
+        <span class="c1"># Move keys from one section to another</span>
+        <span class="k">if</span> <span class="s2">&quot;keys_to_move&quot;</span> <span class="ow">in</span> <span class="n">tnt_directives</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">old_block</span> <span class="ow">in</span> <span class="n">tnt_directives</span><span class="p">[</span><span class="s2">&quot;keys_to_move&quot;</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">old_key</span> <span class="ow">in</span> <span class="n">tnt_directives</span><span class="p">[</span><span class="s2">&quot;keys_to_move&quot;</span><span class="p">][</span><span class="n">old_block</span><span class="p">]:</span>
+                    <span class="k">for</span> <span class="n">new_block</span> <span class="ow">in</span> <span class="n">tnt_directives</span><span class="p">[</span><span class="s2">&quot;keys_to_move&quot;</span><span class="p">][</span><span class="n">old_block</span><span class="p">][</span><span class="n">old_key</span><span class="p">]:</span>
+                        <span class="n">new_key</span> <span class="o">=</span> <span class="n">tnt_directives</span><span class="p">[</span><span class="s2">&quot;keys_to_move&quot;</span><span class="p">][</span><span class="n">old_block</span><span class="p">][</span><span class="n">old_key</span><span class="p">][</span>
+                            <span class="n">new_block</span>
+                        <span class="p">]</span>
+
+                        <span class="k">for</span> <span class="n">namelists_section</span> <span class="ow">in</span> <span class="n">namelist_dict</span><span class="p">:</span>
+                            <span class="k">for</span> <span class="n">namelist_block</span> <span class="ow">in</span> <span class="n">namelist_dict</span><span class="p">[</span><span class="n">namelists_section</span><span class="p">]:</span>
+                                <span class="k">if</span> <span class="p">(</span>
+                                    <span class="n">old_block</span> <span class="ow">in</span> <span class="n">namelist_block</span>
+                                    <span class="ow">and</span> <span class="n">old_key</span>
+                                    <span class="ow">in</span> <span class="n">namelist_dict</span><span class="p">[</span><span class="n">namelists_section</span><span class="p">][</span><span class="n">namelist_block</span><span class="p">]</span>
+                                <span class="p">):</span>
+                                    <span class="k">if</span> <span class="n">new_block</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">new_namelist</span><span class="p">[</span><span class="n">namelists_section</span><span class="p">]:</span>
+                                        <span class="n">new_namelist</span><span class="p">[</span><span class="n">namelists_section</span><span class="p">][</span><span class="n">new_block</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                                    <span class="n">new_namelist</span><span class="p">[</span><span class="n">namelists_section</span><span class="p">][</span><span class="n">new_block</span><span class="p">][</span>
+                                        <span class="n">new_key</span>
+                                    <span class="p">]</span> <span class="o">=</span> <span class="n">namelist_dict</span><span class="p">[</span><span class="n">namelists_section</span><span class="p">][</span><span class="n">old_block</span><span class="p">][</span>
+                                        <span class="n">old_key</span>
+                                    <span class="p">]</span>
+                                    <span class="k">del</span> <span class="n">new_namelist</span><span class="p">[</span><span class="n">namelists_section</span><span class="p">][</span><span class="n">old_block</span><span class="p">][</span>
+                                        <span class="n">old_key</span>
+                                    <span class="p">]</span>
+                                    <span class="k">if</span> <span class="p">(</span>
+                                        <span class="nb">len</span><span class="p">(</span><span class="n">new_namelist</span><span class="p">[</span><span class="n">namelists_section</span><span class="p">][</span><span class="n">old_block</span><span class="p">])</span>
+                                        <span class="o">==</span> <span class="mi">0</span>
+                                    <span class="p">):</span>
+                                        <span class="k">del</span> <span class="n">new_namelist</span><span class="p">[</span><span class="n">namelists_section</span><span class="p">][</span><span class="n">old_block</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="s2">&quot;keys_to_set&quot;</span> <span class="ow">in</span> <span class="n">tnt_directives</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">block_to_set</span> <span class="ow">in</span> <span class="n">tnt_directives</span><span class="p">[</span><span class="s2">&quot;keys_to_set&quot;</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">namelists_section</span> <span class="ow">in</span> <span class="n">namelist_dict</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">namelists_section</span> <span class="o">!=</span> <span class="s2">&quot;empty&quot;</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">keys_to_set</span> <span class="ow">in</span> <span class="n">tnt_directives</span><span class="p">[</span><span class="s2">&quot;keys_to_set&quot;</span><span class="p">][</span><span class="n">block_to_set</span><span class="p">]:</span>
+                            <span class="k">if</span> <span class="n">block_to_set</span> <span class="ow">in</span> <span class="n">namelist_dict</span><span class="p">[</span><span class="n">namelists_section</span><span class="p">]:</span>
+                                <span class="n">key_value</span> <span class="o">=</span> <span class="n">tnt_directives</span><span class="p">[</span><span class="s2">&quot;keys_to_set&quot;</span><span class="p">][</span><span class="n">block_to_set</span><span class="p">][</span>
+                                    <span class="n">keys_to_set</span>
+                                <span class="p">]</span>
+                                <span class="k">if</span> <span class="n">key_value</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;.T.&quot;</span><span class="p">,</span> <span class="s2">&quot;.TRUE.&quot;</span><span class="p">]:</span>
+                                    <span class="n">key_value</span> <span class="o">=</span> <span class="kc">True</span>
+                                <span class="k">if</span> <span class="n">key_value</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;.F.&quot;</span><span class="p">,</span> <span class="s2">&quot;.FALSE.&quot;</span><span class="p">]:</span>
+                                    <span class="n">key_value</span> <span class="o">=</span> <span class="kc">False</span>
+                                <span class="n">new_namelist</span><span class="p">[</span><span class="n">namelists_section</span><span class="p">][</span><span class="n">block_to_set</span><span class="p">][</span>
+                                    <span class="n">keys_to_set</span>
+                                <span class="p">]</span> <span class="o">=</span> <span class="n">key_value</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                                    <span class="sa">f</span><span class="s2">&quot;&#39;No </span><span class="si">{</span><span class="n">block_to_set</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="n">namelists_section</span><span class="si">}</span><span class="s2">: </span><span class="se">\</span>
+<span class="s2">                                    skip insertion of </span><span class="si">{</span><span class="n">keys_to_set</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+                                <span class="p">)</span>
+
+        <span class="c1"># Creation of new blocks</span>
+        <span class="k">if</span> <span class="s2">&quot;new_blocks&quot;</span> <span class="ow">in</span> <span class="n">tnt_directives</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">new_block</span> <span class="ow">in</span> <span class="n">tnt_directives</span><span class="p">[</span><span class="s2">&quot;new_blocks&quot;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="s2">&quot;empty&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">new_namelist</span><span class="p">:</span>
+                    <span class="n">new_namelist</span><span class="p">[</span><span class="s2">&quot;empty&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">new_block_upper</span> <span class="o">=</span> <span class="n">new_block</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">new_block_upper</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">new_namelist</span><span class="p">[</span><span class="s2">&quot;empty&quot;</span><span class="p">]:</span>
+                    <span class="n">new_namelist</span><span class="p">[</span><span class="s2">&quot;empty&quot;</span><span class="p">][</span><span class="n">new_block_upper</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Move of blocks(Not implemented)</span>
+        <span class="k">if</span> <span class="s2">&quot;blocks_to_move&quot;</span> <span class="ow">in</span> <span class="n">tnt_directives</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">blocks</span> <span class="ow">in</span> <span class="n">tnt_directives</span><span class="p">[</span><span class="s2">&quot;blocks_to_move&quot;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">blocks</span> <span class="ow">in</span> <span class="n">namelist_block</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="s2">&quot;conversion FAILED: blocks_to_move not implemented&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Delete keys</span>
+        <span class="k">if</span> <span class="s2">&quot;keys_to_remove&quot;</span> <span class="ow">in</span> <span class="n">tnt_directives</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">block_to_remove</span> <span class="ow">in</span> <span class="n">tnt_directives</span><span class="p">[</span><span class="s2">&quot;keys_to_remove&quot;</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">namelists_section</span> <span class="ow">in</span> <span class="n">namelist_dict</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">namelist_block</span> <span class="ow">in</span> <span class="n">namelist_dict</span><span class="p">[</span><span class="n">namelists_section</span><span class="p">]:</span>
+                        <span class="k">if</span> <span class="n">block_to_remove</span> <span class="ow">in</span> <span class="n">namelist_block</span><span class="p">:</span>
+                            <span class="k">for</span> <span class="n">key_to_remove</span> <span class="ow">in</span> <span class="n">tnt_directives</span><span class="p">[</span><span class="s2">&quot;keys_to_remove&quot;</span><span class="p">][</span>
+                                <span class="n">block_to_remove</span>
+                            <span class="p">]:</span>
+                                <span class="k">if</span> <span class="p">(</span>
+                                    <span class="n">key_to_remove</span>
+                                    <span class="ow">in</span> <span class="n">namelist_dict</span><span class="p">[</span><span class="n">namelists_section</span><span class="p">][</span><span class="n">block_to_remove</span><span class="p">]</span>
+                                <span class="p">):</span>
+                                    <span class="k">del</span> <span class="n">new_namelist</span><span class="p">[</span><span class="n">namelists_section</span><span class="p">][</span><span class="n">block_to_remove</span><span class="p">][</span>
+                                        <span class="n">key_to_remove</span>
+                                    <span class="p">]</span>
+                                    <span class="k">if</span> <span class="p">(</span>
+                                        <span class="nb">len</span><span class="p">(</span>
+                                            <span class="n">new_namelist</span><span class="p">[</span><span class="n">namelists_section</span><span class="p">][</span>
+                                                <span class="n">block_to_remove</span>
+                                            <span class="p">]</span>
+                                        <span class="p">)</span>
+                                        <span class="o">==</span> <span class="mi">0</span>
+                                    <span class="p">):</span>
+                                        <span class="k">del</span> <span class="n">new_namelist</span><span class="p">[</span><span class="n">namelists_section</span><span class="p">][</span>
+                                            <span class="n">block_to_remove</span>
+                                        <span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">new_namelist</span></div>
+
+
+<div class="viewcode-block" id="NamelistConverter.apply_tnt_directives_to_ftn_namelist">
+<a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistConverter.apply_tnt_directives_to_ftn_namelist">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">apply_tnt_directives_to_ftn_namelist</span><span class="p">(</span><span class="n">tnt_directive_filename</span><span class="p">,</span> <span class="n">input_ftn</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply the tnt directives to a fotran namelist using tnt.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tnt_directive_filename: the tnt directive filename</span>
+<span class="sd">            input_ftn: the namelist fortran file</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">           SystemExit: when conversion failed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Apply </span><span class="si">{</span><span class="n">tnt_directive_filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">tnt_directives_folder</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;namelist_generation_input/tnt_directives/&quot;</span>
+        <span class="p">)</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;tnt.py&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;-d&quot;</span><span class="p">,</span>
+            <span class="n">tnt_directives_folder</span> <span class="o">/</span> <span class="n">tnt_directive_filename</span><span class="p">,</span>
+            <span class="n">input_ftn</span><span class="p">,</span>
+        <span class="p">]</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>  <span class="c1"># noqa S603</span>
+        <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">exception</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;tnt failed with </span><span class="si">{</span><span class="n">exception</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">exception</span></div>
 </div>
 
 </pre></div>
@@ -1547,7 +1893,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-06-04T08:44:31Z.
+      <span class="lastupdated">Last updated on 2024-06-05T07:35:57Z.
       </span></p>
   </div>
 

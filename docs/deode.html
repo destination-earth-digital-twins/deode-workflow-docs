@@ -152,6 +152,8 @@
 <li class="toctree-l2"><a class="reference internal" href="#module-deode.commands_functions">deode.commands_functions module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#deode.commands_functions.create_exp"><code class="docutils literal notranslate"><span class="pre">create_exp()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#deode.commands_functions.doc_config"><code class="docutils literal notranslate"><span class="pre">doc_config()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deode.commands_functions.namelist_convert"><code class="docutils literal notranslate"><span class="pre">namelist_convert()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deode.commands_functions.namelist_format"><code class="docutils literal notranslate"><span class="pre">namelist_format()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#deode.commands_functions.namelist_integrate"><code class="docutils literal notranslate"><span class="pre">namelist_integrate()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#deode.commands_functions.run_task"><code class="docutils literal notranslate"><span class="pre">run_task()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#deode.commands_functions.set_deode_home"><code class="docutils literal notranslate"><span class="pre">set_deode_home()</span></code></a></li>
@@ -311,6 +313,16 @@
 <li class="toctree-l4"><a class="reference internal" href="#deode.namelist.NamelistComparator.compare_lists"><code class="docutils literal notranslate"><span class="pre">NamelistComparator.compare_lists()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#deode.namelist.NamelistConverter"><code class="docutils literal notranslate"><span class="pre">NamelistConverter</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#deode.namelist.NamelistConverter.apply_tnt_directives_to_ftn_namelist"><code class="docutils literal notranslate"><span class="pre">NamelistConverter.apply_tnt_directives_to_ftn_namelist()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deode.namelist.NamelistConverter.apply_tnt_directives_to_namelist_dict"><code class="docutils literal notranslate"><span class="pre">NamelistConverter.apply_tnt_directives_to_namelist_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deode.namelist.NamelistConverter.convert_ftn"><code class="docutils literal notranslate"><span class="pre">NamelistConverter.convert_ftn()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deode.namelist.NamelistConverter.convert_yml"><code class="docutils literal notranslate"><span class="pre">NamelistConverter.convert_yml()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deode.namelist.NamelistConverter.get_known_cycles"><code class="docutils literal notranslate"><span class="pre">NamelistConverter.get_known_cycles()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deode.namelist.NamelistConverter.get_tnt_files_list"><code class="docutils literal notranslate"><span class="pre">NamelistConverter.get_tnt_files_list()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deode.namelist.NamelistConverter.get_to_next_version_tnt_filenames"><code class="docutils literal notranslate"><span class="pre">NamelistConverter.get_to_next_version_tnt_filenames()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#deode.namelist.NamelistGenerator"><code class="docutils literal notranslate"><span class="pre">NamelistGenerator</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#deode.namelist.NamelistGenerator.assemble_namelist"><code class="docutils literal notranslate"><span class="pre">NamelistGenerator.assemble_namelist()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#deode.namelist.NamelistGenerator.check_replace_scalar"><code class="docutils literal notranslate"><span class="pre">NamelistGenerator.check_replace_scalar()</span></code></a></li>
@@ -333,6 +345,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#deode.namelist.flatten_list"><code class="docutils literal notranslate"><span class="pre">flatten_list()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#deode.namelist.list_set_at_index"><code class="docutils literal notranslate"><span class="pre">list_set_at_index()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#deode.namelist.represent_ordereddict"><code class="docutils literal notranslate"><span class="pre">represent_ordereddict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deode.namelist.write_namelist"><code class="docutils literal notranslate"><span class="pre">write_namelist()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-deode.os_utils">deode.os_utils module</a><ul>
@@ -1051,6 +1064,34 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>args</strong> (<em>argparse.Namespace</em>) – Parsed command line arguments.</p></li>
 <li><p><strong>config</strong> (<a class="reference internal" href="#deode.config_parser.ParsedConfig" title="deode.config_parser.ParsedConfig"><em>ParsedConfig</em></a>) – Parsed config file contents.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deode.commands_functions.namelist_convert">
+<span class="sig-name descname"><span class="pre">namelist_convert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#deode.config_parser.ParsedConfig" title="deode.config_parser.ParsedConfig"><span class="pre">ParsedConfig</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/commands_functions.html#namelist_convert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.commands_functions.namelist_convert" title="Link to this definition"></a></dt>
+<dd><p>Implement the ‘namelist convert’ command.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args</strong> (<em>argparse.Namespace</em>) – Parsed command line arguments.</p></li>
+<li><p><strong>config</strong> (<em>.config_parser.ParsedConfig</em>) – Parsed config file contents.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deode.commands_functions.namelist_format">
+<span class="sig-name descname"><span class="pre">namelist_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#deode.config_parser.ParsedConfig" title="deode.config_parser.ParsedConfig"><span class="pre">ParsedConfig</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/commands_functions.html#namelist_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.commands_functions.namelist_format" title="Link to this definition"></a></dt>
+<dd><p>Implement the ‘namelist format’ command.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args</strong> (<em>argparse.Namespace</em>) – Parsed command line arguments.</p></li>
+<li><p><strong>config</strong> (<em>.config_parser.ParsedConfig</em>) – Parsed config file contents.</p></li>
 </ul>
 </dd>
 </dl>
@@ -2148,6 +2189,106 @@ i (int): parameter counter</p>
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="deode.namelist.NamelistConverter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">NamelistConverter</span></span><a class="reference internal" href="_modules/deode/namelist.html#NamelistConverter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.namelist.NamelistConverter" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Helper class to convert namelists between cycles, based on thenamelisttool.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="deode.namelist.NamelistConverter.apply_tnt_directives_to_ftn_namelist">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">apply_tnt_directives_to_ftn_namelist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tnt_directive_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_ftn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/namelist.html#NamelistConverter.apply_tnt_directives_to_ftn_namelist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.namelist.NamelistConverter.apply_tnt_directives_to_ftn_namelist" title="Link to this definition"></a></dt>
+<dd><p>Apply the tnt directives to a fotran namelist using tnt.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tnt_directive_filename</strong> – the tnt directive filename</p></li>
+<li><p><strong>input_ftn</strong> – the namelist fortran file</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>SystemExit</strong> – when conversion failed</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deode.namelist.NamelistConverter.apply_tnt_directives_to_namelist_dict">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">apply_tnt_directives_to_namelist_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tnt_directive_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">namelist_dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/namelist.html#NamelistConverter.apply_tnt_directives_to_namelist_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.namelist.NamelistConverter.apply_tnt_directives_to_namelist_dict" title="Link to this definition"></a></dt>
+<dd><p>Apply the tnt directives to a namelist as dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tnt_directive_filename</strong> – the tnt directive filename</p></li>
+<li><p><strong>namelist_dict</strong> – the namelist dictionary</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the converted namelist dictionary</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>new_namelist</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>SystemExit</strong> – when conversion failed</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deode.namelist.NamelistConverter.convert_ftn">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">convert_ftn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_ftn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_ftn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_cycle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_cycle</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/namelist.html#NamelistConverter.convert_ftn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.namelist.NamelistConverter.convert_ftn" title="Link to this definition"></a></dt>
+<dd><p>Convert a namelist in fortran file between two cycles.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_ftn</strong> – the input fortran filename</p></li>
+<li><p><strong>output_ftn</strong> – the output fortran filename</p></li>
+<li><p><strong>from_cycle</strong> – the input cycle</p></li>
+<li><p><strong>to_cycle</strong> – the target cycle</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deode.namelist.NamelistConverter.convert_yml">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">convert_yml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_yml</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_yml</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_cycle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_cycle</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/namelist.html#NamelistConverter.convert_yml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.namelist.NamelistConverter.convert_yml" title="Link to this definition"></a></dt>
+<dd><p>Convert a namelist in yml file between two cycles.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_yml</strong> – the input yaml filename</p></li>
+<li><p><strong>output_yml</strong> – the output yaml filename</p></li>
+<li><p><strong>from_cycle</strong> – the input cycle</p></li>
+<li><p><strong>to_cycle</strong> – the target cycle</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>SystemExit</strong> – when conversion failed</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deode.namelist.NamelistConverter.get_known_cycles">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_known_cycles</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/namelist.html#NamelistConverter.get_known_cycles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.namelist.NamelistConverter.get_known_cycles" title="Link to this definition"></a></dt>
+<dd><p>Return the cycles handled by the converter.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deode.namelist.NamelistConverter.get_tnt_files_list">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_tnt_files_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_cycle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_cycle</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/namelist.html#NamelistConverter.get_tnt_files_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.namelist.NamelistConverter.get_tnt_files_list" title="Link to this definition"></a></dt>
+<dd><p>Return the list of tnt directive files required for the conversion.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deode.namelist.NamelistConverter.get_to_next_version_tnt_filenames">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_to_next_version_tnt_filenames</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/namelist.html#NamelistConverter.get_to_next_version_tnt_filenames"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.namelist.NamelistConverter.get_to_next_version_tnt_filenames" title="Link to this definition"></a></dt>
+<dd><p>Return the tnt file names between get_known_cycles().</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="deode.namelist.NamelistGenerator">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">NamelistGenerator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">substitute</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/namelist.html#NamelistGenerator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.namelist.NamelistGenerator" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -2308,7 +2449,7 @@ cndict : Rules for dictionary</p>
 <p>Reduces duplication if several namelists have similar settings.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="deode.namelist.NamelistIntegrator.dict2yml">
-<span class="sig-name descname"><span class="pre">dict2yml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nmldict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ymlfile</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/namelist.html#NamelistIntegrator.dict2yml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.namelist.NamelistIntegrator.dict2yml" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dict2yml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nmldict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ymlfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ordered_sections</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/namelist.html#NamelistIntegrator.dict2yml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.namelist.NamelistIntegrator.dict2yml" title="Link to this definition"></a></dt>
 <dd><p>Write dict as yaml file.</p>
 </dd></dl>
 
@@ -2320,7 +2461,7 @@ cndict : Rules for dictionary</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="deode.namelist.NamelistIntegrator.yml2dict">
-<span class="sig-name descname"><span class="pre">yml2dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ymlfile</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/namelist.html#NamelistIntegrator.yml2dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.namelist.NamelistIntegrator.yml2dict" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">yml2dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ymlfile</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/namelist.html#NamelistIntegrator.yml2dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.namelist.NamelistIntegrator.yml2dict" title="Link to this definition"></a></dt>
 <dd><p>Read yaml namelist file and return as dict.</p>
 </dd></dl>
 
@@ -2348,6 +2489,20 @@ cndict : Rules for dictionary</p>
 <dt class="sig sig-object py" id="deode.namelist.represent_ordereddict">
 <span class="sig-name descname"><span class="pre">represent_ordereddict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dumper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/namelist.html#represent_ordereddict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.namelist.represent_ordereddict" title="Link to this definition"></a></dt>
 <dd><p>YAML representer, simplifies working with namelists read by f90nml.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deode.namelist.write_namelist">
+<span class="sig-name descname"><span class="pre">write_namelist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nml</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/namelist.html#write_namelist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.namelist.write_namelist" title="Link to this definition"></a></dt>
+<dd><p>Write namelist using f90nml.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nml</strong> (<em>f90nml.Namelist</em>) – namelist to write</p></li>
+<li><p><strong>output_file</strong> (<em>str</em>) – namelist file name</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -3939,7 +4094,7 @@ NOTE: Land/Sea Mask is not yet implemented.</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-06-04T08:44:31Z.
+      <span class="lastupdated">Last updated on 2024-06-05T07:35:57Z.
       </span></p>
   </div>
 
