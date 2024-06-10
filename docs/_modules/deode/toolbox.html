@@ -467,6 +467,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.toolbox.FileManager.get_input"><code class="docutils literal notranslate"><span class="pre">FileManager.get_input()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.toolbox.FileManager.get_output"><code class="docutils literal notranslate"><span class="pre">FileManager.get_output()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.toolbox.FileManager.input"><code class="docutils literal notranslate"><span class="pre">FileManager.input()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.toolbox.FileManager.input_data_iterator"><code class="docutils literal notranslate"><span class="pre">FileManager.input_data_iterator()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.toolbox.FileManager.output"><code class="docutils literal notranslate"><span class="pre">FileManager.output()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.toolbox.FileManager.set_resources_from_dict"><code class="docutils literal notranslate"><span class="pre">FileManager.set_resources_from_dict()</span></code></a></li>
 </ul>
@@ -572,8 +573,9 @@
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-system-namelists">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">system</span> <span class="pre">&gt;</span> <span class="pre">namelists</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-system-marsdir">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">system</span> <span class="pre">&gt;</span> <span class="pre">marsdir</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-system-global-sfcdir">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">system</span> <span class="pre">&gt;</span> <span class="pre">global_sfcdir</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-system-sfx-input-defs">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">system</span> <span class="pre">&gt;</span> <span class="pre">sfx_input_defs</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-system-prev-case">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">system</span> <span class="pre">&gt;</span> <span class="pre">prev_case</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-system-sfx-input-definition">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">system</span> <span class="pre">&gt;</span> <span class="pre">sfx_input_definition</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-system-forecast-input-definition">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">system</span> <span class="pre">&gt;</span> <span class="pre">forecast_input_definition</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-boundaries">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span></code></a><ul>
@@ -1405,6 +1407,37 @@
         <span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="FileManager.input_data_iterator">
+<a class="viewcode-back" href="../../deode.html#deode.toolbox.FileManager.input_data_iterator">[docs]</a>
+    <span class="k">def</span> <span class="nf">input_data_iterator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data_definition</span><span class="p">,</span> <span class="n">provider_id</span><span class="o">=</span><span class="s2">&quot;symlink&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle input data spec dict.</span>
+
+<span class="sd">        Loop through the defined data types and fetch them.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            input_data_definition (dict): Input data spec</span>
+<span class="sd">            provider_id (str): Provider id. Defaults to &quot;symlink&quot;</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: &quot;Invalid data handle type&quot;</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">data_type</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">input_data_definition</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Link data type: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">data_type</span><span class="p">)</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">])</span>
+            <span class="n">files</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;files&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">filenames</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">filenames</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">filenames</span><span class="p">,</span> <span class="n">provider_id</span><span class="o">=</span><span class="n">provider_id</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">_outfile</span><span class="p">,</span> <span class="n">_infile</span> <span class="ow">in</span> <span class="n">files</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">infile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">_infile</span><span class="p">)</span>
+                    <span class="n">outfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">_outfile</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">infile</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">provider_id</span><span class="o">=</span><span class="n">provider_id</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown data type in </span><span class="si">{</span><span class="n">input_data_definition</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="FileManager.input">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.FileManager.input">[docs]</a>
     <span class="k">def</span> <span class="nf">input</span><span class="p">(</span>
@@ -1939,7 +1972,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-06-07T06:57:20Z.
+      <span class="lastupdated">Last updated on 2024-06-10T18:11:21Z.
       </span></p>
   </div>
 
