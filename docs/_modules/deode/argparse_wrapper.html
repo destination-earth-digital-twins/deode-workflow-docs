@@ -127,6 +127,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.argparse_wrapper">deode.argparse_wrapper module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.argparse_wrapper.add_namelist_args"><code class="docutils literal notranslate"><span class="pre">add_namelist_args()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.argparse_wrapper.get_parsed_args"><code class="docutils literal notranslate"><span class="pre">get_parsed_args()</span></code></a></li>
 </ul>
 </li>
@@ -1111,39 +1112,7 @@
     <span class="n">parser_show_namelist</span> <span class="o">=</span> <span class="n">show_command_subparsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
         <span class="s2">&quot;namelist&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Print namelist in use and exit&quot;</span><span class="p">,</span> <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">common_parser</span><span class="p">]</span>
     <span class="p">)</span>
-    <span class="n">parser_show_namelist</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;--namelist-type&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;-t&quot;</span><span class="p">,</span>
-        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Namelist target, master or surfex&quot;</span><span class="p">,</span>
-        <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;master&quot;</span><span class="p">,</span> <span class="s2">&quot;surfex&quot;</span><span class="p">],</span>
-        <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">parser_show_namelist</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;--namelist&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;-n&quot;</span><span class="p">,</span>
-        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Namelist to show, type anything to print available options&quot;</span><span class="p">,</span>
-        <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">parser_show_namelist</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;--optional-namelist-name&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;-o&quot;</span><span class="p">,</span>
-        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
-        <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;namelist_name&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Optional namelist name&quot;</span><span class="p">,</span>
-        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">parser_show_namelist</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;--no-substitute&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;-b&quot;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_false&quot;</span><span class="p">,</span>
-        <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Do not substitute config values in the written namelist&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">parser_show_namelist</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">run_command</span><span class="o">=</span><span class="n">show_namelist</span><span class="p">)</span>
+    <span class="n">add_namelist_args</span><span class="p">(</span><span class="n">parser_show_namelist</span><span class="p">)</span>
 
     <span class="c1">###########################################</span>
     <span class="c1"># Configure parser for the &quot;doc&quot; command #</span>
@@ -1185,6 +1154,12 @@
         <span class="p">),</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;command description&quot;</span><span class="p">,</span>
     <span class="p">)</span>
+
+    <span class="c1"># show namelist</span>
+    <span class="n">parser_namelist_show</span> <span class="o">=</span> <span class="n">namelist_command_subparsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
+        <span class="s2">&quot;show&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Print namelist in use and exit&quot;</span><span class="p">,</span> <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">common_parser</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">add_namelist_args</span><span class="p">(</span><span class="n">parser_namelist_show</span><span class="p">)</span>
 
     <span class="c1"># namelist integrate</span>
     <span class="n">parser_namelist_integrate</span> <span class="o">=</span> <span class="n">namelist_command_subparsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
@@ -1302,6 +1277,56 @@
 
     <span class="k">return</span> <span class="n">main_parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="n">argv</span><span class="p">)</span></div>
 
+
+
+<div class="viewcode-block" id="add_namelist_args">
+<a class="viewcode-back" href="../../deode.html#deode.argparse_wrapper.add_namelist_args">[docs]</a>
+<span class="k">def</span> <span class="nf">add_namelist_args</span><span class="p">(</span><span class="n">parser_object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Add namelist args.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        parser_object (args oject): args object to update</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        parser_object (args oject): updated args object</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">parser_object</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--namelist-type&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;-t&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Namelist target, master or surfex&quot;</span><span class="p">,</span>
+        <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;master&quot;</span><span class="p">,</span> <span class="s2">&quot;surfex&quot;</span><span class="p">],</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser_object</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--namelist&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;-n&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Namelist to show, type anything to print available options&quot;</span><span class="p">,</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser_object</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--optional-namelist-name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;-o&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+        <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;namelist_name&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Optional namelist name&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser_object</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--no-substitute&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;-b&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_false&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Do not substitute config values in the written namelist&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser_object</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">run_command</span><span class="o">=</span><span class="n">show_namelist</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">parser_object</span></div>
+
 </pre></div>
 
            </div>
@@ -1312,7 +1337,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-06-10T18:11:21Z.
+      <span class="lastupdated">Last updated on 2024-06-10T18:11:48Z.
       </span></p>
   </div>
 
