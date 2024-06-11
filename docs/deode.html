@@ -150,6 +150,14 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#module-deode.cleaning">deode.cleaning module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#deode.cleaning.CleanDeode"><code class="docutils literal notranslate"><span class="pre">CleanDeode</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#deode.cleaning.CleanDeode.clean"><code class="docutils literal notranslate"><span class="pre">CleanDeode.clean()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deode.cleaning.CleanDeode.prep_cleaning"><code class="docutils literal notranslate"><span class="pre">CleanDeode.prep_cleaning()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#module-deode.commands_functions">deode.commands_functions module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#deode.commands_functions.create_exp"><code class="docutils literal notranslate"><span class="pre">create_exp()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#deode.commands_functions.doc_config"><code class="docutils literal notranslate"><span class="pre">doc_config()</span></code></a></li>
@@ -356,6 +364,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#deode.os_utils.deodemakedirs"><code class="docutils literal notranslate"><span class="pre">deodemakedirs()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#deode.os_utils.filepath_iterator"><code class="docutils literal notranslate"><span class="pre">filepath_iterator()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deode.os_utils.remove_empty_dirs"><code class="docutils literal notranslate"><span class="pre">remove_empty_dirs()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-deode.plugin">deode.plugin module</a><ul>
@@ -623,8 +632,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="misc_section_in_doc_page.html#property-config-cleaning">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="misc_section_in_doc_page.html#property-config-cleaning-defaults">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span> <span class="pre">&gt;</span> <span class="pre">defaults</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="misc_section_in_doc_page.html#property-config-cleaning-wrk">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span> <span class="pre">&gt;</span> <span class="pre">wrk</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="misc_section_in_doc_page.html#property-config-cleaning-archive">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span> <span class="pre">&gt;</span> <span class="pre">archive</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="misc_section_in_doc_page.html#property-config-cleaning-cleaning-example">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span> <span class="pre">&gt;</span> <span class="pre">Cleaning_example</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="misc_section_in_doc_page.html#property-config-domain">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">domain</span></code></a><ul>
@@ -1053,6 +1061,40 @@
 <dt class="sig sig-object py" id="deode.aux_types.QuasiConstantMetaclass.type_conversions">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">type_conversions</span></span><a class="headerlink" href="#deode.aux_types.QuasiConstantMetaclass.type_conversions" title="Link to this definition"></a></dt>
 <dd><p>Type conversions to be performed on the attributes.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-deode.cleaning">
+<span id="deode-cleaning-module"></span><h2>deode.cleaning module<a class="headerlink" href="#module-deode.cleaning" title="Link to this heading"></a></h2>
+<p>Clean deode file systems.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="deode.cleaning.CleanDeode">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CleanDeode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">defaults</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basetime</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/cleaning.html#CleanDeode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.cleaning.CleanDeode" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Clean data.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="deode.cleaning.CleanDeode.clean">
+<span class="sig-name descname"><span class="pre">clean</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/cleaning.html#CleanDeode.clean"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.cleaning.CleanDeode.clean" title="Link to this definition"></a></dt>
+<dd><p>Perform the cleaning.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deode.cleaning.CleanDeode.prep_cleaning">
+<span class="sig-name descname"><span class="pre">prep_cleaning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">choices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basetime</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/cleaning.html#CleanDeode.prep_cleaning"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.cleaning.CleanDeode.prep_cleaning" title="Link to this definition"></a></dt>
+<dd><p>Prepare tasks for cleaning.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>choices</strong> (<em>dict</em>) – Dict with cleaning settings</p></li>
+<li><p><strong>basetime</strong> (<em>dateTime object</em>) – Reference time</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>RuntimeError</strong> – If erroneous choices</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -2618,6 +2660,28 @@ Defaults to “*”.</p></li>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="deode.os_utils.remove_empty_dirs">
+<span class="sig-name descname"><span class="pre">remove_empty_dirs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dry_run</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/os_utils.html#remove_empty_dirs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.os_utils.remove_empty_dirs" title="Link to this definition"></a></dt>
+<dd><p>Remove directories.</p>
+<p>Recursively and permanently removes the specified directory,
+and all of its empty subdirectories.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>src</strong> (<em>str</em><em> or </em><em>Path</em>) – Top search directory</p></li>
+<li><p><strong>dry_run</strong> (<em>boolean</em>) – Flag for execution of cleaning or not</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if any files found</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>found_files (boolean)</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="module-deode.plugin">
 <span id="deode-plugin-module"></span><h2>deode.plugin module<a class="headerlink" href="#module-deode.plugin" title="Link to this heading"></a></h2>
@@ -4132,7 +4196,7 @@ NOTE: Land/Sea Mask is not yet implemented.</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-06-11T06:47:50Z.
+      <span class="lastupdated">Last updated on 2024-06-11T13:15:15Z.
       </span></p>
   </div>
 

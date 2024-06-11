@@ -150,6 +150,14 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="deode.html#module-deode.cleaning">deode.cleaning module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="deode.html#deode.cleaning.CleanDeode"><code class="docutils literal notranslate"><span class="pre">CleanDeode</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="deode.html#deode.cleaning.CleanDeode.clean"><code class="docutils literal notranslate"><span class="pre">CleanDeode.clean()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="deode.html#deode.cleaning.CleanDeode.prep_cleaning"><code class="docutils literal notranslate"><span class="pre">CleanDeode.prep_cleaning()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="deode.html#module-deode.commands_functions">deode.commands_functions module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="deode.html#deode.commands_functions.create_exp"><code class="docutils literal notranslate"><span class="pre">create_exp()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="deode.html#deode.commands_functions.doc_config"><code class="docutils literal notranslate"><span class="pre">doc_config()</span></code></a></li>
@@ -356,6 +364,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="deode.html#deode.os_utils.deodemakedirs"><code class="docutils literal notranslate"><span class="pre">deodemakedirs()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="deode.html#deode.os_utils.filepath_iterator"><code class="docutils literal notranslate"><span class="pre">filepath_iterator()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="deode.html#deode.os_utils.remove_empty_dirs"><code class="docutils literal notranslate"><span class="pre">remove_empty_dirs()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="deode.html#module-deode.plugin">deode.plugin module</a><ul>
@@ -623,8 +632,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="misc_section_in_doc_page.html#property-config-cleaning">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="misc_section_in_doc_page.html#property-config-cleaning-defaults">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span> <span class="pre">&gt;</span> <span class="pre">defaults</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="misc_section_in_doc_page.html#property-config-cleaning-wrk">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span> <span class="pre">&gt;</span> <span class="pre">wrk</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="misc_section_in_doc_page.html#property-config-cleaning-archive">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span> <span class="pre">&gt;</span> <span class="pre">archive</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="misc_section_in_doc_page.html#property-config-cleaning-cleaning-example">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span> <span class="pre">&gt;</span> <span class="pre">Cleaning_example</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="misc_section_in_doc_page.html#property-config-domain">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">domain</span></code></a><ul>
@@ -1031,20 +1039,21 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="deode.suites.deode.DeodeSuiteDefinition.static_suite_part">
-<span class="sig-name descname"><span class="pre">static_suite_part</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_template</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/suites/deode.html#DeodeSuiteDefinition.static_suite_part"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.suites.deode.DeodeSuiteDefinition.static_suite_part" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">static_suite_part</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_template</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_trigger</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/suites/deode.html#DeodeSuiteDefinition.static_suite_part"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.suites.deode.DeodeSuiteDefinition.static_suite_part" title="Link to this definition"></a></dt>
 <dd><p>Create the time dependent part of the suite.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>config</strong> (<em>deode.ParsedConfig</em>) – Configuration settings</p></li>
 <li><p><strong>input_template</strong> (<em>str</em>) – Default task template</p></li>
+<li><p><strong>input_trigger</strong> (<em>list</em>) – List of trigger objects for the static family</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>EcflowFamily object used for triggering</p>
+<dd class="field-even"><p>List of trigger objects to be used by subsequent tasks</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>static_data</p>
+<dd class="field-odd"><p>static_data (list)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1062,10 +1071,10 @@
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>EcflowFamily object used for triggering</p>
+<dd class="field-even"><p>List of triggers to be used by subsequent tasks</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>time_family</p>
+<dd class="field-odd"><p>prev_cycle_trigger (list)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1177,7 +1186,7 @@ types.ModuleType: The imported module</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-06-11T06:47:50Z.
+      <span class="lastupdated">Last updated on 2024-06-11T13:15:15Z.
       </span></p>
   </div>
 

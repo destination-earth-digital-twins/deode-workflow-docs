@@ -147,6 +147,14 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../../deode.html#module-deode.cleaning">deode.cleaning module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.cleaning.CleanDeode"><code class="docutils literal notranslate"><span class="pre">CleanDeode</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../deode.html#deode.cleaning.CleanDeode.clean"><code class="docutils literal notranslate"><span class="pre">CleanDeode.clean()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../deode.html#deode.cleaning.CleanDeode.prep_cleaning"><code class="docutils literal notranslate"><span class="pre">CleanDeode.prep_cleaning()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../../deode.html#module-deode.commands_functions">deode.commands_functions module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.commands_functions.create_exp"><code class="docutils literal notranslate"><span class="pre">create_exp()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.commands_functions.doc_config"><code class="docutils literal notranslate"><span class="pre">doc_config()</span></code></a></li>
@@ -353,6 +361,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.os_utils.deodemakedirs"><code class="docutils literal notranslate"><span class="pre">deodemakedirs()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.os_utils.filepath_iterator"><code class="docutils literal notranslate"><span class="pre">filepath_iterator()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.os_utils.remove_empty_dirs"><code class="docutils literal notranslate"><span class="pre">remove_empty_dirs()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../deode.html#module-deode.plugin">deode.plugin module</a><ul>
@@ -620,8 +629,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-cleaning">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-cleaning-defaults">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span> <span class="pre">&gt;</span> <span class="pre">defaults</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-cleaning-wrk">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span> <span class="pre">&gt;</span> <span class="pre">wrk</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-cleaning-archive">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span> <span class="pre">&gt;</span> <span class="pre">archive</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-cleaning-cleaning-example">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span> <span class="pre">&gt;</span> <span class="pre">Cleaning_example</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-domain">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">domain</span></code></a><ul>
@@ -974,8 +982,23 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">do_prep</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">create_static_data</span> <span class="o">=</span> <span class="kc">False</span>
 
+        <span class="n">final_cleaning_trigger</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_cleaning</span><span class="p">:</span>
+            <span class="n">initial_cleaning</span> <span class="o">=</span> <span class="n">EcflowSuiteTask</span><span class="p">(</span>
+                <span class="s2">&quot;PreCleaning&quot;</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">suite</span><span class="p">,</span>
+                <span class="n">config</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">task_settings</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">final_cleaning_trigger</span> <span class="o">=</span> <span class="p">[</span><span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">initial_cleaning</span><span class="p">)]</span>
+
+        <span class="n">static_data</span> <span class="o">=</span> <span class="n">final_cleaning_trigger</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_static_data</span><span class="p">:</span>
-            <span class="n">static_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_suite_part</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">input_template</span><span class="p">)</span>
+            <span class="n">input_trigger</span> <span class="o">=</span> <span class="n">EcflowSuiteTriggers</span><span class="p">(</span><span class="n">final_cleaning_trigger</span><span class="p">)</span>
+            <span class="n">static_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_suite_part</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">input_template</span><span class="p">,</span> <span class="n">input_trigger</span><span class="p">)</span>
             <span class="n">task_logs</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;system.climdir&quot;</span><span class="p">]</span>
             <span class="n">args</span> <span class="o">=</span> <span class="s2">&quot;;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
                 <span class="p">[</span>
@@ -993,16 +1016,17 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">task_settings</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
                 <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
-                <span class="n">trigger</span><span class="o">=</span><span class="n">EcflowSuiteTriggers</span><span class="p">([</span><span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">static_data</span><span class="p">)]),</span>
+                <span class="n">trigger</span><span class="o">=</span><span class="n">EcflowSuiteTriggers</span><span class="p">(</span><span class="n">static_data</span><span class="p">),</span>
                 <span class="n">variables</span><span class="o">=</span><span class="n">variables</span><span class="p">,</span>
                 <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
             <span class="p">)</span>
+            <span class="n">final_cleaning_trigger</span> <span class="o">=</span> <span class="n">static_data</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_archiving</span><span class="p">:</span>
                 <span class="n">archiving_static_trigger</span> <span class="o">=</span> <span class="n">EcflowSuiteTriggers</span><span class="p">(</span>
                     <span class="p">[</span><span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">collect_logs</span><span class="p">)]</span>
                 <span class="p">)</span>
-                <span class="n">EcflowSuiteTask</span><span class="p">(</span>
+                <span class="n">archive_static</span> <span class="o">=</span> <span class="n">EcflowSuiteTask</span><span class="p">(</span>
                     <span class="s2">&quot;ArchiveStatic&quot;</span><span class="p">,</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">suite</span><span class="p">,</span>
                     <span class="n">config</span><span class="p">,</span>
@@ -1012,30 +1036,29 @@
                     <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">trigger</span><span class="o">=</span><span class="n">archiving_static_trigger</span><span class="p">,</span>
                 <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">static_data</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">final_cleaning_trigger</span> <span class="o">=</span> <span class="p">[</span><span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">archive_static</span><span class="p">)]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">archive_static</span> <span class="o">=</span> <span class="kc">None</span>
 
+        <span class="n">time_dependent_part</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_time_dependent_suite</span><span class="p">:</span>
-            <span class="n">time_family</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_dependent_suite_part</span><span class="p">(</span>
+            <span class="n">time_dependent_part</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_dependent_suite_part</span><span class="p">(</span>
                 <span class="n">config</span><span class="p">,</span> <span class="n">input_template</span><span class="p">,</span> <span class="n">static_data</span>
             <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">time_family</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_cleaning</span><span class="p">:</span>
-            <span class="n">trigger_object</span> <span class="o">=</span> <span class="n">time_family</span>
-            <span class="k">if</span> <span class="n">time_family</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">static_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">trigger_object</span> <span class="o">=</span> <span class="n">static_data</span>
-            <span class="n">cleaning_trigger</span> <span class="o">=</span> <span class="n">EcflowSuiteTriggers</span><span class="p">([</span><span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">trigger_object</span><span class="p">)])</span>
+            <span class="k">if</span> <span class="n">time_dependent_part</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">final_cleaning_trigger</span> <span class="o">+=</span> <span class="n">time_dependent_part</span>
+            <span class="n">trigger</span> <span class="o">=</span> <span class="n">EcflowSuiteTriggers</span><span class="p">(</span><span class="n">final_cleaning_trigger</span><span class="p">)</span>
 
             <span class="n">EcflowSuiteTask</span><span class="p">(</span>
-                <span class="s2">&quot;Cleaning&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;PostMortem&quot;</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">suite</span><span class="p">,</span>
                 <span class="n">config</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">task_settings</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
                 <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
-                <span class="n">trigger</span><span class="o">=</span><span class="n">cleaning_trigger</span><span class="p">,</span>
+                <span class="n">trigger</span><span class="o">=</span><span class="n">trigger</span><span class="p">,</span>
                 <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
             <span class="p">)</span>
 
@@ -1050,7 +1073,7 @@
 <span class="sd">            static_data(EcflowFamily): EcflowFamily object used for triggering</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            time_family: EcflowFamily object used for triggering</span>
+<span class="sd">            prev_cycle_trigger (list) : List of triggers to be used by subsequent tasks</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">first_cycle</span> <span class="o">=</span> <span class="n">as_datetime</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.times.start&quot;</span><span class="p">])</span>
@@ -1078,13 +1101,11 @@
         <span class="n">days</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">prev_cycle_trigger</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">prev_interpolation_trigger</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">cycle_cleaning</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">cycle</span> <span class="ow">in</span> <span class="n">cycles</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">cycle_day</span> <span class="o">=</span> <span class="n">cycle</span><span class="p">[</span><span class="s2">&quot;day&quot;</span><span class="p">]</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_static_data</span><span class="p">:</span>
-                <span class="n">inputdata_trigger</span> <span class="o">=</span> <span class="n">EcflowSuiteTriggers</span><span class="p">([</span><span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">static_data</span><span class="p">)])</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">inputdata_trigger</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">inputdata_trigger</span> <span class="o">=</span> <span class="n">EcflowSuiteTriggers</span><span class="p">(</span><span class="n">static_data</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">cycle_day</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">days</span><span class="p">:</span>
                 <span class="n">day_family</span> <span class="o">=</span> <span class="n">EcflowSuiteFamily</span><span class="p">(</span>
@@ -1357,29 +1378,6 @@
                 <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
             <span class="p">)</span>
 
-            <span class="n">cday</span> <span class="o">=</span> <span class="n">cycle</span><span class="p">[</span><span class="s2">&quot;day&quot;</span><span class="p">]</span>
-            <span class="n">ctime</span> <span class="o">=</span> <span class="n">cycle</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span>
-            <span class="n">task_logs</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;system.wrk&quot;</span><span class="p">]</span>
-            <span class="n">args</span> <span class="o">=</span> <span class="s2">&quot;;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-                <span class="p">[</span>
-                    <span class="sa">f</span><span class="s2">&quot;joboutdir=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_out</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">suite_name</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">cday</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">ctime</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                    <span class="sa">f</span><span class="s2">&quot;tarname=</span><span class="si">{</span><span class="n">cday</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">ctime</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                    <span class="sa">f</span><span class="s2">&quot;task_logs=</span><span class="si">{</span><span class="n">task_logs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                <span class="p">]</span>
-            <span class="p">)</span>
-            <span class="n">variables</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;ARGS&quot;</span><span class="p">:</span> <span class="n">args</span><span class="p">}</span>
-            <span class="n">collect_logs_hour</span> <span class="o">=</span> <span class="n">EcflowSuiteTask</span><span class="p">(</span>
-                <span class="s2">&quot;CollectLogs&quot;</span><span class="p">,</span>
-                <span class="n">time_family</span><span class="p">,</span>
-                <span class="n">config</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">task_settings</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
-                <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
-                <span class="n">trigger</span><span class="o">=</span><span class="n">EcflowSuiteTriggers</span><span class="p">([</span><span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">cycle_fam</span><span class="p">)]),</span>
-                <span class="n">variables</span><span class="o">=</span><span class="n">variables</span><span class="p">,</span>
-                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
-            <span class="p">)</span>
-
             <span class="n">EcflowSuiteTask</span><span class="p">(</span>
                 <span class="s2">&quot;FirstGuess&quot;</span><span class="p">,</span>
                 <span class="n">initialization</span><span class="p">,</span>
@@ -1442,14 +1440,44 @@
                     <span class="n">trigger</span><span class="o">=</span><span class="n">extractsqlite_trigger</span><span class="p">,</span>
                 <span class="p">)</span>
 
+            <span class="n">postcycle_family</span> <span class="o">=</span> <span class="n">EcflowSuiteFamily</span><span class="p">(</span>
+                <span class="s2">&quot;PostCycle&quot;</span><span class="p">,</span>
+                <span class="n">time_family</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">trigger</span><span class="o">=</span><span class="n">EcflowSuiteTriggers</span><span class="p">([</span><span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">cycle_fam</span><span class="p">)]),</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="n">cday</span> <span class="o">=</span> <span class="n">cycle</span><span class="p">[</span><span class="s2">&quot;day&quot;</span><span class="p">]</span>
+            <span class="n">ctime</span> <span class="o">=</span> <span class="n">cycle</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span>
+            <span class="n">task_logs</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;system.wrk&quot;</span><span class="p">]</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="s2">&quot;;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="sa">f</span><span class="s2">&quot;joboutdir=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_out</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">suite_name</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">cday</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">ctime</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">&quot;tarname=</span><span class="si">{</span><span class="n">cday</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">ctime</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">&quot;task_logs=</span><span class="si">{</span><span class="n">task_logs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">variables</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;ARGS&quot;</span><span class="p">:</span> <span class="n">args</span><span class="p">}</span>
+            <span class="n">collect_logs_hour</span> <span class="o">=</span> <span class="n">EcflowSuiteTask</span><span class="p">(</span>
+                <span class="s2">&quot;CollectLogs&quot;</span><span class="p">,</span>
+                <span class="n">postcycle_family</span><span class="p">,</span>
+                <span class="n">config</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">task_settings</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
+                <span class="n">variables</span><span class="o">=</span><span class="n">variables</span><span class="p">,</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+            <span class="p">)</span>
+
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_archiving</span><span class="p">:</span>
                 <span class="n">archiving_hour_trigger</span> <span class="o">=</span> <span class="n">EcflowSuiteTriggers</span><span class="p">(</span>
                     <span class="p">[</span><span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">collect_logs_hour</span><span class="p">)]</span>
                 <span class="p">)</span>
 
-                <span class="n">EcflowSuiteTask</span><span class="p">(</span>
+                <span class="n">archive_hour</span> <span class="o">=</span> <span class="n">EcflowSuiteTask</span><span class="p">(</span>
                     <span class="s2">&quot;ArchiveHour&quot;</span><span class="p">,</span>
-                    <span class="n">time_family</span><span class="p">,</span>
+                    <span class="n">postcycle_family</span><span class="p">,</span>
                     <span class="n">config</span><span class="p">,</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">task_settings</span><span class="p">,</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
@@ -1458,26 +1486,48 @@
                     <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
                 <span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">time_family</span></div>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_cleaning</span><span class="p">:</span>
+                <span class="n">cleaning_triggers</span> <span class="o">=</span> <span class="n">triggers</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_archiving</span><span class="p">:</span>
+                    <span class="n">cleaning_triggers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">archive_hour</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">cycle_cleaning</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">cleaning_triggers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">cycle_cleaning</span><span class="p">))</span>
+                <span class="n">cleaning_trigger</span> <span class="o">=</span> <span class="n">EcflowSuiteTriggers</span><span class="p">(</span><span class="n">cleaning_triggers</span><span class="p">)</span>
+
+                <span class="n">cycle_cleaning</span> <span class="o">=</span> <span class="n">EcflowSuiteTask</span><span class="p">(</span>
+                    <span class="s2">&quot;CycleCleaning&quot;</span><span class="p">,</span>
+                    <span class="n">postcycle_family</span><span class="p">,</span>
+                    <span class="n">config</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">task_settings</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
+                    <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
+                    <span class="n">trigger</span><span class="o">=</span><span class="n">cleaning_trigger</span><span class="p">,</span>
+                    <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+                <span class="p">)</span>
+
+        <span class="n">prev_cycle_trigger</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">cycle_cleaning</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">prev_cycle_trigger</span></div>
 
 
 <div class="viewcode-block" id="DeodeSuiteDefinition.static_suite_part">
 <a class="viewcode-back" href="../../../deode.suites.html#deode.suites.deode.DeodeSuiteDefinition.static_suite_part">[docs]</a>
-    <span class="k">def</span> <span class="nf">static_suite_part</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">input_template</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">static_suite_part</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">input_template</span><span class="p">,</span> <span class="n">input_trigger</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the time dependent part of the suite.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            config (deode.ParsedConfig): Configuration settings</span>
 <span class="sd">            input_template (str): Default task template</span>
+<span class="sd">            input_trigger (list): List of trigger objects for the static family</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            static_data: EcflowFamily object used for triggering</span>
+<span class="sd">            static_data (list) : List of trigger objects to be used by subsequent tasks</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">static_data</span> <span class="o">=</span> <span class="n">EcflowSuiteFamily</span><span class="p">(</span>
             <span class="s2">&quot;StaticData&quot;</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">suite</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
+            <span class="n">trigger</span><span class="o">=</span><span class="n">input_trigger</span><span class="p">,</span>
             <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
         <span class="p">)</span>
 
@@ -1682,7 +1732,7 @@
                     <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
                 <span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">static_data</span></div>
+        <span class="k">return</span> <span class="p">[</span><span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">static_data</span><span class="p">)]</span></div>
 
 
 <div class="viewcode-block" id="DeodeSuiteDefinition.save_as_defs">
@@ -1706,7 +1756,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-06-11T06:47:50Z.
+      <span class="lastupdated">Last updated on 2024-06-11T13:15:15Z.
       </span></p>
   </div>
 
