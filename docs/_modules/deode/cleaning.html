@@ -912,8 +912,17 @@
 <span class="sd">            defaults (dict): Default cleaning settings</span>
 <span class="sd">            basetime (dateTime object): Reference time</span>
 
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: If erroneous defaults</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">defaults</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">defaults</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">defaults</span>
+        <span class="k">if</span> <span class="n">defaults</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">defaults</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">defaults</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">defaults</span> <span class="o">=</span> <span class="n">defaults</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">defaults</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">basetime</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">as_datetime</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.times.basetime&quot;</span><span class="p">])</span>
             <span class="k">if</span> <span class="n">basetime</span> <span class="ow">is</span> <span class="kc">None</span>
@@ -921,6 +930,7 @@
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cycle_length</span> <span class="o">=</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.times.cycle_length&quot;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">platform</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">defaults</span><span class="p">,</span> <span class="s2">&quot;defaults&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_set_defaults</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">choice</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Copy default settings.</span>
@@ -933,28 +943,45 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">choice</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">defaults</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">defaults</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="c1"># Do not copy competing settings</span>
+        <span class="k">if</span> <span class="s2">&quot;ncycles_delay&quot;</span> <span class="ow">in</span> <span class="n">y</span> <span class="ow">and</span> <span class="s2">&quot;cleaning_delay&quot;</span> <span class="ow">in</span> <span class="n">x</span><span class="p">:</span>
+            <span class="n">y</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;ncycles_delay&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;ncycles_delay&quot;</span> <span class="ow">in</span> <span class="n">x</span> <span class="ow">and</span> <span class="s2">&quot;cleaning_delay&quot;</span> <span class="ow">in</span> <span class="n">y</span><span class="p">:</span>
+            <span class="n">y</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;cleaning_delay&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">y</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">choice</span><span class="p">:</span>
                 <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
 
         <span class="k">return</span> <span class="n">x</span>
 
-    <span class="k">def</span> <span class="nf">_check_delay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delay</span><span class="p">,</span> <span class="n">tag</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if that a value is a multiple of cycle_length.</span>
+    <span class="k">def</span> <span class="nf">_check_choice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">choice</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check choices.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            delay (timeDelta object): Timedelta to check</span>
-<span class="sd">            tag (str): Name for error message</span>
+<span class="sd">            choice (dict): Dict with cleaning settings</span>
+<span class="sd">            name (str): Optional name for better logging</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            RuntimeError: If not divisible by cycle_length</span>
+<span class="sd">            RuntimeError:</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">delay</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">cycle_length</span> <span class="o">!=</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="s2">&quot;PT0H&quot;</span><span class="p">):</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s2"> must be a multiple of cycle_length&quot;</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">delay</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cycle_length:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cycle_length</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span>
+        <span class="k">if</span> <span class="s2">&quot;cleaning_delay&quot;</span> <span class="ow">in</span> <span class="n">choice</span> <span class="ow">and</span> <span class="s2">&quot;ncycles_delay&quot;</span> <span class="ow">in</span> <span class="n">choice</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Define either ncycles_delay or cleaning_delay for </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;cleaning_delay&quot;</span><span class="p">,</span> <span class="s2">&quot;cleanin_max_delay&quot;</span><span class="p">,</span> <span class="s2">&quot;step&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">tag</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">choice</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">delay</span> <span class="o">=</span> <span class="n">choice</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="n">delay</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">cycle_length</span> <span class="o">!=</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="s2">&quot;PT0H&quot;</span><span class="p">):</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s2"> must be a multiple of cycle_length&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">delay</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cycle_length:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cycle_length</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span>
 
 <div class="viewcode-block" id="CleanDeode.prep_cleaning">
 <a class="viewcode-back" href="../../deode.html#deode.cleaning.CleanDeode.prep_cleaning">[docs]</a>
@@ -965,27 +992,23 @@
 <span class="sd">            choices (dict): Dict with cleaning settings</span>
 <span class="sd">            basetime (dateTime object): Reference time</span>
 
-<span class="sd">        Raises:</span>
-<span class="sd">            RuntimeError: If erroneous choices</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">basetime</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">basetime</span> <span class="o">=</span> <span class="n">basetime</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">clean_tasks</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">_choice</span> <span class="ow">in</span> <span class="n">choices</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clean_tasks</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">_choice</span> <span class="ow">in</span> <span class="n">choices</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">choice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_defaults</span><span class="p">(</span><span class="n">_choice</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">choice</span><span class="p">[</span><span class="s2">&quot;active&quot;</span><span class="p">]:</span>
+                <span class="n">choice</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;active&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">clean_tasks</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">choice</span>
                 <span class="c1"># Check consistency of settings</span>
-
-                <span class="k">if</span> <span class="s2">&quot;cleaning_delay&quot;</span> <span class="ow">in</span> <span class="n">choice</span> <span class="ow">and</span> <span class="s2">&quot;ncycles_delay&quot;</span> <span class="ow">in</span> <span class="n">choice</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Define either ncycles_delay or cleaning_delay&quot;</span><span class="p">)</span>
 
                 <span class="k">if</span> <span class="s2">&quot;cleaning_delay&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">choice</span><span class="p">:</span>
                     <span class="n">choice</span><span class="p">[</span><span class="s2">&quot;cleaning_delay&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">choice</span><span class="p">[</span><span class="s2">&quot;ncycles_delay&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">cycle_length</span>
+                    <span class="n">choice</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;ncycles_delay&quot;</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">choice</span><span class="p">[</span><span class="s2">&quot;cleaning_delay&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="n">choice</span><span class="p">[</span><span class="s2">&quot;cleaning_delay&quot;</span><span class="p">])</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_check_delay</span><span class="p">(</span><span class="n">choice</span><span class="p">[</span><span class="s2">&quot;cleaning_delay&quot;</span><span class="p">],</span> <span class="s2">&quot;cleaning_delay&quot;</span><span class="p">)</span>
 
                 <span class="k">if</span> <span class="s2">&quot;cleaning_max_delay&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">choice</span><span class="p">:</span>
                     <span class="n">choice</span><span class="p">[</span><span class="s2">&quot;cleaning_max_delay&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">choice</span><span class="p">[</span><span class="s2">&quot;cleaning_delay&quot;</span><span class="p">]</span>
@@ -993,23 +1016,22 @@
                     <span class="n">choice</span><span class="p">[</span><span class="s2">&quot;cleaning_max_delay&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">as_timedelta</span><span class="p">(</span>
                         <span class="n">choice</span><span class="p">[</span><span class="s2">&quot;cleaning_max_delay&quot;</span><span class="p">]</span>
                     <span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_check_delay</span><span class="p">(</span><span class="n">choice</span><span class="p">[</span><span class="s2">&quot;cleaning_max_delay&quot;</span><span class="p">],</span> <span class="s2">&quot;cleaning_max_delay&quot;</span><span class="p">)</span>
 
                 <span class="k">if</span> <span class="s2">&quot;step&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">choice</span><span class="p">:</span>
                     <span class="n">choice</span><span class="p">[</span><span class="s2">&quot;step&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cycle_length</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">choice</span><span class="p">[</span><span class="s2">&quot;step&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="n">choice</span><span class="p">[</span><span class="s2">&quot;step&quot;</span><span class="p">])</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_check_delay</span><span class="p">(</span><span class="n">choice</span><span class="p">[</span><span class="s2">&quot;step&quot;</span><span class="p">],</span> <span class="s2">&quot;step&quot;</span><span class="p">)</span>
 
-                <span class="bp">self</span><span class="o">.</span><span class="n">clean_tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">choice</span><span class="p">)</span></div>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_check_choice</span><span class="p">(</span><span class="n">choice</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">clean_tasks</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">choice</span></div>
 
 
 <div class="viewcode-block" id="CleanDeode.clean">
 <a class="viewcode-back" href="../../deode.html#deode.cleaning.CleanDeode.clean">[docs]</a>
     <span class="k">def</span> <span class="nf">clean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform the cleaning.&quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">choice</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">clean_tasks</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Cleaning choice:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">choice</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">choice</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">clean_tasks</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Cleaning </span><span class="si">{}</span><span class="s2">:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">choice</span><span class="p">)</span>
 
             <span class="n">basetime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">basetime</span> <span class="o">-</span> <span class="n">choice</span><span class="p">[</span><span class="s2">&quot;cleaning_delay&quot;</span><span class="p">]</span>
             <span class="n">endtime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">basetime</span> <span class="o">-</span> <span class="n">choice</span><span class="p">[</span><span class="s2">&quot;cleaning_max_delay&quot;</span><span class="p">]</span>
@@ -1056,7 +1078,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-06-13T06:28:43Z.
+      <span class="lastupdated">Last updated on 2024-06-15T04:41:51Z.
       </span></p>
   </div>
 
