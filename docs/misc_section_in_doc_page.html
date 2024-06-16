@@ -565,6 +565,19 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#available-tasks">Available tasks</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#preparation-of-static-files">Preparation of static files</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#surfex">Surfex</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#e923">E923</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#input-data">Input data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#forecasting">Forecasting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#postprocessing">Postprocessing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#archiving">Archiving</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cleaning">Cleaning</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#config">Config</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#property-config-general">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">general</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#property-config-general-times">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">general</span> <span class="pre">&gt;</span> <span class="pre">times</span></code></a></li>
@@ -982,7 +995,81 @@ $ mamba activate .conda/
 </section>
 </section>
 </section>
-<p>This was automatically generated running <code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">doc</span> <span class="pre">config</span></code> on 2024-06-15T04:44:22.</p>
+<section id="available-tasks">
+<h2>Available tasks<a class="headerlink" href="#available-tasks" title="Link to this heading"></a></h2>
+<section id="preparation-of-static-files">
+<h3>Preparation of static files<a class="headerlink" href="#preparation-of-static-files" title="Link to this heading"></a></h3>
+<p>This section contains tasks that are done only once during a model run. In case the static files already exists the tasks can be deactivated in the suite setting <code class="docutils literal notranslate"><span class="pre">config.suite_control.create_static_data</span></code> to <code class="docutils literal notranslate"><span class="pre">False</span></code>. The location of the background input data used is defined in <code class="docutils literal notranslate"><span class="pre">config.platform</span></code> and the resulting output files are stored in a directory defined by <code class="docutils literal notranslate"><span class="pre">config.system.climdir</span></code>.</p>
+<section id="surfex">
+<h4>Surfex<a class="headerlink" href="#surfex" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p><a class="reference external" href="https://destination-earth-digital-twins.github.io/deode-prototype-docs/_modules/deode/tasks/gmtedsoil.html#Gmted"><strong>Gmted</strong></a> prepares topograhpic data from gmted input data.</p></li>
+<li><p><a class="reference external" href="https://destination-earth-digital-twins.github.io/deode-prototype-docs/_modules/deode/tasks/gmtedsoil.html#Soil"><strong>Soil</strong></a> prepares soil data input for PGD using SOILGRID.</p></li>
+<li><p><a class="reference external" href="https://destination-earth-digital-twins.github.io/deode-prototype-docs/_modules/deode/tasks/sfx.html#Pgd"><strong>Pgd</strong></a> runs PGD using ECOCLIMAP SG for either a single 10 day period or the full year. Check <code class="docutils literal notranslate"><span class="pre">config.pgd</span></code> for PGD configuration options and use <code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">show</span> <span class="pre">namelist</span> <span class="pre">[--config-file</span> <span class="pre">your_config.toml]</span> <span class="pre">-t</span> <span class="pre">surfex</span> <span class="pre">-n</span> <span class="pre">pgd</span></code> to print the used namelist.</p></li>
+<li><p><a class="reference external" href="https://destination-earth-digital-twins.github.io/deode-prototype-docs/_modules/deode/tasks/e923.html#PgdUpdate"><strong>PgdUpdate</strong></a> updates the topography in the Const.Clim.sfx file with the one filtered/truncated in E923Constant.</p></li>
+</ul>
+</section>
+<section id="e923">
+<h4>E923<a class="headerlink" href="#e923" title="Link to this heading"></a></h4>
+<p>These task handles the generation of the non-SURFEX related static data required by the model. Type <code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">show</span> <span class="pre">namelist</span> <span class="pre">-t</span> <span class="pre">master</span> <span class="pre">-n</span> <span class="pre">show</span></code> to show the available namelists used in e923.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://destination-earth-digital-twins.github.io/deode-prototype-docs/_modules/deode/tasks/e923.html#E923Constant"><strong>E923Constant</strong></a>
+generates the constant part of the e923 files.</p></li>
+<li><p><a class="reference external" href="https://destination-earth-digital-twins.github.io/deode-prototype-docs/_modules/deode/tasks/e923.html#E923Monthly"><strong>E923Monthly</strong></a> generates the monthly part of the e923 files.</p></li>
+<li><p><a class="reference external" href="https://destination-earth-digital-twins.github.io/deode-prototype-docs/_modules/deode/tasks/e923_update.html#E923Update"><strong>E923Update</strong></a>: In case of CSC=ALARO selected physiography fields are taken from the initial surfex files and written back to the e923 used. This is only performed once. Read more about the task <a class="reference external" href="https://destination-earth-digital-twins.github.io/deode-prototype-docs/misc_section_in_doc_page.html#e923-update">here</a>.</p></li>
+</ul>
+</section>
+</section>
+<section id="input-data">
+<h3>Input data<a class="headerlink" href="#input-data" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://destination-earth-digital-twins.github.io/deode-prototype-docs/_modules/deode/tasks/marsprep.html#Marsprep"><strong>Marsprep</strong></a> extracts IFS data from MARS if the expected data is not found on disk. The location of the data on disk is by default outside of a specific case so the input data can easily be reused for several runs. Implemented data sources are described in <a class="reference external" href="https://destination-earth-digital-twins.github.io/deode-prototype-docs/misc_section_in_doc_page.html#mars">config.mars</a></p></li>
+<li><p><a class="reference external" href="https://destination-earth-digital-twins.github.io/deode-prototype-docs/_modules/deode/tasks/sfx.html#Prep"><strong>Prep</strong></a> creates the initial state file for SURFEX using PREP. Input data can be either IFS or AROME/HARMONIE-AROME data. The namelist used for Prep can be generated by <code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">show</span> <span class="pre">namelist</span> <span class="pre">[--config-file</span> <span class="pre">your_config.toml]</span> <span class="pre">-t</span> <span class="pre">surfex</span> <span class="pre">-n</span> <span class="pre">prep</span></code></p></li>
+<li><p><a class="reference external" href="https://destination-earth-digital-twins.github.io/deode-prototype-docs/_modules/deode/tasks/c903.html#C903"><strong>c903</strong></a>
+creates an initial atmospheric state and boundary files from a global ECMWF file. Use <code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">show</span> <span class="pre">namelist</span> <span class="pre">[--config-file</span> <span class="pre">your_config.toml]</span> <span class="pre">-t</span> <span class="pre">master</span> <span class="pre">-n</span> <span class="pre">c903_[main|domain]</span></code> to see the two namelists required.</p></li>
+<li><p><a class="reference external" href="https://destination-earth-digital-twins.github.io/deode-prototype-docs/_modules/deode/tasks/e927.html#E927"><strong>e927</strong></a> creates an initial atmospheric state and boundary files from a AROME/HARMONIE-AROME file. Use <code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">show</span> <span class="pre">namelist</span> <span class="pre">[--config-file</span> <span class="pre">your_config.toml]</span> <span class="pre">-t</span> <span class="pre">master</span> <span class="pre">-n</span> <span class="pre">e927</span></code> to see the namelist used.</p></li>
+</ul>
+</section>
+<section id="forecasting">
+<h3>Forecasting<a class="headerlink" href="#forecasting" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://destination-earth-digital-twins.github.io/deode-prototype-docs/_modules/deode/tasks/forecast.html#Forecast"><strong>Forecast</strong></a> runs the forecast for any of the three CSCs. Namelists can be extracted with <code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">show</span> <span class="pre">namelist</span> <span class="pre">[--config-file</span> <span class="pre">your_config.yoml]</span> <span class="pre">-t</span> <span class="pre">master</span> <span class="pre">-n</span> <span class="pre">forecast</span></code> for the upper air namelist and with <code class="docutils literal notranslate"><span class="pre">-t</span> <span class="pre">surfex</span> <span class="pre">-n</span> <span class="pre">forecast</span></code> for the surfex part.</p></li>
+</ul>
+</section>
+<section id="postprocessing">
+<h3>Postprocessing<a class="headerlink" href="#postprocessing" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://destination-earth-digital-twins.github.io/deode-prototype-docs/_modules/deode/tasks/creategrib.html#CreateGrib"><strong>CreateGrib</strong></a> converts FA files to GRIB files. Configured to only work with output from SURFEX producing GRIB1 files.</p></li>
+<li><p><a class="reference external" href="https://destination-earth-digital-twins.github.io/deode-prototype-docs/_modules/deode/tasks/extractsqlite.html#ExtractSQLite"><strong>ExtractSQLite</strong></a> extracts data for point verification with harp. Options defined in <a class="reference external" href="https://destination-earth-digital-twins.github.io/deode-prototype-docs/misc_section_in_doc_page.html#property-config-extractsqlite">config.extractsqlite</a> and in the parameter lists under <code class="docutils literal notranslate"><span class="pre">deode/data/sqlite</span></code></p></li>
+</ul>
+</section>
+<section id="archiving">
+<h3>Archiving<a class="headerlink" href="#archiving" title="Link to this heading"></a></h3>
+<p>All non temporary files produced by the Deode-Workflow are stored in a directory defined by <code class="docutils literal notranslate"><span class="pre">config.system.archive</span></code> usually defined as <code class="docutils literal notranslate"><span class="pre">SOME_PATH/YOUR_EXP/archive/YYYY/MM/DD/HH</span></code>. Depending on your system these file may be left there for further usage or sent to a more permanent storage. Currently support is implemented or on the way to be implemented for the following</p>
+<ul class="simple">
+<li><p>ecfs: Archiving on ECMWF ECFS tape system, either under <code class="docutils literal notranslate"><span class="pre">ec</span></code> or <code class="docutils literal notranslate"><span class="pre">ectmp</span></code>.</p></li>
+<li><p>fdb: Archiving in FDB for further internal usage or for propagation to the data bridge (in case of operataions). This is still under development.</p></li>
+<li><p>scp: Send files to an arbitrary remote host using scp. The location and access details are configured under <code class="docutils literal notranslate"><span class="pre">config.archiving.scp</span></code>.</p></li>
+</ul>
+<p>For archiving we have the following two tasks</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://destination-earth-digital-twins.github.io/deode-prototype-docs/_modules/deode/tasks/archiving.html#ArchiveStatic"><strong>ArchiveStatic</strong></a> archives the output from the Pgd and E923 tasks. Configured under <code class="docutils literal notranslate"><span class="pre">config.archiving.ecfs.static</span></code>.</p></li>
+<li><p><a class="reference external" href="https://destination-earth-digital-twins.github.io/deode-prototype-docs/_modules/deode/tasks/archiving.html#ArchiveHour"><strong>ArchiveHour</strong></a> archives output from each cycle. Configured under <code class="docutils literal notranslate"><span class="pre">config.archiving.ecfs</span></code>.</p></li>
+</ul>
+</section>
+<section id="cleaning">
+<h3>Cleaning<a class="headerlink" href="#cleaning" title="Link to this heading"></a></h3>
+<p>These tasks takes care of temporary files and directories or files that has been archived as described above. The rules for the cleaning tasks described below are defined in <code class="docutils literal notranslate"><span class="pre">config.cleaning.TASK</span></code>. Read more about the cleaning <a class="reference external" href="https://destination-earth-digital-twins.github.io/deode-prototype-docs/misc_section_in_doc_page.html#cleaning-of-experiment">here</a>.
+<a class="reference external" href="https://destination-earth-digital-twins.github.io/deode-prototype-docs/_modules/deode/cleaning.html#CleanDeode">Source</a></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://destination-earth-digital-twins.github.io/deode-prototype-docs/_modules/deode/tasks/cleaning_tasks.html#PreCleaning"><strong>PreCleaning</strong></a> prepares the run by removing old ecflow output and job files.</p></li>
+<li><p><a class="reference external" href="https://destination-earth-digital-twins.github.io/deode-prototype-docs/_modules/deode/tasks/cleaning_tasks.html#CycleCleaning"><strong>CycleCleaning</strong></a>
+runs after each cycle and removes old directories and files with some delay as defined in the configuration.</p></li>
+<li><p><a class="reference external" href="https://destination-earth-digital-twins.github.io/deode-prototype-docs/_modules/deode/tasks/cleaning_tasks.html#PostMortem"><strong>PostMortem</strong> </a> runs at the very end of the suite and could potentially remove all obsolete ecflow output files.</p></li>
+</ul>
+</section>
+</section>
+<p>This was automatically generated running <code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">doc</span> <span class="pre">config</span></code> on 2024-06-16T16:11:55.</p>
 <section id="config">
 <h2>Config<a class="headerlink" href="#config" title="Link to this heading"></a></h2>
 <p><strong>Title:</strong> Config</p>
@@ -16089,7 +16176,7 @@ Example value of the archive folder path is “/ec/res4/scratch/bgmt/deode/CY48t
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-06-15T04:44:24Z.
+      <span class="lastupdated">Last updated on 2024-06-16T16:11:56Z.
       </span></p>
   </div>
 
