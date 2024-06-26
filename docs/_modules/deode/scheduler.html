@@ -389,6 +389,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.os_utils.deodemakedirs"><code class="docutils literal notranslate"><span class="pre">deodemakedirs()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.os_utils.filepath_iterator"><code class="docutils literal notranslate"><span class="pre">filepath_iterator()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.os_utils.ping"><code class="docutils literal notranslate"><span class="pre">ping()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.os_utils.remove_empty_dirs"><code class="docutils literal notranslate"><span class="pre">remove_empty_dirs()</span></code></a></li>
 </ul>
 </li>
@@ -940,6 +941,7 @@
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 
 <span class="kn">from</span> <span class="nn">.logs</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span> <span class="nn">.os_utils</span> <span class="kn">import</span> <span class="n">ping</span>
 <span class="kn">from</span> <span class="nn">.toolbox</span> <span class="kn">import</span> <span class="n">Platform</span>
 
 <span class="k">try</span><span class="p">:</span>
@@ -1032,6 +1034,10 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">start_command</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct the EcflowServer.</span>
 
+<span class="sd">        The values for ecf_host and ecf_port are taken from config as</span>
+<span class="sd">        strings/integer or the two functions _select_host_from_list()</span>
+<span class="sd">        or _set_port_from_user() defined below.</span>
+
 <span class="sd">        Args:</span>
 <span class="sd">            config (str): configuration settings.</span>
 <span class="sd">            start_command (str): Ecflow start server command.</span>
@@ -1046,23 +1052,24 @@
 
         <span class="n">Server</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
 
+        <span class="n">ecf_host</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;scheduler.ecfvars.ecf_host&quot;</span><span class="p">]</span>
+        <span class="n">ecf_host</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">config</span><span class="p">)</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">ecf_host</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">ecf_host</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;scheduler.ecfvars.ecf_host&quot;</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ecf_host</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">config</span><span class="p">)</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">ecf_host</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Please set ecf_host in ecflow_HPC.toml&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">error</span>
+            <span class="n">func</span><span class="p">,</span> <span class="n">arg</span> <span class="o">=</span> <span class="n">ecf_host</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;(&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
+                <span class="n">function</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ecf_host</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="n">arg</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ecf_host</span> <span class="o">=</span> <span class="n">ecf_host</span>
 
+        <span class="n">ecf_port</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;scheduler.ecfvars.ecf_port&quot;</span><span class="p">]</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">ecf_port</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;scheduler.ecfvars.ecf_port&quot;</span><span class="p">]</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">ecf_port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ecf_port</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-                <span class="n">func</span><span class="p">,</span> <span class="n">arg</span> <span class="o">=</span> <span class="n">ecf_port</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;(&quot;</span><span class="p">)</span>
-                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
-                    <span class="n">function</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">ecf_port</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="n">arg</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-        <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Please set ecf_port&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">error</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ecf_port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ecf_port</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="n">func</span><span class="p">,</span> <span class="n">arg</span> <span class="o">=</span> <span class="n">ecf_port</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;(&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
+                <span class="n">function</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ecf_port</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="n">arg</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">start_command</span> <span class="o">=</span> <span class="n">start_command</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;self.ecf_host=</span><span class="si">{}</span><span class="s2"> self.ecf_port=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_port</span><span class="p">)</span>
@@ -1070,7 +1077,8 @@
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;self.ecf_client </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_client</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">settings</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;ECF_HOST&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_host</span><span class="p">,</span> <span class="s2">&quot;ECF_PORT&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_port</span><span class="p">}</span>
 
-    <span class="k">def</span> <span class="nf">_set_port_from_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_set_port_from_user</span><span class="p">(</span><span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set ecf_port from user id.</span>
 
 <span class="sd">        Arguments:</span>
@@ -1082,6 +1090,39 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">port</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getuid</span><span class="p">()</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">port</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_select_host_from_list</span><span class="p">(</span><span class="n">hosts</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set ecf_host from list of options.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            hosts (list): list of host options</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            host (str): Selected host</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: In case no or more than one host found</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">found_hosts</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">_host</span> <span class="ow">in</span> <span class="n">hosts</span><span class="p">:</span>
+            <span class="n">host</span> <span class="o">=</span> <span class="n">_host</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">ping</span><span class="p">(</span><span class="n">host</span><span class="p">):</span>
+                <span class="n">found_hosts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">host</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">found_hosts</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">host_list</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">hosts</span><span class="p">)</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;No ecflow host found, tried:</span><span class="si">{</span><span class="n">host_list</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">found_hosts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">host_list</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">found_hosts</span><span class="p">)</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Ambigious host selection:</span><span class="si">{</span><span class="n">host_list</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">host</span>
 
 <div class="viewcode-block" id="EcflowServer.start_server">
 <a class="viewcode-back" href="../../deode.html#deode.scheduler.EcflowServer.start_server">[docs]</a>
@@ -1365,7 +1406,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-06-20T12:02:22Z.
+      <span class="lastupdated">Last updated on 2024-06-26T12:31:58Z.
       </span></p>
   </div>
 
