@@ -369,6 +369,7 @@
 <li class="toctree-l4"><a class="reference internal" href="deode.html#deode.namelist.NamelistGenerator.load_user_namelist"><code class="docutils literal notranslate"><span class="pre">NamelistGenerator.load_user_namelist()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="deode.html#deode.namelist.NamelistGenerator.traverse"><code class="docutils literal notranslate"><span class="pre">NamelistGenerator.traverse()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="deode.html#deode.namelist.NamelistGenerator.update"><code class="docutils literal notranslate"><span class="pre">NamelistGenerator.update()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="deode.html#deode.namelist.NamelistGenerator.update_from_config"><code class="docutils literal notranslate"><span class="pre">NamelistGenerator.update_from_config()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="deode.html#deode.namelist.NamelistGenerator.write_namelist"><code class="docutils literal notranslate"><span class="pre">NamelistGenerator.write_namelist()</span></code></a></li>
 </ul>
 </li>
@@ -808,6 +809,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#internal-usage">Internal usage</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#get-a-specific-namelist-from-command-line">Get a specific namelist from command line</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#add-your-own-namelist">Add your own namelist</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#modify-a-namlist-from-config">Modify a namlist from config</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#configure-selection-of-timings-in-output-settings">Configure selection of timings in output settings</a><ul>
@@ -1070,7 +1072,7 @@ runs after each cycle and removes old directories and files with some delay as d
 </ul>
 </section>
 </section>
-<p>This was automatically generated running <code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">doc</span> <span class="pre">config</span></code> on 2024-06-27T10:55:52.</p>
+<p>This was automatically generated running <code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">doc</span> <span class="pre">config</span></code> on 2024-06-27T12:35:35.</p>
 <section id="config">
 <h2>Config<a class="headerlink" href="#config" title="Link to this heading"></a></h2>
 <p><strong>Title:</strong> Config</p>
@@ -15807,9 +15809,17 @@ must respect the following conditions</p>
 <section id="add-your-own-namelist">
 <h3>Add your own namelist<a class="headerlink" href="#add-your-own-namelist" title="Link to this heading"></a></h3>
 <p>The simplest and recommended way to change a namelist is to extract it as described above using the <code class="docutils literal notranslate"><span class="pre">-b</span></code> option, make your modifications and add the namelist to the directory specified by <code class="docutils literal notranslate"><span class="pre">system.namelists</span></code> in the config file. The name of the namelist should be the same as when extracted above. Before the system will pick up your namelist you have to set <code class="docutils literal notranslate"><span class="pre">general.accept_stat_namelist</span> <span class="pre">=</span> <span class="pre">true</span></code> in the config file. Note that for the main forecast namelist any existing fullpos select files following the name convention “xxt*” will be picked up as well if they exists. If not they will be generated.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>
+</section>
+<section id="modify-a-namlist-from-config">
+<h3>Modify a namlist from config<a class="headerlink" href="#modify-a-namlist-from-config" title="Link to this heading"></a></h3>
+<p>There are several ways to modify namelists. We can either use the <code class="docutils literal notranslate"><span class="pre">${}</span></code> syntax in the yaml files to substitute values. See e.g. how it’s done for <code class="docutils literal notranslate"><span class="pre">nproma</span></code> or lfftw defined in the <code class="docutils literal notranslate"><span class="pre">submission</span></code> sections. Another way is to introduce a <code class="docutils literal notranslate"><span class="pre">namelist_update</span></code> section like</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="p">[</span><span class="n">namelist_update</span><span class="o">.</span><span class="n">master</span><span class="o">.</span><span class="n">all_targets</span><span class="p">]</span>
+    <span class="n">namdim</span> <span class="o">=</span> <span class="p">{</span> <span class="n">nproma</span> <span class="o">=</span> <span class="o">-</span><span class="mi">99</span> <span class="p">}</span>
+  <span class="p">[</span><span class="n">namelist_update</span><span class="o">.</span><span class="n">master</span><span class="o">.</span><span class="n">forecast</span><span class="p">]</span>
+    <span class="n">namrip</span> <span class="o">=</span>  <span class="p">{</span>  <span class="n">ravgtime</span> <span class="o">=</span> <span class="mf">99.0</span> <span class="p">}</span>
 </pre></div>
 </div>
+<p>where the first section updates all used namelists and the latter updates the forecast namelist only. This allows us to introduce namelist changes for a specific configuration without having to edit the yaml files or a static namelist.</p>
 </section>
 </section>
 <section id="configure-selection-of-timings-in-output-settings">
@@ -16177,7 +16187,7 @@ Example value of the archive folder path is “/ec/res4/scratch/bgmt/deode/CY48t
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-06-27T10:55:54Z.
+      <span class="lastupdated">Last updated on 2024-06-27T12:35:37Z.
       </span></p>
   </div>
 
