@@ -965,7 +965,9 @@
     <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span>
         <span class="s2">&quot;productDefinitionTemplateNumber&quot;</span><span class="p">,</span>
         <span class="s2">&quot;dataDate&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;dataTime&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;minute&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;second&quot;</span><span class="p">,</span>
         <span class="s2">&quot;indicatorOfUnitOfTimeRange&quot;</span><span class="p">,</span>
         <span class="s2">&quot;forecastTime&quot;</span><span class="p">,</span>
     <span class="p">]</span>
@@ -991,7 +993,10 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">fcdate</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span>
-        <span class="s2">&quot;</span><span class="si">{:8}</span><span class="s2">T</span><span class="si">{:06}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;dataDate&quot;</span><span class="p">],</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;dataTime&quot;</span><span class="p">]),</span> <span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">T%H%M%S&quot;</span>
+        <span class="s2">&quot;</span><span class="si">{:8}</span><span class="s2">T</span><span class="si">{:02}{:02}{:02}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">info</span><span class="p">[</span><span class="s2">&quot;dataDate&quot;</span><span class="p">],</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;hour&quot;</span><span class="p">],</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;minute&quot;</span><span class="p">],</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;second&quot;</span><span class="p">]</span>
+        <span class="p">),</span>
+        <span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">T%H%M%S&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">if</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;indicatorOfUnitOfTimeRange&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">leadtime</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;forecastTime&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mf">3600.0</span>
@@ -2144,7 +2149,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-06-27T07:30:20Z.
+      <span class="lastupdated">Last updated on 2024-06-27T10:55:54Z.
       </span></p>
   </div>
 
