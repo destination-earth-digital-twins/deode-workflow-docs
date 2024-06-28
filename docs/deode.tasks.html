@@ -143,6 +143,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#module-deode.tasks.extractsqlite">deode.tasks.extractsqlite module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-deode.tasks.forecast">deode.tasks.forecast module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-deode.tasks.gmtedsoil">deode.tasks.gmtedsoil module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-deode.tasks.iomerge">deode.tasks.iomerge module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-deode.tasks.marsprep">deode.tasks.marsprep module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-deode.tasks.serial">deode.tasks.serial module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-deode.tasks.sfx">deode.tasks.sfx module</a></li>
@@ -610,6 +611,7 @@
 <li class="toctree-l4"><a class="reference internal" href="misc_section_in_doc_page.html#property-config-suite-control-create-time-dependent-suite">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">suite_control</span> <span class="pre">&gt;</span> <span class="pre">create_time_dependent_suite</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="misc_section_in_doc_page.html#property-config-suite-control-split-mars">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">suite_control</span> <span class="pre">&gt;</span> <span class="pre">split_mars</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="misc_section_in_doc_page.html#property-config-suite-control-do-cleaning">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">suite_control</span> <span class="pre">&gt;</span> <span class="pre">do_cleaning</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="misc_section_in_doc_page.html#property-config-suite-control-n-io-merge">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">suite_control</span> <span class="pre">&gt;</span> <span class="pre">n_io_merge</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="misc_section_in_doc_page.html#property-config-system">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">system</span></code></a><ul>
@@ -1659,7 +1661,11 @@ and insert it in the PGD file Const.Clim.sfx.</p>
 </dd>
 </dl>
 <p>Final result is the expected output file name in the working directory
-(as if there was no IO server).</p>
+(as if there was no IO server).
+NOTE: This function has been replaced by io_merge tasks.</p>
+<blockquote>
+<div><p>It is only called if n_io_merge=0.</p>
+</div></blockquote>
 </dd></dl>
 
 <dl class="py method">
@@ -1871,6 +1877,66 @@ and insert it in the PGD file Const.Clim.sfx.</p>
 <li><p><strong>bits</strong> (<em>int</em>) – Number of bits. Defaults to 8.</p></li>
 <li><p><strong>write_fact</strong> (<em>bool</em>) – Write factor. Defaults to False.</p></li>
 <li><p><strong>fact</strong> (<em>int</em>) – Factor. Defaults to 10</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-deode.tasks.iomerge">
+<span id="deode-tasks-iomerge-module"></span><h2>deode.tasks.iomerge module<a class="headerlink" href="#module-deode.tasks.iomerge" title="Link to this heading"></a></h2>
+<p>IO merge task.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="deode.tasks.iomerge.IOmerge">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">IOmerge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/tasks/iomerge.html#IOmerge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.tasks.iomerge.IOmerge" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#deode.tasks.base.Task" title="deode.tasks.base.Task"><code class="xref py py-class docutils literal notranslate"><span class="pre">Task</span></code></a></p>
+<p>IO merge task.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="deode.tasks.iomerge.IOmerge.execute">
+<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/tasks/iomerge.html#IOmerge.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.tasks.iomerge.IOmerge.execute" title="Link to this definition"></a></dt>
+<dd><p>Execute IO merge.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deode.tasks.iomerge.IOmerge.merge_output">
+<span class="sig-name descname"><span class="pre">merge_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fc_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'../Forecast'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/tasks/iomerge.html#IOmerge.merge_output"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.tasks.iomerge.IOmerge.merge_output" title="Link to this definition"></a></dt>
+<dd><p>Merge distributed forecast model output.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lt</strong> (<em>timeDelta</em>) – lead time</p></li>
+<li><p><strong>fc_path</strong> (<em>str</em>) – path to forecast directory</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deode.tasks.iomerge.IOmerge.wait_for_file">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">wait_for_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">age_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">15</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/tasks/iomerge.html#IOmerge.wait_for_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.tasks.iomerge.IOmerge.wait_for_file" title="Link to this definition"></a></dt>
+<dd><p>Wait until a file is at least N seconds old.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<em>str</em>) – full path to file</p></li>
+<li><p><strong>age_limit</strong> (<em>int</em>) – minimum age of last modification</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deode.tasks.iomerge.IOmerge.wait_for_io">
+<span class="sig-name descname"><span class="pre">wait_for_io</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filetype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fc_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'../Forecast'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/tasks/iomerge.html#IOmerge.wait_for_io"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.tasks.iomerge.IOmerge.wait_for_io" title="Link to this definition"></a></dt>
+<dd><p>Wait for all io_server output to be stable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filetype</strong> (<em>str</em>) – kind of output file</p></li>
+<li><p><strong>lt</strong> (<em>timeDelta</em>) – lead time</p></li>
+<li><p><strong>fc_path</strong> (<em>str</em>) – path to forecast directory</p></li>
 </ul>
 </dd>
 </dl>
@@ -2327,7 +2393,7 @@ and insert it in the PGD file Const.Clim.sfx.</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-06-27T12:35:37Z.
+      <span class="lastupdated">Last updated on 2024-06-28T08:32:08Z.
       </span></p>
   </div>
 

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>deode.tasks.batch &mdash; Deode Prototype Docs  documentation</title>
+  <title>deode.tasks.iomerge &mdash; Deode Prototype Docs  documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
@@ -924,7 +924,7 @@
       <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
           <li class="breadcrumb-item"><a href="../../deode.html">deode</a></li>
-      <li class="breadcrumb-item active">deode.tasks.batch</li>
+      <li class="breadcrumb-item active">deode.tasks.iomerge</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -933,72 +933,250 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>Source code for deode.tasks.batch</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Batch process.&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">subprocess</span>
-<span class="kn">import</span> <span class="nn">sys</span>
+  <h1>Source code for deode.tasks.iomerge</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;IO merge task.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span><span class="p">,</span> <span class="n">time</span>
 
+<span class="kn">from</span> <span class="nn">..datetime_utils</span> <span class="kn">import</span> <span class="n">as_datetime</span><span class="p">,</span> <span class="n">as_timedelta</span><span class="p">,</span> <span class="n">oi2dt_list</span>
 <span class="kn">from</span> <span class="nn">..logs</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">Task</span>
+<span class="kn">from</span> <span class="nn">.batch</span> <span class="kn">import</span> <span class="n">BatchJob</span>
 
 
-<div class="viewcode-block" id="BatchJob">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.batch.BatchJob">[docs]</a>
-<span class="k">class</span> <span class="nc">BatchJob</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Batch job.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="IOmerge">
+<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.iomerge.IOmerge">[docs]</a>
+<span class="k">class</span> <span class="nc">IOmerge</span><span class="p">(</span><span class="n">Task</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;IO merge task.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rte</span><span class="p">,</span> <span class="n">wrapper</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct batch job.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            rte (dict): Run time environment.</span>
-<span class="sd">            wrapper (str, optional): Wrapper around command. Defaults to &quot;&quot;.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rte</span> <span class="o">=</span> <span class="n">rte</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span> <span class="o">=</span> <span class="n">wrapper</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Constructed BatchJob&quot;</span><span class="p">)</span>
-
-<div class="viewcode-block" id="BatchJob.run">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.batch.BatchJob.run">[docs]</a>
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmd</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run command.</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct IOmerge object.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            cmd (str): Command to run.</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            TypeError: If the provided command is not a string</span>
-<span class="sd">            CalledProcessError: Execution error</span>
+<span class="sd">            config (deode.ParsedConfig): Configuration</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Command must be a string. Got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span><span class="si">}</span><span class="s2"> instead.&quot;</span><span class="p">)</span>
-        <span class="n">cmd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">cmd</span>
+        <span class="n">Task</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="s2">&quot;IOmerge&quot;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="s2">&quot;OMP_NUM_THREADS&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rte</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;BATCH: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rte</span><span class="p">[</span><span class="s2">&quot;OMP_NUM_THREADS&quot;</span><span class="p">])</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Batch running </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">cmd</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cycle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.cycle&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cnmexp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.cnmexp&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">domain</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain.name&quot;</span><span class="p">]</span>
 
-        <span class="n">process</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span>
-            <span class="n">cmd</span><span class="p">,</span>
-            <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># noqa</span>
-            <span class="n">env</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rte</span><span class="p">,</span>
-            <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
-            <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">,</span>
-            <span class="n">universal_newlines</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">bufsize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-            <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;replace&quot;</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="c1"># Poll process for new output until finished</span>
-        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="n">nextline</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">nextline</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="ow">and</span> <span class="n">process</span><span class="o">.</span><span class="n">poll</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">break</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">nextline</span><span class="p">)</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">basetime</span> <span class="o">=</span> <span class="n">as_datetime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.times.basetime&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cycle_length</span> <span class="o">=</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.times.cycle_length&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">forecast_range</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.times.forecast_range&quot;</span><span class="p">]</span>
 
-        <span class="n">return_code</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">return_code</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span><span class="p">(</span><span class="n">return_code</span><span class="p">,</span> <span class="n">cmd</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deode_home</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;platform.deode_home&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_settings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.output_settings&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">surfex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.surfex&quot;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_io_merge</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.n_io_merge&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ionr</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;task.args.ionr&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">archive</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_system_value</span><span class="p">(</span><span class="s2">&quot;archive&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deode_home</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;platform.deode_home&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_templates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;file_templates&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nproc_io</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;submission.task_exceptions.Forecast.NPROC_IO&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<div class="viewcode-block" id="IOmerge.wait_for_file">
+<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.iomerge.IOmerge.wait_for_file">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">wait_for_file</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">age_limit</span><span class="o">=</span><span class="mi">15</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Wait until a file is at least N seconds old.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filename (str): full path to file</span>
+<span class="sd">            age_limit (int): minimum age of last modification</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+        <span class="n">st</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">st_mtime</span>
+        <span class="k">while</span> <span class="n">now</span> <span class="o">-</span> <span class="n">st</span> <span class="o">&lt;</span> <span class="n">age_limit</span><span class="p">:</span>
+            <span class="n">sleep</span><span class="p">(</span><span class="n">age_limit</span> <span class="o">+</span> <span class="n">now</span> <span class="o">-</span> <span class="n">st</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+            <span class="n">st</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">st_mtime</span></div>
+
+
+<div class="viewcode-block" id="IOmerge.wait_for_io">
+<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.iomerge.IOmerge.wait_for_io">[docs]</a>
+    <span class="k">def</span> <span class="nf">wait_for_io</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filetype</span><span class="p">,</span> <span class="n">lt</span><span class="p">,</span> <span class="n">fc_path</span><span class="o">=</span><span class="s2">&quot;../Forecast&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Wait for all io_server output to be stable.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filetype (str): kind of output file</span>
+<span class="sd">            lt (timeDelta): lead time</span>
+<span class="sd">            fc_path (str): path to forecast directory</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ftemplate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_templates</span><span class="p">[</span><span class="n">filetype</span><span class="p">][</span><span class="s2">&quot;model&quot;</span><span class="p">]</span>
+        <span class="n">validtime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">basetime</span> <span class="o">+</span> <span class="n">lt</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">ftemplate</span><span class="p">,</span> <span class="n">validtime</span><span class="o">=</span><span class="n">validtime</span><span class="p">)</span>
+
+        <span class="n">file_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">filetype</span> <span class="o">==</span> <span class="s2">&quot;history&quot;</span><span class="p">:</span>
+            <span class="n">age_limit</span> <span class="o">=</span> <span class="mi">20</span>
+            <span class="k">for</span> <span class="n">io</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nproc_io</span><span class="p">):</span>
+                <span class="n">iopath</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;io_serv.</span><span class="si">{</span><span class="n">io</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s2">06</span><span class="si">}</span><span class="s2">.d&quot;</span>
+                <span class="n">file_list</span> <span class="o">+=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fc_path</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">iopath</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">.speca.*&quot;</span><span class="p">)</span>
+                <span class="n">file_list</span> <span class="o">+=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fc_path</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">iopath</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">.gridall&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">filetype</span> <span class="o">==</span> <span class="s2">&quot;surfex&quot;</span><span class="p">:</span>
+            <span class="n">age_limit</span> <span class="o">=</span> <span class="mi">15</span>
+            <span class="n">file_list</span> <span class="o">+=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fc_path</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">io</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nproc_io</span><span class="p">):</span>
+                <span class="n">iopath</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;io_serv.</span><span class="si">{</span><span class="n">io</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s2">06</span><span class="si">}</span><span class="s2">.d&quot;</span>
+                <span class="n">file_list</span> <span class="o">+=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fc_path</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">iopath</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">filetype</span> <span class="o">==</span> <span class="s2">&quot;fullpos&quot;</span><span class="p">:</span>
+            <span class="n">age_limit</span> <span class="o">=</span> <span class="mi">15</span>
+            <span class="c1"># FIXME: what if we have fullpos output in FA format?</span>
+            <span class="k">for</span> <span class="n">io</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nproc_io</span><span class="p">):</span>
+                <span class="n">iopath</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;io_serv.</span><span class="si">{</span><span class="n">io</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s2">06</span><span class="si">}</span><span class="s2">.d&quot;</span>
+                <span class="n">file_list</span> <span class="o">+=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fc_path</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">iopath</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">.hfp&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Bad file_type </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">filetype</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">ff</span> <span class="ow">in</span> <span class="n">file_list</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wait_for_file</span><span class="p">(</span><span class="n">ff</span><span class="p">,</span> <span class="n">age_limit</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="IOmerge.merge_output">
+<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.iomerge.IOmerge.merge_output">[docs]</a>
+    <span class="k">def</span> <span class="nf">merge_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lt</span><span class="p">,</span> <span class="n">fc_path</span><span class="o">=</span><span class="s2">&quot;../Forecast&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge distributed forecast model output.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            lt (timeDelta): lead time</span>
+<span class="sd">            fc_path (str): path to forecast directory</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Merge_output called at lt = </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">lt</span><span class="p">)</span>
+        <span class="n">io_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fc_path</span><span class="si">}</span><span class="s2">/io_serv*.d&quot;</span>
+
+        <span class="k">for</span> <span class="n">filetype</span><span class="p">,</span> <span class="n">oi</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_settings</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">filetype</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_templates</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+                <span class="k">continue</span>
+
+            <span class="c1">#   NOTE: various output types (history, surfex, fullpos)</span>
+            <span class="c1">#   may be created at other time intervals</span>
+            <span class="c1">#   so we have to check validtime for every filetype</span>
+            <span class="n">dt_list</span> <span class="o">=</span> <span class="n">oi2dt_list</span><span class="p">(</span><span class="n">oi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast_range</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">lt</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dt_list</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> not required at time </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">filetype</span><span class="p">,</span> <span class="n">lt</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="n">ftemplate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_templates</span><span class="p">[</span><span class="n">filetype</span><span class="p">][</span><span class="s2">&quot;model&quot;</span><span class="p">]</span>
+            <span class="n">ftemplate_out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_templates</span><span class="p">[</span><span class="n">filetype</span><span class="p">][</span><span class="s2">&quot;archive&quot;</span><span class="p">]</span>
+            <span class="n">validtime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">basetime</span> <span class="o">+</span> <span class="n">lt</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">ftemplate</span><span class="p">,</span> <span class="n">validtime</span><span class="o">=</span><span class="n">validtime</span><span class="p">)</span>
+            <span class="n">filename_out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">ftemplate_out</span><span class="p">,</span> <span class="n">validtime</span><span class="o">=</span><span class="n">validtime</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Merging file </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">wait_for_io</span><span class="p">(</span><span class="n">filetype</span><span class="p">,</span> <span class="n">lt</span><span class="p">,</span> <span class="n">fc_path</span><span class="o">=</span><span class="n">fc_path</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">filetype</span> <span class="o">==</span> <span class="s2">&quot;history&quot;</span><span class="p">:</span>
+                <span class="n">lfitools</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_binary</span><span class="p">(</span><span class="s2">&quot;lfitools&quot;</span><span class="p">)</span>
+                <span class="n">cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">lfitools</span><span class="si">}</span><span class="s2"> facat all </span><span class="si">{</span><span class="n">io_path</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">.gridall &quot;</span>
+                <span class="n">cmd</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">io_path</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">.speca* </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+                <span class="n">BatchJob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">,</span> <span class="n">wrapper</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">filetype</span> <span class="o">==</span> <span class="s2">&quot;surfex&quot;</span><span class="p">:</span>
+                <span class="c1"># NOTE: .sfx also has a part in the working directory,</span>
+                <span class="c1">#        so you *must* change the name</span>
+                <span class="n">lfitools</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_binary</span><span class="p">(</span><span class="s2">&quot;lfitools&quot;</span><span class="p">)</span>
+                <span class="n">cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">lfitools</span><span class="si">}</span><span class="s2"> facat all </span><span class="si">{</span><span class="n">fc_path</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2"> &quot;</span>
+                <span class="n">cmd</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">io_path</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+                <span class="n">BatchJob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">,</span> <span class="n">wrapper</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">filetype</span> <span class="o">==</span> <span class="s2">&quot;fullpos&quot;</span><span class="p">:</span>
+                <span class="c1"># FIXME: fullpos output /can/ be FA or GRIB2</span>
+                <span class="c1"># Fullpos (grib2) output has .hfp as extra file extension</span>
+                <span class="n">cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;cat </span><span class="si">{</span><span class="n">io_path</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">*.hfp &gt; </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+                <span class="n">BatchJob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">,</span> <span class="n">wrapper</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Unsupported filetype </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">filetype</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># write output to archive (or to the Forecast directory...)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">archive</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">filename_out</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="IOmerge.execute">
+<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.iomerge.IOmerge.execute">[docs]</a>
+    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute IO merge.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nproc_io</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># Normally, this shouldn&#39;t happen, but maybe outside of ecFlow.</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;IOmerge called with NPROC_IO == 0.&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Nothing left to do.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_io_merge</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># Normally, this shouldn&#39;t happen, but maybe outside of ecFlow.</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;IOmerge called with n_io_merge == 0&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Nothing left to do.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ionr</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># Normally, this shouldn&#39;t happen, but maybe outside of ecFlow.</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;IOmerge called with ionr &lt; 0&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Nothing left to do.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="n">fc_path</span> <span class="o">=</span> <span class="s2">&quot;../Forecast&quot;</span>
+        <span class="c1"># NOTE: this is a link to the current Forecast directory.</span>
+        <span class="c1">#       you could manipulate via os.path.basename(os.path.realpath(fc_path))</span>
+        <span class="c1">#       e.g. to get the real path name or even add &quot;Finished_task_Forecast_&quot;.</span>
+        <span class="n">io_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fc_path</span><span class="si">}</span><span class="s2">/io_serv.000001.d&quot;</span>
+        <span class="n">echis</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">io_path</span><span class="si">}</span><span class="s2">/ECHIS&quot;</span>
+
+        <span class="n">full_dt_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">oi_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># build the list of lead times (all output types combined):</span>
+        <span class="c1"># NOTE: like in the Forecast task, we assume that a filetype is</span>
+        <span class="c1">#       in output_settings AND in file_templates.</span>
+        <span class="c1">#       Alternatively, [&quot;history&quot;, &quot;fullpos&quot;, &quot;surfex&quot;] could be</span>
+        <span class="c1">#       hard coded.</span>
+        <span class="k">for</span> <span class="n">filetype</span><span class="p">,</span> <span class="n">oi</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_settings</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">filetype</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_templates</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;filetype: </span><span class="si">{}</span><span class="s2">, oi: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">filetype</span><span class="p">,</span> <span class="n">oi</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">oi</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">oi_list</span><span class="p">:</span>
+                    <span class="n">oi_list</span> <span class="o">+=</span> <span class="n">oi</span>
+                    <span class="n">full_dt_list</span> <span class="o">+=</span> <span class="n">oi2dt_list</span><span class="p">(</span><span class="n">oi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast_range</span><span class="p">)</span>
+        <span class="c1"># remove duplicates and sort</span>
+        <span class="n">full_dt_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">full_dt_list</span><span class="p">))</span>
+        <span class="n">full_dt_list</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+        <span class="c1"># now subset for this worker:</span>
+        <span class="n">dt_list</span> <span class="o">=</span> <span class="n">full_dt_list</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ionr</span> <span class="p">::</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_io_merge</span><span class="p">]</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;IONR = </span><span class="si">{}</span><span class="s2">, N_IO_MERGE = </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ionr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_io_merge</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;DT list </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">dt_list</span><span class="p">)</span>
+
+        <span class="c1"># We must wait for the io_server output to appear</span>
+        <span class="c1"># BUT: how long should we wait before aborting?</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Waiting for forecast output.&quot;</span><span class="p">)</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">echis</span><span class="p">):</span>
+            <span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;IO_SERVER </span><span class="si">{}</span><span class="s2"> detected!&quot;</span><span class="p">,</span> <span class="n">echis</span><span class="p">)</span>
+
+        <span class="c1"># Now we wait for the output times allotted to this IO worker.</span>
+        <span class="k">for</span> <span class="n">dt</span> <span class="ow">in</span> <span class="n">dt_list</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Waiting for </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
+            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">io_path</span><span class="si">}</span><span class="s2">/ECHIS&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ll</span><span class="p">:</span>
+                    <span class="n">lt</span> <span class="o">=</span> <span class="n">ll</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+                    <span class="n">hh</span><span class="p">,</span> <span class="n">mm</span><span class="p">,</span> <span class="n">ss</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">lt</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)]</span>
+                <span class="n">cdt</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="n">hh</span><span class="p">,</span> <span class="n">minutes</span><span class="o">=</span><span class="n">mm</span><span class="p">,</span> <span class="n">seconds</span><span class="o">=</span><span class="n">ss</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">dt</span> <span class="o">&gt;</span> <span class="n">cdt</span><span class="p">:</span>
+                    <span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">break</span>
+
+            <span class="c1"># we have reached the next &#39;merge time&#39;</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;lead time </span><span class="si">{}</span><span class="s2"> is available&quot;</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
+            <span class="c1"># NOTE: merge_output will first wait for files to be &quot;complete&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">merge_output</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">fc_path</span><span class="o">=</span><span class="n">fc_path</span><span class="p">)</span>
+
+        <span class="c1"># signal completion of all merge tasks to the forecast task</span>
+        <span class="n">BatchJob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">,</span> <span class="n">wrapper</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;touch </span><span class="si">{</span><span class="n">fc_path</span><span class="si">}</span><span class="s2">/io_merge_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ionr</span><span class="si">:</span><span class="s2">02</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 </div>
 
 </pre></div>

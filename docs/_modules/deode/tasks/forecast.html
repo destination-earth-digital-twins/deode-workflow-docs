@@ -140,6 +140,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../deode.tasks.html#module-deode.tasks.extractsqlite">deode.tasks.extractsqlite module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../deode.tasks.html#module-deode.tasks.forecast">deode.tasks.forecast module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../deode.tasks.html#module-deode.tasks.gmtedsoil">deode.tasks.gmtedsoil module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../deode.tasks.html#module-deode.tasks.iomerge">deode.tasks.iomerge module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../deode.tasks.html#module-deode.tasks.marsprep">deode.tasks.marsprep module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../deode.tasks.html#module-deode.tasks.serial">deode.tasks.serial module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../deode.tasks.html#module-deode.tasks.sfx">deode.tasks.sfx module</a></li>
@@ -607,6 +608,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-suite-control-create-time-dependent-suite">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">suite_control</span> <span class="pre">&gt;</span> <span class="pre">create_time_dependent_suite</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-suite-control-split-mars">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">suite_control</span> <span class="pre">&gt;</span> <span class="pre">split_mars</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-suite-control-do-cleaning">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">suite_control</span> <span class="pre">&gt;</span> <span class="pre">do_cleaning</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-suite-control-n-io-merge">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">suite_control</span> <span class="pre">&gt;</span> <span class="pre">n_io_merge</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-system">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">system</span></code></a><ul>
@@ -936,6 +938,7 @@
 <span class="kn">import</span> <span class="nn">glob</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span>
 
 <span class="kn">from</span> <span class="nn">..datetime_utils</span> <span class="kn">import</span> <span class="n">as_datetime</span><span class="p">,</span> <span class="n">as_timedelta</span><span class="p">,</span> <span class="n">oi2dt_list</span>
 <span class="kn">from</span> <span class="nn">..derived_variables</span> <span class="kn">import</span> <span class="n">check_fullpos_namelist</span>
@@ -988,6 +991,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">file_templates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;file_templates&quot;</span><span class="p">]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">unix_group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_platform_value</span><span class="p">(</span><span class="s2">&quot;unix_group&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_io_merge</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.n_io_merge&quot;</span><span class="p">]</span>
 
 <div class="viewcode-block" id="Forecast.archive_output">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.forecast.Forecast.archive_output">[docs]</a>
@@ -1057,6 +1061,8 @@
 
 <span class="sd">        Final result is the expected output file name in the working directory</span>
 <span class="sd">        (as if there was no IO server).</span>
+<span class="sd">        NOTE: This function has been replaced by io_merge tasks.</span>
+<span class="sd">              It is only called if n_io_merge=0.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">dt_list</span> <span class="o">=</span> <span class="n">oi2dt_list</span><span class="p">(</span><span class="n">periods</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast_range</span><span class="p">)</span>
 
@@ -1158,25 +1164,46 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;No accelerator_device section found&quot;</span><span class="p">)</span>
 
+        <span class="c1"># Create a link to working directory for IO_merge tasks</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">islink</span><span class="p">(</span><span class="s2">&quot;../Forecast&quot;</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Removing old link.&quot;</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="s2">&quot;../Forecast&quot;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">symlink</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s2">&quot;../Forecast&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Store the output</span>
+        <span class="c1"># Must happen before the forecast starts, so the io_merge tasks</span>
+        <span class="c1">#   can write to it.</span>
+        <span class="n">deodemakedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">archive</span><span class="p">,</span> <span class="n">unixgroup</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">unix_group</span><span class="p">)</span>
+
         <span class="c1"># Run MASTERODB</span>
         <span class="n">batch</span> <span class="o">=</span> <span class="n">BatchJob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">,</span> <span class="n">wrapper</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="p">))</span>
         <span class="n">batch</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">master</span><span class="p">)</span>
 
-        <span class="c1"># Store the output</span>
-        <span class="n">deodemakedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">archive</span><span class="p">,</span> <span class="n">unixgroup</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">unix_group</span><span class="p">)</span>
-
         <span class="n">io_server</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s2">&quot;io_serv.000001.d&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">io_server</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">io_server</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_io_merge</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Waiting for iomerge output.&quot;</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;IO_SERVER detected!&quot;</span><span class="p">)</span>
+            <span class="c1"># Wait for all io_merge tasks to finish.</span>
+            <span class="c1"># This is signaled by creating (empty) files.</span>
+            <span class="k">for</span> <span class="n">ionr</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_io_merge</span><span class="p">):</span>
+                <span class="n">io_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;io_merge_</span><span class="si">{</span><span class="n">ionr</span><span class="si">:</span><span class="s2">02</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Waiting for </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">io_name</span><span class="p">)</span>
+                <span class="k">while</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">io_name</span><span class="p">):</span>
+                    <span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">filetype</span><span class="p">,</span> <span class="n">oi</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_settings</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">filetype</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_templates</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">io_server</span><span class="p">:</span>
+                        <span class="c1"># No io_merge: should we even still consider this option?</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">merge_output</span><span class="p">(</span><span class="n">filetype</span><span class="p">,</span> <span class="n">oi</span><span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">filetype</span><span class="p">,</span> <span class="n">oi</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_settings</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">filetype</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_templates</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">io_server</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">merge_output</span><span class="p">(</span><span class="n">filetype</span><span class="p">,</span> <span class="n">oi</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">archive_output</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_templates</span><span class="p">[</span><span class="n">filetype</span><span class="p">],</span> <span class="n">oi</span><span class="p">)</span>
 
-                <span class="bp">self</span><span class="o">.</span><span class="n">archive_output</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_templates</span><span class="p">[</span><span class="n">filetype</span><span class="p">],</span> <span class="n">oi</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">archive_logs</span><span class="p">([</span><span class="s2">&quot;fort.4&quot;</span><span class="p">,</span> <span class="s2">&quot;EXSEG1.nam&quot;</span><span class="p">,</span> <span class="s2">&quot;NODE.001_01&quot;</span><span class="p">])</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">archive_logs</span><span class="p">([</span><span class="s2">&quot;fort.4&quot;</span><span class="p">,</span> <span class="s2">&quot;EXSEG1.nam&quot;</span><span class="p">,</span> <span class="s2">&quot;NODE.001_01&quot;</span><span class="p">])</span></div>
+        <span class="c1"># Remove link to working directory for IO_mergetasks</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">islink</span><span class="p">(</span><span class="s2">&quot;../Forecast&quot;</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="s2">&quot;../Forecast&quot;</span><span class="p">)</span></div>
 </div>
 
 
@@ -1233,7 +1260,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-06-27T12:35:37Z.
+      <span class="lastupdated">Last updated on 2024-06-28T08:32:08Z.
       </span></p>
   </div>
 
