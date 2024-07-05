@@ -964,12 +964,13 @@
 <span class="sd">        Raises:</span>
 <span class="sd">            ValueError: No data for this date.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">Task</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">)</span>
+        <span class="n">Task</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="s2">&quot;Marsprep&quot;</span><span class="p">)</span>
 
         <span class="c1"># Get MARS selection</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mars_selection</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">sfcdir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;platform.global_sfcdir&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sfcdir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_platform_value</span><span class="p">(</span><span class="s2">&quot;global_sfcdir&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;sfc dir: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sfcdir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="c1"># Get boundary strategy</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">strategy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;boundaries.bdstrategy&quot;</span><span class="p">]</span>
         <span class="c1"># Get output file template</span>
@@ -998,6 +999,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">bd_basetime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">basetime</span> <span class="o">-</span> <span class="n">cycle_offset</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">basetime</span><span class="p">,</span> <span class="n">bdcycle</span><span class="p">,</span> <span class="n">bdcycle_start</span><span class="o">=</span><span class="n">bdcycle_start</span><span class="p">,</span> <span class="n">bdshift</span><span class="o">=-</span><span class="bp">self</span><span class="o">.</span><span class="n">bdshift</span>
         <span class="p">)</span>
+        <span class="n">tco</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;tco&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tco_high</span> <span class="o">=</span> <span class="n">tco</span> <span class="o">+</span> <span class="s2">&quot;9_4&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tco_low</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tco_high</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;class&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;D1&quot;</span> <span class="k">else</span> <span class="n">tco</span> <span class="o">+</span> <span class="s2">&quot;l_2&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">unix_group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_platform_value</span><span class="p">(</span><span class="s2">&quot;unix_group&quot;</span><span class="p">)</span>
 
@@ -1013,6 +1017,10 @@
         <span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;MARS data expected in:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">prepdir</span><span class="p">)</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">mars_bin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_binary</span><span class="p">(</span><span class="s2">&quot;mars&quot;</span><span class="p">)</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;bin: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mars_bin</span><span class="p">)</span>
+
         <span class="c1"># Make linting happy</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">executable</span> <span class="o">=</span> <span class="kc">None</span>
@@ -1022,14 +1030,18 @@
 
 <div class="viewcode-block" id="Marsprep.mars_selection">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.marsprep.Marsprep.mars_selection">[docs]</a>
-    <span class="k">def</span> <span class="nf">mars_selection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">mars_selection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selection</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Copy default settings if requested.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">             selection: default self.config[&quot;boundaries.ifs.selection&quot;]</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">             mars (dict): updated mars config section</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">selection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;boundaries.ifs.selection&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">selection</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">selection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;boundaries.ifs.selection&quot;</span><span class="p">]</span>
         <span class="n">mars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;mars.</span><span class="si">{</span><span class="n">selection</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
         <span class="k">if</span> <span class="s2">&quot;expver&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">mars</span><span class="p">:</span>
             <span class="n">mars</span><span class="p">[</span><span class="s2">&quot;expver&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">selection</span>
@@ -1228,6 +1240,10 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Pandas dataframe object</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: Wrong call of read.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># General request parameters</span>
         <span class="n">d</span> <span class="o">=</span> <span class="p">{</span>
@@ -1246,6 +1262,9 @@
                     <span class="s2">&quot;GRID&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">grid</span><span class="p">],</span>
                 <span class="p">}</span>
             <span class="p">)</span>
+
+        <span class="k">if</span> <span class="s2">&quot;GRID&quot;</span> <span class="ow">in</span> <span class="n">d</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;class&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;D1&quot;</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;GRID&quot;</span><span class="p">]</span>
         <span class="c1"># Additional request parameters</span>
         <span class="k">if</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s2">&quot;forecast&quot;</span><span class="p">:</span>
             <span class="n">d</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
@@ -1267,7 +1286,7 @@
                 <span class="p">}</span>
             <span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">prefetch</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;class&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;D1&quot;</span><span class="p">:</span>
             <span class="n">d</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
                 <span class="p">{</span>
                     <span class="s2">&quot;PROCESS&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;LOCAL&quot;</span><span class="p">],</span>
@@ -1275,7 +1294,7 @@
             <span class="p">)</span>
 
         <span class="c1"># Try multilevel</span>
-        <span class="k">if</span> <span class="n">levtype</span> <span class="o">==</span> <span class="s2">&quot;ML&quot;</span> <span class="ow">and</span> <span class="n">steps</span> <span class="o">==</span> <span class="s2">&quot;00&quot;</span> <span class="ow">and</span> <span class="n">prefetch</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">levtype</span> <span class="o">==</span> <span class="s2">&quot;ML&quot;</span> <span class="ow">and</span> <span class="n">steps</span> <span class="o">==</span> <span class="s2">&quot;00&quot;</span><span class="p">:</span>
             <span class="n">d</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
                 <span class="p">{</span>
                     <span class="s2">&quot;LEVELIST&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span>
@@ -1293,6 +1312,32 @@
 
         <span class="n">stream</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;stream&quot;</span><span class="p">],</span> <span class="n">time</span><span class="p">)</span>
         <span class="n">d</span><span class="p">[</span><span class="s2">&quot;STREAM&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">stream</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">prefetch</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">levtype</span> <span class="o">==</span> <span class="s2">&quot;ML&quot;</span><span class="p">:</span>
+                <span class="n">param_z</span> <span class="o">=</span> <span class="s2">&quot;orog&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;class&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;D1&quot;</span> <span class="k">else</span> <span class="s2">&quot;z&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tco_high</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;tco&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;9_4&quot;</span>
+                <span class="n">d</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;LEVTYPE&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;SFC&quot;</span><span class="p">],</span>
+                        <span class="s2">&quot;SOURCE&quot;</span><span class="p">:</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sfcdir</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tco_high</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">param_z</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">],</span>
+                        <span class="s2">&quot;DATE&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;SHZdate&quot;</span><span class="p">]],</span>
+                        <span class="s2">&quot;CLASS&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;OD&quot;</span><span class="p">],</span>
+                        <span class="s2">&quot;EXPVER&quot;</span><span class="p">:</span> <span class="s2">&quot;0001&quot;</span><span class="p">,</span>
+                    <span class="p">}</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">levtype</span> <span class="o">==</span> <span class="s2">&quot;SFC&quot;</span><span class="p">:</span>
+                <span class="n">d</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;SOURCE&quot;</span><span class="p">:</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prepdir</span><span class="si">}</span><span class="s1">/ICMGG+</span><span class="si">{</span><span class="n">steps</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">],</span>
+                    <span class="p">}</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Wrong call of read&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;class&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;D1&quot;</span><span class="p">:</span>
+            <span class="n">d</span><span class="p">[</span><span class="s2">&quot;DATABASE&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;fdb&quot;</span>
+            <span class="n">d</span><span class="p">[</span><span class="s2">&quot;DATASET&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;extremes-dt&quot;</span>
 
         <span class="k">if</span> <span class="n">specify_domain</span><span class="p">:</span>
             <span class="n">d</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;GRID&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">check_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;grid&quot;</span><span class="p">],</span> <span class="n">date</span><span class="p">)]})</span>
@@ -1313,7 +1358,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            nam:    namelist object to write</span>
 <span class="sd">            name:   request file name</span>
-<span class="sd">            method: selected method, retrieve or stage</span>
+<span class="sd">            method: selected method, retrieve or read</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">sep0</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{:&lt;2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
         <span class="n">sep1</span> <span class="o">=</span> <span class="s2">&quot; = &quot;</span>
@@ -1347,7 +1392,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">executable</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;mars&quot;</span><span class="p">,</span> <span class="n">marsfile</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">executable</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mars_bin</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">marsfile</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">executable</span></div>
 
 
@@ -1440,6 +1485,7 @@
             <span class="n">base</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_file_exists</span><span class="p">(</span><span class="n">str_steps</span><span class="p">,</span> <span class="n">tag</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">base</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">fetch_info</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">tag</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;marsGG: </span><span class="si">{}</span><span class="s2">, </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;GG&quot;</span><span class="p">],</span> <span class="n">date_str</span><span class="p">)</span>
                 <span class="n">param</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;GG&quot;</span><span class="p">],</span> <span class="n">date_str</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">update_data_request</span><span class="p">(</span>
                     <span class="n">data_type</span><span class="o">=</span><span class="s2">&quot;forecast&quot;</span><span class="p">,</span>
@@ -1531,19 +1577,36 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">+=</span> <span class="n">datagg</span> <span class="o">+</span> <span class="n">datagg_sea</span> <span class="o">+</span> <span class="n">datagg_soil</span>
 
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">tco</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;tco&quot;</span><span class="p">],</span> <span class="n">date_str</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sfcdir</span><span class="si">}{</span><span class="n">tco</span><span class="si">}</span><span class="s2">9_4/sdfor&quot;</span><span class="p">,</span> <span class="s2">&quot;sdfor&quot;</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sfcdir</span><span class="si">}{</span><span class="n">tco</span><span class="si">}</span><span class="s2">l_2/month_aluvp&quot;</span><span class="p">,</span> <span class="s2">&quot;aluvp&quot;</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sfcdir</span><span class="si">}{</span><span class="n">tco</span><span class="si">}</span><span class="s2">l_2/month_aluvd&quot;</span><span class="p">,</span> <span class="s2">&quot;aluvd&quot;</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sfcdir</span><span class="si">}{</span><span class="n">tco</span><span class="si">}</span><span class="s2">l_2/month_alnip&quot;</span><span class="p">,</span> <span class="s2">&quot;alnip&quot;</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sfcdir</span><span class="si">}{</span><span class="n">tco</span><span class="si">}</span><span class="s2">l_2/month_alnid&quot;</span><span class="p">,</span> <span class="s2">&quot;alnid&quot;</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sfcdir</span><span class="si">}{</span><span class="n">tco</span><span class="si">}</span><span class="s2">l_2/month_lail&quot;</span><span class="p">,</span> <span class="s2">&quot;lail&quot;</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sfcdir</span><span class="si">}{</span><span class="n">tco</span><span class="si">}</span><span class="s2">l_2/month_laih&quot;</span><span class="p">,</span> <span class="s2">&quot;laih&quot;</span><span class="p">)</span>
+                    <span class="n">tco</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;tco&quot;</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">tco_high</span> <span class="o">=</span> <span class="n">tco</span> <span class="o">+</span> <span class="s2">&quot;9_4&quot;</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">tco_low</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">tco_high</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;class&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;D1&quot;</span> <span class="k">else</span> <span class="n">tco</span> <span class="o">+</span> <span class="s2">&quot;l_2&quot;</span>
+                    <span class="p">)</span>
 
-                    <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sfcdir</span><span class="si">}{</span><span class="n">tco</span><span class="si">}</span><span class="s2">9_4/sfc&quot;</span><span class="p">,</span> <span class="s2">&quot;sfc&quot;</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sfcdir</span><span class="si">}{</span><span class="n">tco</span><span class="si">}</span><span class="s2">l_2/ISSOIL&quot;</span><span class="p">,</span> <span class="s2">&quot;issoil&quot;</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sfcdir</span><span class="si">}{</span><span class="n">tco</span><span class="si">}</span><span class="s2">9_4/cvh&quot;</span><span class="p">,</span> <span class="s2">&quot;cvh&quot;</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sfcdir</span><span class="si">}{</span><span class="n">tco</span><span class="si">}</span><span class="s2">l_2/month_alb&quot;</span><span class="p">,</span> <span class="s2">&quot;alb&quot;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sfcdir</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tco_high</span><span class="si">}</span><span class="s2">/sdfor&quot;</span><span class="p">,</span> <span class="s2">&quot;sdfor&quot;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sfcdir</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tco_low</span><span class="si">}</span><span class="s2">/month_aluvp&quot;</span><span class="p">,</span> <span class="s2">&quot;aluvp&quot;</span>
+                    <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sfcdir</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tco_low</span><span class="si">}</span><span class="s2">/month_aluvd&quot;</span><span class="p">,</span> <span class="s2">&quot;aluvd&quot;</span>
+                    <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sfcdir</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tco_low</span><span class="si">}</span><span class="s2">/month_alnip&quot;</span><span class="p">,</span> <span class="s2">&quot;alnip&quot;</span>
+                    <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sfcdir</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tco_low</span><span class="si">}</span><span class="s2">/month_alnid&quot;</span><span class="p">,</span> <span class="s2">&quot;alnid&quot;</span>
+                    <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sfcdir</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tco_low</span><span class="si">}</span><span class="s2">/month_lail&quot;</span><span class="p">,</span> <span class="s2">&quot;lail&quot;</span>
+                    <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sfcdir</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tco_low</span><span class="si">}</span><span class="s2">/month_laih&quot;</span><span class="p">,</span> <span class="s2">&quot;laih&quot;</span>
+                    <span class="p">)</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sfcdir</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tco_high</span><span class="si">}</span><span class="s2">/sfc&quot;</span><span class="p">,</span> <span class="s2">&quot;sfc&quot;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sfcdir</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tco_low</span><span class="si">}</span><span class="s2">/ISSOIL&quot;</span><span class="p">,</span> <span class="s2">&quot;issoil&quot;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sfcdir</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tco_high</span><span class="si">}</span><span class="s2">/cvh&quot;</span><span class="p">,</span> <span class="s2">&quot;cvh&quot;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sfcdir</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tco_low</span><span class="si">}</span><span class="s2">/month_alb&quot;</span><span class="p">,</span> <span class="s2">&quot;alb&quot;</span><span class="p">)</span>
 
                     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;sdfor&quot;</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
                         <span class="n">sdfor</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
@@ -1621,24 +1684,34 @@
                 <span class="n">batch</span> <span class="o">=</span> <span class="n">BatchJob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">,</span> <span class="n">wrapper</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="p">)</span>
                 <span class="n">batch</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">executable</span><span class="p">)</span>
 
-                <span class="n">param</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;SHZ&quot;</span><span class="p">],</span> <span class="n">date_str</span><span class="p">)</span>
-                <span class="n">d_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;SHZ_type&quot;</span><span class="p">],</span> <span class="n">date_str</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">update_data_request</span><span class="p">(</span>
-                    <span class="n">data_type</span><span class="o">=</span><span class="n">d_type</span><span class="p">,</span>
-                    <span class="n">date</span><span class="o">=</span><span class="n">date_str</span><span class="p">,</span>
-                    <span class="n">time</span><span class="o">=</span><span class="n">hour_str</span><span class="p">,</span>
-                    <span class="n">steps</span><span class="o">=</span><span class="s2">&quot;00&quot;</span><span class="p">,</span>
-                    <span class="n">prefetch</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                    <span class="n">levtype</span><span class="o">=</span><span class="s2">&quot;ML&quot;</span><span class="p">,</span>
-                    <span class="n">param</span><span class="o">=</span><span class="n">param</span><span class="p">,</span>
-                    <span class="n">grid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;grid_ML&quot;</span><span class="p">],</span>
-                    <span class="n">specify_domain</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                    <span class="n">target</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s2">.Z&quot;</span><span class="p">,</span>
-                <span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">write_mars_req</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datarequest</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s2">Z.req&quot;</span><span class="p">,</span> <span class="s2">&quot;retrieve&quot;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">create_executable</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s2">Z.req&quot;</span><span class="p">)</span>
-                <span class="n">batch</span> <span class="o">=</span> <span class="n">BatchJob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">,</span> <span class="n">wrapper</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="p">)</span>
-                <span class="n">batch</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">executable</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;class&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;D1&quot;</span><span class="p">:</span>
+                    <span class="n">tco</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;tco&quot;</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">tco_low</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">tco_high</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;class&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;D1&quot;</span> <span class="k">else</span> <span class="n">tco</span> <span class="o">+</span> <span class="s2">&quot;l_2&quot;</span>
+                    <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sfcdir</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tco_high</span><span class="si">}</span><span class="s2">/sporog&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s2">.Z&quot;</span>
+                    <span class="p">)</span>
+
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">param</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;SHZ&quot;</span><span class="p">],</span> <span class="n">date_str</span><span class="p">)</span>
+                    <span class="n">d_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;SHZ_type&quot;</span><span class="p">],</span> <span class="n">date_str</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">update_data_request</span><span class="p">(</span>
+                        <span class="n">data_type</span><span class="o">=</span><span class="n">d_type</span><span class="p">,</span>
+                        <span class="n">date</span><span class="o">=</span><span class="n">date_str</span><span class="p">,</span>
+                        <span class="n">time</span><span class="o">=</span><span class="n">hour_str</span><span class="p">,</span>
+                        <span class="n">steps</span><span class="o">=</span><span class="s2">&quot;00&quot;</span><span class="p">,</span>
+                        <span class="n">prefetch</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                        <span class="n">levtype</span><span class="o">=</span><span class="s2">&quot;ML&quot;</span><span class="p">,</span>
+                        <span class="n">param</span><span class="o">=</span><span class="n">param</span><span class="p">,</span>
+                        <span class="n">grid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;grid_ML&quot;</span><span class="p">],</span>
+                        <span class="n">specify_domain</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                        <span class="n">target</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s2">.Z&quot;</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">write_mars_req</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datarequest</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s2">Z.req&quot;</span><span class="p">,</span> <span class="s2">&quot;retrieve&quot;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">create_executable</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s2">Z.req&quot;</span><span class="p">)</span>
+                    <span class="n">batch</span> <span class="o">=</span> <span class="n">BatchJob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">,</span> <span class="n">wrapper</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="p">)</span>
+                    <span class="n">batch</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">executable</span><span class="p">)</span>
 
                 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s2">.Z&quot;</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
                     <span class="n">data_z</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
@@ -1700,89 +1773,54 @@
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">split_mars</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">prep_step</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;No need Prep file&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="n">prefetch</span> <span class="o">=</span> <span class="kc">False</span>
+
+            <span class="n">method</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;latlon_method&quot;</span><span class="p">]</span>
             <span class="n">str_step</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">str_steps</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-            <span class="n">param</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;GG&quot;</span><span class="p">],</span> <span class="n">date_str</span><span class="p">)</span>
+            <span class="n">param</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">check_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;GG&quot;</span><span class="p">],</span> <span class="n">date_str</span><span class="p">)</span>
+                <span class="o">+</span> <span class="s2">&quot;/&quot;</span>
+                <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;GG_sea&quot;</span><span class="p">],</span> <span class="n">date_str</span><span class="p">)</span>
+            <span class="p">)</span>
+
             <span class="bp">self</span><span class="o">.</span><span class="n">update_data_request</span><span class="p">(</span>
                 <span class="n">data_type</span><span class="o">=</span><span class="s2">&quot;forecast&quot;</span><span class="p">,</span>
                 <span class="n">date</span><span class="o">=</span><span class="n">date_str</span><span class="p">,</span>
                 <span class="n">time</span><span class="o">=</span><span class="n">hour_str</span><span class="p">,</span>
                 <span class="n">steps</span><span class="o">=</span><span class="n">str_step</span><span class="p">,</span>
-                <span class="n">prefetch</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">prefetch</span><span class="o">=</span><span class="n">prefetch</span><span class="p">,</span>
                 <span class="n">levtype</span><span class="o">=</span><span class="s2">&quot;SFC&quot;</span><span class="p">,</span>
                 <span class="n">param</span><span class="o">=</span><span class="n">param</span><span class="p">,</span>
                 <span class="n">specify_domain</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                <span class="n">target</span><span class="o">=</span><span class="s1">&#39;&quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="p">),</span>
+                <span class="n">target</span><span class="o">=</span><span class="s2">&quot;mars_latlonGG&quot;</span><span class="p">,</span>
             <span class="p">)</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">write_mars_req</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datarequest</span><span class="p">,</span> <span class="s2">&quot;latlonGG.req&quot;</span><span class="p">,</span> <span class="s2">&quot;retrieve&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write_mars_req</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datarequest</span><span class="p">,</span> <span class="s2">&quot;latlonGG.req&quot;</span><span class="p">,</span> <span class="n">method</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">create_executable</span><span class="p">(</span><span class="s2">&quot;latlonGG.req&quot;</span><span class="p">)</span>
             <span class="n">batch</span> <span class="o">=</span> <span class="n">BatchJob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">,</span> <span class="n">wrapper</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="p">)</span>
             <span class="n">batch</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">executable</span><span class="p">)</span>
 
-            <span class="c1"># Retrieve surface geopotential for lat lon</span>
+            <span class="c1"># Retrieve for Surface Geopotential in lat/lon</span>
             <span class="n">param</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;SHZ&quot;</span><span class="p">],</span> <span class="n">date_str</span><span class="p">)</span>
-            <span class="n">d_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;SHZ_type&quot;</span><span class="p">],</span> <span class="n">date_str</span><span class="p">)</span>
+            <span class="n">d_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;GGZ_type&quot;</span><span class="p">],</span> <span class="n">date_str</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">update_data_request</span><span class="p">(</span>
                 <span class="n">data_type</span><span class="o">=</span><span class="n">d_type</span><span class="p">,</span>
                 <span class="n">date</span><span class="o">=</span><span class="n">date_str</span><span class="p">,</span>
                 <span class="n">time</span><span class="o">=</span><span class="n">hour_str</span><span class="p">,</span>
-                <span class="n">steps</span><span class="o">=</span><span class="s2">&quot;00&quot;</span><span class="p">,</span>
-                <span class="n">prefetch</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">steps</span><span class="o">=</span><span class="n">str_step</span><span class="p">,</span>
+                <span class="n">prefetch</span><span class="o">=</span><span class="n">prefetch</span><span class="p">,</span>
                 <span class="n">levtype</span><span class="o">=</span><span class="s2">&quot;ML&quot;</span><span class="p">,</span>
                 <span class="n">param</span><span class="o">=</span><span class="n">param</span><span class="p">,</span>
                 <span class="n">specify_domain</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                <span class="n">target</span><span class="o">=</span><span class="s1">&#39;&quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template</span> <span class="o">+</span> <span class="s2">&quot;.Z&quot;</span><span class="p">),</span>
+                <span class="n">target</span><span class="o">=</span><span class="s2">&quot;mars_latlonZ&quot;</span><span class="p">,</span>
             <span class="p">)</span>
-
-            <span class="bp">self</span><span class="o">.</span><span class="n">write_mars_req</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datarequest</span><span class="p">,</span> <span class="s2">&quot;latlonz.req&quot;</span><span class="p">,</span> <span class="s2">&quot;retrieve&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write_mars_req</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datarequest</span><span class="p">,</span> <span class="s2">&quot;latlonz.req&quot;</span><span class="p">,</span> <span class="n">method</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">create_executable</span><span class="p">(</span><span class="s2">&quot;latlonz.req&quot;</span><span class="p">)</span>
             <span class="n">batch</span> <span class="o">=</span> <span class="n">BatchJob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">,</span> <span class="n">wrapper</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="p">)</span>
             <span class="n">batch</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">executable</span><span class="p">)</span>
 
-            <span class="c1"># Retrieve for lat/lon sea data</span>
-            <span class="n">param</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;GG_sea&quot;</span><span class="p">],</span> <span class="n">date_str</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">update_data_request</span><span class="p">(</span>
-                <span class="n">data_type</span><span class="o">=</span><span class="s2">&quot;forecast&quot;</span><span class="p">,</span>
-                <span class="n">date</span><span class="o">=</span><span class="n">date_str</span><span class="p">,</span>
-                <span class="n">time</span><span class="o">=</span><span class="n">hour_str</span><span class="p">,</span>
-                <span class="n">steps</span><span class="o">=</span><span class="s2">&quot;00&quot;</span><span class="p">,</span>
-                <span class="n">prefetch</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                <span class="n">levtype</span><span class="o">=</span><span class="s2">&quot;SFC&quot;</span><span class="p">,</span>
-                <span class="n">param</span><span class="o">=</span><span class="n">param</span><span class="p">,</span>
-                <span class="n">specify_domain</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                <span class="n">target</span><span class="o">=</span><span class="s1">&#39;&quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template</span> <span class="o">+</span> <span class="s2">&quot;.sea&quot;</span><span class="p">),</span>
-            <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">write_mars_req</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datarequest</span><span class="p">,</span> <span class="s2">&quot;latlonsea.req&quot;</span><span class="p">,</span> <span class="s2">&quot;retrieve&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">create_executable</span><span class="p">(</span><span class="s2">&quot;latlonsea.req&quot;</span><span class="p">)</span>
-            <span class="n">batch</span> <span class="o">=</span> <span class="n">BatchJob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">,</span> <span class="n">wrapper</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="p">)</span>
-            <span class="n">batch</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">executable</span><span class="p">)</span>
-
-            <span class="c1"># Retrieve for lat/lon soil data</span>
-            <span class="n">exist_soil</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">KeyError</span><span class="p">):</span>
-                <span class="n">param1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;GG_soil&quot;</span><span class="p">],</span> <span class="n">date_str</span><span class="p">)</span>
-                <span class="n">exist_soil</span> <span class="o">=</span> <span class="kc">True</span>
-
-            <span class="k">if</span> <span class="n">exist_soil</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">update_data_request</span><span class="p">(</span>
-                    <span class="n">data_type</span><span class="o">=</span><span class="s2">&quot;analysis&quot;</span><span class="p">,</span>
-                    <span class="n">date</span><span class="o">=</span><span class="n">date_str</span><span class="p">,</span>
-                    <span class="n">time</span><span class="o">=</span><span class="n">hour_str</span><span class="p">,</span>
-                    <span class="n">steps</span><span class="o">=</span><span class="s2">&quot;00&quot;</span><span class="p">,</span>
-                    <span class="n">prefetch</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                    <span class="n">levtype</span><span class="o">=</span><span class="s2">&quot;SFC&quot;</span><span class="p">,</span>
-                    <span class="n">param</span><span class="o">=</span><span class="n">param1</span><span class="p">,</span>
-                    <span class="n">specify_domain</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                    <span class="n">target</span><span class="o">=</span><span class="s1">&#39;&quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template</span> <span class="o">+</span> <span class="s2">&quot;.soil&quot;</span><span class="p">),</span>
-                <span class="p">)</span>
-
-                <span class="bp">self</span><span class="o">.</span><span class="n">write_mars_req</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datarequest</span><span class="p">,</span> <span class="s2">&quot;latlonsoil.req&quot;</span><span class="p">,</span> <span class="s2">&quot;retrieve&quot;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">create_executable</span><span class="p">(</span><span class="s2">&quot;latlonsoil.req&quot;</span><span class="p">)</span>
-                <span class="n">batch</span> <span class="o">=</span> <span class="n">BatchJob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">,</span> <span class="n">wrapper</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="p">)</span>
-                <span class="n">batch</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">executable</span><span class="p">)</span>
-
             <span class="c1"># Get the file list to join</span>
-            <span class="n">prep_pattern</span> <span class="o">=</span> <span class="s2">&quot;mars_prefetch_*_</span><span class="si">{}</span><span class="s2">_</span><span class="si">{}</span><span class="s2">*&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">date_str</span><span class="p">,</span> <span class="n">hour_str</span><span class="p">)</span>
+            <span class="n">prep_pattern</span> <span class="o">=</span> <span class="s2">&quot;mars_latlon*&quot;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">list_files_join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wdir</span><span class="p">,</span> <span class="n">prep_pattern</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filenames</span><span class="p">)</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prep_filename</span><span class="p">,</span> <span class="s2">&quot;ab&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">output_file</span><span class="p">:</span>
@@ -1806,7 +1844,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-06-28T11:26:36Z.
+      <span class="lastupdated">Last updated on 2024-07-05T07:39:12Z.
       </span></p>
   </div>
 
