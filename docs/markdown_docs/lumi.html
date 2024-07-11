@@ -71,6 +71,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../lumi_link.html">LUMI</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../lumi_link.html#getting-on-lumi">Getting on LUMI</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../lumi_link.html#running-deode-on-lumi">Running DEODE on LUMI</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../lumi_link.html#production-user-lrb-465000527-efprd">Production user (lrb_465000527_efprd)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../lumi_link.html#ecflow-server-selection">Ecflow server selection</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../lumi_link.html#data">Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../lumi_link.html#standalone-task-example-forecast">Standalone task example (forecast)</a></li>
@@ -949,6 +950,30 @@
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>deode<span class="w"> </span><span class="k">case</span><span class="w"> </span>?deode/data/config_files/configurations/cy48t3_arome<span class="w"> </span>-o<span class="w"> </span>cy48t3_arome.toml<span class="w"> </span>--start-suite
 </pre></div>
 </div>
+<section id="production-user-lrb-465000527-efprd">
+<h3>Production user (lrb_465000527_efprd)<a class="headerlink" href="#production-user-lrb-465000527-efprd" title="Link to this heading"></a></h3>
+<p>There is a dedicated production user on LUMI. To access this, follow the steps below:</p>
+<ol class="arabic simple">
+<li><p>Email ulf.andrae&#64;smhi.se to ask for access to the production user. Without this step, you cannot gain access to the production user.</p></li>
+<li><p>You need to <strong>add</strong> your public RSA (or otherwise) key to my.csc.fi</p></li>
+<li><p>At KNMI we also use <strong>myaccessid</strong> : https://mms.myaccessid.org/fed-apps/profile/settings_sshkeys - if you have another equivalent to this please also ensure your ssh public key is added there and that your my.csc.fi account is linked to it (separate step).</p></li>
+<li><p>Wait an hour or two before attempting to connect:</p></li>
+</ol>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ssh<span class="w"> </span>lrb_465000527_efprd@lumi.csc.fi
+</pre></div>
+</div>
+<ol class="arabic simple" start="5">
+<li><p>To get started, as you would on your own user:</p></li>
+</ol>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$DEODE</span>
+<span class="w"> </span>poetry<span class="w"> </span>shell
+<span class="w"> </span>deode<span class="w"> </span><span class="k">case</span><span class="w"> </span>?deode/data/config_files/configurations/cy48t3_arome<span class="w"> </span>-o<span class="w"> </span>cy48t3_arome.toml<span class="w"> </span>--start-suite
+</pre></div>
+</div>
+<ol class="arabic simple" start="6">
+<li><p>If you have any further issues please email ulf.andrae&#64;smhi.se or servicedesk&#64;csc.fi.</p></li>
+</ol>
+</section>
 <section id="ecflow-server-selection">
 <h3>Ecflow server selection<a class="headerlink" href="#ecflow-server-selection" title="Link to this heading"></a></h3>
 <p>By default, all users will use the <strong>dev server</strong>.</p>
@@ -1123,7 +1148,7 @@ ecflow-user@de330-ecflow-dev:~$<span class="w"> </span>
 <li><p>To bring up the Ecflow User Interface you need the following modules, by doing ‘module load’ (ml):</p></li>
 </ol>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ml<span class="w"> </span>use<span class="w"> </span>/scratch/project_465000527/jasinskas/scl/modules/
-ml<span class="w"> </span>scl-ftn16_23
+ml<span class="w"> </span>cray-python/3.10.10
 ml<span class="w"> </span>scl-ecflow_23
 </pre></div>
 </div>
@@ -1237,7 +1262,7 @@ ecflow-user@217.71.195.251:<span class="w"> </span>Permission<span class="w"> </
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-07-11T08:49:16Z.
+      <span class="lastupdated">Last updated on 2024-07-11T09:54:19Z.
       </span></p>
   </div>
 
