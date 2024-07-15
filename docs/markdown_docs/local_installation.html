@@ -560,6 +560,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../misc_section_in_doc_page.html">Misc</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../misc_section_in_doc_page.html#local-installations">Local installations</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../misc_section_in_doc_page.html#adding-a-new-host">Adding a new host</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../misc_section_in_doc_page.html#setup-ecflow">Setup ecflow</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../misc_section_in_doc_page.html#freja">freja</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#installing-under-mamba">Installing under mamba</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#contact">Contact</a></li>
@@ -955,6 +956,23 @@
 </div>
 <p>Any new host should be added in the same way and the names for the configuration files for <code class="docutils literal notranslate"><span class="pre">platform</span></code>, <code class="docutils literal notranslate"><span class="pre">scheduler</span></code> and submission should be named using the given hostname.</p>
 </section>
+<section id="setup-ecflow">
+<h2>Setup ecflow<a class="headerlink" href="#setup-ecflow" title="Link to this heading"></a></h2>
+<p>The ecflow server setup is defined in <code class="docutils literal notranslate"><span class="pre">deode/data/config_files/include/scheduler/ecflow_&#64;HOST&#64;.toml</span></code>. For your local installation you might add the proper configurations, e.g. <code class="docutils literal notranslate"><span class="pre">ecflow_freja.toml</span></code>:</p>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[scheduler.ecfvars]</span>
+<span class="w">  </span><span class="n">ecf_files</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;/nobackup/smhid20/users/@USER@/deode_ecflow/ecf_files&quot;</span>
+<span class="w">  </span><span class="n">ecf_files_remotely</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;/nobackup/smhid20/users/@USER@/deode_ecflow/ecf_files&quot;</span>
+<span class="w">  </span><span class="n">ecf_home</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;/nobackup/smhid20/users/@USER@/deode_ecflow/jobout&quot;</span>
+<span class="w">  </span><span class="n">ecf_host</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;le1&quot;</span>
+<span class="w">  </span><span class="n">ecf_jobout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;/nobackup/smhid20/users/@USER@/deode_ecflow/jobout&quot;</span>
+<span class="w">  </span><span class="n">ecf_out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;/nobackup/smhid20/users/@USER@/deode_ecflow/jobout&quot;</span>
+<span class="w">  </span><span class="n">ecf_port</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;_set_port_from_user(10000)&quot;</span>
+<span class="w">  </span><span class="n">ecf_ssl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;0&quot;</span>
+<span class="w">  </span><span class="n">hpc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;freja&quot;</span>
+</pre></div>
+</div>
+<p>Note there are two functions available for the detection of <code class="docutils literal notranslate"><span class="pre">ecf_port</span></code> and <code class="docutils literal notranslate"><span class="pre">ecf_host</span></code> that might help to detect correct values for these two variables. <code class="docutils literal notranslate"><span class="pre">_set_port_from_user()</span></code> sets a user-id related ecf_port while <code class="docutils literal notranslate"><span class="pre">_select_host_from_list()</span></code> finds the active ecf_host from a list of possible hostnames (used in <code class="docutils literal notranslate"><span class="pre">ecflow_atos_bologna.toml</span></code>). Both functions are defined in <code class="docutils literal notranslate"><span class="pre">deode/scheduler.py</span></code></p>
+</section>
 <section id="freja">
 <h2>freja<a class="headerlink" href="#freja" title="Link to this heading"></a></h2>
 <p>Freja is the SMHI research cluster operated by NSC. For more details see https://nsc.liu.se/systems/freja</p>
@@ -1007,7 +1025,7 @@ $ mamba activate .conda/
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-07-11T09:54:19Z.
+      <span class="lastupdated">Last updated on 2024-07-15T13:47:30Z.
       </span></p>
   </div>
 
