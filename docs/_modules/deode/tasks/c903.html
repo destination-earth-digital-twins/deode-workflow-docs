@@ -633,6 +633,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-system-prev-case">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">system</span> <span class="pre">&gt;</span> <span class="pre">prev_case</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-system-sfx-input-definition">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">system</span> <span class="pre">&gt;</span> <span class="pre">sfx_input_definition</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-system-forecast-input-definition">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">system</span> <span class="pre">&gt;</span> <span class="pre">forecast_input_definition</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-system-c903-input-definition">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">system</span> <span class="pre">&gt;</span> <span class="pre">c903_input_definition</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span></code></a><ul>
@@ -939,6 +940,7 @@
   <h1>Source code for deode.tasks.c903</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;C903.&quot;&quot;&quot;</span>
 
+<span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">os</span>
 
 <span class="kn">from</span> <span class="nn">..datetime_utils</span> <span class="kn">import</span> <span class="n">as_datetime</span><span class="p">,</span> <span class="n">as_timedelta</span><span class="p">,</span> <span class="n">cycle_offset</span>
@@ -951,10 +953,10 @@
 <div class="viewcode-block" id="C903">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.c903.C903">[docs]</a>
 <span class="k">class</span> <span class="nc">C903</span><span class="p">(</span><span class="n">Task</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;C903.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;C903, preform interpolation from IFS to IAL LAM.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct forecast object.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct C903 object.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            config (deode.ParsedConfig): Configuration</span>
@@ -963,7 +965,6 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">climdir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_system_value</span><span class="p">(</span><span class="s2">&quot;climdir&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">expdir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;system.marsdir&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">basetime</span> <span class="o">=</span> <span class="n">as_datetime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.times.basetime&quot;</span><span class="p">])</span>
         <span class="n">bdcycle</span> <span class="o">=</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;boundaries.bdcycle&quot;</span><span class="p">])</span>
         <span class="n">bdcycle_start</span> <span class="o">=</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;boundaries.bdcycle_start&quot;</span><span class="p">])</span>
@@ -977,32 +978,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">bd_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;task.args.bd_time&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">forecast_range</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.times.forecast_range&quot;</span><span class="p">]</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">dom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain.name&quot;</span><span class="p">]</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">bdfile_template</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;system.bdfile_template&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">intp_bddir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_system_value</span><span class="p">(</span><span class="s2">&quot;intp_bddir&quot;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Domain: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dom</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">nlgen</span> <span class="o">=</span> <span class="n">NamelistGenerator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;master&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">master</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_binary</span><span class="p">(</span><span class="s2">&quot;MASTERODB&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">bdnr</span><span class="si">}</span><span class="s2">&quot;</span>
-
-<div class="viewcode-block" id="C903.remove_links">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.c903.C903.remove_links">[docs]</a>
-    <span class="k">def</span> <span class="nf">remove_links</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">link</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove link.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            link (list) : List of links to remove</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;clean </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">link</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">link</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>  <span class="c1"># noqa: PERF203</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Could not remove file &#39;</span><span class="si">{}</span><span class="s2">&#39;.&quot;</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
-
 
 <div class="viewcode-block" id="C903.execute">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.c903.C903.execute">[docs]</a>
@@ -1012,82 +994,38 @@
 <span class="sd">        Define run sequence.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Climate files</span>
-        <span class="n">mm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bd_basetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%m&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">climdir</span><span class="si">}</span><span class="s2">/Const.Clim.</span><span class="si">{</span><span class="n">mm</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dom</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">mm</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="c1"># Fetch input data</span>
+        <span class="n">input_definition</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_system_value</span><span class="p">(</span><span class="s2">&quot;c903_input_definition&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Read input data spec from: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">input_definition</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">input_definition</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">input_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+        <span class="n">ifs_files</span> <span class="o">=</span> <span class="n">input_data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;IFS_files&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Link the static data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input_data_iterator</span><span class="p">(</span><span class="n">input_data</span><span class="p">)</span>
+
+        <span class="c1"># IFS input files</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">ifs_files</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">dst</span><span class="p">,</span> <span class="n">src</span> <span class="ow">in</span> <span class="n">ifs_files</span><span class="p">[</span><span class="s2">&quot;files&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">src</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">dst</span><span class="p">,</span>
+                <span class="n">basetime</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bd_basetime</span><span class="p">,</span>
+                <span class="n">validtime</span><span class="o">=</span><span class="n">as_datetime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bd_time</span><span class="p">),</span>
+            <span class="p">)</span>
 
         <span class="c1"># Namelist</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nlgen</span><span class="o">.</span><span class="n">generate_namelist</span><span class="p">(</span><span class="s2">&quot;c903_main&quot;</span><span class="p">,</span> <span class="s2">&quot;fort.4&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nlgen</span><span class="o">.</span><span class="n">generate_namelist</span><span class="p">(</span><span class="s2">&quot;c903_domain&quot;</span><span class="p">,</span> <span class="s2">&quot;namelist_c903_domain&quot;</span><span class="p">)</span>
 
-        <span class="c1"># Input files</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">expdir</span><span class="si">}</span><span class="s2">/ICMSH+@LL@&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;ICMSHMARSINIT&quot;</span><span class="p">,</span>
-            <span class="n">basetime</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bd_basetime</span><span class="p">,</span>
-            <span class="n">validtime</span><span class="o">=</span><span class="n">as_datetime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bd_time</span><span class="p">),</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">expdir</span><span class="si">}</span><span class="s2">/ICMGG+@LL@&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;ICMGGMARSINIT&quot;</span><span class="p">,</span>
-            <span class="n">basetime</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bd_basetime</span><span class="p">,</span>
-            <span class="n">validtime</span><span class="o">=</span><span class="n">as_datetime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bd_time</span><span class="p">),</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">expdir</span><span class="si">}</span><span class="s2">/ICMUA+@LL@&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;ICMUAMARSINIT&quot;</span><span class="p">,</span>
-            <span class="n">basetime</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bd_basetime</span><span class="p">,</span>
-            <span class="n">validtime</span><span class="o">=</span><span class="n">as_datetime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bd_time</span><span class="p">),</span>
-        <span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">expdir</span><span class="si">}</span><span class="s2">/ICMSH+@LL@&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;ICMSHMARS&quot;</span><span class="p">,</span>
-            <span class="n">basetime</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bd_basetime</span><span class="p">,</span>
-            <span class="n">validtime</span><span class="o">=</span><span class="n">as_datetime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bd_time</span><span class="p">),</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">expdir</span><span class="si">}</span><span class="s2">/ICMGG+@LL@&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;ICMGGMARS&quot;</span><span class="p">,</span>
-            <span class="n">basetime</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bd_basetime</span><span class="p">,</span>
-            <span class="n">validtime</span><span class="o">=</span><span class="n">as_datetime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bd_time</span><span class="p">),</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">expdir</span><span class="si">}</span><span class="s2">/ICMUA+@LL@&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;ICMUAMARS&quot;</span><span class="p">,</span>
-            <span class="n">basetime</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bd_basetime</span><span class="p">,</span>
-            <span class="n">validtime</span><span class="o">=</span><span class="n">as_datetime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bd_time</span><span class="p">),</span>
-        <span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">expdir</span><span class="si">}</span><span class="s2">/ICMSH+@LL@&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;ICMSHMARS+000000&quot;</span><span class="p">,</span>
-            <span class="n">basetime</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bd_basetime</span><span class="p">,</span>
-            <span class="n">validtime</span><span class="o">=</span><span class="n">as_datetime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bd_time</span><span class="p">),</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">expdir</span><span class="si">}</span><span class="s2">/ICMGG+@LL@&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;ICMGGMARS+000000&quot;</span><span class="p">,</span>
-            <span class="n">basetime</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bd_basetime</span><span class="p">,</span>
-            <span class="n">validtime</span><span class="o">=</span><span class="n">as_datetime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bd_time</span><span class="p">),</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">expdir</span><span class="si">}</span><span class="s2">/ICMUA+@LL@&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;ICMUAMARS+000000&quot;</span><span class="p">,</span>
-            <span class="n">basetime</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bd_basetime</span><span class="p">,</span>
-            <span class="n">validtime</span><span class="o">=</span><span class="n">as_datetime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bd_time</span><span class="p">),</span>
-        <span class="p">)</span>
-
         <span class="c1"># Run masterodb</span>
-
         <span class="n">batch</span> <span class="o">=</span> <span class="n">BatchJob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">,</span> <span class="n">wrapper</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="p">)</span>
         <span class="n">batch</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">master</span><span class="p">)</span>
 
+        <span class="c1"># Store result</span>
         <span class="n">target</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">intp_bddir</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">bdfile_template</span><span class="si">}</span><span class="s2">&quot;</span>
-
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;WRKDIR: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrk</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;OUTPUT </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;ELSCFMARS</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dom</span><span class="si">}</span><span class="s2">+0000&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ELSCFMARS</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dom</span><span class="si">}</span><span class="s2">+0000&quot;</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="s2">&quot;ELSCFMARS@DOMAIN@+0000&quot;</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">archive_logs</span><span class="p">(</span><span class="s2">&quot;NODE.001_01&quot;</span><span class="p">)</span></div>
 </div>
 
@@ -1101,7 +1039,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-07-17T12:48:26Z.
+      <span class="lastupdated">Last updated on 2024-07-17T16:18:51Z.
       </span></p>
   </div>
 

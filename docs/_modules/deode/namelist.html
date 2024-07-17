@@ -633,6 +633,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-system-prev-case">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">system</span> <span class="pre">&gt;</span> <span class="pre">prev_case</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-system-sfx-input-definition">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">system</span> <span class="pre">&gt;</span> <span class="pre">sfx_input_definition</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-system-forecast-input-definition">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">system</span> <span class="pre">&gt;</span> <span class="pre">forecast_input_definition</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-system-c903-input-definition">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">system</span> <span class="pre">&gt;</span> <span class="pre">c903_input_definition</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-boundaries">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span></code></a><ul>
@@ -1290,9 +1291,9 @@
             <span class="n">cndict</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">:</span> <span class="p">[</span><span class="n">target</span><span class="p">]}</span>
             <span class="n">found</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="s2">&quot;No reference namelist </span><span class="si">{}</span><span class="s2"> exists, fallback to yaml files&quot;</span><span class="p">,</span> <span class="n">ref_namelist</span>
-            <span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No reference namelist </span><span class="si">{}</span><span class="s2"> exists.&quot;</span><span class="p">,</span> <span class="n">ref_namelist</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Fallback to yaml files&quot;</span><span class="p">)</span>
+
             <span class="n">found</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="n">nldict</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="n">cndict</span> <span class="o">=</span> <span class="p">{}</span>
@@ -1323,7 +1324,9 @@
             <span class="n">use_yaml</span><span class="p">,</span> <span class="n">nldict</span><span class="p">,</span> <span class="n">cndict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_user_namelist</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">use_yaml</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Use </span><span class="si">{}</span><span class="s2"> and </span><span class="si">{}</span><span class="s2"> to generate namelist&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nlfile</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cnfile</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Namelist generation input:&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot; namelists: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nlfile</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot; rules: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cnfile</span><span class="p">)</span>
             <span class="c1"># Read namelist file with all the categories</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nlfile</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;rt&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
                 <span class="n">nldict</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
@@ -1978,7 +1981,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-07-17T12:48:26Z.
+      <span class="lastupdated">Last updated on 2024-07-17T16:18:51Z.
       </span></p>
   </div>
 
