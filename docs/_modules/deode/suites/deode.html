@@ -780,6 +780,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-submission-background-vm">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">submission</span> <span class="pre">&gt;</span> <span class="pre">background_vm</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-submission-background-hpc">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">submission</span> <span class="pre">&gt;</span> <span class="pre">background_hpc</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-submission-gnu">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">submission</span> <span class="pre">&gt;</span> <span class="pre">gnu</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-submission-iomerge">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">submission</span> <span class="pre">&gt;</span> <span class="pre">iomerge</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-vertical-levels">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">vertical_levels</span></code></a><ul>
@@ -949,6 +950,7 @@
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">..logs</span> <span class="kn">import</span> <span class="n">logger</span>
 <span class="kn">from</span> <span class="nn">..os_utils</span> <span class="kn">import</span> <span class="n">deodemakedirs</span>
+<span class="kn">from</span> <span class="nn">..submission</span> <span class="kn">import</span> <span class="n">ProcessorLayout</span>
 <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">EcflowSuiteFamily</span><span class="p">,</span>
     <span class="n">EcflowSuiteTask</span><span class="p">,</span>
@@ -996,7 +998,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">interpolate_boundaries</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.interpolate_boundaries&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">do_marsprep</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.do_marsprep&quot;</span><span class="p">]</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">nproc_io</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;submission.task_exceptions.Forecast.NPROC_IO&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">settings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">task_settings</span><span class="o">.</span><span class="n">get_settings</span><span class="p">(</span><span class="s2">&quot;Forecast&quot;</span><span class="p">)</span>
+        <span class="n">procs</span> <span class="o">=</span> <span class="n">ProcessorLayout</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span><span class="o">.</span><span class="n">get_proc_dict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nproc_io</span> <span class="o">=</span> <span class="n">procs</span><span class="p">[</span><span class="s2">&quot;nproc_io&quot;</span><span class="p">]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nproc_io</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">n_io_merge</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.n_io_merge&quot;</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1488,7 +1492,7 @@
                         <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
                         <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
                     <span class="p">)</span>
-                    <span class="n">args</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;ionr=</span><span class="si">{</span><span class="n">ionr</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="n">args</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;ionr=</span><span class="si">{</span><span class="n">ionr</span><span class="si">}</span><span class="s2">;nproc_io=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nproc_io</span><span class="si">}</span><span class="s2">&quot;</span>
                     <span class="n">EcflowSuiteTask</span><span class="p">(</span>
                         <span class="s2">&quot;IOmerge&quot;</span><span class="p">,</span>
                         <span class="n">iomerge_sub</span><span class="p">,</span>
@@ -1845,7 +1849,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-07-17T11:15:10Z.
+      <span class="lastupdated">Last updated on 2024-07-17T12:48:26Z.
       </span></p>
   </div>
 

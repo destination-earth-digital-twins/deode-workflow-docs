@@ -1,4 +1,4 @@
-This was automatically generated running `deode doc config` on 2024-07-17T11:15:08.
+This was automatically generated running `deode doc config` on 2024-07-17T12:48:24.
 
 # Config
 
@@ -5122,6 +5122,7 @@ Must be one of:
 | [background_vm](#submission_background_vm)             | object          | No       | -       | Submission group                                                                                                                                         |
 | [background_hpc](#submission_background_hpc)           | object          | No       | -       | Submission group                                                                                                                                         |
 | [gnu](#submission_gnu)                                 | object          | No       | -       | Submission group                                                                                                                                         |
+| [iomerge](#submission_iomerge)                         | object          | No       | -       | IO-merge group                                                                                                                                           |
 
 <a name="submission_account"></a>
 ### Property `Config > submission > account`
@@ -5990,6 +5991,128 @@ must respect the following conditions
 | ------------ | -------- |
 | **Type**     | `string` |
 | **Required** | No       |
+
+<a name="submission_iomerge"></a>
+### Property `Config > submission > iomerge`
+
+**Title:** IO-merge group
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Defines settings related to the iomerge task
+
+| Property                                             | Type   | Required | Default | Title/Description               |
+| ---------------------------------------------------- | ------ | -------- | ------- | ------------------------------- |
+| [age_limit](#submission_iomerge_age_limit)           | object | No       | -       | IO-merge processing wait limits |
+| [files_expected](#submission_iomerge_files_expected) | object | No       | -       | IO-merge file expectations      |
+
+<a name="submission_iomerge_age_limit"></a>
+#### Property `Config > submission > iomerge > age_limit`
+
+**Title:** IO-merge processing wait limits
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Time in seconds to wait before processing files.
+
+| Property                                         | Type   | Required | Default | Title/Description |
+| ------------------------------------------------ | ------ | -------- | ------- | ----------------- |
+| [history](#submission_iomerge_age_limit_history) | number | No       | 20      | History files     |
+| [surfex](#submission_iomerge_age_limit_surfex)   | number | No       | 15      | Surfex files      |
+| [fullpos](#submission_iomerge_age_limit_fullpos) | number | No       | 15      | Fullpos files     |
+
+<a name="submission_iomerge_age_limit_history"></a>
+##### Property `Config > submission > iomerge > age_limit > history`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `number` |
+| **Required** | No       |
+| **Default**  | `20`     |
+
+**Description:** History files
+
+<a name="submission_iomerge_age_limit_surfex"></a>
+##### Property `Config > submission > iomerge > age_limit > surfex`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `number` |
+| **Required** | No       |
+| **Default**  | `15`     |
+
+**Description:** Surfex files
+
+<a name="submission_iomerge_age_limit_fullpos"></a>
+##### Property `Config > submission > iomerge > age_limit > fullpos`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `number` |
+| **Required** | No       |
+| **Default**  | `15`     |
+
+**Description:** Fullpos files
+
+<a name="submission_iomerge_files_expected"></a>
+#### Property `Config > submission > iomerge > files_expected`
+
+**Title:** IO-merge file expectations
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Number of files expected for merge. Set to 0 to let the code decide and -1 for no checking.
+
+| Property                                              | Type   | Required | Default | Title/Description                                                              |
+| ----------------------------------------------------- | ------ | -------- | ------- | ------------------------------------------------------------------------------ |
+| [history](#submission_iomerge_files_expected_history) | number | No       | -1      | History files, 0 implies -1 as the number of files is highly output dependent. |
+| [surfex](#submission_iomerge_files_expected_surfex)   | number | No       | 0       | Surfex files, 0 implies nproc_io files                                         |
+| [fullpos](#submission_iomerge_files_expected_fullpos) | number | No       | 0       | Fullpos files, 0 implies 1+nproc_io files                                      |
+
+<a name="submission_iomerge_files_expected_history"></a>
+##### Property `Config > submission > iomerge > files_expected > history`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `number` |
+| **Required** | No       |
+| **Default**  | `-1`     |
+
+**Description:** History files, 0 implies -1 as the number of files is highly output dependent.
+
+<a name="submission_iomerge_files_expected_surfex"></a>
+##### Property `Config > submission > iomerge > files_expected > surfex`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `number` |
+| **Required** | No       |
+| **Default**  | `0`      |
+
+**Description:** Surfex files, 0 implies nproc_io files
+
+<a name="submission_iomerge_files_expected_fullpos"></a>
+##### Property `Config > submission > iomerge > files_expected > fullpos`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `number` |
+| **Required** | No       |
+| **Default**  | `0`      |
+
+**Description:** Fullpos files, 0 implies 1+nproc_io files
 
 <a name="vertical_levels"></a>
 ## Property `Config > vertical_levels`
