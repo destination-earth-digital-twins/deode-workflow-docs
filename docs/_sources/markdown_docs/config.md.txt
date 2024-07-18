@@ -1,4 +1,4 @@
-This was automatically generated running `deode doc config` on 2024-07-17T16:18:48.
+This was automatically generated running `deode doc config` on 2024-07-18T08:01:47.
 
 # Config
 
@@ -5262,15 +5262,16 @@ Must be one of:
 
 **Description:** Defines the properties avilable for a submit group. See the existing submission files for examples
 
-| Property                              | Type            | Required | Default | Title/Description                                                                                                               |
-| ------------------------------------- | --------------- | -------- | ------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| [tasks](#submission_serial_tasks)     | array of string | No       | -       | List of tasks belonging to this group                                                                                           |
-| [SCHOST](#submission_serial_SCHOST)   | string          | No       | -       | Name of the host where the job runs                                                                                             |
-| [NPROC](#submission_serial_NPROC)     | number          | No       | -       | Number of processors for this task                                                                                              |
-| [WRAPPER](#submission_serial_WRAPPER) | string          | No       | -       | Prefix for binaries to be executed, e.g. srun                                                                                   |
-| [BATCH](#submission_serial_BATCH)     | object          | No       | -       | Sets batch job arguments like walltime                                                                                          |
-| [ENV](#submission_serial_ENV)         | object          | No       | -       | Sets environment variables                                                                                                      |
-| [MODULES](#submission_serial_MODULES) | object          | No       | -       | Sets modules to purge/use/unload/load or switch. To maintain the order decorate with comments to override the automatic sorting |
+| Property                                | Type            | Required | Default | Title/Description                                                                                                               |
+| --------------------------------------- | --------------- | -------- | ------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| [tasks](#submission_serial_tasks)       | array of string | No       | -       | List of tasks belonging to this group                                                                                           |
+| [SCHOST](#submission_serial_SCHOST)     | string          | No       | -       | Name of the host where the job runs                                                                                             |
+| [NPROC](#submission_serial_NPROC)       | number          | No       | -       | Number of processors for this task                                                                                              |
+| [NPROC_IO](#submission_serial_NPROC_IO) | number          | No       | 0       | Number of io processors for this task, only applicable for tasks involving the forecast model                                   |
+| [WRAPPER](#submission_serial_WRAPPER)   | string          | No       | -       | Prefix for binaries to be executed, e.g. srun                                                                                   |
+| [BATCH](#submission_serial_BATCH)       | object          | No       | -       | Sets batch job arguments like walltime                                                                                          |
+| [ENV](#submission_serial_ENV)           | object          | No       | -       | Sets environment variables                                                                                                      |
+| [MODULES](#submission_serial_MODULES)   | object          | No       | -       | Sets modules to purge/use/unload/load or switch. To maintain the order decorate with comments to override the automatic sorting |
 
 <a name="submission_serial_tasks"></a>
 #### Property `Config > submission > serial > tasks`
@@ -5321,6 +5322,17 @@ Must be one of:
 | **Required** | No       |
 
 **Description:** Number of processors for this task
+
+<a name="submission_serial_NPROC_IO"></a>
+#### Property `Config > submission > serial > NPROC_IO`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `number` |
+| **Required** | No       |
+| **Default**  | `0`      |
+
+**Description:** Number of io processors for this task, only applicable for tasks involving the forecast model
 
 <a name="submission_serial_WRAPPER"></a>
 #### Property `Config > submission > serial > WRAPPER`
@@ -5413,15 +5425,16 @@ must respect the following conditions
 
 **Description:** Defines the properties avilable for a submit group. See the existing submission files for examples
 
-| Property                                | Type            | Required | Default | Title/Description                                                                                                               |
-| --------------------------------------- | --------------- | -------- | ------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| [tasks](#submission_parallel_tasks)     | array of string | No       | -       | List of tasks belonging to this group                                                                                           |
-| [SCHOST](#submission_parallel_SCHOST)   | string          | No       | -       | Name of the host where the job runs                                                                                             |
-| [NPROC](#submission_parallel_NPROC)     | number          | No       | -       | Number of processors for this task                                                                                              |
-| [WRAPPER](#submission_parallel_WRAPPER) | string          | No       | -       | Prefix for binaries to be executed, e.g. srun                                                                                   |
-| [BATCH](#submission_parallel_BATCH)     | object          | No       | -       | Sets batch job arguments like walltime                                                                                          |
-| [ENV](#submission_parallel_ENV)         | object          | No       | -       | Sets environment variables                                                                                                      |
-| [MODULES](#submission_parallel_MODULES) | object          | No       | -       | Sets modules to purge/use/unload/load or switch. To maintain the order decorate with comments to override the automatic sorting |
+| Property                                  | Type            | Required | Default | Title/Description                                                                                                               |
+| ----------------------------------------- | --------------- | -------- | ------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| [tasks](#submission_parallel_tasks)       | array of string | No       | -       | List of tasks belonging to this group                                                                                           |
+| [SCHOST](#submission_parallel_SCHOST)     | string          | No       | -       | Name of the host where the job runs                                                                                             |
+| [NPROC](#submission_parallel_NPROC)       | number          | No       | -       | Number of processors for this task                                                                                              |
+| [NPROC_IO](#submission_parallel_NPROC_IO) | number          | No       | 0       | Number of io processors for this task, only applicable for tasks involving the forecast model                                   |
+| [WRAPPER](#submission_parallel_WRAPPER)   | string          | No       | -       | Prefix for binaries to be executed, e.g. srun                                                                                   |
+| [BATCH](#submission_parallel_BATCH)       | object          | No       | -       | Sets batch job arguments like walltime                                                                                          |
+| [ENV](#submission_parallel_ENV)           | object          | No       | -       | Sets environment variables                                                                                                      |
+| [MODULES](#submission_parallel_MODULES)   | object          | No       | -       | Sets modules to purge/use/unload/load or switch. To maintain the order decorate with comments to override the automatic sorting |
 
 <a name="submission_parallel_tasks"></a>
 #### Property `Config > submission > parallel > tasks`
@@ -5472,6 +5485,17 @@ must respect the following conditions
 | **Required** | No       |
 
 **Description:** Number of processors for this task
+
+<a name="submission_parallel_NPROC_IO"></a>
+#### Property `Config > submission > parallel > NPROC_IO`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `number` |
+| **Required** | No       |
+| **Default**  | `0`      |
+
+**Description:** Number of io processors for this task, only applicable for tasks involving the forecast model
 
 <a name="submission_parallel_WRAPPER"></a>
 #### Property `Config > submission > parallel > WRAPPER`
@@ -5564,15 +5588,16 @@ must respect the following conditions
 
 **Description:** Defines the properties avilable for a submit group. See the existing submission files for examples
 
-| Property                                     | Type            | Required | Default | Title/Description                                                                                                               |
-| -------------------------------------------- | --------------- | -------- | ------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| [tasks](#submission_background_vm_tasks)     | array of string | No       | -       | List of tasks belonging to this group                                                                                           |
-| [SCHOST](#submission_background_vm_SCHOST)   | string          | No       | -       | Name of the host where the job runs                                                                                             |
-| [NPROC](#submission_background_vm_NPROC)     | number          | No       | -       | Number of processors for this task                                                                                              |
-| [WRAPPER](#submission_background_vm_WRAPPER) | string          | No       | -       | Prefix for binaries to be executed, e.g. srun                                                                                   |
-| [BATCH](#submission_background_vm_BATCH)     | object          | No       | -       | Sets batch job arguments like walltime                                                                                          |
-| [ENV](#submission_background_vm_ENV)         | object          | No       | -       | Sets environment variables                                                                                                      |
-| [MODULES](#submission_background_vm_MODULES) | object          | No       | -       | Sets modules to purge/use/unload/load or switch. To maintain the order decorate with comments to override the automatic sorting |
+| Property                                       | Type            | Required | Default | Title/Description                                                                                                               |
+| ---------------------------------------------- | --------------- | -------- | ------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| [tasks](#submission_background_vm_tasks)       | array of string | No       | -       | List of tasks belonging to this group                                                                                           |
+| [SCHOST](#submission_background_vm_SCHOST)     | string          | No       | -       | Name of the host where the job runs                                                                                             |
+| [NPROC](#submission_background_vm_NPROC)       | number          | No       | -       | Number of processors for this task                                                                                              |
+| [NPROC_IO](#submission_background_vm_NPROC_IO) | number          | No       | 0       | Number of io processors for this task, only applicable for tasks involving the forecast model                                   |
+| [WRAPPER](#submission_background_vm_WRAPPER)   | string          | No       | -       | Prefix for binaries to be executed, e.g. srun                                                                                   |
+| [BATCH](#submission_background_vm_BATCH)       | object          | No       | -       | Sets batch job arguments like walltime                                                                                          |
+| [ENV](#submission_background_vm_ENV)           | object          | No       | -       | Sets environment variables                                                                                                      |
+| [MODULES](#submission_background_vm_MODULES)   | object          | No       | -       | Sets modules to purge/use/unload/load or switch. To maintain the order decorate with comments to override the automatic sorting |
 
 <a name="submission_background_vm_tasks"></a>
 #### Property `Config > submission > background_vm > tasks`
@@ -5623,6 +5648,17 @@ must respect the following conditions
 | **Required** | No       |
 
 **Description:** Number of processors for this task
+
+<a name="submission_background_vm_NPROC_IO"></a>
+#### Property `Config > submission > background_vm > NPROC_IO`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `number` |
+| **Required** | No       |
+| **Default**  | `0`      |
+
+**Description:** Number of io processors for this task, only applicable for tasks involving the forecast model
 
 <a name="submission_background_vm_WRAPPER"></a>
 #### Property `Config > submission > background_vm > WRAPPER`
@@ -5715,15 +5751,16 @@ must respect the following conditions
 
 **Description:** Defines the properties avilable for a submit group. See the existing submission files for examples
 
-| Property                                      | Type            | Required | Default | Title/Description                                                                                                               |
-| --------------------------------------------- | --------------- | -------- | ------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| [tasks](#submission_background_hpc_tasks)     | array of string | No       | -       | List of tasks belonging to this group                                                                                           |
-| [SCHOST](#submission_background_hpc_SCHOST)   | string          | No       | -       | Name of the host where the job runs                                                                                             |
-| [NPROC](#submission_background_hpc_NPROC)     | number          | No       | -       | Number of processors for this task                                                                                              |
-| [WRAPPER](#submission_background_hpc_WRAPPER) | string          | No       | -       | Prefix for binaries to be executed, e.g. srun                                                                                   |
-| [BATCH](#submission_background_hpc_BATCH)     | object          | No       | -       | Sets batch job arguments like walltime                                                                                          |
-| [ENV](#submission_background_hpc_ENV)         | object          | No       | -       | Sets environment variables                                                                                                      |
-| [MODULES](#submission_background_hpc_MODULES) | object          | No       | -       | Sets modules to purge/use/unload/load or switch. To maintain the order decorate with comments to override the automatic sorting |
+| Property                                        | Type            | Required | Default | Title/Description                                                                                                               |
+| ----------------------------------------------- | --------------- | -------- | ------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| [tasks](#submission_background_hpc_tasks)       | array of string | No       | -       | List of tasks belonging to this group                                                                                           |
+| [SCHOST](#submission_background_hpc_SCHOST)     | string          | No       | -       | Name of the host where the job runs                                                                                             |
+| [NPROC](#submission_background_hpc_NPROC)       | number          | No       | -       | Number of processors for this task                                                                                              |
+| [NPROC_IO](#submission_background_hpc_NPROC_IO) | number          | No       | 0       | Number of io processors for this task, only applicable for tasks involving the forecast model                                   |
+| [WRAPPER](#submission_background_hpc_WRAPPER)   | string          | No       | -       | Prefix for binaries to be executed, e.g. srun                                                                                   |
+| [BATCH](#submission_background_hpc_BATCH)       | object          | No       | -       | Sets batch job arguments like walltime                                                                                          |
+| [ENV](#submission_background_hpc_ENV)           | object          | No       | -       | Sets environment variables                                                                                                      |
+| [MODULES](#submission_background_hpc_MODULES)   | object          | No       | -       | Sets modules to purge/use/unload/load or switch. To maintain the order decorate with comments to override the automatic sorting |
 
 <a name="submission_background_hpc_tasks"></a>
 #### Property `Config > submission > background_hpc > tasks`
@@ -5774,6 +5811,17 @@ must respect the following conditions
 | **Required** | No       |
 
 **Description:** Number of processors for this task
+
+<a name="submission_background_hpc_NPROC_IO"></a>
+#### Property `Config > submission > background_hpc > NPROC_IO`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `number` |
+| **Required** | No       |
+| **Default**  | `0`      |
+
+**Description:** Number of io processors for this task, only applicable for tasks involving the forecast model
 
 <a name="submission_background_hpc_WRAPPER"></a>
 #### Property `Config > submission > background_hpc > WRAPPER`
@@ -5866,15 +5914,16 @@ must respect the following conditions
 
 **Description:** Defines the properties avilable for a submit group. See the existing submission files for examples
 
-| Property                           | Type            | Required | Default | Title/Description                                                                                                               |
-| ---------------------------------- | --------------- | -------- | ------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| [tasks](#submission_gnu_tasks)     | array of string | No       | -       | List of tasks belonging to this group                                                                                           |
-| [SCHOST](#submission_gnu_SCHOST)   | string          | No       | -       | Name of the host where the job runs                                                                                             |
-| [NPROC](#submission_gnu_NPROC)     | number          | No       | -       | Number of processors for this task                                                                                              |
-| [WRAPPER](#submission_gnu_WRAPPER) | string          | No       | -       | Prefix for binaries to be executed, e.g. srun                                                                                   |
-| [BATCH](#submission_gnu_BATCH)     | object          | No       | -       | Sets batch job arguments like walltime                                                                                          |
-| [ENV](#submission_gnu_ENV)         | object          | No       | -       | Sets environment variables                                                                                                      |
-| [MODULES](#submission_gnu_MODULES) | object          | No       | -       | Sets modules to purge/use/unload/load or switch. To maintain the order decorate with comments to override the automatic sorting |
+| Property                             | Type            | Required | Default | Title/Description                                                                                                               |
+| ------------------------------------ | --------------- | -------- | ------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| [tasks](#submission_gnu_tasks)       | array of string | No       | -       | List of tasks belonging to this group                                                                                           |
+| [SCHOST](#submission_gnu_SCHOST)     | string          | No       | -       | Name of the host where the job runs                                                                                             |
+| [NPROC](#submission_gnu_NPROC)       | number          | No       | -       | Number of processors for this task                                                                                              |
+| [NPROC_IO](#submission_gnu_NPROC_IO) | number          | No       | 0       | Number of io processors for this task, only applicable for tasks involving the forecast model                                   |
+| [WRAPPER](#submission_gnu_WRAPPER)   | string          | No       | -       | Prefix for binaries to be executed, e.g. srun                                                                                   |
+| [BATCH](#submission_gnu_BATCH)       | object          | No       | -       | Sets batch job arguments like walltime                                                                                          |
+| [ENV](#submission_gnu_ENV)           | object          | No       | -       | Sets environment variables                                                                                                      |
+| [MODULES](#submission_gnu_MODULES)   | object          | No       | -       | Sets modules to purge/use/unload/load or switch. To maintain the order decorate with comments to override the automatic sorting |
 
 <a name="submission_gnu_tasks"></a>
 #### Property `Config > submission > gnu > tasks`
@@ -5925,6 +5974,17 @@ must respect the following conditions
 | **Required** | No       |
 
 **Description:** Number of processors for this task
+
+<a name="submission_gnu_NPROC_IO"></a>
+#### Property `Config > submission > gnu > NPROC_IO`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `number` |
+| **Required** | No       |
+| **Default**  | `0`      |
+
+**Description:** Number of io processors for this task, only applicable for tasks involving the forecast model
 
 <a name="submission_gnu_WRAPPER"></a>
 #### Property `Config > submission > gnu > WRAPPER`
