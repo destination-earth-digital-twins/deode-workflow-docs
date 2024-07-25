@@ -95,6 +95,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../development_guidelines_link.html#local-testing">Local testing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../development_guidelines_link.html#run-and-fix-toml-formatter-errors-in-place">Run and fix toml-formatter errors in place</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../development_guidelines_link.html#run-linters-and-exit-with-an-error-if-non-linted-code-is-detected">Run linters and exit with an error if non-linted code is detected</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../development_guidelines_link.html#run-linters-and-attempt-to-fix-eventually-encountered-errors">Run linters and <strong>attempt</strong> to fix eventually encountered errors</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../development_guidelines_link.html#runthe-typical-checks-for-things-you-need-to-fix-prior-to-a-push">Runthe typical checks for things you need to fix prior to a push</a></li>
@@ -986,7 +987,7 @@
 </pre></div>
 </div>
 <ol class="arabic simple">
-<li><p>217.71.195.251 (this is the de330-prod server for <strong>production only</strong>)</p></li>
+<li><p>217.71.194.199 (this is the de330-prod server for <strong>production only</strong>)</p></li>
 <li><p>217.71.194.208 (this is the de330-dev server for <strong>normal use</strong>)</p></li>
 </ol>
 <p>These are the 2 ecflow servers integrated with LUMI currently, ‘Develop’ (dev-330) and ‘Production’ (prod-330).</p>
@@ -1047,10 +1048,10 @@
 <li><p>You need to copy the following <strong>encrypted</strong> files from this location: (/pfs/lustrep4/projappl/project_465000527/shared_dev/LUMI_ECFLOW/)</p></li>
 </ol>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>adelsaid@uan02:/pfs/lustrep4/projappl/project_465000527/shared_dev/LUMI_ECFLOW&gt;<span class="w"> </span>ls
-<span class="m">217</span>.71.194.208.8443.crt.gpg<span class="w">  </span><span class="m">217</span>.71.195.251.8443.crt.gpg<span class="w">  </span>ecf.custom_passwd.gpg<span class="w">	</span>id_rsa_troika_DEV.pub.gpg<span class="w">   </span>id_rsa_troika_PROD.pub.gpg
+<span class="m">217</span>.71.194.208.8443.crt.gpg<span class="w">  </span><span class="m">217</span>.71.194.199.8443.crt.gpg<span class="w">  </span>ecf.custom_passwd.gpg<span class="w">	</span>id_rsa_troika_DEV.pub.gpg<span class="w">   </span>id_rsa_troika_PROD.pub.gpg
 </pre></div>
 </div>
-<p>a) 217.71.194.208.8443.crt.gpg 217.71.195.251.8443.crt.gpg (ssl certificates for prod and dev servers)</p>
+<p>a) 217.71.194.208.8443.crt.gpg 217.71.194.199.8443.crt.gpg (ssl certificates for prod and dev servers)</p>
 <p>b) ecf.custom_passwd.gpg (ecf custom password file for prod and dev servers)</p>
 <p>c) id_rsa_troika_DEV.pub.gpg and id_rsa_troika_PROD.pub.gpg (troika public keys for both servers, both are needed)</p>
 <ol class="arabic simple" start="3">
@@ -1069,7 +1070,7 @@
 <ol class="arabic simple" start="5">
 <li><p>Finally, create soft links for <strong>both</strong> certificate files:</p></li>
 </ol>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ln<span class="w"> </span>-sf<span class="w"> </span>~/.ecflowrc/ssl/217.71.195.251.8443.crt<span class="w"> </span>~/.ecflowrc/ssl/de330-ecflow-prod.8443.crt
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ln<span class="w"> </span>-sf<span class="w"> </span>~/.ecflowrc/ssl/217.71.194.199.8443.crt<span class="w"> </span>~/.ecflowrc/ssl/de330-ecflow-prod.8443.crt
 ln<span class="w"> </span>-sf<span class="w"> </span>~/.ecflowrc/ssl/217.71.194.208.8443.crt<span class="w"> </span>~/.ecflowrc/ssl/de330-ecflow-dev.8443.crt
 </pre></div>
 </div>
@@ -1077,9 +1078,9 @@ ln<span class="w"> </span>-sf<span class="w"> </span>~/.ecflowrc/ssl/217.71.194.
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>deode-py3.10<span class="o">)</span><span class="w"> </span>adelsaid@uan03:/scratch/project_465000527/adelsaid/git/github/draelsaid/Deode-Prototype&gt;<span class="w"> </span>ls<span class="w"> </span>-l<span class="w"> </span>~/.ecflowrc/ssl/
 total<span class="w"> </span><span class="m">8</span>
 -rw-rw----<span class="w"> </span><span class="m">1</span><span class="w"> </span>adelsaid<span class="w"> </span>adelsaid<span class="w"> </span><span class="m">1103</span><span class="w"> </span>Apr<span class="w"> </span><span class="m">24</span><span class="w"> </span><span class="m">17</span>:58<span class="w"> </span><span class="m">217</span>.71.194.208.8443.crt
--rw-rw----<span class="w"> </span><span class="m">1</span><span class="w"> </span>adelsaid<span class="w"> </span>adelsaid<span class="w"> </span><span class="m">1107</span><span class="w"> </span>Oct<span class="w"> </span><span class="m">18</span><span class="w">  </span><span class="m">2023</span><span class="w"> </span><span class="m">217</span>.71.195.251.8443.crt
+-rw-rw----<span class="w"> </span><span class="m">1</span><span class="w"> </span>adelsaid<span class="w"> </span>adelsaid<span class="w"> </span><span class="m">1107</span><span class="w"> </span>Oct<span class="w"> </span><span class="m">18</span><span class="w">  </span><span class="m">2023</span><span class="w"> </span><span class="m">217</span>.71.194.208.8443.crt
 lrwxrwxrwx<span class="w"> </span><span class="m">1</span><span class="w"> </span>adelsaid<span class="w"> </span>adelsaid<span class="w">   </span><span class="m">54</span><span class="w"> </span>Apr<span class="w"> </span><span class="m">29</span><span class="w"> </span><span class="m">11</span>:00<span class="w"> </span>de330-ecflow-dev.8443.crt<span class="w"> </span>-&gt;<span class="w"> </span>/users/adelsaid//.ecflowrc/ssl/217.71.194.208.8443.crt
-lrwxrwxrwx<span class="w"> </span><span class="m">1</span><span class="w"> </span>adelsaid<span class="w"> </span>adelsaid<span class="w">   </span><span class="m">54</span><span class="w"> </span>Apr<span class="w"> </span><span class="m">29</span><span class="w"> </span><span class="m">11</span>:00<span class="w"> </span>de330-ecflow-prod.8443.crt<span class="w"> </span>-&gt;<span class="w"> </span>/users/adelsaid//.ecflowrc/ssl/217.71.195.251.8443.crt
+lrwxrwxrwx<span class="w"> </span><span class="m">1</span><span class="w"> </span>adelsaid<span class="w"> </span>adelsaid<span class="w">   </span><span class="m">54</span><span class="w"> </span>Apr<span class="w"> </span><span class="m">29</span><span class="w"> </span><span class="m">11</span>:00<span class="w"> </span>de330-ecflow-prod.8443.crt<span class="w"> </span>-&gt;<span class="w"> </span>/users/adelsaid//.ecflowrc/ssl/217.71.194.199.8443.crt
 </pre></div>
 </div>
 <p>and</p>
@@ -1110,7 +1111,7 @@ ecf.custom_passwd<span class="w">  </span>ssl
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>adelsaid@uan02:/users/adelsaid&gt;<span class="w"> </span>cat<span class="w"> </span>/users/USERNAME/.ecflowrc/ecf.custom_passwd
 <span class="m">5</span>.11.3
 de_330<span class="w"> </span><span class="m">217</span>.71.194.208<span class="w"> </span><span class="m">8443</span><span class="w"> </span><span class="o">{</span>PASSWORD_OBTAINED_FROM_ECMWF<span class="o">}</span>
-de_330<span class="w"> </span><span class="m">217</span>.71.195.251<span class="w"> </span><span class="m">8443</span><span class="w"> </span><span class="o">{</span>PASSWORD_OBTAINED_FROM_ECMWF<span class="o">}</span>
+de_330<span class="w"> </span><span class="m">217</span>.71.194.199<span class="w"> </span><span class="m">8443</span><span class="w"> </span><span class="o">{</span>PASSWORD_OBTAINED_FROM_ECMWF<span class="o">}</span>
 </pre></div>
 </div>
 <p><strong>Note: ecf.custom_passwd is the same for every user</strong>.</p>
@@ -1118,8 +1119,8 @@ de_330<span class="w"> </span><span class="m">217</span>.71.195.251<span class="
 <section id="testing-ecflow-server-connection">
 <h3>Testing Ecflow server connection<a class="headerlink" href="#testing-ecflow-server-connection" title="Link to this heading"></a></h3>
 <p>Only once these steps are completed, test your connection by pinging to <strong>each server</strong> (you have to load the ecflow module first as described in the next section):</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>adelsaid@uan02:/scratch/project_465000527/adelsaid/git/github/draelsaid/Deode-Prototype&gt;<span class="w"> </span>ecflow_client<span class="w"> </span>--ping<span class="w"> </span>--host<span class="w"> </span><span class="m">217</span>.71.195.251<span class="w"> </span>--port<span class="w"> </span><span class="m">8443</span>
-ping<span class="w"> </span>server<span class="o">(</span><span class="m">217</span>.71.195.251:8443<span class="o">)</span><span class="w"> </span>succeeded<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">00</span>:00:00.171897<span class="w">  </span>~171<span class="w"> </span>milliseconds
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>adelsaid@uan02:/scratch/project_465000527/adelsaid/git/github/draelsaid/Deode-Prototype&gt;<span class="w"> </span>ecflow_client<span class="w"> </span>--ping<span class="w"> </span>--host<span class="w"> </span><span class="m">217</span>.71.194.199<span class="w"> </span>--port<span class="w"> </span><span class="m">8443</span>
+ping<span class="w"> </span>server<span class="o">(</span><span class="m">217</span>.71.194.199:8443<span class="o">)</span><span class="w"> </span>succeeded<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">00</span>:00:00.171897<span class="w">  </span>~171<span class="w"> </span>milliseconds
 adelsaid@uan02:/scratch/project_465000527/adelsaid/git/github/draelsaid/Deode-Prototype&gt;<span class="w"> </span>ecflow_client<span class="w"> </span>--ping<span class="w"> </span>--host<span class="w"> </span><span class="m">217</span>.71.194.208<span class="w"> </span>--port<span class="w"> </span><span class="m">8443</span>
 ping<span class="w"> </span>server<span class="o">(</span><span class="m">217</span>.71.194.208:8443<span class="o">)</span><span class="w"> </span>succeeded<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">00</span>:00:00.147990<span class="w">  </span>~147<span class="w"> </span>milliseconds
 </pre></div>
@@ -1140,7 +1141,7 @@ ecflow-user@de330-ecflow-dev:~$<span class="w"> </span>
 </pre></div>
 </div>
 <p>and</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>adelsaid@uan03:/users/adelsaid&gt;<span class="w"> </span>ssh<span class="w"> </span>ecflow-user@217.71.195.251
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>adelsaid@uan03:/users/adelsaid&gt;<span class="w"> </span>ssh<span class="w"> </span>ecflow-user@217.71.194.199
 </pre></div>
 </div>
 <p><strong>Note: Only once you have a working connection should you attempt to setup the Ecflow User Interface below.</strong></p>
@@ -1163,7 +1164,7 @@ ml<span class="w"> </span>scl-ecflow_23
 <li><p>On the ecflow_ui itself go to: “Servers &gt; Manage Servers &gt; Add Server” and set the following:</p></li>
 </ol>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Name</span><span class="p">:</span> <span class="n">de330</span><span class="o">-</span><span class="n">prod</span>
-<span class="n">Host</span><span class="p">:</span> <span class="mf">217.71.195.251</span>
+<span class="n">Host</span><span class="p">:</span> <span class="mf">217.71.194.199</span>
 <span class="n">Port</span><span class="p">:</span> <span class="mi">8443</span>
 <span class="n">Custom</span> <span class="n">user</span><span class="p">:</span> <span class="n">de_330</span>
 
@@ -1236,12 +1237,12 @@ ml<span class="w"> </span>scl-ecflow_23
 <ol class="arabic simple" start="6">
 <li><p>If you get an errors related to publickey, similar to this:</p></li>
 </ol>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ssh<span class="w"> </span>ecflow-user@217.71.195.251
-The<span class="w"> </span>authenticity<span class="w"> </span>of<span class="w"> </span>host<span class="w"> </span><span class="s1">&#39;217.71.195.251 (217.71.195.251)&#39;</span><span class="w"> </span>can<span class="s1">&#39;t be established.</span>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ssh<span class="w"> </span>ecflow-user@217.71.194.199
+The<span class="w"> </span>authenticity<span class="w"> </span>of<span class="w"> </span>host<span class="w"> </span><span class="s1">&#39;217.71.194.199 (217.71.194.199)&#39;</span><span class="w"> </span>can<span class="s1">&#39;t be established.</span>
 <span class="s1">ECDSA key fingerprint is ----</span>
 <span class="s1">Are you sure you want to continue connection (yes/no/[fingerprint])? yes</span>
-<span class="s1">Warning: Permanently added &#39;</span><span class="m">217</span>.71.195.251<span class="err">&#39;</span><span class="w"> </span><span class="o">(</span>ECDSA<span class="o">)</span><span class="w"> </span>to<span class="w"> </span>the<span class="w"> </span>list<span class="w"> </span>of<span class="w"> </span>known<span class="w"> </span>hosts.
-ecflow-user@217.71.195.251:<span class="w"> </span>Permission<span class="w"> </span>denied<span class="w"> </span><span class="o">(</span>publickey<span class="o">)</span>.
+<span class="s1">Warning: Permanently added &#39;</span><span class="m">217</span>.71.194.199<span class="err">&#39;</span><span class="w"> </span><span class="o">(</span>ECDSA<span class="o">)</span><span class="w"> </span>to<span class="w"> </span>the<span class="w"> </span>list<span class="w"> </span>of<span class="w"> </span>known<span class="w"> </span>hosts.
+ecflow-user@217.71.194.199:<span class="w"> </span>Permission<span class="w"> </span>denied<span class="w"> </span><span class="o">(</span>publickey<span class="o">)</span>.
 </pre></div>
 </div>
 <p>check:</p>
@@ -1265,7 +1266,7 @@ ecflow-user@217.71.195.251:<span class="w"> </span>Permission<span class="w"> </
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-07-19T08:58:11Z.
+      <span class="lastupdated">Last updated on 2024-07-25T08:28:52Z.
       </span></p>
   </div>
 
