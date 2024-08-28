@@ -395,6 +395,8 @@
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.os_utils.filepath_iterator"><code class="docutils literal notranslate"><span class="pre">filepath_iterator()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.os_utils.ping"><code class="docutils literal notranslate"><span class="pre">ping()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.os_utils.remove_empty_dirs"><code class="docutils literal notranslate"><span class="pre">remove_empty_dirs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.os_utils.resolve_path_relative_to_package"><code class="docutils literal notranslate"><span class="pre">resolve_path_relative_to_package()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.os_utils.strip_off_mount_path"><code class="docutils literal notranslate"><span class="pre">strip_off_mount_path()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.plugin">deode.plugin module</a><ul>
@@ -529,6 +531,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.toolbox.Platform"><code class="docutils literal notranslate"><span class="pre">Platform</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.toolbox.Platform.evaluate"><code class="docutils literal notranslate"><span class="pre">Platform.evaluate()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.toolbox.Platform.get_gen_macros"><code class="docutils literal notranslate"><span class="pre">Platform.get_gen_macros()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.toolbox.Platform.get_macros"><code class="docutils literal notranslate"><span class="pre">Platform.get_macros()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.toolbox.Platform.get_os_macros"><code class="docutils literal notranslate"><span class="pre">Platform.get_os_macros()</span></code></a></li>
@@ -1019,9 +1022,7 @@
     <span class="k">elif</span> <span class="n">deode_home_from_config</span> <span class="o">!=</span> <span class="s2">&quot;set-by-the-system&quot;</span><span class="p">:</span>
         <span class="n">deode_home</span> <span class="o">=</span> <span class="n">deode_home_from_config</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">deode_home</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;PWD&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">deode_home</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">deode_home</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="si">}</span><span class="s2">/..&quot;</span>
+        <span class="n">deode_home</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">GeneralConstants</span><span class="o">.</span><span class="n">PACKAGE_DIRECTORY</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">deode_home</span></div>
 
@@ -1067,7 +1068,7 @@
     <span class="n">config_dir</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">config_dir</span>
     <span class="n">known_hosts</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">host_file</span>
     <span class="k">if</span> <span class="n">known_hosts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">known_hosts</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">deode_home</span><span class="si">}</span><span class="s2">/deode/data/config_files/known_hosts.yml&quot;</span>
+        <span class="n">known_hosts</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">deode_home</span><span class="si">}</span><span class="s2">/data/config_files/known_hosts.yml&quot;</span>
     <span class="n">host</span> <span class="o">=</span> <span class="n">DeodeHost</span><span class="p">(</span><span class="n">known_hosts</span><span class="o">=</span><span class="n">known_hosts</span><span class="p">)</span>
     <span class="n">output_file</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">output_file</span>
     <span class="n">case</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">case</span>
@@ -1154,7 +1155,20 @@
     <span class="n">suite_name</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">config</span><span class="p">)</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">suite_name</span><span class="p">)</span>
     <span class="n">ecf_files_local</span> <span class="o">=</span> <span class="n">ecf_files</span>
 
-    <span class="n">troika_config_file</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">config</span><span class="p">)</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;troika.config_file&quot;</span><span class="p">])</span>
+    <span class="c1"># Evaluate and update ecf_deode_home</span>
+    <span class="n">ecf_deode_home</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span>
+        <span class="n">Platform</span><span class="p">(</span><span class="n">config</span><span class="p">)</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span>
+            <span class="n">config</span><span class="p">[</span><span class="s2">&quot;scheduler.ecfvars.ecf_deode_home&quot;</span><span class="p">],</span> <span class="n">object_</span><span class="o">=</span><span class="s2">&quot;deode.os_utils&quot;</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">update</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;scheduler&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;ecfvars&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;ecf_deode_home&quot;</span><span class="p">:</span> <span class="n">ecf_deode_home</span><span class="p">}}}</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">update</span><span class="o">=</span><span class="n">update</span><span class="p">)</span>
+
+    <span class="c1"># Get the troika config file - in case defined in ecfvars, use that to allow</span>
+    <span class="c1"># for scheduler specific troika config file</span>
+    <span class="n">troika_config_file</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">config</span><span class="p">)</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;scheduler.ecfvars.troika.config_file&quot;</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;troika.config_file&quot;</span><span class="p">])</span>
+    <span class="p">)</span>
     <span class="k">if</span> <span class="n">ecf_home</span> <span class="o">!=</span> <span class="n">joboutdir</span><span class="p">:</span>
         <span class="n">remote_troika_config_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
             <span class="n">ecf_files_remotely</span><span class="p">,</span> <span class="n">suite_name</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">troika_config_file</span><span class="p">)</span>
@@ -1493,7 +1507,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-08-26T13:29:10Z.
+      <span class="lastupdated">Last updated on 2024-08-28T15:09:55Z.
       </span></p>
   </div>
 

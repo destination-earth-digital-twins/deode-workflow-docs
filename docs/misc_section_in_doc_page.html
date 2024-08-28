@@ -398,6 +398,8 @@
 <li class="toctree-l3"><a class="reference internal" href="deode.html#deode.os_utils.filepath_iterator"><code class="docutils literal notranslate"><span class="pre">filepath_iterator()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="deode.html#deode.os_utils.ping"><code class="docutils literal notranslate"><span class="pre">ping()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="deode.html#deode.os_utils.remove_empty_dirs"><code class="docutils literal notranslate"><span class="pre">remove_empty_dirs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="deode.html#deode.os_utils.resolve_path_relative_to_package"><code class="docutils literal notranslate"><span class="pre">resolve_path_relative_to_package()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="deode.html#deode.os_utils.strip_off_mount_path"><code class="docutils literal notranslate"><span class="pre">strip_off_mount_path()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="deode.html#module-deode.plugin">deode.plugin module</a><ul>
@@ -532,6 +534,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="deode.html#deode.toolbox.Platform"><code class="docutils literal notranslate"><span class="pre">Platform</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="deode.html#deode.toolbox.Platform.evaluate"><code class="docutils literal notranslate"><span class="pre">Platform.evaluate()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="deode.html#deode.toolbox.Platform.get_gen_macros"><code class="docutils literal notranslate"><span class="pre">Platform.get_gen_macros()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="deode.html#deode.toolbox.Platform.get_macros"><code class="docutils literal notranslate"><span class="pre">Platform.get_macros()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="deode.html#deode.toolbox.Platform.get_os_macros"><code class="docutils literal notranslate"><span class="pre">Platform.get_os_macros()</span></code></a></li>
@@ -1094,7 +1097,7 @@ $ mamba activate .conda/
 </section>
 </section>
 <p>The following section was automatically generated running
-<code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">doc</span> <span class="pre">config</span></code> on 2024-08-26T13:29:08.</p>
+<code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">doc</span> <span class="pre">config</span></code> on 2024-08-28T15:09:53.</p>
 <section id="config">
 <h2>Config<a class="headerlink" href="#config" title="Link to this heading"></a></h2>
 <p><strong>Title:</strong> Config</p>
@@ -3622,7 +3625,7 @@ $ mamba activate .conda/
 <tr class="row-odd"><td><p><a class="reference external" href="#system_namelists">namelists</a></p></td>
 <td><p>string</p></td>
 <td><p>No</p></td>
-<td><p>“&#64;DEODE_HOME&#64;/deode/data/namelists/&#64;CYCLE&#64;”</p></td>
+<td><p>“&#64;DEODE_HOME&#64;/data/namelists/&#64;CYCLE&#64;”</p></td>
 <td><p>Path to static namelists</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference external" href="#system_marsdir">marsdir</a></p></td>
@@ -3646,19 +3649,19 @@ $ mamba activate .conda/
 <tr class="row-odd"><td><p><a class="reference external" href="#system_sfx_input_definition">sfx_input_definition</a></p></td>
 <td><p>string</p></td>
 <td><p>No</p></td>
-<td><p>“&#64;DEODE_HOME&#64;/deode/data/input/&#64;CYCLE&#64;/sfx.json”</p></td>
+<td><p>“&#64;DEODE_HOME&#64;/data/input/&#64;CYCLE&#64;/sfx.json”</p></td>
 <td><p>Path to the surfex json config file</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference external" href="#system_forecast_input_definition">forecast_input_definition</a></p></td>
 <td><p>string</p></td>
 <td><p>No</p></td>
-<td><p>“&#64;DEODE_HOME&#64;/deode/data/input/&#64;CYCLE&#64;/forecast.json”</p></td>
+<td><p>“&#64;DEODE_HOME&#64;/data/input/&#64;CYCLE&#64;/forecast.json”</p></td>
 <td><p>Path to the forecast json config file</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference external" href="#system_c903_input_definition">c903_input_definition</a></p></td>
 <td><p>string</p></td>
 <td><p>No</p></td>
-<td><p>“&#64;DEODE_HOME&#64;/deode/data/input/&#64;CYCLE&#64;/c903.json”</p></td>
+<td><p>“&#64;DEODE_HOME&#64;/data/input/&#64;CYCLE&#64;/c903.json”</p></td>
 <td><p>Path to the c903 json config file</p></td>
 </tr>
 </tbody>
@@ -3952,7 +3955,7 @@ $ mamba activate .conda/
 <td><p>No</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>Default</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&quot;&#64;DEODE_HOME&#64;/deode/data/namelists/&#64;CYCLE&#64;&quot;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;&#64;DEODE_HOME&#64;/data/namelists/&#64;CYCLE&#64;&quot;</span></code></p></td>
 </tr>
 </tbody>
 </table>
@@ -4038,7 +4041,7 @@ $ mamba activate .conda/
 <td><p>No</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>Default</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&quot;&#64;DEODE_HOME&#64;/deode/data/input/&#64;CYCLE&#64;/sfx.json&quot;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;&#64;DEODE_HOME&#64;/data/input/&#64;CYCLE&#64;/sfx.json&quot;</span></code></p></td>
 </tr>
 </tbody>
 </table>
@@ -4061,7 +4064,7 @@ $ mamba activate .conda/
 <td><p>No</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>Default</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&quot;&#64;DEODE_HOME&#64;/deode/data/input/&#64;CYCLE&#64;/forecast.json&quot;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;&#64;DEODE_HOME&#64;/data/input/&#64;CYCLE&#64;/forecast.json&quot;</span></code></p></td>
 </tr>
 </tbody>
 </table>
@@ -4084,7 +4087,7 @@ $ mamba activate .conda/
 <td><p>No</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>Default</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&quot;&#64;DEODE_HOME&#64;/deode/data/input/&#64;CYCLE&#64;/c903.json&quot;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;&#64;DEODE_HOME&#64;/data/input/&#64;CYCLE&#64;/c903.json&quot;</span></code></p></td>
 </tr>
 </tbody>
 </table>
@@ -4790,7 +4793,7 @@ $ mamba activate .conda/
 <tr class="row-even"><td><p><a class="reference external" href="#troika_config_file">config_file</a></p></td>
 <td><p>string</p></td>
 <td><p>No</p></td>
-<td><p>“&#64;DEODE_HOME&#64;/deode/data/config_files/troika.yml”</p></td>
+<td><p>“&#64;DEODE_HOME&#64;/data/config_files/troika.yml”</p></td>
 <td><p>Troika config file</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference external" href="#troika_troika">troika</a></p></td>
@@ -4818,7 +4821,7 @@ $ mamba activate .conda/
 <td><p>No</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>Default</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&quot;&#64;DEODE_HOME&#64;/deode/data/config_files/troika.yml&quot;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;&#64;DEODE_HOME&#64;/data/config_files/troika.yml&quot;</span></code></p></td>
 </tr>
 </tbody>
 </table>
@@ -7405,7 +7408,7 @@ $ mamba activate .conda/
 <tr class="row-even"><td><p><a class="reference external" href="#extractsqlite_parameter_list">parameter_list</a></p></td>
 <td><p>string</p></td>
 <td><p>No</p></td>
-<td><p>“&#64;DEODE_HOME&#64;/deode/data/sqlite/param_list_&#64;CSC&#64;.json”</p></td>
+<td><p>“&#64;DEODE_HOME&#64;/data/sqlite/param_list_&#64;CSC&#64;.json”</p></td>
 <td><p>List of parameters to extract</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference external" href="#extractsqlite_sqlite_model_name">sqlite_model_name</a></p></td>
@@ -7429,7 +7432,7 @@ $ mamba activate .conda/
 <tr class="row-even"><td><p><a class="reference external" href="#extractsqlite_station_list">station_list</a></p></td>
 <td><p>string</p></td>
 <td><p>No</p></td>
-<td><p>“&#64;DEODE_HOME&#64;/deode/data/sqlite/station_list_default.csv”</p></td>
+<td><p>“&#64;DEODE_HOME&#64;/data/sqlite/station_list_default.csv”</p></td>
 <td><p>Station list used for extraction</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference external" href="#extractsqlite_selection">selection</a></p></td>
@@ -7457,7 +7460,7 @@ $ mamba activate .conda/
 <td><p>No</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>Default</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&quot;&#64;DEODE_HOME&#64;/deode/data/sqlite/param_list_&#64;CSC&#64;.json&quot;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;&#64;DEODE_HOME&#64;/data/sqlite/param_list_&#64;CSC&#64;.json&quot;</span></code></p></td>
 </tr>
 </tbody>
 </table>
@@ -7549,7 +7552,7 @@ $ mamba activate .conda/
 <td><p>No</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>Default</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&quot;&#64;DEODE_HOME&#64;/deode/data/sqlite/station_list_default.csv&quot;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;&#64;DEODE_HOME&#64;/data/sqlite/station_list_default.csv&quot;</span></code></p></td>
 </tr>
 </tbody>
 </table>
@@ -13247,6 +13250,12 @@ $ mamba activate .conda/
 <td><p>“”</p></td>
 <td><p>Ecflow remote user, only set when required</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference external" href="#scheduler_ecfvars_ecf_deode_home">ecf_deode_home</a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>Deode home directory stripped for parts specific to where a node is mounted on a cluster</p></td>
+</tr>
 </tbody>
 </table>
 <p><a name="scheduler_ecfvars_ecf_host"></a></p>
@@ -13476,6 +13485,26 @@ $ mamba activate .conda/
 </tbody>
 </table>
 <p><strong>Description:</strong> Ecflow remote user, only set when required</p>
+<p><a name="scheduler_ecfvars_ecf_deode_home"></a></p>
+</section>
+<section id="property-config-scheduler-ecfvars-ecf-deode-home">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span> <span class="pre">&gt;</span> <span class="pre">ecfvars</span> <span class="pre">&gt;</span> <span class="pre">ecf_deode_home</span></code><a class="headerlink" href="#property-config-scheduler-ecfvars-ecf-deode-home" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> Deode home directory stripped for parts specific to where a node is mounted on a cluster</p>
 <p><a name="submission"></a></p>
 </section>
 </section>
@@ -16924,7 +16953,7 @@ Example value of the archive folder path is “/ec/res4/scratch/bgmt/deode/CY48t
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-08-26T13:29:10Z.
+      <span class="lastupdated">Last updated on 2024-08-28T15:09:55Z.
       </span></p>
   </div>
 
