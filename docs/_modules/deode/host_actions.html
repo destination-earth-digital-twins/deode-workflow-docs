@@ -212,8 +212,9 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.config_parser.ConfigFileValidationError"><code class="docutils literal notranslate"><span class="pre">ConfigFileValidationError</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.config_parser.ConfigParserDefaults"><code class="docutils literal notranslate"><span class="pre">ConfigParserDefaults</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.config_parser.ConfigParserDefaults.CONFIG_DIRECTORY"><code class="docutils literal notranslate"><span class="pre">ConfigParserDefaults.CONFIG_DIRECTORY</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.config_parser.ConfigParserDefaults.CONFIG_PATH"><code class="docutils literal notranslate"><span class="pre">ConfigParserDefaults.CONFIG_PATH</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.config_parser.ConfigParserDefaults.DIRECTORY"><code class="docutils literal notranslate"><span class="pre">ConfigParserDefaults.DIRECTORY</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.config_parser.ConfigParserDefaults.DATA_DIRECTORY"><code class="docutils literal notranslate"><span class="pre">ConfigParserDefaults.DATA_DIRECTORY</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.config_parser.ConfigParserDefaults.MAIN_CONFIG_JSON_SCHEMA"><code class="docutils literal notranslate"><span class="pre">ConfigParserDefaults.MAIN_CONFIG_JSON_SCHEMA</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.config_parser.ConfigParserDefaults.MAIN_CONFIG_JSON_SCHEMA_PATH"><code class="docutils literal notranslate"><span class="pre">ConfigParserDefaults.MAIN_CONFIG_JSON_SCHEMA_PATH</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.config_parser.ConfigParserDefaults.PACKAGE_CONFIG_PATH"><code class="docutils literal notranslate"><span class="pre">ConfigParserDefaults.PACKAGE_CONFIG_PATH</span></code></a></li>
@@ -952,7 +953,7 @@
 
 <span class="kn">import</span> <span class="nn">yaml</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">GeneralConstants</span>
+<span class="kn">from</span> <span class="nn">.config_parser</span> <span class="kn">import</span> <span class="n">ConfigParserDefaults</span>
 <span class="kn">from</span> <span class="nn">.logs</span> <span class="kn">import</span> <span class="n">logger</span>
 
 
@@ -980,14 +981,12 @@
 <span class="sd">            known_host (dict): Known hosts config</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">known_hosts_file</span> <span class="o">=</span> <span class="n">known_hosts</span>
-        <span class="k">if</span> <span class="n">known_hosts_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">known_hosts_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-                <span class="n">GeneralConstants</span><span class="o">.</span><span class="n">PACKAGE_DIRECTORY</span><span class="p">,</span>
-                <span class="s2">&quot;data&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;config_files&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;known_hosts.yml&quot;</span><span class="p">,</span>
-            <span class="p">)</span>
+        <span class="n">known_hosts_file</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">ConfigParserDefaults</span><span class="o">.</span><span class="n">CONFIG_DIRECTORY</span> <span class="o">/</span> <span class="s2">&quot;known_hosts.yml&quot;</span>
+            <span class="k">if</span> <span class="n">known_hosts</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="n">known_hosts</span>
+        <span class="p">)</span>
+
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">known_hosts_file</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">infile</span><span class="p">:</span>
             <span class="n">known_hosts</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span>
 
@@ -1081,7 +1080,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-08-28T15:09:55Z.
+      <span class="lastupdated">Last updated on 2024-09-04T14:35:25Z.
       </span></p>
   </div>
 

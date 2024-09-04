@@ -212,8 +212,9 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.config_parser.ConfigFileValidationError"><code class="docutils literal notranslate"><span class="pre">ConfigFileValidationError</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.config_parser.ConfigParserDefaults"><code class="docutils literal notranslate"><span class="pre">ConfigParserDefaults</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.config_parser.ConfigParserDefaults.CONFIG_DIRECTORY"><code class="docutils literal notranslate"><span class="pre">ConfigParserDefaults.CONFIG_DIRECTORY</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.config_parser.ConfigParserDefaults.CONFIG_PATH"><code class="docutils literal notranslate"><span class="pre">ConfigParserDefaults.CONFIG_PATH</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.config_parser.ConfigParserDefaults.DIRECTORY"><code class="docutils literal notranslate"><span class="pre">ConfigParserDefaults.DIRECTORY</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.config_parser.ConfigParserDefaults.DATA_DIRECTORY"><code class="docutils literal notranslate"><span class="pre">ConfigParserDefaults.DATA_DIRECTORY</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.config_parser.ConfigParserDefaults.MAIN_CONFIG_JSON_SCHEMA"><code class="docutils literal notranslate"><span class="pre">ConfigParserDefaults.MAIN_CONFIG_JSON_SCHEMA</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.config_parser.ConfigParserDefaults.MAIN_CONFIG_JSON_SCHEMA_PATH"><code class="docutils literal notranslate"><span class="pre">ConfigParserDefaults.MAIN_CONFIG_JSON_SCHEMA_PATH</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.config_parser.ConfigParserDefaults.PACKAGE_CONFIG_PATH"><code class="docutils literal notranslate"><span class="pre">ConfigParserDefaults.PACKAGE_CONFIG_PATH</span></code></a></li>
@@ -979,10 +980,11 @@
 <span class="k">class</span> <span class="nc">ConfigParserDefaults</span><span class="p">(</span><span class="n">QuasiConstant</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Defaults related to the parsing of config files.&quot;&quot;&quot;</span>
 
-    <span class="n">DIRECTORY</span> <span class="o">=</span> <span class="n">GeneralConstants</span><span class="o">.</span><span class="n">PACKAGE_DIRECTORY</span> <span class="o">/</span> <span class="s2">&quot;data&quot;</span> <span class="o">/</span> <span class="s2">&quot;config_files&quot;</span>
-    <span class="n">PACKAGE_INCLUDE_DIR</span> <span class="o">=</span> <span class="n">DIRECTORY</span> <span class="o">/</span> <span class="s2">&quot;include&quot;</span>
+    <span class="n">DATA_DIRECTORY</span> <span class="o">=</span> <span class="n">GeneralConstants</span><span class="o">.</span><span class="n">PACKAGE_DIRECTORY</span> <span class="o">/</span> <span class="s2">&quot;data&quot;</span>
+    <span class="n">CONFIG_DIRECTORY</span> <span class="o">=</span> <span class="n">DATA_DIRECTORY</span> <span class="o">/</span> <span class="s2">&quot;config_files&quot;</span>
+    <span class="n">PACKAGE_INCLUDE_DIR</span> <span class="o">=</span> <span class="n">CONFIG_DIRECTORY</span> <span class="o">/</span> <span class="s2">&quot;include&quot;</span>
 
-    <span class="n">PACKAGE_CONFIG_PATH</span> <span class="o">=</span> <span class="p">(</span><span class="n">DIRECTORY</span> <span class="o">/</span> <span class="s2">&quot;config.toml&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">(</span><span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">PACKAGE_CONFIG_PATH</span> <span class="o">=</span> <span class="p">(</span><span class="n">CONFIG_DIRECTORY</span> <span class="o">/</span> <span class="s2">&quot;config.toml&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">(</span><span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="c1"># Define the default path to the config file</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">CONFIG_PATH</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;DEODE_CONFIG_PATH&quot;</span><span class="p">,</span> <span class="s2">&quot;config.toml&quot;</span><span class="p">))</span>
@@ -990,7 +992,7 @@
     <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
         <span class="n">CONFIG_PATH</span> <span class="o">=</span> <span class="n">PACKAGE_CONFIG_PATH</span>
 
-    <span class="n">SCHEMAS_DIRECTORY</span> <span class="o">=</span> <span class="n">DIRECTORY</span> <span class="o">/</span> <span class="s2">&quot;config_file_schemas&quot;</span>
+    <span class="n">SCHEMAS_DIRECTORY</span> <span class="o">=</span> <span class="n">CONFIG_DIRECTORY</span> <span class="o">/</span> <span class="s2">&quot;config_file_schemas&quot;</span>
     <span class="n">MAIN_CONFIG_JSON_SCHEMA_PATH</span> <span class="o">=</span> <span class="n">SCHEMAS_DIRECTORY</span> <span class="o">/</span> <span class="s2">&quot;main_config_schema.json&quot;</span>
     <span class="n">MAIN_CONFIG_JSON_SCHEMA</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">MAIN_CONFIG_JSON_SCHEMA_PATH</span><span class="o">.</span><span class="n">read_text</span><span class="p">())</span></div>
 
@@ -1147,7 +1149,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="n">json_schema</span><span class="p">,</span>
-        <span class="n">include_dir</span><span class="o">=</span><span class="n">ConfigParserDefaults</span><span class="o">.</span><span class="n">DIRECTORY</span><span class="p">,</span>
+        <span class="n">include_dir</span><span class="o">=</span><span class="n">ConfigParserDefaults</span><span class="o">.</span><span class="n">CONFIG_DIRECTORY</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialise an instance with an arbitrary number of entries &amp; validate them.&quot;&quot;&quot;</span>
@@ -1282,7 +1284,7 @@
 <span class="k">def</span> <span class="nf">_expand_config_include_section</span><span class="p">(</span>
     <span class="n">raw_config</span><span class="p">,</span>
     <span class="n">json_schema</span><span class="p">,</span>
-    <span class="n">config_include_search_dir</span><span class="o">=</span><span class="n">ConfigParserDefaults</span><span class="o">.</span><span class="n">DIRECTORY</span><span class="p">,</span>
+    <span class="n">config_include_search_dir</span><span class="o">=</span><span class="n">ConfigParserDefaults</span><span class="o">.</span><span class="n">CONFIG_DIRECTORY</span><span class="p">,</span>
     <span class="n">schemas_path</span><span class="o">=</span><span class="n">ConfigParserDefaults</span><span class="o">.</span><span class="n">SCHEMAS_DIRECTORY</span><span class="p">,</span>
     <span class="n">_parent_sections</span><span class="o">=</span><span class="p">(),</span>
 <span class="p">):</span>
@@ -1382,7 +1384,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-08-28T15:09:55Z.
+      <span class="lastupdated">Last updated on 2024-09-04T14:35:25Z.
       </span></p>
   </div>
 
