@@ -1987,6 +1987,9 @@
 <span class="sd">        Args:</span>
 <span class="sd">            resource (Resource): Resource.</span>
 
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: If directory is not created</span>
+
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: True if success</span>
 
@@ -1998,10 +2001,23 @@
         <span class="n">ssh</span> <span class="o">=</span> <span class="n">SSHConnection</span><span class="p">({</span><span class="s2">&quot;host&quot;</span><span class="p">:</span> <span class="n">remote_host</span><span class="p">},</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;scp src=</span><span class="si">{}</span><span class="s2"> to dst=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
-            <span class="n">ssh</span><span class="o">.</span><span class="n">sendfile</span><span class="p">(</span><span class="n">remote_file</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
+            <span class="n">ssh</span><span class="o">.</span><span class="n">getfile</span><span class="p">(</span><span class="n">remote_file</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">remote_dir</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">iret</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">tries</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">while</span> <span class="n">iret</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">tries</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">:</span>
+                    <span class="n">cmd</span> <span class="o">=</span> <span class="n">ssh</span><span class="o">.</span><span class="n">execute</span><span class="p">([</span><span class="s2">&quot;ls&quot;</span><span class="p">,</span> <span class="n">remote_dir</span><span class="p">])</span>
+                    <span class="n">cmd</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
+                    <span class="n">iret</span> <span class="o">=</span> <span class="n">cmd</span><span class="o">.</span><span class="n">returncode</span>
+                    <span class="k">if</span> <span class="n">iret</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">ssh</span><span class="o">.</span><span class="n">execute</span><span class="p">([</span><span class="s2">&quot;mkdir&quot;</span><span class="p">,</span> <span class="s2">&quot;-p&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">remote_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">])</span>
+                    <span class="n">tries</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="k">if</span> <span class="n">iret</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not create remote directory: </span><span class="si">{</span><span class="n">remote_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;scp src=</span><span class="si">{}</span><span class="s2"> to dst=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
-            <span class="n">ssh</span><span class="o">.</span><span class="n">execute</span><span class="p">([</span><span class="s2">&quot;mkdir&quot;</span><span class="p">,</span> <span class="s2">&quot;-p&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">remote_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">])</span>
             <span class="n">ssh</span><span class="o">.</span><span class="n">sendfile</span><span class="p">(</span><span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="n">remote_file</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="kc">True</span></div>
@@ -2035,17 +2051,23 @@
 <span class="sd">        Args:</span>
 <span class="sd">            resource (Resource): Resource.</span>
 
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: If expver not set</span>
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: True if success</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">rules</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;fdb.negative_rules&quot;</span><span class="p">])</span>
         <span class="n">grib_set</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;fdb.grib_set&quot;</span><span class="p">])</span>
-        <span class="n">grib_set</span><span class="p">[</span><span class="s2">&quot;expver&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general&quot;</span><span class="p">][</span><span class="s2">&quot;cnmexp&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s2">&quot;expver&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">grib_set</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Please set expver in fdb.grib_set before archiving to FDB&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;and consult documentation before selecting expver&quot;</span><span class="p">)</span>
+
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Please set expver before archiving to FDB&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;FDB not yet implemented for </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">resource</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Archiving &quot;</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="s2">&quot; with pyfdb&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Archiving </span><span class="si">{}</span><span class="s2"> with pyfdb&quot;</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
 
             <span class="c1"># Create rules-file, temp files to replace $2 and temp.grib</span>
             <span class="n">temp1</span> <span class="o">=</span> <span class="s2">&quot;temp1.grib&quot;</span>
@@ -2130,7 +2152,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-09-05T08:30:53Z.
+      <span class="lastupdated">Last updated on 2024-09-06T06:26:46Z.
       </span></p>
   </div>
 
