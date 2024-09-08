@@ -551,6 +551,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="deode.html#deode.toolbox.Provider"><code class="docutils literal notranslate"><span class="pre">Provider</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="deode.html#deode.toolbox.Provider.create_missing_dir"><code class="docutils literal notranslate"><span class="pre">Provider.create_missing_dir()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="deode.html#deode.toolbox.Provider.create_resource"><code class="docutils literal notranslate"><span class="pre">Provider.create_resource()</span></code></a></li>
 </ul>
 </li>
@@ -676,11 +677,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="misc_section_in_doc_page.html#property-config-include">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">include</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="misc_section_in_doc_page.html#property-config-archiving">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="misc_section_in_doc_page.html#property-config-archiving-paths">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">paths</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="misc_section_in_doc_page.html#property-config-archiving-default">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">default</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="misc_section_in_doc_page.html#property-config-archiving-hour">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">hour</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="misc_section_in_doc_page.html#property-config-archiving-static">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">static</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="misc_section_in_doc_page.html#property-config-archiving-settings">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">settings</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="misc_section_in_doc_page.html#property-config-archiving-prefix">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">prefix</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="misc_section_in_doc_page.html#property-config-cleaning">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span></code></a><ul>
@@ -744,7 +741,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="misc_section_in_doc_page.html#property-config-platform">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">platform</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="misc_section_in_doc_page.html#property-config-platform-archive-type">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">platform</span> <span class="pre">&gt;</span> <span class="pre">archive_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="misc_section_in_doc_page.html#property-config-platform-archive-types">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">platform</span> <span class="pre">&gt;</span> <span class="pre">archive_types</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="misc_section_in_doc_page.html#property-config-platform-ecoclim-data-path">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">platform</span> <span class="pre">&gt;</span> <span class="pre">ecoclim_data_path</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="misc_section_in_doc_page.html#property-config-platform-deode-home">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">platform</span> <span class="pre">&gt;</span> <span class="pre">deode_home</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="misc_section_in_doc_page.html#property-config-platform-pgd-data-path">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">platform</span> <span class="pre">&gt;</span> <span class="pre">pgd_data_path</span></code></a></li>
@@ -956,22 +953,29 @@
 <p>ARCHIVEHOUR // ARCHIVESTATIC.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="deode.tasks.archive.Archive">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Archive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/tasks/archive.html#Archive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.tasks.archive.Archive" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Archive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datatype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/tasks/archive.html#Archive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.tasks.archive.Archive" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#deode.tasks.base.Task" title="deode.tasks.base.Task"><code class="xref py py-class docutils literal notranslate"><span class="pre">Task</span></code></a></p>
 <p>Archving data.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="deode.tasks.archive.Archive.archive">
-<span class="sig-name descname"><span class="pre">archive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pattern</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outpath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inpath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/tasks/archive.html#Archive.archive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.tasks.archive.Archive.archive" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">archive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pattern</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inpath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outpath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">archive_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/tasks/archive.html#Archive.archive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.tasks.archive.Archive.archive" title="Link to this definition"></a></dt>
 <dd><p>Send files to the file manager.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>pattern</strong> (<em>str</em><em>,</em><em>list</em>) – string of list of patterns to search for</p></li>
-<li><p><strong>outpath</strong> (<em>str</em>) – relative path on the output archive</p></li>
 <li><p><strong>inpath</strong> (<em>str</em>) – Full path on the input archive</p></li>
+<li><p><strong>outpath</strong> (<em>str</em>) – relative path on the output archive</p></li>
+<li><p><strong>archive_type</strong> (<em>str</em><em>, </em><em>optional</em>) – Archive type. Defaults to None.</p></li>
 </ul>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deode.tasks.archive.Archive.execute">
+<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/tasks/archive.html#Archive.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.tasks.archive.Archive.execute" title="Link to this definition"></a></dt>
+<dd><p>Loops over archive choices.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -987,29 +991,6 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ArchiveHour</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/tasks/archive.html#ArchiveHour"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.tasks.archive.ArchiveHour" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#deode.tasks.archive.Archive" title="deode.tasks.archive.Archive"><code class="xref py py-class docutils literal notranslate"><span class="pre">Archive</span></code></a></p>
 <p>Archving task for time dependent data.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="deode.tasks.archive.ArchiveHour.archive_loop">
-<span class="sig-name descname"><span class="pre">archive_loop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ftype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conv_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inpath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outpath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/tasks/archive.html#ArchiveHour.archive_loop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.tasks.archive.ArchiveHour.archive_loop" title="Link to this definition"></a></dt>
-<dd><p>Loop over a list fo files and archive them.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ftype</strong> (<em>str</em>) – Filetype</p></li>
-<li><p><strong>conv_type</strong> (<em>str</em>) – Converted file type</p></li>
-<li><p><strong>inpath</strong> – Absolute path on the input archive</p></li>
-<li><p><strong>outpath</strong> – Relatve path on the output archive</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="deode.tasks.archive.ArchiveHour.execute">
-<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/tasks/archive.html#ArchiveHour.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.tasks.archive.ArchiveHour.execute" title="Link to this definition"></a></dt>
-<dd><p>Run task.</p>
-<p>Define run sequence.</p>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="py class">
@@ -1017,13 +998,6 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ArchiveStatic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/tasks/archive.html#ArchiveStatic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.tasks.archive.ArchiveStatic" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#deode.tasks.archive.Archive" title="deode.tasks.archive.Archive"><code class="xref py py-class docutils literal notranslate"><span class="pre">Archive</span></code></a></p>
 <p>Archving task for static data.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="deode.tasks.archive.ArchiveStatic.execute">
-<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/tasks/archive.html#ArchiveStatic.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.tasks.archive.ArchiveStatic.execute" title="Link to this definition"></a></dt>
-<dd><p>Run task.</p>
-<p>Define run sequence.</p>
-</dd></dl>
-
 </dd></dl>
 
 </section>
@@ -2406,7 +2380,7 @@ It is only called if n_io_merge=0.</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-09-06T06:26:46Z.
+      <span class="lastupdated">Last updated on 2024-09-08T16:57:14Z.
       </span></p>
   </div>
 

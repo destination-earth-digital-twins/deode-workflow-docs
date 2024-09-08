@@ -548,6 +548,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.toolbox.Provider"><code class="docutils literal notranslate"><span class="pre">Provider</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.toolbox.Provider.create_missing_dir"><code class="docutils literal notranslate"><span class="pre">Provider.create_missing_dir()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.toolbox.Provider.create_resource"><code class="docutils literal notranslate"><span class="pre">Provider.create_resource()</span></code></a></li>
 </ul>
 </li>
@@ -673,11 +674,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-include">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">include</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-archiving">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-archiving-paths">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">paths</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-archiving-default">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">default</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-archiving-hour">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">hour</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-archiving-static">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">static</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-archiving-settings">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">settings</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-archiving-prefix">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">prefix</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-cleaning">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span></code></a><ul>
@@ -741,7 +738,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-platform">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">platform</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-platform-archive-type">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">platform</span> <span class="pre">&gt;</span> <span class="pre">archive_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-platform-archive-types">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">platform</span> <span class="pre">&gt;</span> <span class="pre">archive_types</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-platform-ecoclim-data-path">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">platform</span> <span class="pre">&gt;</span> <span class="pre">ecoclim_data_path</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-platform-deode-home">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">platform</span> <span class="pre">&gt;</span> <span class="pre">deode_home</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-platform-pgd-data-path">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">platform</span> <span class="pre">&gt;</span> <span class="pre">pgd_data_path</span></code></a></li>
@@ -958,6 +955,7 @@
 
 <span class="kn">from</span> <span class="nn">.datetime_utils</span> <span class="kn">import</span> <span class="n">as_datetime</span><span class="p">,</span> <span class="n">get_decade</span>
 <span class="kn">from</span> <span class="nn">.logs</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span> <span class="nn">.os_utils</span> <span class="kn">import</span> <span class="n">deodemakedirs</span>
 
 
 <div class="viewcode-block" id="ArchiveError">
@@ -991,9 +989,24 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">=</span> <span class="n">identifier</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fetch</span> <span class="o">=</span> <span class="n">fetch</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unix_group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;platform.unix_group&quot;</span><span class="p">)</span>
+
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
             <span class="s2">&quot;Constructed Base Provider object. </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch</span>
         <span class="p">)</span>
+
+<div class="viewcode-block" id="Provider.create_missing_dir">
+<a class="viewcode-back" href="../../deode.html#deode.toolbox.Provider.create_missing_dir">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_missing_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a directory if missing.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            target (str): Name of target</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">target_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">target_dir</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">target_dir</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">deodemakedirs</span><span class="p">(</span><span class="n">target_dir</span><span class="p">,</span> <span class="n">unixgroup</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">unix_group</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="Provider.create_resource">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.Provider.create_resource">[docs]</a>
@@ -1047,11 +1060,12 @@
 
 <div class="viewcode-block" id="Platform.get_value">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.Platform.get_value">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">setting</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">setting</span><span class="p">,</span> <span class="n">alt</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the config value with substition.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            setting (str): Type of variable to substitute</span>
+<span class="sd">            alt (str): Alternative return value</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: Value from config with substituted variables</span>
@@ -1061,16 +1075,17 @@
             <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="n">setting</span><span class="p">]</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span></div>
+            <span class="k">return</span> <span class="n">alt</span></div>
 
 
 <div class="viewcode-block" id="Platform.get_platform_value">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.Platform.get_platform_value">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_platform_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">role</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_platform_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">role</span><span class="p">,</span> <span class="n">alt</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the path.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            role (str): Type of variable to substitute</span>
+<span class="sd">            alt (str): Alternative return value</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: Value from platform.[role]</span>
@@ -1081,7 +1096,7 @@
             <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;platform.</span><span class="si">{</span><span class="n">role</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span></div>
+            <span class="k">return</span> <span class="n">alt</span></div>
 
 
 <div class="viewcode-block" id="Platform.get_platform">
@@ -1482,8 +1497,6 @@
 <span class="sd">            tuple: provider, resource</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">aloc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;archiving.paths.aloc&quot;</span><span class="p">)</span>
-
         <span class="n">destination</span> <span class="o">=</span> <span class="n">LocalFileOnDisk</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">destination</span><span class="p">,</span> <span class="n">basetime</span><span class="o">=</span><span class="n">basetime</span><span class="p">,</span> <span class="n">validtime</span><span class="o">=</span><span class="n">validtime</span>
         <span class="p">)</span>
@@ -1822,6 +1835,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">create_missing_dir</span><span class="p">(</span><span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;cp </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cp </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># noqa S605</span>
                 <span class="k">return</span> <span class="kc">True</span>
@@ -1830,6 +1844,7 @@
             <span class="k">return</span> <span class="kc">False</span>
 
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">create_missing_dir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;cp </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
             <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cp </span><span class="si">{</span><span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># noqa S605</span>
             <span class="k">return</span> <span class="kc">True</span>
@@ -1870,6 +1885,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">create_missing_dir</span><span class="p">(</span><span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;mv </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;mv </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># noqa S605</span>
                 <span class="k">return</span> <span class="kc">True</span>
@@ -1878,6 +1894,7 @@
             <span class="k">return</span> <span class="kc">False</span>
 
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">create_missing_dir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;mv </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
             <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;mv </span><span class="si">{</span><span class="n">resource</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># noqa S605</span>
             <span class="k">return</span> <span class="kc">True</span>
@@ -2060,10 +2077,12 @@
         <span class="n">rules</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;fdb.negative_rules&quot;</span><span class="p">])</span>
         <span class="n">grib_set</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;fdb.grib_set&quot;</span><span class="p">])</span>
         <span class="k">if</span> <span class="s2">&quot;expver&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">grib_set</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Please set expver in fdb.grib_set before archiving to FDB&quot;</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;and consult documentation before selecting expver&quot;</span><span class="p">)</span>
-
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Please set expver before archiving to FDB&quot;</span><span class="p">)</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            Please set expver in the config section fdb.grib_set before archiving to FDB</span>
+<span class="s2">            and consult documentation before selecting expver</span>
+<span class="s2">            &quot;&quot;&quot;</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;FDB not yet implemented for </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">resource</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -2152,7 +2171,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-09-06T06:26:46Z.
+      <span class="lastupdated">Last updated on 2024-09-08T16:57:14Z.
       </span></p>
   </div>
 

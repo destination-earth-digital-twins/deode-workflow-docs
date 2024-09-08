@@ -551,6 +551,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="deode.html#deode.toolbox.Provider"><code class="docutils literal notranslate"><span class="pre">Provider</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="deode.html#deode.toolbox.Provider.create_missing_dir"><code class="docutils literal notranslate"><span class="pre">Provider.create_missing_dir()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="deode.html#deode.toolbox.Provider.create_resource"><code class="docutils literal notranslate"><span class="pre">Provider.create_resource()</span></code></a></li>
 </ul>
 </li>
@@ -676,11 +677,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#property-config-include">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">include</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#property-config-archiving">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#property-config-archiving-paths">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">paths</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#property-config-archiving-default">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">default</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#property-config-archiving-hour">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">hour</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#property-config-archiving-static">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">static</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#property-config-archiving-settings">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">settings</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#property-config-archiving-prefix">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">prefix</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#property-config-cleaning">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span></code></a><ul>
@@ -744,7 +741,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#property-config-platform">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">platform</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#property-config-platform-archive-type">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">platform</span> <span class="pre">&gt;</span> <span class="pre">archive_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#property-config-platform-archive-types">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">platform</span> <span class="pre">&gt;</span> <span class="pre">archive_types</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#property-config-platform-ecoclim-data-path">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">platform</span> <span class="pre">&gt;</span> <span class="pre">ecoclim_data_path</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#property-config-platform-deode-home">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">platform</span> <span class="pre">&gt;</span> <span class="pre">deode_home</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#property-config-platform-pgd-data-path">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">platform</span> <span class="pre">&gt;</span> <span class="pre">pgd_data_path</span></code></a></li>
@@ -1098,7 +1095,7 @@ $ mamba activate .conda/
 </section>
 </section>
 <p>The following section was automatically generated running
-<code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">doc</span> <span class="pre">config</span></code> on 2024-09-06T06:26:44.</p>
+<code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">doc</span> <span class="pre">config</span></code> on 2024-09-08T16:57:12.</p>
 <section id="config">
 <h2>Config<a class="headerlink" href="#config" title="Link to this heading"></a></h2>
 <p><strong>Title:</strong> Config</p>
@@ -4909,42 +4906,18 @@ $ mamba activate .conda/
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><a class="reference external" href="#archiving_paths">paths</a></p></td>
+<tr class="row-even"><td><p><a class="reference external" href="#archiving_prefix">prefix</a></p></td>
 <td><p>object</p></td>
 <td><p>No</p></td>
 <td><p>-</p></td>
-<td><p>Paths</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference external" href="#archiving_default">default</a></p></td>
-<td><p>object</p></td>
-<td><p>No</p></td>
-<td><p>-</p></td>
-<td><p>Rules for the default archiving group of model output</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference external" href="#archiving_hour">hour</a></p></td>
-<td><p>object</p></td>
-<td><p>No</p></td>
-<td><p>-</p></td>
-<td><p>Settings for time dependent archiving</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference external" href="#archiving_static">static</a></p></td>
-<td><p>object</p></td>
-<td><p>No</p></td>
-<td><p>-</p></td>
-<td><p>Settings for time dependent archiving</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference external" href="#archiving_settings">settings</a></p></td>
-<td><p>object</p></td>
-<td><p>No</p></td>
-<td><p>-</p></td>
-<td><p>Archive timestep settings</p></td>
+<td><p>Path prefixes</p></td>
 </tr>
 </tbody>
 </table>
-<p><a name="archiving_paths"></a></p>
-<section id="property-config-archiving-paths">
-<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">paths</span></code><a class="headerlink" href="#property-config-archiving-paths" title="Link to this heading"></a></h4>
-<p><strong>Title:</strong> Paths</p>
+<p><a name="archiving_prefix"></a></p>
+<section id="property-config-archiving-prefix">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">prefix</span></code><a class="headerlink" href="#property-config-archiving-prefix" title="Link to this heading"></a></h4>
+<p><strong>Title:</strong> Path prefixes</p>
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p></p></th>
@@ -4963,7 +4936,7 @@ $ mamba activate .conda/
 </tr>
 </tbody>
 </table>
-<p><strong>Description:</strong> Archives to use on atos, and locations where things will be stored.</p>
+<p><strong>Description:</strong> Prefix to prepend paths. Like ‘ec:/user/ for ecfs on atos or ‘user&#64;host:’ for scp</p>
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Property</p></th>
@@ -4974,660 +4947,17 @@ $ mamba activate .conda/
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><a class="reference external" href="#archiving_paths_aloc">aloc</a></p></td>
+<tr class="row-even"><td><p><a class="reference external" href="#archiving_prefix_archive_type">archive_type</a></p></td>
 <td><p>string</p></td>
 <td><p>No</p></td>
-<td><p>“ectmp:”</p></td>
-<td><p>Actual archiving system. ATOS options &gt; ectmp and ec. LUMI will differ.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference external" href="#archiving_paths_apath">apath</a></p></td>
-<td><p>string</p></td>
-<td><p>No</p></td>
-<td><p>“/&#64;USER&#64;/deode/&#64;CASE&#64;/”</p></td>
-<td><p>Archiving path to store files on archiving system</p></td>
-</tr>
-</tbody>
-</table>
-<p><a name="archiving_paths_aloc"></a></p>
-<section id="property-config-archiving-paths-aloc">
-<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">paths</span> <span class="pre">&gt;</span> <span class="pre">aloc</span></code><a class="headerlink" href="#property-config-archiving-paths-aloc" title="Link to this heading"></a></h5>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p></p></th>
-<th class="head"><p></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Type</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Required</strong></p></td>
-<td><p>No</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Default</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&quot;ectmp:&quot;</span></code></p></td>
-</tr>
-</tbody>
-</table>
-<p><strong>Description:</strong> Actual archiving system. ATOS options &gt; ectmp and ec. LUMI will differ.</p>
-<p><a name="archiving_paths_apath"></a></p>
-</section>
-<section id="property-config-archiving-paths-apath">
-<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">paths</span> <span class="pre">&gt;</span> <span class="pre">apath</span></code><a class="headerlink" href="#property-config-archiving-paths-apath" title="Link to this heading"></a></h5>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p></p></th>
-<th class="head"><p></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Type</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Required</strong></p></td>
-<td><p>No</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Default</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&quot;/&#64;USER&#64;/deode/&#64;CASE&#64;/&quot;</span></code></p></td>
-</tr>
-</tbody>
-</table>
-<p><strong>Description:</strong> Archiving path to store files on archiving system</p>
-<p><a name="archiving_default"></a></p>
-</section>
-</section>
-<section id="property-config-archiving-default">
-<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">default</span></code><a class="headerlink" href="#property-config-archiving-default" title="Link to this heading"></a></h4>
-<p><strong>Title:</strong> Rules for the default archiving group of model output</p>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p></p></th>
-<th class="head"><p></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Type</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">object</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Required</strong></p></td>
-<td><p>No</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Additional properties</strong></p></td>
-<td><p><a class="reference external" href="#" title="Additional Properties of any type are allowed.">[Any type: allowed]</a></p></td>
-</tr>
-</tbody>
-</table>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Property</p></th>
-<th class="head"><p>Type</p></th>
-<th class="head"><p>Required</p></th>
-<th class="head"><p>Default</p></th>
-<th class="head"><p>Title/Description</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><a class="reference external" href="#archiving_default_active">active</a></p></td>
-<td><p>boolean</p></td>
-<td><p>No</p></td>
 <td><p>-</p></td>
-<td><p>Activate the default archiving</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference external" href="#archiving_default_inpath">inpath</a></p></td>
-<td><p>object</p></td>
-<td><p>No</p></td>
-<td><p>-</p></td>
-<td><p>Location of input files for archiving</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference external" href="#archiving_default_outpath">outpath</a></p></td>
-<td><p>object</p></td>
-<td><p>No</p></td>
-<td><p>-</p></td>
-<td><p>Relative location of the archived files</p></td>
+<td><p>Prefix to use for available archive types. Define one per type where applicable.</p></td>
 </tr>
 </tbody>
 </table>
-<p><a name="archiving_default_active"></a></p>
-<section id="property-config-archiving-default-active">
-<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">default</span> <span class="pre">&gt;</span> <span class="pre">active</span></code><a class="headerlink" href="#property-config-archiving-default-active" title="Link to this heading"></a></h5>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p></p></th>
-<th class="head"><p></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Type</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Required</strong></p></td>
-<td><p>No</p></td>
-</tr>
-</tbody>
-</table>
-<p><strong>Description:</strong> Activate the default archiving</p>
-<p><a name="archiving_default_inpath"></a></p>
-</section>
-<section id="property-config-archiving-default-inpath">
-<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">default</span> <span class="pre">&gt;</span> <span class="pre">inpath</span></code><a class="headerlink" href="#property-config-archiving-default-inpath" title="Link to this heading"></a></h5>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p></p></th>
-<th class="head"><p></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Type</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">object</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Required</strong></p></td>
-<td><p>No</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Additional properties</strong></p></td>
-<td><p><a class="reference external" href="#" title="Additional Properties of any type are allowed.">[Any type: allowed]</a></p></td>
-</tr>
-</tbody>
-</table>
-<p><strong>Description:</strong> Location of input files for archiving</p>
-<p><a name="archiving_default_outpath"></a></p>
-</section>
-<section id="property-config-archiving-default-outpath">
-<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">default</span> <span class="pre">&gt;</span> <span class="pre">outpath</span></code><a class="headerlink" href="#property-config-archiving-default-outpath" title="Link to this heading"></a></h5>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p></p></th>
-<th class="head"><p></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Type</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">object</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Required</strong></p></td>
-<td><p>No</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Additional properties</strong></p></td>
-<td><p><a class="reference external" href="#" title="Additional Properties of any type are allowed.">[Any type: allowed]</a></p></td>
-</tr>
-</tbody>
-</table>
-<p><strong>Description:</strong> Relative location of the archived files</p>
-<p><a name="archiving_hour"></a></p>
-</section>
-</section>
-<section id="property-config-archiving-hour">
-<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">hour</span></code><a class="headerlink" href="#property-config-archiving-hour" title="Link to this heading"></a></h4>
-<p><strong>Title:</strong> Settings for time dependent archiving</p>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p></p></th>
-<th class="head"><p></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Type</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">object</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Required</strong></p></td>
-<td><p>No</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Additional properties</strong></p></td>
-<td><p><a class="reference external" href="#" title="Additional Properties of any type are allowed.">[Any type: allowed]</a></p></td>
-</tr>
-</tbody>
-</table>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Property</p></th>
-<th class="head"><p>Type</p></th>
-<th class="head"><p>Required</p></th>
-<th class="head"><p>Default</p></th>
-<th class="head"><p>Title/Description</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><a class="reference external" href="#archiving_hour_example">example</a></p></td>
-<td><p>object</p></td>
-<td><p>No</p></td>
-<td><p>-</p></td>
-<td><p>Example settings for the archiving rules. Any number of rules can be defined to accomodate the needs</p></td>
-</tr>
-</tbody>
-</table>
-<p><a name="archiving_hour_example"></a></p>
-<section id="property-config-archiving-hour-example">
-<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">hour</span> <span class="pre">&gt;</span> <span class="pre">example</span></code><a class="headerlink" href="#property-config-archiving-hour-example" title="Link to this heading"></a></h5>
-<p><strong>Title:</strong> Example settings for the archiving rules. Any number of rules can be defined to accomodate the needs</p>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p></p></th>
-<th class="head"><p></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Type</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">object</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Required</strong></p></td>
-<td><p>No</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Additional properties</strong></p></td>
-<td><p><a class="reference external" href="#" title="Additional Properties of any type are allowed.">[Any type: allowed]</a></p></td>
-</tr>
-</tbody>
-</table>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Property</p></th>
-<th class="head"><p>Type</p></th>
-<th class="head"><p>Required</p></th>
-<th class="head"><p>Default</p></th>
-<th class="head"><p>Title/Description</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><a class="reference external" href="#archiving_hour_example_active">active</a></p></td>
-<td><p>object</p></td>
-<td><p>No</p></td>
-<td><p>-</p></td>
-<td><p>Activates the default archiving. Could be boolean or string refering to a boolean in the config file. See the sqlite archiving for an example</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference external" href="#archiving_hour_example_inpath">inpath</a></p></td>
-<td><p>object</p></td>
-<td><p>No</p></td>
-<td><p>-</p></td>
-<td><p>Location of input files for archiving</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference external" href="#archiving_hour_example_outpath">outpath</a></p></td>
-<td><p>object</p></td>
-<td><p>No</p></td>
-<td><p>-</p></td>
-<td><p>Relative location of the archived files</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference external" href="#archiving_hour_example_pattern">pattern</a></p></td>
-<td><p>object</p></td>
-<td><p>No</p></td>
-<td><p>-</p></td>
-<td><p>Search pattern for files to be included. Could be a single pattern or list of patterns.</p></td>
-</tr>
-</tbody>
-</table>
-<p><a name="archiving_hour_example_active"></a></p>
-<section id="property-config-archiving-hour-example-active">
-<h6>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">hour</span> <span class="pre">&gt;</span> <span class="pre">example</span> <span class="pre">&gt;</span> <span class="pre">active</span></code><a class="headerlink" href="#property-config-archiving-hour-example-active" title="Link to this heading"></a></h6>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p></p></th>
-<th class="head"><p></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Type</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">object</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Required</strong></p></td>
-<td><p>No</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Additional properties</strong></p></td>
-<td><p><a class="reference external" href="#" title="Additional Properties of any type are allowed.">[Any type: allowed]</a></p></td>
-</tr>
-</tbody>
-</table>
-<p><strong>Description:</strong> Activates the default archiving. Could be boolean or string refering to a boolean in the config file. See the sqlite archiving for an example</p>
-<p><a name="archiving_hour_example_inpath"></a></p>
-</section>
-<section id="property-config-archiving-hour-example-inpath">
-<h6>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">hour</span> <span class="pre">&gt;</span> <span class="pre">example</span> <span class="pre">&gt;</span> <span class="pre">inpath</span></code><a class="headerlink" href="#property-config-archiving-hour-example-inpath" title="Link to this heading"></a></h6>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p></p></th>
-<th class="head"><p></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Type</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">object</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Required</strong></p></td>
-<td><p>No</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Additional properties</strong></p></td>
-<td><p><a class="reference external" href="#" title="Additional Properties of any type are allowed.">[Any type: allowed]</a></p></td>
-</tr>
-</tbody>
-</table>
-<p><strong>Description:</strong> Location of input files for archiving</p>
-<p><a name="archiving_hour_example_outpath"></a></p>
-</section>
-<section id="property-config-archiving-hour-example-outpath">
-<h6>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">hour</span> <span class="pre">&gt;</span> <span class="pre">example</span> <span class="pre">&gt;</span> <span class="pre">outpath</span></code><a class="headerlink" href="#property-config-archiving-hour-example-outpath" title="Link to this heading"></a></h6>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p></p></th>
-<th class="head"><p></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Type</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">object</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Required</strong></p></td>
-<td><p>No</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Additional properties</strong></p></td>
-<td><p><a class="reference external" href="#" title="Additional Properties of any type are allowed.">[Any type: allowed]</a></p></td>
-</tr>
-</tbody>
-</table>
-<p><strong>Description:</strong> Relative location of the archived files</p>
-<p><a name="archiving_hour_example_pattern"></a></p>
-</section>
-<section id="property-config-archiving-hour-example-pattern">
-<h6>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">hour</span> <span class="pre">&gt;</span> <span class="pre">example</span> <span class="pre">&gt;</span> <span class="pre">pattern</span></code><a class="headerlink" href="#property-config-archiving-hour-example-pattern" title="Link to this heading"></a></h6>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p></p></th>
-<th class="head"><p></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Type</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">object</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Required</strong></p></td>
-<td><p>No</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Additional properties</strong></p></td>
-<td><p><a class="reference external" href="#" title="Additional Properties of any type are allowed.">[Any type: allowed]</a></p></td>
-</tr>
-</tbody>
-</table>
-<p><strong>Description:</strong> Search pattern for files to be included. Could be a single pattern or list of patterns.</p>
-<p><a name="archiving_static"></a></p>
-</section>
-</section>
-</section>
-<section id="property-config-archiving-static">
-<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">static</span></code><a class="headerlink" href="#property-config-archiving-static" title="Link to this heading"></a></h4>
-<p><strong>Title:</strong> Settings for time dependent archiving</p>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p></p></th>
-<th class="head"><p></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Type</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">object</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Required</strong></p></td>
-<td><p>No</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Additional properties</strong></p></td>
-<td><p><a class="reference external" href="#" title="Additional Properties of any type are allowed.">[Any type: allowed]</a></p></td>
-</tr>
-</tbody>
-</table>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Property</p></th>
-<th class="head"><p>Type</p></th>
-<th class="head"><p>Required</p></th>
-<th class="head"><p>Default</p></th>
-<th class="head"><p>Title/Description</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><a class="reference external" href="#archiving_static_example">example</a></p></td>
-<td><p>object</p></td>
-<td><p>No</p></td>
-<td><p>-</p></td>
-<td><p>Example settings for the archiving rules. Any number of rules can be defined to accomodate the needs</p></td>
-</tr>
-</tbody>
-</table>
-<p><a name="archiving_static_example"></a></p>
-<section id="property-config-archiving-static-example">
-<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">static</span> <span class="pre">&gt;</span> <span class="pre">example</span></code><a class="headerlink" href="#property-config-archiving-static-example" title="Link to this heading"></a></h5>
-<p><strong>Title:</strong> Example settings for the archiving rules. Any number of rules can be defined to accomodate the needs</p>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p></p></th>
-<th class="head"><p></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Type</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">object</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Required</strong></p></td>
-<td><p>No</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Additional properties</strong></p></td>
-<td><p><a class="reference external" href="#" title="Additional Properties of any type are allowed.">[Any type: allowed]</a></p></td>
-</tr>
-</tbody>
-</table>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Property</p></th>
-<th class="head"><p>Type</p></th>
-<th class="head"><p>Required</p></th>
-<th class="head"><p>Default</p></th>
-<th class="head"><p>Title/Description</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><a class="reference external" href="#archiving_static_example_active">active</a></p></td>
-<td><p>object</p></td>
-<td><p>No</p></td>
-<td><p>-</p></td>
-<td><p>Activates the default archiving. Could be boolean or string refering to a boolean in the config file. See the sqlite archiving for an example</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference external" href="#archiving_static_example_inpath">inpath</a></p></td>
-<td><p>object</p></td>
-<td><p>No</p></td>
-<td><p>-</p></td>
-<td><p>Location of input files for archiving</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference external" href="#archiving_static_example_outpath">outpath</a></p></td>
-<td><p>object</p></td>
-<td><p>No</p></td>
-<td><p>-</p></td>
-<td><p>Relative location of the archived files</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference external" href="#archiving_static_example_pattern">pattern</a></p></td>
-<td><p>object</p></td>
-<td><p>No</p></td>
-<td><p>-</p></td>
-<td><p>Search pattern for files to be included. Could be a single pattern or list of patterns.</p></td>
-</tr>
-</tbody>
-</table>
-<p><a name="archiving_static_example_active"></a></p>
-<section id="property-config-archiving-static-example-active">
-<h6>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">static</span> <span class="pre">&gt;</span> <span class="pre">example</span> <span class="pre">&gt;</span> <span class="pre">active</span></code><a class="headerlink" href="#property-config-archiving-static-example-active" title="Link to this heading"></a></h6>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p></p></th>
-<th class="head"><p></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Type</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">object</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Required</strong></p></td>
-<td><p>No</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Additional properties</strong></p></td>
-<td><p><a class="reference external" href="#" title="Additional Properties of any type are allowed.">[Any type: allowed]</a></p></td>
-</tr>
-</tbody>
-</table>
-<p><strong>Description:</strong> Activates the default archiving. Could be boolean or string refering to a boolean in the config file. See the sqlite archiving for an example</p>
-<p><a name="archiving_static_example_inpath"></a></p>
-</section>
-<section id="property-config-archiving-static-example-inpath">
-<h6>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">static</span> <span class="pre">&gt;</span> <span class="pre">example</span> <span class="pre">&gt;</span> <span class="pre">inpath</span></code><a class="headerlink" href="#property-config-archiving-static-example-inpath" title="Link to this heading"></a></h6>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p></p></th>
-<th class="head"><p></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Type</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">object</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Required</strong></p></td>
-<td><p>No</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Additional properties</strong></p></td>
-<td><p><a class="reference external" href="#" title="Additional Properties of any type are allowed.">[Any type: allowed]</a></p></td>
-</tr>
-</tbody>
-</table>
-<p><strong>Description:</strong> Location of input files for archiving</p>
-<p><a name="archiving_static_example_outpath"></a></p>
-</section>
-<section id="property-config-archiving-static-example-outpath">
-<h6>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">static</span> <span class="pre">&gt;</span> <span class="pre">example</span> <span class="pre">&gt;</span> <span class="pre">outpath</span></code><a class="headerlink" href="#property-config-archiving-static-example-outpath" title="Link to this heading"></a></h6>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p></p></th>
-<th class="head"><p></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Type</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">object</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Required</strong></p></td>
-<td><p>No</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Additional properties</strong></p></td>
-<td><p><a class="reference external" href="#" title="Additional Properties of any type are allowed.">[Any type: allowed]</a></p></td>
-</tr>
-</tbody>
-</table>
-<p><strong>Description:</strong> Relative location of the archived files</p>
-<p><a name="archiving_static_example_pattern"></a></p>
-</section>
-<section id="property-config-archiving-static-example-pattern">
-<h6>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">static</span> <span class="pre">&gt;</span> <span class="pre">example</span> <span class="pre">&gt;</span> <span class="pre">pattern</span></code><a class="headerlink" href="#property-config-archiving-static-example-pattern" title="Link to this heading"></a></h6>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p></p></th>
-<th class="head"><p></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Type</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">object</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Required</strong></p></td>
-<td><p>No</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Additional properties</strong></p></td>
-<td><p><a class="reference external" href="#" title="Additional Properties of any type are allowed.">[Any type: allowed]</a></p></td>
-</tr>
-</tbody>
-</table>
-<p><strong>Description:</strong> Search pattern for files to be included. Could be a single pattern or list of patterns.</p>
-<p><a name="archiving_settings"></a></p>
-</section>
-</section>
-</section>
-<section id="property-config-archiving-settings">
-<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">settings</span></code><a class="headerlink" href="#property-config-archiving-settings" title="Link to this heading"></a></h4>
-<p><strong>Title:</strong> Archive timestep settings</p>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p></p></th>
-<th class="head"><p></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Type</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">object</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Required</strong></p></td>
-<td><p>No</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Additional properties</strong></p></td>
-<td><p><a class="reference external" href="#" title="Additional Properties of any type are allowed.">[Any type: allowed]</a></p></td>
-</tr>
-</tbody>
-</table>
-<p><strong>Description:</strong> Archiving settings for each file type, specified as time interval. This will tell DEODE how often you want to archive output files under said file type. IF this field is completely empty, output_settings will be taken from main config file eg. config_CYCLE.toml</p>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Property</p></th>
-<th class="head"><p>Type</p></th>
-<th class="head"><p>Required</p></th>
-<th class="head"><p>Default</p></th>
-<th class="head"><p>Title/Description</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><a class="reference external" href="#archiving_settings_history">history</a></p></td>
-<td><p>Combination</p></td>
-<td><p>No</p></td>
-<td><p>-</p></td>
-<td><p>Time interval to store history files</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference external" href="#archiving_settings_surfex">surfex</a></p></td>
-<td><p>Combination</p></td>
-<td><p>No</p></td>
-<td><p>-</p></td>
-<td><p>Time interval to store surfex files</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference external" href="#archiving_settings_fullpos">fullpos</a></p></td>
-<td><p>Combination</p></td>
-<td><p>No</p></td>
-<td><p>-</p></td>
-<td><p>Time interval to store fullpos files</p></td>
-</tr>
-</tbody>
-</table>
-<p><a name="archiving_settings_history"></a></p>
-<section id="property-config-archiving-settings-history">
-<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">settings</span> <span class="pre">&gt;</span> <span class="pre">history</span></code><a class="headerlink" href="#property-config-archiving-settings-history" title="Link to this heading"></a></h5>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p></p></th>
-<th class="head"><p></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Type</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">combining</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Required</strong></p></td>
-<td><p>No</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Additional properties</strong></p></td>
-<td><p><a class="reference external" href="#" title="Additional Properties of any type are allowed.">[Any type: allowed]</a></p></td>
-</tr>
-</tbody>
-</table>
-<p><strong>Description:</strong> Time interval to store history files</p>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Any of(Option)</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><a class="reference external" href="#archiving_settings_history_anyOf_i0">item 0</a></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference external" href="#archiving_settings_history_anyOf_i1">item 1</a></p></td>
-</tr>
-</tbody>
-</table>
-<p><a name="archiving_settings_history_anyOf_i0"></a></p>
-<section id="property-config-archiving-settings-history-anyof-item-0">
-<h6>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">settings</span> <span class="pre">&gt;</span> <span class="pre">history</span> <span class="pre">&gt;</span> <span class="pre">anyOf</span> <span class="pre">&gt;</span> <span class="pre">item</span> <span class="pre">0</span></code><a class="headerlink" href="#property-config-archiving-settings-history-anyof-item-0" title="Link to this heading"></a></h6>
+<p><a name="archiving_prefix_archive_type"></a></p>
+<section id="property-config-archiving-prefix-archive-type">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">prefix</span> <span class="pre">&gt;</span> <span class="pre">archive_type</span></code><a class="headerlink" href="#property-config-archiving-prefix-archive-type" title="Link to this heading"></a></h5>
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p></p></th>
@@ -5643,410 +4973,8 @@ $ mamba activate .conda/
 </tr>
 </tbody>
 </table>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Restrictions</p></th>
-<th class="head"><p></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Must match regular expression</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$</span></code> <a class="reference external" href="https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24">Test</a></p></td>
-</tr>
-</tbody>
-</table>
-<p><a name="archiving_settings_history_anyOf_i1"></a></p>
-</section>
-<section id="property-config-archiving-settings-history-anyof-item-1">
-<h6>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">settings</span> <span class="pre">&gt;</span> <span class="pre">history</span> <span class="pre">&gt;</span> <span class="pre">anyOf</span> <span class="pre">&gt;</span> <span class="pre">item</span> <span class="pre">1</span></code><a class="headerlink" href="#property-config-archiving-settings-history-anyof-item-1" title="Link to this heading"></a></h6>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p></p></th>
-<th class="head"><p></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Type</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">array</span> <span class="pre">of</span> <span class="pre">string</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Required</strong></p></td>
-<td><p>No</p></td>
-</tr>
-</tbody>
-</table>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p></p></th>
-<th class="head"><p>Array restrictions</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Min items</strong></p></td>
-<td><p>N/A</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Max items</strong></p></td>
-<td><p>N/A</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Items unicity</strong></p></td>
-<td><p>False</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Additional items</strong></p></td>
-<td><p>False</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Tuple validation</strong></p></td>
-<td><p>See below</p></td>
-</tr>
-</tbody>
-</table>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Each item of this array must be</p></th>
-<th class="head"><p>Description</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><a class="reference external" href="#archiving_settings_history_anyOf_i1_items">item 1 items</a></p></td>
-<td><p>-</p></td>
-</tr>
-</tbody>
-</table>
-<p><a name="autogenerated_heading_20"></a></p>
-</section>
-<section id="config-archiving-settings-history-anyof-item-1-item-1-items">
-<h6>Config &gt; archiving &gt; settings &gt; history &gt; anyOf &gt; item 1 &gt; item 1 items<a class="headerlink" href="#config-archiving-settings-history-anyof-item-1-item-1-items" title="Link to this heading"></a></h6>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p></p></th>
-<th class="head"><p></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Type</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Required</strong></p></td>
-<td><p>No</p></td>
-</tr>
-</tbody>
-</table>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Restrictions</p></th>
-<th class="head"><p></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Must match regular expression</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?:P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?:P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$</span></code> <a class="reference external" href="https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%3AP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%3AP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24">Test</a></p></td>
-</tr>
-</tbody>
-</table>
-<p><a name="archiving_settings_surfex"></a></p>
-</section>
-</section>
-<section id="property-config-archiving-settings-surfex">
-<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">settings</span> <span class="pre">&gt;</span> <span class="pre">surfex</span></code><a class="headerlink" href="#property-config-archiving-settings-surfex" title="Link to this heading"></a></h5>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p></p></th>
-<th class="head"><p></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Type</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">combining</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Required</strong></p></td>
-<td><p>No</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Additional properties</strong></p></td>
-<td><p><a class="reference external" href="#" title="Additional Properties of any type are allowed.">[Any type: allowed]</a></p></td>
-</tr>
-</tbody>
-</table>
-<p><strong>Description:</strong> Time interval to store surfex files</p>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Any of(Option)</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><a class="reference external" href="#archiving_settings_surfex_anyOf_i0">item 0</a></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference external" href="#archiving_settings_surfex_anyOf_i1">item 1</a></p></td>
-</tr>
-</tbody>
-</table>
-<p><a name="archiving_settings_surfex_anyOf_i0"></a></p>
-<section id="property-config-archiving-settings-surfex-anyof-item-0">
-<h6>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">settings</span> <span class="pre">&gt;</span> <span class="pre">surfex</span> <span class="pre">&gt;</span> <span class="pre">anyOf</span> <span class="pre">&gt;</span> <span class="pre">item</span> <span class="pre">0</span></code><a class="headerlink" href="#property-config-archiving-settings-surfex-anyof-item-0" title="Link to this heading"></a></h6>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p></p></th>
-<th class="head"><p></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Type</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Required</strong></p></td>
-<td><p>No</p></td>
-</tr>
-</tbody>
-</table>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Restrictions</p></th>
-<th class="head"><p></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Must match regular expression</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$</span></code> <a class="reference external" href="https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24">Test</a></p></td>
-</tr>
-</tbody>
-</table>
-<p><a name="archiving_settings_surfex_anyOf_i1"></a></p>
-</section>
-<section id="property-config-archiving-settings-surfex-anyof-item-1">
-<h6>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">settings</span> <span class="pre">&gt;</span> <span class="pre">surfex</span> <span class="pre">&gt;</span> <span class="pre">anyOf</span> <span class="pre">&gt;</span> <span class="pre">item</span> <span class="pre">1</span></code><a class="headerlink" href="#property-config-archiving-settings-surfex-anyof-item-1" title="Link to this heading"></a></h6>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p></p></th>
-<th class="head"><p></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Type</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">array</span> <span class="pre">of</span> <span class="pre">string</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Required</strong></p></td>
-<td><p>No</p></td>
-</tr>
-</tbody>
-</table>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p></p></th>
-<th class="head"><p>Array restrictions</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Min items</strong></p></td>
-<td><p>N/A</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Max items</strong></p></td>
-<td><p>N/A</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Items unicity</strong></p></td>
-<td><p>False</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Additional items</strong></p></td>
-<td><p>False</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Tuple validation</strong></p></td>
-<td><p>See below</p></td>
-</tr>
-</tbody>
-</table>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Each item of this array must be</p></th>
-<th class="head"><p>Description</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><a class="reference external" href="#archiving_settings_surfex_anyOf_i1_items">item 1 items</a></p></td>
-<td><p>-</p></td>
-</tr>
-</tbody>
-</table>
-<p><a name="autogenerated_heading_21"></a></p>
-</section>
-<section id="config-archiving-settings-surfex-anyof-item-1-item-1-items">
-<h6>Config &gt; archiving &gt; settings &gt; surfex &gt; anyOf &gt; item 1 &gt; item 1 items<a class="headerlink" href="#config-archiving-settings-surfex-anyof-item-1-item-1-items" title="Link to this heading"></a></h6>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p></p></th>
-<th class="head"><p></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Type</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Required</strong></p></td>
-<td><p>No</p></td>
-</tr>
-</tbody>
-</table>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Restrictions</p></th>
-<th class="head"><p></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Must match regular expression</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?:P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?:P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$</span></code> <a class="reference external" href="https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%3AP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%3AP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24">Test</a></p></td>
-</tr>
-</tbody>
-</table>
-<p><a name="archiving_settings_fullpos"></a></p>
-</section>
-</section>
-<section id="property-config-archiving-settings-fullpos">
-<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">settings</span> <span class="pre">&gt;</span> <span class="pre">fullpos</span></code><a class="headerlink" href="#property-config-archiving-settings-fullpos" title="Link to this heading"></a></h5>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p></p></th>
-<th class="head"><p></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Type</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">combining</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Required</strong></p></td>
-<td><p>No</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Additional properties</strong></p></td>
-<td><p><a class="reference external" href="#" title="Additional Properties of any type are allowed.">[Any type: allowed]</a></p></td>
-</tr>
-</tbody>
-</table>
-<p><strong>Description:</strong> Time interval to store fullpos files</p>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Any of(Option)</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><a class="reference external" href="#archiving_settings_fullpos_anyOf_i0">item 0</a></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference external" href="#archiving_settings_fullpos_anyOf_i1">item 1</a></p></td>
-</tr>
-</tbody>
-</table>
-<p><a name="archiving_settings_fullpos_anyOf_i0"></a></p>
-<section id="property-config-archiving-settings-fullpos-anyof-item-0">
-<h6>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">settings</span> <span class="pre">&gt;</span> <span class="pre">fullpos</span> <span class="pre">&gt;</span> <span class="pre">anyOf</span> <span class="pre">&gt;</span> <span class="pre">item</span> <span class="pre">0</span></code><a class="headerlink" href="#property-config-archiving-settings-fullpos-anyof-item-0" title="Link to this heading"></a></h6>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p></p></th>
-<th class="head"><p></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Type</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Required</strong></p></td>
-<td><p>No</p></td>
-</tr>
-</tbody>
-</table>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Restrictions</p></th>
-<th class="head"><p></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Must match regular expression</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$</span></code> <a class="reference external" href="https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24">Test</a></p></td>
-</tr>
-</tbody>
-</table>
-<p><a name="archiving_settings_fullpos_anyOf_i1"></a></p>
-</section>
-<section id="property-config-archiving-settings-fullpos-anyof-item-1">
-<h6>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">settings</span> <span class="pre">&gt;</span> <span class="pre">fullpos</span> <span class="pre">&gt;</span> <span class="pre">anyOf</span> <span class="pre">&gt;</span> <span class="pre">item</span> <span class="pre">1</span></code><a class="headerlink" href="#property-config-archiving-settings-fullpos-anyof-item-1" title="Link to this heading"></a></h6>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p></p></th>
-<th class="head"><p></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Type</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">array</span> <span class="pre">of</span> <span class="pre">string</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Required</strong></p></td>
-<td><p>No</p></td>
-</tr>
-</tbody>
-</table>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p></p></th>
-<th class="head"><p>Array restrictions</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Min items</strong></p></td>
-<td><p>N/A</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Max items</strong></p></td>
-<td><p>N/A</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Items unicity</strong></p></td>
-<td><p>False</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Additional items</strong></p></td>
-<td><p>False</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Tuple validation</strong></p></td>
-<td><p>See below</p></td>
-</tr>
-</tbody>
-</table>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Each item of this array must be</p></th>
-<th class="head"><p>Description</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><a class="reference external" href="#archiving_settings_fullpos_anyOf_i1_items">item 1 items</a></p></td>
-<td><p>-</p></td>
-</tr>
-</tbody>
-</table>
-<p><a name="autogenerated_heading_22"></a></p>
-</section>
-<section id="config-archiving-settings-fullpos-anyof-item-1-item-1-items">
-<h6>Config &gt; archiving &gt; settings &gt; fullpos &gt; anyOf &gt; item 1 &gt; item 1 items<a class="headerlink" href="#config-archiving-settings-fullpos-anyof-item-1-item-1-items" title="Link to this heading"></a></h6>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p></p></th>
-<th class="head"><p></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Type</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Required</strong></p></td>
-<td><p>No</p></td>
-</tr>
-</tbody>
-</table>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Restrictions</p></th>
-<th class="head"><p></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Must match regular expression</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?:P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?:P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$</span></code> <a class="reference external" href="https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%3AP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%3AP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24">Test</a></p></td>
-</tr>
-</tbody>
-</table>
+<p><strong>Description:</strong> Prefix to use for available archive types. Define one per type where applicable.</p>
 <p><a name="cleaning"></a></p>
-</section>
 </section>
 </section>
 </section>
@@ -6204,7 +5132,7 @@ $ mamba activate .conda/
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_23"></a></p>
+<p><a name="autogenerated_heading_20"></a></p>
 <section id="id11">
 <h6>The following properties are required<a class="headerlink" href="#id11" title="Link to this heading"></a></h6>
 <ul class="simple">
@@ -6235,7 +5163,7 @@ $ mamba activate .conda/
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_24"></a></p>
+<p><a name="autogenerated_heading_21"></a></p>
 <section id="id12">
 <h6>The following properties are required<a class="headerlink" href="#id12" title="Link to this heading"></a></h6>
 <ul class="simple">
@@ -12464,11 +11392,11 @@ $ mamba activate .conda/
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><a class="reference external" href="#platform_archive_type">archive_type</a></p></td>
-<td><p>enum (of string)</p></td>
+<tr class="row-even"><td><p><a class="reference external" href="#platform_archive_types">archive_types</a></p></td>
+<td><p>array of enum (of string)</p></td>
 <td><p>No</p></td>
-<td><p>-</p></td>
-<td><p>Method for archiving. The method working depends on the platform</p></td>
+<td><p>[“copy”, “move”, “scp”]</p></td>
+<td><p>Methods available for archiving</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference external" href="#platform_ecoclim_data_path">ecoclim_data_path</a></p></td>
 <td><p>string</p></td>
@@ -12616,9 +11544,67 @@ $ mamba activate .conda/
 </tr>
 </tbody>
 </table>
-<p><a name="platform_archive_type"></a></p>
-<section id="property-config-platform-archive-type">
-<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">platform</span> <span class="pre">&gt;</span> <span class="pre">archive_type</span></code><a class="headerlink" href="#property-config-platform-archive-type" title="Link to this heading"></a></h4>
+<p><a name="platform_archive_types"></a></p>
+<section id="property-config-platform-archive-types">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">platform</span> <span class="pre">&gt;</span> <span class="pre">archive_types</span></code><a class="headerlink" href="#property-config-platform-archive-types" title="Link to this heading"></a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">array</span> <span class="pre">of</span> <span class="pre">enum</span> <span class="pre">(of</span> <span class="pre">string)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Default</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[&quot;copy&quot;,</span> <span class="pre">&quot;move&quot;,</span> <span class="pre">&quot;scp&quot;]</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> Methods available for archiving</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p>Array restrictions</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Min items</strong></p></td>
+<td><p>N/A</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Max items</strong></p></td>
+<td><p>N/A</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Items unicity</strong></p></td>
+<td><p>False</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Additional items</strong></p></td>
+<td><p>False</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Tuple validation</strong></p></td>
+<td><p>See below</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Each item of this array must be</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="#platform_archive_types_items">archive_types items</a></p></td>
+<td><p>-</p></td>
+</tr>
+</tbody>
+</table>
+<p><a name="autogenerated_heading_22"></a></p>
+<section id="config-platform-archive-types-archive-types-items">
+<h5>Config &gt; platform &gt; archive_types &gt; archive_types items<a class="headerlink" href="#config-platform-archive-types-archive-types-items" title="Link to this heading"></a></h5>
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p></p></th>
@@ -12634,14 +11620,16 @@ $ mamba activate .conda/
 </tr>
 </tbody>
 </table>
-<p><strong>Description:</strong> Method for archiving. The method working depends on the platform</p>
 <p>Must be one of:</p>
 <ul class="simple">
 <li><p>“ecfs”</p></li>
 <li><p>“fdb”</p></li>
 <li><p>“scp”</p></li>
+<li><p>“copy”</p></li>
+<li><p>“move”</p></li>
 </ul>
 <p><a name="platform_ecoclim_data_path"></a></p>
+</section>
 </section>
 <section id="property-config-platform-ecoclim-data-path">
 <h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">platform</span> <span class="pre">&gt;</span> <span class="pre">ecoclim_data_path</span></code><a class="headerlink" href="#property-config-platform-ecoclim-data-path" title="Link to this heading"></a></h4>
@@ -13815,7 +12803,7 @@ $ mamba activate .conda/
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_25"></a></p>
+<p><a name="autogenerated_heading_23"></a></p>
 <section id="config-submission-submit-types-submit-types-items">
 <h5>Config &gt; submission &gt; submit_types &gt; submit_types items<a class="headerlink" href="#config-submission-submit-types-submit-types-items" title="Link to this heading"></a></h5>
 <table class="docutils align-default">
@@ -14016,7 +13004,7 @@ $ mamba activate .conda/
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_26"></a></p>
+<p><a name="autogenerated_heading_24"></a></p>
 <section id="config-submission-serial-tasks-tasks-items">
 <h6>Config &gt; submission &gt; serial &gt; tasks &gt; tasks items<a class="headerlink" href="#config-submission-serial-tasks-tasks-items" title="Link to this heading"></a></h6>
 <table class="docutils align-default">
@@ -14264,7 +13252,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_27"></a></p>
+<p><a name="autogenerated_heading_25"></a></p>
 </section>
 <section id="config-submission-serial-modules-items">
 <h6>Config &gt; submission &gt; serial &gt; MODULES &gt; ^(.<em>)$ &gt; ^(.</em>)$ items<a class="headerlink" href="#config-submission-serial-modules-items" title="Link to this heading"></a></h6>
@@ -14424,7 +13412,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_28"></a></p>
+<p><a name="autogenerated_heading_26"></a></p>
 <section id="config-submission-parallel-tasks-tasks-items">
 <h6>Config &gt; submission &gt; parallel &gt; tasks &gt; tasks items<a class="headerlink" href="#config-submission-parallel-tasks-tasks-items" title="Link to this heading"></a></h6>
 <table class="docutils align-default">
@@ -14672,7 +13660,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_29"></a></p>
+<p><a name="autogenerated_heading_27"></a></p>
 </section>
 <section id="config-submission-parallel-modules-items">
 <h6>Config &gt; submission &gt; parallel &gt; MODULES &gt; ^(.<em>)$ &gt; ^(.</em>)$ items<a class="headerlink" href="#config-submission-parallel-modules-items" title="Link to this heading"></a></h6>
@@ -14832,7 +13820,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_30"></a></p>
+<p><a name="autogenerated_heading_28"></a></p>
 <section id="config-submission-background-vm-tasks-tasks-items">
 <h6>Config &gt; submission &gt; background_vm &gt; tasks &gt; tasks items<a class="headerlink" href="#config-submission-background-vm-tasks-tasks-items" title="Link to this heading"></a></h6>
 <table class="docutils align-default">
@@ -15080,7 +14068,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_31"></a></p>
+<p><a name="autogenerated_heading_29"></a></p>
 </section>
 <section id="config-submission-background-vm-modules-items">
 <h6>Config &gt; submission &gt; background_vm &gt; MODULES &gt; ^(.<em>)$ &gt; ^(.</em>)$ items<a class="headerlink" href="#config-submission-background-vm-modules-items" title="Link to this heading"></a></h6>
@@ -15240,7 +14228,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_32"></a></p>
+<p><a name="autogenerated_heading_30"></a></p>
 <section id="config-submission-background-hpc-tasks-tasks-items">
 <h6>Config &gt; submission &gt; background_hpc &gt; tasks &gt; tasks items<a class="headerlink" href="#config-submission-background-hpc-tasks-tasks-items" title="Link to this heading"></a></h6>
 <table class="docutils align-default">
@@ -15488,7 +14476,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_33"></a></p>
+<p><a name="autogenerated_heading_31"></a></p>
 </section>
 <section id="config-submission-background-hpc-modules-items">
 <h6>Config &gt; submission &gt; background_hpc &gt; MODULES &gt; ^(.<em>)$ &gt; ^(.</em>)$ items<a class="headerlink" href="#config-submission-background-hpc-modules-items" title="Link to this heading"></a></h6>
@@ -15648,7 +14636,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_34"></a></p>
+<p><a name="autogenerated_heading_32"></a></p>
 <section id="config-submission-gnu-tasks-tasks-items">
 <h6>Config &gt; submission &gt; gnu &gt; tasks &gt; tasks items<a class="headerlink" href="#config-submission-gnu-tasks-tasks-items" title="Link to this heading"></a></h6>
 <table class="docutils align-default">
@@ -15896,7 +14884,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_35"></a></p>
+<p><a name="autogenerated_heading_33"></a></p>
 </section>
 <section id="config-submission-gnu-modules-items">
 <h6>Config &gt; submission &gt; gnu &gt; MODULES &gt; ^(.<em>)$ &gt; ^(.</em>)$ items<a class="headerlink" href="#config-submission-gnu-modules-items" title="Link to this heading"></a></h6>
@@ -16329,7 +15317,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_36"></a></p>
+<p><a name="autogenerated_heading_34"></a></p>
 <section id="at-least-one-of-the-items-must-be">
 <h5>At least one of the items must be<a class="headerlink" href="#at-least-one-of-the-items-must-be" title="Link to this heading"></a></h5>
 <table class="docutils align-default">
@@ -16392,7 +15380,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_37"></a></p>
+<p><a name="autogenerated_heading_35"></a></p>
 <section id="id13">
 <h5>At least one of the items must be<a class="headerlink" href="#id13" title="Link to this heading"></a></h5>
 <table class="docutils align-default">
@@ -16954,7 +15942,7 @@ Example value of the archive folder path is “/ec/res4/scratch/bgmt/deode/CY48t
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-09-06T06:26:46Z.
+      <span class="lastupdated">Last updated on 2024-09-08T16:57:14Z.
       </span></p>
   </div>
 

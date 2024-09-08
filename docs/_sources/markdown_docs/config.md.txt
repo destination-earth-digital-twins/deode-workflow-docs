@@ -1,5 +1,5 @@
 The following section was automatically generated running
-        `deode doc config` on 2024-09-06T06:26:44.
+        `deode doc config` on 2024-09-08T16:57:12.
 
 # Config
 
@@ -1560,18 +1560,14 @@ Must be one of:
 
 **Description:** Archiving settings for ATOS to ECFS. Locations, and time intervals to archive for each file type
 
-| Property                        | Type   | Required | Default | Title/Description                                     |
-| ------------------------------- | ------ | -------- | ------- | ----------------------------------------------------- |
-| [paths](#archiving_paths)       | object | No       | -       | Paths                                                 |
-| [default](#archiving_default)   | object | No       | -       | Rules for the default archiving group of model output |
-| [hour](#archiving_hour)         | object | No       | -       | Settings for time dependent archiving                 |
-| [static](#archiving_static)     | object | No       | -       | Settings for time dependent archiving                 |
-| [settings](#archiving_settings) | object | No       | -       | Archive timestep settings                             |
+| Property                    | Type   | Required | Default | Title/Description |
+| --------------------------- | ------ | -------- | ------- | ----------------- |
+| [prefix](#archiving_prefix) | object | No       | -       | Path prefixes     |
 
-<a name="archiving_paths"></a>
-### Property `Config > archiving > paths`
+<a name="archiving_prefix"></a>
+### Property `Config > archiving > prefix`
 
-**Title:** Paths
+**Title:** Path prefixes
 
 |                           |                                                                           |
 | ------------------------- | ------------------------------------------------------------------------- |
@@ -1579,436 +1575,21 @@ Must be one of:
 | **Required**              | No                                                                        |
 | **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
 
-**Description:** Archives to use on atos, and locations where things will be stored.
+**Description:** Prefix to prepend paths. Like 'ec:/user/ for ecfs on atos or 'user@host:' for scp
 
-| Property                        | Type   | Required | Default                 | Title/Description                                                       |
-| ------------------------------- | ------ | -------- | ----------------------- | ----------------------------------------------------------------------- |
-| [aloc](#archiving_paths_aloc)   | string | No       | "ectmp:"                | Actual archiving system. ATOS options > ectmp and ec. LUMI will differ. |
-| [apath](#archiving_paths_apath) | string | No       | "/@USER@/deode/@CASE@/" | Archiving path to store files on archiving system                       |
+| Property                                       | Type   | Required | Default | Title/Description                                                                |
+| ---------------------------------------------- | ------ | -------- | ------- | -------------------------------------------------------------------------------- |
+| [archive_type](#archiving_prefix_archive_type) | string | No       | -       | Prefix to use for available archive types. Define one per type where applicable. |
 
-<a name="archiving_paths_aloc"></a>
-#### Property `Config > archiving > paths > aloc`
-
-|              |            |
-| ------------ | ---------- |
-| **Type**     | `string`   |
-| **Required** | No         |
-| **Default**  | `"ectmp:"` |
-
-**Description:** Actual archiving system. ATOS options > ectmp and ec. LUMI will differ.
-
-<a name="archiving_paths_apath"></a>
-#### Property `Config > archiving > paths > apath`
-
-|              |                           |
-| ------------ | ------------------------- |
-| **Type**     | `string`                  |
-| **Required** | No                        |
-| **Default**  | `"/@USER@/deode/@CASE@/"` |
-
-**Description:** Archiving path to store files on archiving system
-
-<a name="archiving_default"></a>
-### Property `Config > archiving > default`
-
-**Title:** Rules for the default archiving group of model output
-
-|                           |                                                                           |
-| ------------------------- | ------------------------------------------------------------------------- |
-| **Type**                  | `object`                                                                  |
-| **Required**              | No                                                                        |
-| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
-
-| Property                              | Type    | Required | Default | Title/Description                       |
-| ------------------------------------- | ------- | -------- | ------- | --------------------------------------- |
-| [active](#archiving_default_active)   | boolean | No       | -       | Activate the default archiving          |
-| [inpath](#archiving_default_inpath)   | object  | No       | -       | Location of input files for archiving   |
-| [outpath](#archiving_default_outpath) | object  | No       | -       | Relative location of the archived files |
-
-<a name="archiving_default_active"></a>
-#### Property `Config > archiving > default > active`
-
-|              |           |
-| ------------ | --------- |
-| **Type**     | `boolean` |
-| **Required** | No        |
-
-**Description:** Activate the default archiving
-
-<a name="archiving_default_inpath"></a>
-#### Property `Config > archiving > default > inpath`
-
-|                           |                                                                           |
-| ------------------------- | ------------------------------------------------------------------------- |
-| **Type**                  | `object`                                                                  |
-| **Required**              | No                                                                        |
-| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
-
-**Description:** Location of input files for archiving
-
-<a name="archiving_default_outpath"></a>
-#### Property `Config > archiving > default > outpath`
-
-|                           |                                                                           |
-| ------------------------- | ------------------------------------------------------------------------- |
-| **Type**                  | `object`                                                                  |
-| **Required**              | No                                                                        |
-| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
-
-**Description:** Relative location of the archived files
-
-<a name="archiving_hour"></a>
-### Property `Config > archiving > hour`
-
-**Title:** Settings for time dependent archiving
-
-|                           |                                                                           |
-| ------------------------- | ------------------------------------------------------------------------- |
-| **Type**                  | `object`                                                                  |
-| **Required**              | No                                                                        |
-| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
-
-| Property                           | Type   | Required | Default | Title/Description                                                                                    |
-| ---------------------------------- | ------ | -------- | ------- | ---------------------------------------------------------------------------------------------------- |
-| [example](#archiving_hour_example) | object | No       | -       | Example settings for the archiving rules. Any number of rules can be defined to accomodate the needs |
-
-<a name="archiving_hour_example"></a>
-#### Property `Config > archiving > hour > example`
-
-**Title:** Example settings for the archiving rules. Any number of rules can be defined to accomodate the needs
-
-|                           |                                                                           |
-| ------------------------- | ------------------------------------------------------------------------- |
-| **Type**                  | `object`                                                                  |
-| **Required**              | No                                                                        |
-| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
-
-| Property                                   | Type   | Required | Default | Title/Description                                                                                                                              |
-| ------------------------------------------ | ------ | -------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| [active](#archiving_hour_example_active)   | object | No       | -       | Activates the default archiving. Could be boolean or string refering to a boolean in the config file. See the sqlite archiving for an example  |
-| [inpath](#archiving_hour_example_inpath)   | object | No       | -       | Location of input files for archiving                                                                                                          |
-| [outpath](#archiving_hour_example_outpath) | object | No       | -       | Relative location of the archived files                                                                                                        |
-| [pattern](#archiving_hour_example_pattern) | object | No       | -       | Search pattern for files to be included. Could be a single pattern or list of patterns.                                                        |
-
-<a name="archiving_hour_example_active"></a>
-##### Property `Config > archiving > hour > example > active`
-
-|                           |                                                                           |
-| ------------------------- | ------------------------------------------------------------------------- |
-| **Type**                  | `object`                                                                  |
-| **Required**              | No                                                                        |
-| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
-
-**Description:** Activates the default archiving. Could be boolean or string refering to a boolean in the config file. See the sqlite archiving for an example 
-
-<a name="archiving_hour_example_inpath"></a>
-##### Property `Config > archiving > hour > example > inpath`
-
-|                           |                                                                           |
-| ------------------------- | ------------------------------------------------------------------------- |
-| **Type**                  | `object`                                                                  |
-| **Required**              | No                                                                        |
-| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
-
-**Description:** Location of input files for archiving
-
-<a name="archiving_hour_example_outpath"></a>
-##### Property `Config > archiving > hour > example > outpath`
-
-|                           |                                                                           |
-| ------------------------- | ------------------------------------------------------------------------- |
-| **Type**                  | `object`                                                                  |
-| **Required**              | No                                                                        |
-| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
-
-**Description:** Relative location of the archived files
-
-<a name="archiving_hour_example_pattern"></a>
-##### Property `Config > archiving > hour > example > pattern`
-
-|                           |                                                                           |
-| ------------------------- | ------------------------------------------------------------------------- |
-| **Type**                  | `object`                                                                  |
-| **Required**              | No                                                                        |
-| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
-
-**Description:** Search pattern for files to be included. Could be a single pattern or list of patterns.
-
-<a name="archiving_static"></a>
-### Property `Config > archiving > static`
-
-**Title:** Settings for time dependent archiving
-
-|                           |                                                                           |
-| ------------------------- | ------------------------------------------------------------------------- |
-| **Type**                  | `object`                                                                  |
-| **Required**              | No                                                                        |
-| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
-
-| Property                             | Type   | Required | Default | Title/Description                                                                                    |
-| ------------------------------------ | ------ | -------- | ------- | ---------------------------------------------------------------------------------------------------- |
-| [example](#archiving_static_example) | object | No       | -       | Example settings for the archiving rules. Any number of rules can be defined to accomodate the needs |
-
-<a name="archiving_static_example"></a>
-#### Property `Config > archiving > static > example`
-
-**Title:** Example settings for the archiving rules. Any number of rules can be defined to accomodate the needs
-
-|                           |                                                                           |
-| ------------------------- | ------------------------------------------------------------------------- |
-| **Type**                  | `object`                                                                  |
-| **Required**              | No                                                                        |
-| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
-
-| Property                                     | Type   | Required | Default | Title/Description                                                                                                                              |
-| -------------------------------------------- | ------ | -------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| [active](#archiving_static_example_active)   | object | No       | -       | Activates the default archiving. Could be boolean or string refering to a boolean in the config file. See the sqlite archiving for an example  |
-| [inpath](#archiving_static_example_inpath)   | object | No       | -       | Location of input files for archiving                                                                                                          |
-| [outpath](#archiving_static_example_outpath) | object | No       | -       | Relative location of the archived files                                                                                                        |
-| [pattern](#archiving_static_example_pattern) | object | No       | -       | Search pattern for files to be included. Could be a single pattern or list of patterns.                                                        |
-
-<a name="archiving_static_example_active"></a>
-##### Property `Config > archiving > static > example > active`
-
-|                           |                                                                           |
-| ------------------------- | ------------------------------------------------------------------------- |
-| **Type**                  | `object`                                                                  |
-| **Required**              | No                                                                        |
-| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
-
-**Description:** Activates the default archiving. Could be boolean or string refering to a boolean in the config file. See the sqlite archiving for an example 
-
-<a name="archiving_static_example_inpath"></a>
-##### Property `Config > archiving > static > example > inpath`
-
-|                           |                                                                           |
-| ------------------------- | ------------------------------------------------------------------------- |
-| **Type**                  | `object`                                                                  |
-| **Required**              | No                                                                        |
-| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
-
-**Description:** Location of input files for archiving
-
-<a name="archiving_static_example_outpath"></a>
-##### Property `Config > archiving > static > example > outpath`
-
-|                           |                                                                           |
-| ------------------------- | ------------------------------------------------------------------------- |
-| **Type**                  | `object`                                                                  |
-| **Required**              | No                                                                        |
-| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
-
-**Description:** Relative location of the archived files
-
-<a name="archiving_static_example_pattern"></a>
-##### Property `Config > archiving > static > example > pattern`
-
-|                           |                                                                           |
-| ------------------------- | ------------------------------------------------------------------------- |
-| **Type**                  | `object`                                                                  |
-| **Required**              | No                                                                        |
-| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
-
-**Description:** Search pattern for files to be included. Could be a single pattern or list of patterns.
-
-<a name="archiving_settings"></a>
-### Property `Config > archiving > settings`
-
-**Title:** Archive timestep settings
-
-|                           |                                                                           |
-| ------------------------- | ------------------------------------------------------------------------- |
-| **Type**                  | `object`                                                                  |
-| **Required**              | No                                                                        |
-| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
-
-**Description:** Archiving settings for each file type, specified as time interval. This will tell DEODE how often you want to archive output files under said file type. IF this field is completely empty, output_settings will be taken from main config file eg. config_CYCLE.toml
-
-| Property                               | Type        | Required | Default | Title/Description                    |
-| -------------------------------------- | ----------- | -------- | ------- | ------------------------------------ |
-| [history](#archiving_settings_history) | Combination | No       | -       | Time interval to store history files |
-| [surfex](#archiving_settings_surfex)   | Combination | No       | -       | Time interval to store surfex files  |
-| [fullpos](#archiving_settings_fullpos) | Combination | No       | -       | Time interval to store fullpos files |
-
-<a name="archiving_settings_history"></a>
-#### Property `Config > archiving > settings > history`
-
-|                           |                                                                           |
-| ------------------------- | ------------------------------------------------------------------------- |
-| **Type**                  | `combining`                                                               |
-| **Required**              | No                                                                        |
-| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
-
-**Description:** Time interval to store history files
-
-| Any of(Option)                                 |
-| ---------------------------------------------- |
-| [item 0](#archiving_settings_history_anyOf_i0) |
-| [item 1](#archiving_settings_history_anyOf_i1) |
-
-<a name="archiving_settings_history_anyOf_i0"></a>
-##### Property `Config > archiving > settings > history > anyOf > item 0`
+<a name="archiving_prefix_archive_type"></a>
+#### Property `Config > archiving > prefix > archive_type`
 
 |              |          |
 | ------------ | -------- |
 | **Type**     | `string` |
 | **Required** | No       |
 
-| Restrictions                      |                                                                                                                                                                                                                                                                                                         |
-| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Must match regular expression** | ```^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$``` [Test](https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24) |
-
-<a name="archiving_settings_history_anyOf_i1"></a>
-##### Property `Config > archiving > settings > history > anyOf > item 1`
-
-|              |                   |
-| ------------ | ----------------- |
-| **Type**     | `array of string` |
-| **Required** | No                |
-
-|                      | Array restrictions |
-| -------------------- | ------------------ |
-| **Min items**        | N/A                |
-| **Max items**        | N/A                |
-| **Items unicity**    | False              |
-| **Additional items** | False              |
-| **Tuple validation** | See below          |
-
-| Each item of this array must be                            | Description |
-| ---------------------------------------------------------- | ----------- |
-| [item 1 items](#archiving_settings_history_anyOf_i1_items) | -           |
-
-<a name="autogenerated_heading_20"></a>
-##### Config > archiving > settings > history > anyOf > item 1 > item 1 items
-
-|              |          |
-| ------------ | -------- |
-| **Type**     | `string` |
-| **Required** | No       |
-
-| Restrictions                      |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Must match regular expression** | ```^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?:P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?:P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$``` [Test](https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%3AP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%3AP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24) |
-
-<a name="archiving_settings_surfex"></a>
-#### Property `Config > archiving > settings > surfex`
-
-|                           |                                                                           |
-| ------------------------- | ------------------------------------------------------------------------- |
-| **Type**                  | `combining`                                                               |
-| **Required**              | No                                                                        |
-| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
-
-**Description:** Time interval to store surfex files
-
-| Any of(Option)                                |
-| --------------------------------------------- |
-| [item 0](#archiving_settings_surfex_anyOf_i0) |
-| [item 1](#archiving_settings_surfex_anyOf_i1) |
-
-<a name="archiving_settings_surfex_anyOf_i0"></a>
-##### Property `Config > archiving > settings > surfex > anyOf > item 0`
-
-|              |          |
-| ------------ | -------- |
-| **Type**     | `string` |
-| **Required** | No       |
-
-| Restrictions                      |                                                                                                                                                                                                                                                                                                         |
-| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Must match regular expression** | ```^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$``` [Test](https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24) |
-
-<a name="archiving_settings_surfex_anyOf_i1"></a>
-##### Property `Config > archiving > settings > surfex > anyOf > item 1`
-
-|              |                   |
-| ------------ | ----------------- |
-| **Type**     | `array of string` |
-| **Required** | No                |
-
-|                      | Array restrictions |
-| -------------------- | ------------------ |
-| **Min items**        | N/A                |
-| **Max items**        | N/A                |
-| **Items unicity**    | False              |
-| **Additional items** | False              |
-| **Tuple validation** | See below          |
-
-| Each item of this array must be                           | Description |
-| --------------------------------------------------------- | ----------- |
-| [item 1 items](#archiving_settings_surfex_anyOf_i1_items) | -           |
-
-<a name="autogenerated_heading_21"></a>
-##### Config > archiving > settings > surfex > anyOf > item 1 > item 1 items
-
-|              |          |
-| ------------ | -------- |
-| **Type**     | `string` |
-| **Required** | No       |
-
-| Restrictions                      |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Must match regular expression** | ```^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?:P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?:P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$``` [Test](https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%3AP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%3AP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24) |
-
-<a name="archiving_settings_fullpos"></a>
-#### Property `Config > archiving > settings > fullpos`
-
-|                           |                                                                           |
-| ------------------------- | ------------------------------------------------------------------------- |
-| **Type**                  | `combining`                                                               |
-| **Required**              | No                                                                        |
-| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
-
-**Description:** Time interval to store fullpos files
-
-| Any of(Option)                                 |
-| ---------------------------------------------- |
-| [item 0](#archiving_settings_fullpos_anyOf_i0) |
-| [item 1](#archiving_settings_fullpos_anyOf_i1) |
-
-<a name="archiving_settings_fullpos_anyOf_i0"></a>
-##### Property `Config > archiving > settings > fullpos > anyOf > item 0`
-
-|              |          |
-| ------------ | -------- |
-| **Type**     | `string` |
-| **Required** | No       |
-
-| Restrictions                      |                                                                                                                                                                                                                                                                                                         |
-| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Must match regular expression** | ```^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$``` [Test](https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24) |
-
-<a name="archiving_settings_fullpos_anyOf_i1"></a>
-##### Property `Config > archiving > settings > fullpos > anyOf > item 1`
-
-|              |                   |
-| ------------ | ----------------- |
-| **Type**     | `array of string` |
-| **Required** | No                |
-
-|                      | Array restrictions |
-| -------------------- | ------------------ |
-| **Min items**        | N/A                |
-| **Max items**        | N/A                |
-| **Items unicity**    | False              |
-| **Additional items** | False              |
-| **Tuple validation** | See below          |
-
-| Each item of this array must be                            | Description |
-| ---------------------------------------------------------- | ----------- |
-| [item 1 items](#archiving_settings_fullpos_anyOf_i1_items) | -           |
-
-<a name="autogenerated_heading_22"></a>
-##### Config > archiving > settings > fullpos > anyOf > item 1 > item 1 items
-
-|              |          |
-| ------------ | -------- |
-| **Type**     | `string` |
-| **Required** | No       |
-
-| Restrictions                      |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Must match regular expression** | ```^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?:P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?:P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$``` [Test](https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%3AP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%3AP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24) |
+**Description:** Prefix to use for available archive types. Define one per type where applicable.
 
 <a name="cleaning"></a>
 ## Property `Config > cleaning`
@@ -2061,7 +1642,7 @@ Must be one of:
 | **Required**              | No                                                                        |
 | **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
 
-<a name="autogenerated_heading_23"></a>
+<a name="autogenerated_heading_20"></a>
 ##### The following properties are required
 * include
 * ncycles_delay
@@ -2076,7 +1657,7 @@ Must be one of:
 | **Required**              | No                                                                        |
 | **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
 
-<a name="autogenerated_heading_24"></a>
+<a name="autogenerated_heading_21"></a>
 ##### The following properties are required
 * include
 * cleaning_delay
@@ -4684,48 +4265,71 @@ Must be one of:
 
 **Description:** DEODE platform specific path settings
 
-| Property                                             | Type             | Required | Default             | Title/Description                                                                              |
-| ---------------------------------------------------- | ---------------- | -------- | ------------------- | ---------------------------------------------------------------------------------------------- |
-| [archive_type](#platform_archive_type)               | enum (of string) | No       | -                   | Method for archiving. The method working depends on the platform                               |
-| [ecoclim_data_path](#platform_ecoclim_data_path)     | string           | No       | -                   | Path to the ECOCLIMAP-II data                                                                  |
-| [deode_home](#platform_deode_home)                   | string           | No       | "set-by-the-system" | Path to the deode code, normally no need to change                                             |
-| [pgd_data_path](#platform_pgd_data_path)             | string           | No       | -                   | Path to PGD input data                                                                         |
-| [soilgrid_data_path](#platform_soilgrid_data_path)   | string           | No       | -                   | Path to solgrid input data                                                                     |
-| [gmted2010_data_path](#platform_gmted2010_data_path) | string           | No       | -                   | Path to gmted2010 input                                                                        |
-| [ecosg_data_path](#platform_ecosg_data_path)         | string           | No       | -                   | Path to ECOCLIMAP SG data                                                                      |
-| [climdata](#platform_climdata)                       | string           | No       | -                   | Macro used in other platform paths                                                             |
-| [static_data](#platform_static_data)                 | string           | No       | -                   | Macro used in other platform paths                                                             |
-| [e923_data](#platform_e923_data)                     | string           | No       | -                   | Path to e923 input data                                                                        |
-| [ncdir](#platform_ncdir)                             | string           | No       | -                   | Path to ECrad NetCDF data                                                                      |
-| [rrtm_dir](#platform_rrtm_dir)                       | string           | No       | -                   | Path to RRTM input data                                                                        |
-| [rttov_coefdir](#platform_rttov_coefdir)             | string           | No       | -                   | Path to RTTOV_COEF input data                                                                  |
-| [scratch](#platform_scratch)                         | string           | No       | -                   | Path used as macro for e.g. wrk and other directories.                                         |
-| [task_name](#platform_task_name)                     | string           | No       | -                   | Placeholder macro.                                                                             |
-| [flake_dir](#platform_flake_dir)                     | string           | No       | -                   | Path to climate PGD dir.                                                                       |
-| [albnir_soil_dir](#platform_albnir_soil_dir)         | string           | No       | -                   | Path to near-infrared spectrum soil data.                                                      |
-| [albnir_veg_dir](#platform_albnir_veg_dir)           | string           | No       | -                   | Path to near-infrared spectrum vegetation data.                                                |
-| [albvis_soil_dir](#platform_albvis_soil_dir)         | string           | No       | -                   | Path to visible soil spectrum data.                                                            |
-| [albvis_veg_dir](#platform_albvis_veg_dir)           | string           | No       | -                   | Path to visible spectrum vegetation data.                                                      |
-| [lai_dir](#platform_lai_dir)                         | string           | No       | -                   | TBA                                                                                            |
-| [tree_height_dir](#platform_tree_height_dir)         | string           | No       | -                   | Path to tree_height data.                                                                      |
-| [windfarm_path](#platform_windfarm_path)             | string           | No       | -                   | Path to wind farm parameterisation input data.                                                 |
-| [archive_root](#platform_archive_root)               | string           | No       | -                   | Path to the main archive directory                                                             |
-| [unix_group](#platform_unix_group)                   | string           | No       | ""                  | Default unix group for directories created by deode, leave empty to use default group of user. |
+| Property                                             | Type                      | Required | Default                 | Title/Description                                                                              |
+| ---------------------------------------------------- | ------------------------- | -------- | ----------------------- | ---------------------------------------------------------------------------------------------- |
+| [archive_types](#platform_archive_types)             | array of enum (of string) | No       | ["copy", "move", "scp"] | Methods available for archiving                                                                |
+| [ecoclim_data_path](#platform_ecoclim_data_path)     | string                    | No       | -                       | Path to the ECOCLIMAP-II data                                                                  |
+| [deode_home](#platform_deode_home)                   | string                    | No       | "set-by-the-system"     | Path to the deode code, normally no need to change                                             |
+| [pgd_data_path](#platform_pgd_data_path)             | string                    | No       | -                       | Path to PGD input data                                                                         |
+| [soilgrid_data_path](#platform_soilgrid_data_path)   | string                    | No       | -                       | Path to solgrid input data                                                                     |
+| [gmted2010_data_path](#platform_gmted2010_data_path) | string                    | No       | -                       | Path to gmted2010 input                                                                        |
+| [ecosg_data_path](#platform_ecosg_data_path)         | string                    | No       | -                       | Path to ECOCLIMAP SG data                                                                      |
+| [climdata](#platform_climdata)                       | string                    | No       | -                       | Macro used in other platform paths                                                             |
+| [static_data](#platform_static_data)                 | string                    | No       | -                       | Macro used in other platform paths                                                             |
+| [e923_data](#platform_e923_data)                     | string                    | No       | -                       | Path to e923 input data                                                                        |
+| [ncdir](#platform_ncdir)                             | string                    | No       | -                       | Path to ECrad NetCDF data                                                                      |
+| [rrtm_dir](#platform_rrtm_dir)                       | string                    | No       | -                       | Path to RRTM input data                                                                        |
+| [rttov_coefdir](#platform_rttov_coefdir)             | string                    | No       | -                       | Path to RTTOV_COEF input data                                                                  |
+| [scratch](#platform_scratch)                         | string                    | No       | -                       | Path used as macro for e.g. wrk and other directories.                                         |
+| [task_name](#platform_task_name)                     | string                    | No       | -                       | Placeholder macro.                                                                             |
+| [flake_dir](#platform_flake_dir)                     | string                    | No       | -                       | Path to climate PGD dir.                                                                       |
+| [albnir_soil_dir](#platform_albnir_soil_dir)         | string                    | No       | -                       | Path to near-infrared spectrum soil data.                                                      |
+| [albnir_veg_dir](#platform_albnir_veg_dir)           | string                    | No       | -                       | Path to near-infrared spectrum vegetation data.                                                |
+| [albvis_soil_dir](#platform_albvis_soil_dir)         | string                    | No       | -                       | Path to visible soil spectrum data.                                                            |
+| [albvis_veg_dir](#platform_albvis_veg_dir)           | string                    | No       | -                       | Path to visible spectrum vegetation data.                                                      |
+| [lai_dir](#platform_lai_dir)                         | string                    | No       | -                       | TBA                                                                                            |
+| [tree_height_dir](#platform_tree_height_dir)         | string                    | No       | -                       | Path to tree_height data.                                                                      |
+| [windfarm_path](#platform_windfarm_path)             | string                    | No       | -                       | Path to wind farm parameterisation input data.                                                 |
+| [archive_root](#platform_archive_root)               | string                    | No       | -                       | Path to the main archive directory                                                             |
+| [unix_group](#platform_unix_group)                   | string                    | No       | ""                      | Default unix group for directories created by deode, leave empty to use default group of user. |
 
-<a name="platform_archive_type"></a>
-### Property `Config > platform > archive_type`
+<a name="platform_archive_types"></a>
+### Property `Config > platform > archive_types`
+
+|              |                             |
+| ------------ | --------------------------- |
+| **Type**     | `array of enum (of string)` |
+| **Required** | No                          |
+| **Default**  | `["copy", "move", "scp"]`   |
+
+**Description:** Methods available for archiving
+
+|                      | Array restrictions |
+| -------------------- | ------------------ |
+| **Min items**        | N/A                |
+| **Max items**        | N/A                |
+| **Items unicity**    | False              |
+| **Additional items** | False              |
+| **Tuple validation** | See below          |
+
+| Each item of this array must be                      | Description |
+| ---------------------------------------------------- | ----------- |
+| [archive_types items](#platform_archive_types_items) | -           |
+
+<a name="autogenerated_heading_22"></a>
+#### Config > platform > archive_types > archive_types items
 
 |              |                    |
 | ------------ | ------------------ |
 | **Type**     | `enum (of string)` |
 | **Required** | No                 |
 
-**Description:** Method for archiving. The method working depends on the platform
-
 Must be one of:
 * "ecfs"
 * "fdb"
 * "scp"
+* "copy"
+* "move"
 
 <a name="platform_ecoclim_data_path"></a>
 ### Property `Config > platform > ecoclim_data_path`
@@ -5243,7 +4847,7 @@ Must be one of:
 | ---------------------------------------------------- | ----------- |
 | [submit_types items](#submission_submit_types_items) | -           |
 
-<a name="autogenerated_heading_25"></a>
+<a name="autogenerated_heading_23"></a>
 #### Config > submission > submit_types > submit_types items
 
 |              |          |
@@ -5318,7 +4922,7 @@ Must be one of:
 | --------------------------------------------- | ----------- |
 | [tasks items](#submission_serial_tasks_items) | -           |
 
-<a name="autogenerated_heading_26"></a>
+<a name="autogenerated_heading_24"></a>
 ##### Config > submission > serial > tasks > tasks items
 
 |              |          |
@@ -5427,7 +5031,7 @@ must respect the following conditions
 | --------------------------------------------------------- | ----------- |
 | [^(.*)$ items](#submission_serial_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_27"></a>
+<a name="autogenerated_heading_25"></a>
 ##### Config > submission > serial > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -5481,7 +5085,7 @@ must respect the following conditions
 | ----------------------------------------------- | ----------- |
 | [tasks items](#submission_parallel_tasks_items) | -           |
 
-<a name="autogenerated_heading_28"></a>
+<a name="autogenerated_heading_26"></a>
 ##### Config > submission > parallel > tasks > tasks items
 
 |              |          |
@@ -5590,7 +5194,7 @@ must respect the following conditions
 | ----------------------------------------------------------- | ----------- |
 | [^(.*)$ items](#submission_parallel_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_29"></a>
+<a name="autogenerated_heading_27"></a>
 ##### Config > submission > parallel > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -5644,7 +5248,7 @@ must respect the following conditions
 | ---------------------------------------------------- | ----------- |
 | [tasks items](#submission_background_vm_tasks_items) | -           |
 
-<a name="autogenerated_heading_30"></a>
+<a name="autogenerated_heading_28"></a>
 ##### Config > submission > background_vm > tasks > tasks items
 
 |              |          |
@@ -5753,7 +5357,7 @@ must respect the following conditions
 | ---------------------------------------------------------------- | ----------- |
 | [^(.*)$ items](#submission_background_vm_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_31"></a>
+<a name="autogenerated_heading_29"></a>
 ##### Config > submission > background_vm > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -5807,7 +5411,7 @@ must respect the following conditions
 | ----------------------------------------------------- | ----------- |
 | [tasks items](#submission_background_hpc_tasks_items) | -           |
 
-<a name="autogenerated_heading_32"></a>
+<a name="autogenerated_heading_30"></a>
 ##### Config > submission > background_hpc > tasks > tasks items
 
 |              |          |
@@ -5916,7 +5520,7 @@ must respect the following conditions
 | ----------------------------------------------------------------- | ----------- |
 | [^(.*)$ items](#submission_background_hpc_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_33"></a>
+<a name="autogenerated_heading_31"></a>
 ##### Config > submission > background_hpc > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -5970,7 +5574,7 @@ must respect the following conditions
 | ------------------------------------------ | ----------- |
 | [tasks items](#submission_gnu_tasks_items) | -           |
 
-<a name="autogenerated_heading_34"></a>
+<a name="autogenerated_heading_32"></a>
 ##### Config > submission > gnu > tasks > tasks items
 
 |              |          |
@@ -6079,7 +5683,7 @@ must respect the following conditions
 | ------------------------------------------------------ | ----------- |
 | [^(.*)$ items](#submission_gnu_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_35"></a>
+<a name="autogenerated_heading_33"></a>
 ##### Config > submission > gnu > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -6256,7 +5860,7 @@ must respect the following conditions
 | **Additional items** | False              |
 | **Tuple validation** | See below          |
 
-<a name="autogenerated_heading_36"></a>
+<a name="autogenerated_heading_34"></a>
 #### At least one of the items must be
 
 |              |          |
@@ -6282,7 +5886,7 @@ must respect the following conditions
 | **Additional items** | False              |
 | **Tuple validation** | See below          |
 
-<a name="autogenerated_heading_37"></a>
+<a name="autogenerated_heading_35"></a>
 #### At least one of the items must be
 
 |              |          |
