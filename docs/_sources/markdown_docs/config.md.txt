@@ -1,5 +1,5 @@
 The following section was automatically generated running
-        `deode doc config` on 2024-09-20T12:50:48.
+        `deode doc config` on 2024-09-23T12:30:25.
 
 # Config
 
@@ -62,6 +62,7 @@ The following section was automatically generated running
 | [cycle](#general_cycle)                                     | enum (of string) | No       | -            | IAL cycle                                                                                                                                                                                                                                                                                                                                    |
 | [initfile](#general_initfile)                               | string           | No       | -            | Initial file for the forecast object. Normally no need to provide unless there are special requirements or the forecast object is used in stand alone mode.                                                                                                                                                                                  |
 | [initfile_sfx](#general_initfile_sfx)                       | string           | No       | -            | Initial surfex file for the forecast object. Normally no need to provide unless there are special requirements or the forecast object is used in stand alone mode.                                                                                                                                                                           |
+| [namelist](#general_namelist)                               | object           | No       | -            | Namelist                                                                                                                                                                                                                                                                                                                                     |
 | [output_settings](#general_output_settings)                 | object           | No       | -            | Output Settings                                                                                                                                                                                                                                                                                                                              |
 | [windfarm](#general_windfarm)                               | boolean          | No       | false        | Switch on wind farm parameterisation                                                                                                                                                                                                                                                                                                         |
 
@@ -494,6 +495,44 @@ Must be one of:
 
 **Description:** Initial surfex file for the forecast object. Normally no need to provide unless there are special requirements or the forecast object is used in stand alone mode.
 
+<a name="general_namelist"></a>
+### Property `Config > general > namelist`
+
+**Title:** Namelist
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Namelist settings. Various settings for the forecast namelist that have no other place to go.
+
+| Property                                                     | Type   | Required | Default | Title/Description                                                 |
+| ------------------------------------------------------------ | ------ | -------- | ------- | ----------------------------------------------------------------- |
+| [nrazts](#general_namelist_nrazts)                           | string | No       | -       | Reset times for instantaneous fluxes ( e.g. min/max temperature ) |
+| [radiation_frequency](#general_namelist_radiation_frequency) | string | No       | -       | Time interval for radiation compitations in the model.            |
+
+<a name="general_namelist_nrazts"></a>
+#### Property `Config > general > namelist > nrazts`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Reset times for instantaneous fluxes ( e.g. min/max temperature )
+
+<a name="general_namelist_radiation_frequency"></a>
+#### Property `Config > general > namelist > radiation_frequency`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Time interval for radiation compitations in the model.
+
 <a name="general_output_settings"></a>
 ### Property `Config > general > output_settings`
 
@@ -512,7 +551,6 @@ Must be one of:
 | [history](#general_output_settings_history) | Combination | No       | -       | -                 |
 | [surfex](#general_output_settings_surfex)   | Combination | No       | -       | -                 |
 | [fullpos](#general_output_settings_fullpos) | Combination | No       | -       | -                 |
-| [nrazts](#general_output_settings_nrazts)   | Combination | No       | -       | -                 |
 
 <a name="general_output_settings_history"></a>
 #### Property `Config > general > output_settings > history`
@@ -717,77 +755,6 @@ Must be one of:
 
 <a name="autogenerated_heading_17"></a>
 ##### Config > general > output_settings > fullpos > anyOf > item 2 > item 2 items
-
-|              |          |
-| ------------ | -------- |
-| **Type**     | `string` |
-| **Required** | No       |
-
-| Restrictions                      |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Must match regular expression** | ```^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?:P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?:P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$``` [Test](https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%3AP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%3AP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24) |
-
-<a name="general_output_settings_nrazts"></a>
-#### Property `Config > general > output_settings > nrazts`
-
-|                           |                                                                           |
-| ------------------------- | ------------------------------------------------------------------------- |
-| **Type**                  | `combining`                                                               |
-| **Required**              | No                                                                        |
-| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
-
-| Any of(Option)                                     |
-| -------------------------------------------------- |
-| [item 0](#general_output_settings_nrazts_anyOf_i0) |
-| [item 1](#general_output_settings_nrazts_anyOf_i1) |
-| [item 2](#general_output_settings_nrazts_anyOf_i2) |
-
-<a name="general_output_settings_nrazts_anyOf_i0"></a>
-##### Property `Config > general > output_settings > nrazts > anyOf > item 0`
-
-|              |          |
-| ------------ | -------- |
-| **Type**     | `string` |
-| **Required** | No       |
-
-| Restrictions                      |                                             |
-| --------------------------------- | ------------------------------------------- |
-| **Must match regular expression** | `````` [Test](https://regex101.com/?regex=) |
-
-<a name="general_output_settings_nrazts_anyOf_i1"></a>
-##### Property `Config > general > output_settings > nrazts > anyOf > item 1`
-
-|              |          |
-| ------------ | -------- |
-| **Type**     | `string` |
-| **Required** | No       |
-
-| Restrictions                      |                                                                                                                                                                                                                                                                                                         |
-| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Must match regular expression** | ```^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$``` [Test](https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24) |
-
-<a name="general_output_settings_nrazts_anyOf_i2"></a>
-##### Property `Config > general > output_settings > nrazts > anyOf > item 2`
-
-|              |                   |
-| ------------ | ----------------- |
-| **Type**     | `array of string` |
-| **Required** | No                |
-
-|                      | Array restrictions |
-| -------------------- | ------------------ |
-| **Min items**        | N/A                |
-| **Max items**        | N/A                |
-| **Items unicity**    | False              |
-| **Additional items** | False              |
-| **Tuple validation** | See below          |
-
-| Each item of this array must be                                | Description |
-| -------------------------------------------------------------- | ----------- |
-| [item 2 items](#general_output_settings_nrazts_anyOf_i2_items) | -           |
-
-<a name="autogenerated_heading_18"></a>
-##### Config > general > output_settings > nrazts > anyOf > item 2 > item 2 items
 
 |              |          |
 | ------------ | -------- |
@@ -1440,7 +1407,7 @@ Must be one of:
 | ------------------------------------------- | ----------- |
 | [selection items](#fullpos_selection_items) | -           |
 
-<a name="autogenerated_heading_19"></a>
+<a name="autogenerated_heading_18"></a>
 #### Config > fullpos > selection > selection items
 
 |              |          |
@@ -1596,7 +1563,7 @@ Must be one of:
 | **Required**              | No                                                                        |
 | **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
 
-<a name="autogenerated_heading_20"></a>
+<a name="autogenerated_heading_19"></a>
 ##### The following properties are required
 * include
 * ncycles_delay
@@ -1611,7 +1578,7 @@ Must be one of:
 | **Required**              | No                                                                        |
 | **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
 
-<a name="autogenerated_heading_21"></a>
+<a name="autogenerated_heading_20"></a>
 ##### The following properties are required
 * include
 * cleaning_delay
@@ -4759,7 +4726,7 @@ Must be one of:
 | ---------------------------------------------------- | ----------- |
 | [archive_types items](#platform_archive_types_items) | -           |
 
-<a name="autogenerated_heading_22"></a>
+<a name="autogenerated_heading_21"></a>
 #### Config > platform > archive_types > archive_types items
 
 |              |                    |
@@ -5290,7 +5257,7 @@ Must be one of:
 | ---------------------------------------------------- | ----------- |
 | [submit_types items](#submission_submit_types_items) | -           |
 
-<a name="autogenerated_heading_23"></a>
+<a name="autogenerated_heading_22"></a>
 #### Config > submission > submit_types > submit_types items
 
 |              |          |
@@ -5365,7 +5332,7 @@ Must be one of:
 | --------------------------------------------- | ----------- |
 | [tasks items](#submission_serial_tasks_items) | -           |
 
-<a name="autogenerated_heading_24"></a>
+<a name="autogenerated_heading_23"></a>
 ##### Config > submission > serial > tasks > tasks items
 
 |              |          |
@@ -5474,7 +5441,7 @@ must respect the following conditions
 | --------------------------------------------------------- | ----------- |
 | [^(.*)$ items](#submission_serial_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_25"></a>
+<a name="autogenerated_heading_24"></a>
 ##### Config > submission > serial > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -5528,7 +5495,7 @@ must respect the following conditions
 | ----------------------------------------------- | ----------- |
 | [tasks items](#submission_parallel_tasks_items) | -           |
 
-<a name="autogenerated_heading_26"></a>
+<a name="autogenerated_heading_25"></a>
 ##### Config > submission > parallel > tasks > tasks items
 
 |              |          |
@@ -5637,7 +5604,7 @@ must respect the following conditions
 | ----------------------------------------------------------- | ----------- |
 | [^(.*)$ items](#submission_parallel_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_27"></a>
+<a name="autogenerated_heading_26"></a>
 ##### Config > submission > parallel > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -5691,7 +5658,7 @@ must respect the following conditions
 | ---------------------------------------------------- | ----------- |
 | [tasks items](#submission_background_vm_tasks_items) | -           |
 
-<a name="autogenerated_heading_28"></a>
+<a name="autogenerated_heading_27"></a>
 ##### Config > submission > background_vm > tasks > tasks items
 
 |              |          |
@@ -5800,7 +5767,7 @@ must respect the following conditions
 | ---------------------------------------------------------------- | ----------- |
 | [^(.*)$ items](#submission_background_vm_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_29"></a>
+<a name="autogenerated_heading_28"></a>
 ##### Config > submission > background_vm > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -5854,7 +5821,7 @@ must respect the following conditions
 | ----------------------------------------------------- | ----------- |
 | [tasks items](#submission_background_hpc_tasks_items) | -           |
 
-<a name="autogenerated_heading_30"></a>
+<a name="autogenerated_heading_29"></a>
 ##### Config > submission > background_hpc > tasks > tasks items
 
 |              |          |
@@ -5963,7 +5930,7 @@ must respect the following conditions
 | ----------------------------------------------------------------- | ----------- |
 | [^(.*)$ items](#submission_background_hpc_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_31"></a>
+<a name="autogenerated_heading_30"></a>
 ##### Config > submission > background_hpc > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -6017,7 +5984,7 @@ must respect the following conditions
 | ------------------------------------------ | ----------- |
 | [tasks items](#submission_gnu_tasks_items) | -           |
 
-<a name="autogenerated_heading_32"></a>
+<a name="autogenerated_heading_31"></a>
 ##### Config > submission > gnu > tasks > tasks items
 
 |              |          |
@@ -6126,7 +6093,7 @@ must respect the following conditions
 | ------------------------------------------------------ | ----------- |
 | [^(.*)$ items](#submission_gnu_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_33"></a>
+<a name="autogenerated_heading_32"></a>
 ##### Config > submission > gnu > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -6303,7 +6270,7 @@ must respect the following conditions
 | **Additional items** | False              |
 | **Tuple validation** | See below          |
 
-<a name="autogenerated_heading_34"></a>
+<a name="autogenerated_heading_33"></a>
 #### At least one of the items must be
 
 |              |          |
@@ -6329,7 +6296,7 @@ must respect the following conditions
 | **Additional items** | False              |
 | **Tuple validation** | See below          |
 
-<a name="autogenerated_heading_35"></a>
+<a name="autogenerated_heading_34"></a>
 #### At least one of the items must be
 
 |              |          |
