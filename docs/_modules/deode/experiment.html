@@ -271,6 +271,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.experiment.case_setup"><code class="docutils literal notranslate"><span class="pre">case_setup()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.experiment.get_git_info"><code class="docutils literal notranslate"><span class="pre">get_git_info()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.fullpos">deode.fullpos module</a><ul>
@@ -952,7 +953,9 @@
 <span></span><span class="sd">&quot;&quot;&quot;Experiment tools.&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">contextlib</span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
 
@@ -982,6 +985,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Construct Exp&quot;</span><span class="p">)</span>
         <span class="n">config</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">update</span><span class="o">=</span><span class="n">merged_config</span><span class="p">)</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">update</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;git_info&quot;</span><span class="p">:</span> <span class="n">get_git_info</span><span class="p">()})</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span></div>
 
 
@@ -1220,6 +1224,37 @@
     <span class="n">exp</span> <span class="o">=</span> <span class="n">ExpFromFiles</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">exp_dependencies</span><span class="p">,</span> <span class="n">mod_files</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">)</span>
     <span class="n">exp</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">save_as</span><span class="p">(</span><span class="n">output_file</span><span class="p">)</span></div>
 
+
+
+<div class="viewcode-block" id="get_git_info">
+<a class="viewcode-back" href="../../deode.html#deode.experiment.get_git_info">[docs]</a>
+<span class="k">def</span> <span class="nf">get_git_info</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get git information.&quot;&quot;&quot;</span>
+    <span class="n">gitcmds</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;branch&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;git&quot;</span><span class="p">,</span> <span class="s2">&quot;rev-parse&quot;</span><span class="p">,</span> <span class="s2">&quot;--abbrev-ref&quot;</span><span class="p">,</span> <span class="s2">&quot;HEAD&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;commit&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;git&quot;</span><span class="p">,</span> <span class="s2">&quot;rev-parse&quot;</span><span class="p">,</span> <span class="s2">&quot;HEAD&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;remote&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;git&quot;</span><span class="p">,</span> <span class="s2">&quot;rev-parse&quot;</span><span class="p">,</span> <span class="s2">&quot;--abbrev-ref&quot;</span><span class="p">,</span> <span class="s2">&quot;@</span><span class="si">{u}</span><span class="s2">&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;describe&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;git&quot;</span><span class="p">,</span> <span class="s2">&quot;describe&quot;</span><span class="p">,</span> <span class="s2">&quot;--long&quot;</span><span class="p">,</span> <span class="s2">&quot;--always&quot;</span><span class="p">,</span> <span class="s2">&quot;--tags&quot;</span><span class="p">,</span> <span class="s2">&quot;--dirty&quot;</span><span class="p">],</span>
+    <span class="p">}</span>
+
+    <span class="n">git_info</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">cmd</span> <span class="ow">in</span> <span class="n">gitcmds</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span><span class="p">):</span>
+            <span class="n">git_info</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">DEVNULL</span><span class="p">)</span>  <span class="c1"># noqa S603</span>
+                <span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+    <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span><span class="p">):</span>
+        <span class="n">remote</span> <span class="o">=</span> <span class="n">git_info</span><span class="p">[</span><span class="s2">&quot;remote&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;git&quot;</span><span class="p">,</span> <span class="s2">&quot;remote&quot;</span><span class="p">,</span> <span class="s2">&quot;get-url&quot;</span><span class="p">,</span> <span class="n">remote</span><span class="p">]</span>
+        <span class="n">git_info</span><span class="p">[</span><span class="s2">&quot;remote_url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">DEVNULL</span><span class="p">)</span>  <span class="c1"># noqa S603</span>
+            <span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">git_info</span></div>
+
 </pre></div>
 
            </div>
@@ -1230,7 +1265,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-09-26T10:28:20Z.
+      <span class="lastupdated">Last updated on 2024-09-30T09:10:16Z.
       </span></p>
   </div>
 
