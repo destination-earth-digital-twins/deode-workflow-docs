@@ -962,8 +962,10 @@
 <span class="kn">import</span> <span class="nn">tomlkit</span>
 
 <span class="kn">from</span> <span class="nn">.config_parser</span> <span class="kn">import</span> <span class="n">ConfigParserDefaults</span><span class="p">,</span> <span class="n">ParsedConfig</span>
+<span class="kn">from</span> <span class="nn">.derived_variables</span> <span class="kn">import</span> <span class="n">set_times</span>
 <span class="kn">from</span> <span class="nn">.logs</span> <span class="kn">import</span> <span class="n">logger</span>
 <span class="kn">from</span> <span class="nn">.os_utils</span> <span class="kn">import</span> <span class="n">resolve_path_relative_to_package</span>
+<span class="kn">from</span> <span class="nn">.toolbox</span> <span class="kn">import</span> <span class="n">Platform</span>
 
 
 <div class="viewcode-block" id="Exp">
@@ -1222,6 +1224,11 @@
     <span class="p">)</span>
 
     <span class="n">exp</span> <span class="o">=</span> <span class="n">ExpFromFiles</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">exp_dependencies</span><span class="p">,</span> <span class="n">mod_files</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">output_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">update</span><span class="o">=</span><span class="n">set_times</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">config</span><span class="p">))</span>
+        <span class="n">output_file</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;general.case&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.toml&quot;</span>
+        <span class="n">output_file</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">config</span><span class="p">)</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">output_file</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Save config to: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">output_file</span><span class="p">)</span>
     <span class="n">exp</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">save_as</span><span class="p">(</span><span class="n">output_file</span><span class="p">)</span></div>
 
 
@@ -1265,7 +1272,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-09-30T09:10:16Z.
+      <span class="lastupdated">Last updated on 2024-10-01T06:59:45Z.
       </span></p>
   </div>
 
