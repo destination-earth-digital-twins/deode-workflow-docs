@@ -667,6 +667,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-fullpos">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">fullpos</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-fullpos-config-path">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">fullpos</span> <span class="pre">&gt;</span> <span class="pre">config_path</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-fullpos-selection">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">fullpos</span> <span class="pre">&gt;</span> <span class="pre">selection</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-fullpos-domain-name">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">fullpos</span> <span class="pre">&gt;</span> <span class="pre">domain_name</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-troika">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">troika</span></code></a><ul>
@@ -1026,10 +1027,11 @@
             <span class="n">generate_namelist</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">if</span> <span class="n">generate_namelist</span><span class="p">:</span>
-        <span class="n">fpdir</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;fullpos.config_path&quot;</span><span class="p">]</span>
-        <span class="n">fpdir</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">fpdir</span><span class="p">)</span>
+        <span class="n">_fpdir</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;fullpos.config_path&quot;</span><span class="p">]</span>
+        <span class="n">fpdir</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">_fpdir</span><span class="p">)</span>
         <span class="n">fpfiles</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;fullpos.selection&quot;</span><span class="p">]</span>
-        <span class="n">domain</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain.name&quot;</span><span class="p">]</span>
+        <span class="n">_domain</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;fullpos.domain_name&quot;</span><span class="p">]</span>
+        <span class="n">domain</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">_domain</span><span class="p">)</span>
         <span class="n">nrfp3s</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;vertical_levels.nlev&quot;</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
         <span class="n">rules</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;$</span><span class="si">{vertical_levels.nlev}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;vertical_levels.nlev&quot;</span><span class="p">],</span>
@@ -1184,7 +1186,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-10-02T10:27:59Z.
+      <span class="lastupdated">Last updated on 2024-10-03T08:48:01Z.
       </span></p>
   </div>
 
