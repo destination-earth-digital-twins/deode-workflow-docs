@@ -959,6 +959,7 @@
 <span class="kn">import</span> <span class="nn">shutil</span>
 <span class="kn">import</span> <span class="nn">socket</span>
 
+<span class="kn">from</span> <span class="nn">..config_parser</span> <span class="kn">import</span> <span class="n">ConfigParserDefaults</span>
 <span class="kn">from</span> <span class="nn">..logs</span> <span class="kn">import</span> <span class="n">logger</span>
 <span class="kn">from</span> <span class="nn">..os_utils</span> <span class="kn">import</span> <span class="n">deodemakedirs</span>
 <span class="kn">from</span> <span class="nn">..toolbox</span> <span class="kn">import</span> <span class="n">FileManager</span>
@@ -1026,23 +1027,41 @@
     <span class="k">def</span> <span class="nf">_set_eccodes_environment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set correct path for ECCODES tables.</span>
 
-<span class="sd">        Respect ECCODES_DEINITION_PATH if set and</span>
-<span class="sd">        assume ECCODES_DIR is defined.</span>
+<span class="sd">        Respect ECCODES_DEINITION_PATH if set or combine local settings with library</span>
+<span class="sd">        ones in different ways depending on version</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;ECCODES_DEFINITION_PATH&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">eccodes_definition_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;ECCODES_DEFINITION_PATH&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">eccodes_definition_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Use ECCODES_DEFINITION_PATH </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">eccodes_definition_path</span><span class="p">)</span>
             <span class="k">return</span>
 
-        <span class="n">deode_home</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_platform_value</span><span class="p">(</span><span class="s2">&quot;DEODE_HOME&quot;</span><span class="p">)</span>
-        <span class="n">eccodes_definition_search_paths</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">deode_home</span><span class="si">}</span><span class="s2">/data/eccodes/definitions&quot;</span><span class="p">]</span>
+        <span class="c1"># Path to local tables</span>
+        <span class="n">deode_eccodes_definition_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span>
+            <span class="n">ConfigParserDefaults</span><span class="o">.</span><span class="n">DATA_DIRECTORY</span> <span class="o">/</span> <span class="s2">&quot;eccodes/definitions&quot;</span>
+        <span class="p">)</span>
+
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">eccodes_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;ECCODES_DIR&quot;</span><span class="p">]</span>
-            <span class="n">eccodes_definition_search_paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">eccodes_dir</span><span class="si">}</span><span class="s2">/share/eccodes/definitions&quot;</span>
+            <span class="n">eccodes_version</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+                <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;ECCODES_VERSION&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)]</span>
             <span class="p">)</span>
-        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="k">pass</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;ECCODES_DEFINITION_PATH&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;:&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">eccodes_definition_search_paths</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">eccodes_version</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">eccodes_definition_path</span> <span class="o">=</span> <span class="n">deode_eccodes_definition_path</span>
+        <span class="k">if</span> <span class="n">eccodes_version</span> <span class="o">&lt;</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">eccodes_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;ECCODES_DIR&quot;</span><span class="p">]</span>
+                <span class="n">eccodes_definition_path</span> <span class="o">=</span> <span class="s2">&quot;:&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="p">[</span>
+                        <span class="n">eccodes_definition_path</span><span class="p">,</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">eccodes_dir</span><span class="si">}</span><span class="s2">/share/eccodes/definitions&quot;</span><span class="p">,</span>
+                    <span class="p">]</span>
+                <span class="p">)</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+        <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;ECCODES_DEFINITION_PATH&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">eccodes_definition_path</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
             <span class="s2">&quot;Set ECCODES_DEFINITION_PATH to </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;ECCODES_DEFINITION_PATH&quot;</span><span class="p">]</span>
         <span class="p">)</span>
@@ -1262,7 +1281,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-10-03T08:48:01Z.
+      <span class="lastupdated">Last updated on 2024-10-03T11:00:01Z.
       </span></p>
   </div>
 
