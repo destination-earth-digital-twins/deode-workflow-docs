@@ -1117,11 +1117,15 @@
         <span class="k">return</span> <span class="n">port</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_select_host_from_list</span><span class="p">(</span><span class="n">hosts</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_select_host_from_list</span><span class="p">(</span><span class="n">hosts</span><span class="p">,</span> <span class="n">tries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set ecf_host from list of options.</span>
+
+<span class="sd">           Try to ping server tries times before giving up.</span>
 
 <span class="sd">        Arguments:</span>
 <span class="sd">            hosts (list): list of host options</span>
+<span class="sd">            tries (int): number of times to try to find a host</span>
+<span class="sd">            delay (int): number of seconds to wait between each try</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            host (str): Selected host</span>
@@ -1130,22 +1134,30 @@
 <span class="sd">            RuntimeError: In case no or more than one host found</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">found_hosts</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">_host</span> <span class="ow">in</span> <span class="n">hosts</span><span class="p">:</span>
-            <span class="n">host</span> <span class="o">=</span> <span class="n">_host</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">ping</span><span class="p">(</span><span class="n">host</span><span class="p">):</span>
-                <span class="n">found_hosts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">host</span><span class="p">)</span>
+        <span class="n">ntry</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">while</span> <span class="n">ntry</span> <span class="o">&lt;=</span> <span class="n">tries</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">_host</span> <span class="ow">in</span> <span class="n">hosts</span><span class="p">:</span>
+                <span class="n">host</span> <span class="o">=</span> <span class="n">_host</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">ping</span><span class="p">(</span><span class="n">host</span><span class="p">):</span>
+                    <span class="n">found_hosts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">host</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">found_hosts</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">host_list</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">hosts</span><span class="p">)</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;No ecflow host found, tried:</span><span class="si">{</span><span class="n">host_list</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">found_hosts</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">ntry</span> <span class="o">==</span> <span class="n">tries</span><span class="p">:</span>
+                <span class="n">host_list</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">hosts</span><span class="p">)</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;No ecflow host found, tried:</span><span class="si">{</span><span class="n">host_list</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">found_hosts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">host_list</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">found_hosts</span><span class="p">)</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Ambigious host selection:</span><span class="si">{</span><span class="n">host_list</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">found_hosts</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">break</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">found_hosts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">host_list</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">found_hosts</span><span class="p">)</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Ambigious host selection:</span><span class="si">{</span><span class="n">host_list</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">delay</span><span class="p">)</span>
+            <span class="n">ntry</span> <span class="o">+=</span> <span class="mi">1</span>
 
         <span class="k">return</span> <span class="n">found_hosts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
@@ -1431,7 +1443,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-10-07T16:40:03Z.
+      <span class="lastupdated">Last updated on 2024-10-07T17:03:41Z.
       </span></p>
   </div>
 
