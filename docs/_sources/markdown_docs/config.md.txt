@@ -1,5 +1,5 @@
 The following section was automatically generated running
-        `deode doc config` on 2024-10-07T09:22:32.
+        `deode doc config` on 2024-10-07T09:49:28.
 
 # Config
 
@@ -28,6 +28,7 @@ The following section was automatically generated running
 | [domain](#domain)                   | object | No       | -       | Domain Section, defined in files under include/domains          |
 | [extractsqlite](#extractsqlite)     | object | No       | -       | Extract sqlite Section, defined in include/sqlite.toml          |
 | [file_templates](#file_templates)   | object | No       | -       | File Templates, defined in include/file_templates.toml          |
+| [impact](#impact)                   | object | No       | -       | Impact model settings                                           |
 | [macros](#macros)                   | object | No       | -       | Macros Section, defined in include/macros.toml                  |
 | [mars](#mars)                       | object | No       | -       | MARS settings, defined in include/mars_settings.toml            |
 | [platform](#platform)               | object | No       | -       | Platform Section, defined in files under include/platform_paths |
@@ -60,6 +61,7 @@ The following section was automatically generated running
 | [keep_workdirs](#general_keep_workdirs)                     | boolean          | No       | -            | Do not remove working directories                                                                                                                                                                                                                                                                                                            |
 | [csc](#general_csc)                                         | enum (of string) | No       | "AROME"      | CSC                                                                                                                                                                                                                                                                                                                                          |
 | [cycle](#general_cycle)                                     | enum (of string) | No       | -            | IAL cycle                                                                                                                                                                                                                                                                                                                                    |
+| [event_type](#general_event_type)                           | enum (of string) | No       | "nwp"        | Type of extreme event                                                                                                                                                                                                                                                                                                                        |
 | [initfile](#general_initfile)                               | string           | No       | -            | Initial file for the forecast object. Normally no need to provide unless there are special requirements or the forecast object is used in stand alone mode.                                                                                                                                                                                  |
 | [initfile_sfx](#general_initfile_sfx)                       | string           | No       | -            | Initial surfex file for the forecast object. Normally no need to provide unless there are special requirements or the forecast object is used in stand alone mode.                                                                                                                                                                           |
 | [namelist](#general_namelist)                               | object           | No       | -            | Namelist                                                                                                                                                                                                                                                                                                                                     |
@@ -474,6 +476,21 @@ Must be one of:
 * "CY49t2"
 * "CY48t3"
 * "CY46h1"
+
+<a name="general_event_type"></a>
+### Property `Config > general > event_type`
+
+|              |                    |
+| ------------ | ------------------ |
+| **Type**     | `enum (of string)` |
+| **Required** | No                 |
+| **Default**  | `"nwp"`            |
+
+**Description:** Type of extreme event
+
+Must be one of:
+* "nwp"
+* "flooding"
 
 <a name="general_initfile"></a>
 ### Property `Config > general > initfile`
@@ -1877,8 +1894,8 @@ Must be one of:
 | [tstep](#domain_tstep)       | number           | No       | -       | Model time step in seconds                      |
 | [xloncen](#domain_xloncen)   | number           | No       | -       | Domain center longitude                         |
 | [xlatcen](#domain_xlatcen)   | number           | No       | -       | Domain center latitude                          |
-| [xlon0](#domain_xlon0)       | number           | No       | -       | Longitude of center of projection               |
-| [xlat0](#domain_xlat0)       | number           | No       | -       | Latitude of center of projection                |
+| [xlon0](#domain_xlon0)       | Combination      | No       | ""      | Longitude of center of projection               |
+| [xlat0](#domain_xlat0)       | Combination      | No       | ""      | Latitude of center of projection                |
 | [xbeta](#domain_xbeta)       | number           | No       | 0.0     | Rotation parameter for the conformal projection |
 
 <a name="domain_gridtype"></a>
@@ -2066,12 +2083,39 @@ Must be one of:
 <a name="domain_xlon0"></a>
 ### Property `Config > domain > xlon0`
 
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `combining`                                                               |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+| **Default**               | `""`                                                                      |
+
+**Description:** Longitude of center of projection
+
+| One of(Option)                   |
+| -------------------------------- |
+| [item 0](#domain_xlon0_oneOf_i0) |
+| [item 1](#domain_xlon0_oneOf_i1) |
+
+<a name="domain_xlon0_oneOf_i0"></a>
+#### Property `Config > domain > xlon0 > oneOf > item 0`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+| Restrictions   |   |
+| -------------- | - |
+| **Max length** | 0 |
+
+<a name="domain_xlon0_oneOf_i1"></a>
+#### Property `Config > domain > xlon0 > oneOf > item 1`
+
 |              |          |
 | ------------ | -------- |
 | **Type**     | `number` |
 | **Required** | No       |
-
-**Description:** Longitude of center of projection
 
 | Restrictions |           |
 | ------------ | --------- |
@@ -2081,12 +2125,39 @@ Must be one of:
 <a name="domain_xlat0"></a>
 ### Property `Config > domain > xlat0`
 
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `combining`                                                               |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+| **Default**               | `""`                                                                      |
+
+**Description:** Latitude of center of projection
+
+| One of(Option)                   |
+| -------------------------------- |
+| [item 0](#domain_xlat0_oneOf_i0) |
+| [item 1](#domain_xlat0_oneOf_i1) |
+
+<a name="domain_xlat0_oneOf_i0"></a>
+#### Property `Config > domain > xlat0 > oneOf > item 0`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+| Restrictions   |   |
+| -------------- | - |
+| **Max length** | 0 |
+
+<a name="domain_xlat0_oneOf_i1"></a>
+#### Property `Config > domain > xlat0 > oneOf > item 1`
+
 |              |          |
 | ------------ | -------- |
 | **Type**     | `number` |
 | **Required** | No       |
-
-**Description:** Latitude of center of projection
 
 | Restrictions |          |
 | ------------ | -------- |
@@ -2494,6 +2565,338 @@ Must be one of:
 | **Default**  | `"ICMSH@CNMEXP@+@DURATION_MODEL@.sfx"` |
 
 **Description:** File template as used by the model
+
+<a name="impact"></a>
+## Property `Config > impact`
+
+**Title:** Impact model settings
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Defines settings for arbitrary impact models
+
+| Property               | Type   | Required | Default | Title/Description  |
+| ---------------------- | ------ | -------- | ------- | ------------------ |
+| [ehype](#impact_ehype) | object | No       | -       | Settings for EHYPE |
+
+<a name="impact_ehype"></a>
+### Property `Config > impact > ehype`
+
+**Title:** Settings for EHYPE
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+| Property                                 | Type    | Required | Default | Title/Description                                                                                           |
+| ---------------------------------------- | ------- | -------- | ------- | ----------------------------------------------------------------------------------------------------------- |
+| [active](#impact_ehype_active)           | boolean | No       | "false" | Activates this impact model                                                                                 |
+| [arguments](#impact_ehype_arguments)     | string  | No       | -       | Arguments to send to the impact model start command                                                         |
+| [config_name](#impact_ehype_config_name) | string  | No       | -       | Name of the output config file aimed for the particular impact model                                        |
+| [path](#impact_ehype_path)               | string  | No       | -       | Path to the impact model start command. Preferably defined in the platform section and used as a macro here |
+| [task](#impact_ehype_task)               | string  | No       | -       | Which of the dedicated tasks the impact model should be started from. Has to be defined in impact.py        |
+| [communicate](#impact_ehype_communicate) | object  | No       | -       | Impact model specific config settings                                                                       |
+
+<a name="impact_ehype_active"></a>
+#### Property `Config > impact > ehype > active`
+
+|              |           |
+| ------------ | --------- |
+| **Type**     | `boolean` |
+| **Required** | No        |
+| **Default**  | `"false"` |
+
+**Description:** Activates this impact model
+
+<a name="impact_ehype_arguments"></a>
+#### Property `Config > impact > ehype > arguments`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Arguments to send to the impact model start command
+
+<a name="impact_ehype_config_name"></a>
+#### Property `Config > impact > ehype > config_name`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Name of the output config file aimed for the particular impact model
+
+<a name="impact_ehype_path"></a>
+#### Property `Config > impact > ehype > path`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Path to the impact model start command. Preferably defined in the platform section and used as a macro here
+
+<a name="impact_ehype_task"></a>
+#### Property `Config > impact > ehype > task`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Which of the dedicated tasks the impact model should be started from. Has to be defined in impact.py
+
+<a name="impact_ehype_communicate"></a>
+#### Property `Config > impact > ehype > communicate`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Impact model specific config settings
+
+| Property                                                               | Type        | Required | Default | Title/Description                                  |
+| ---------------------------------------------------------------------- | ----------- | -------- | ------- | -------------------------------------------------- |
+| [archive](#impact_ehype_communicate_archive)                           | string      | No       | -       | Location of data                                   |
+| [archive_1](#impact_ehype_communicate_archive_1)                       | string      | No       | -       | Primary location of data (future implementation)   |
+| [archive_2](#impact_ehype_communicate_archive_2)                       | string      | No       | -       | Secondary location of data (future implementation) |
+| [basetime](#impact_ehype_communicate_basetime)                         | Combination | No       | -       | Initial time                                       |
+| [file_pattern](#impact_ehype_communicate_file_pattern)                 | string      | No       | -       | Pattern for input files to search for              |
+| [output_frequency](#impact_ehype_communicate_output_frequency)         | Combination | No       | -       | data availability frequncy in duration syntax      |
+| [forecast_range](#impact_ehype_communicate_forecast_range)             | Combination | No       | -       | Leadtime in duration syntax                        |
+| [name](#impact_ehype_communicate_name)                                 | string      | No       | -       | Name of the generated EHYPE suite                  |
+| [nwp_model](#impact_ehype_communicate_nwp_model)                       | Combination | No       | -       | CSC name                                           |
+| [additionalProperties](#impact_ehype_communicate_additionalProperties) | object      | No       | -       | -                                                  |
+
+<a name="impact_ehype_communicate_archive"></a>
+##### Property `Config > impact > ehype > communicate > archive`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Location of data
+
+<a name="impact_ehype_communicate_archive_1"></a>
+##### Property `Config > impact > ehype > communicate > archive_1`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Primary location of data (future implementation)
+
+<a name="impact_ehype_communicate_archive_2"></a>
+##### Property `Config > impact > ehype > communicate > archive_2`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Secondary location of data (future implementation)
+
+<a name="impact_ehype_communicate_basetime"></a>
+##### Property `Config > impact > ehype > communicate > basetime`
+
+|              |             |
+| ------------ | ----------- |
+| **Type**     | `combining` |
+| **Required** | No          |
+
+**Description:** Initial time
+
+| One of(Option)                                        |
+| ----------------------------------------------------- |
+| [item 0](#impact_ehype_communicate_basetime_oneOf_i0) |
+| [item 1](#impact_ehype_communicate_basetime_oneOf_i1) |
+
+<a name="impact_ehype_communicate_basetime_oneOf_i0"></a>
+##### Property `Config > impact > ehype > communicate > basetime > oneOf > item 0`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Format**                | `date-time`                                                               |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+<a name="impact_ehype_communicate_basetime_oneOf_i1"></a>
+##### Property `Config > impact > ehype > communicate > basetime > oneOf > item 1`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+| Restrictions                      |                                                                           |
+| --------------------------------- | ------------------------------------------------------------------------- |
+| **Must match regular expression** | ```^@(.*)@$``` [Test](https://regex101.com/?regex=%5E%40%28.%2A%29%40%24) |
+
+<a name="impact_ehype_communicate_file_pattern"></a>
+##### Property `Config > impact > ehype > communicate > file_pattern`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Pattern for input files to search for
+
+<a name="impact_ehype_communicate_output_frequency"></a>
+##### Property `Config > impact > ehype > communicate > output_frequency`
+
+|              |             |
+| ------------ | ----------- |
+| **Type**     | `combining` |
+| **Required** | No          |
+
+**Description:** data availability frequncy in duration syntax
+
+| One of(Option)                                                |
+| ------------------------------------------------------------- |
+| [item 0](#impact_ehype_communicate_output_frequency_oneOf_i0) |
+| [item 1](#impact_ehype_communicate_output_frequency_oneOf_i1) |
+
+<a name="impact_ehype_communicate_output_frequency_oneOf_i0"></a>
+##### Property `Config > impact > ehype > communicate > output_frequency > oneOf > item 0`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+| Restrictions                      |                                                                                                                                                                                                                                                                                                         |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Must match regular expression** | ```^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$``` [Test](https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24) |
+
+<a name="impact_ehype_communicate_output_frequency_oneOf_i1"></a>
+##### Property `Config > impact > ehype > communicate > output_frequency > oneOf > item 1`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+| Restrictions                      |                                                                           |
+| --------------------------------- | ------------------------------------------------------------------------- |
+| **Must match regular expression** | ```^@(.*)@$``` [Test](https://regex101.com/?regex=%5E%40%28.%2A%29%40%24) |
+
+<a name="impact_ehype_communicate_forecast_range"></a>
+##### Property `Config > impact > ehype > communicate > forecast_range`
+
+|              |             |
+| ------------ | ----------- |
+| **Type**     | `combining` |
+| **Required** | No          |
+
+**Description:** Leadtime in duration syntax
+
+| One of(Option)                                              |
+| ----------------------------------------------------------- |
+| [item 0](#impact_ehype_communicate_forecast_range_oneOf_i0) |
+| [item 1](#impact_ehype_communicate_forecast_range_oneOf_i1) |
+
+<a name="impact_ehype_communicate_forecast_range_oneOf_i0"></a>
+##### Property `Config > impact > ehype > communicate > forecast_range > oneOf > item 0`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+| Restrictions                      |                                                                                                                                                                                                                                                                                                         |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Must match regular expression** | ```^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$``` [Test](https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24) |
+
+<a name="impact_ehype_communicate_forecast_range_oneOf_i1"></a>
+##### Property `Config > impact > ehype > communicate > forecast_range > oneOf > item 1`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+| Restrictions                      |                                                                           |
+| --------------------------------- | ------------------------------------------------------------------------- |
+| **Must match regular expression** | ```^@(.*)@$``` [Test](https://regex101.com/?regex=%5E%40%28.%2A%29%40%24) |
+
+<a name="impact_ehype_communicate_name"></a>
+##### Property `Config > impact > ehype > communicate > name`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Name of the generated EHYPE suite
+
+<a name="impact_ehype_communicate_nwp_model"></a>
+##### Property `Config > impact > ehype > communicate > nwp_model`
+
+|              |             |
+| ------------ | ----------- |
+| **Type**     | `combining` |
+| **Required** | No          |
+
+**Description:** CSC name
+
+| One of(Option)                                         |
+| ------------------------------------------------------ |
+| [item 0](#impact_ehype_communicate_nwp_model_oneOf_i0) |
+| [item 1](#impact_ehype_communicate_nwp_model_oneOf_i1) |
+
+<a name="impact_ehype_communicate_nwp_model_oneOf_i0"></a>
+##### Property `Config > impact > ehype > communicate > nwp_model > oneOf > item 0`
+
+|              |                    |
+| ------------ | ------------------ |
+| **Type**     | `enum (of string)` |
+| **Required** | No                 |
+
+Must be one of:
+* "AROME"
+* "ALARO"
+* "HARMONIE_AROME"
+
+<a name="impact_ehype_communicate_nwp_model_oneOf_i1"></a>
+##### Property `Config > impact > ehype > communicate > nwp_model > oneOf > item 1`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+| Restrictions                      |                                                                           |
+| --------------------------------- | ------------------------------------------------------------------------- |
+| **Must match regular expression** | ```^@(.*)@$``` [Test](https://regex101.com/?regex=%5E%40%28.%2A%29%40%24) |
+
+<a name="impact_ehype_communicate_additionalProperties"></a>
+##### Property `Config > impact > ehype > communicate > additionalProperties`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
 
 <a name="macros"></a>
 ## Property `Config > macros`
