@@ -669,6 +669,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#property-config-fullpos">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">fullpos</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#property-config-fullpos-config-path">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">fullpos</span> <span class="pre">&gt;</span> <span class="pre">config_path</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#property-config-fullpos-main">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">fullpos</span> <span class="pre">&gt;</span> <span class="pre">main</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#property-config-fullpos-selection">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">fullpos</span> <span class="pre">&gt;</span> <span class="pre">selection</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#property-config-fullpos-domain-name">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">fullpos</span> <span class="pre">&gt;</span> <span class="pre">domain_name</span></code></a></li>
 </ul>
@@ -1105,7 +1106,7 @@ $ mamba activate .conda/
 </section>
 </section>
 <p>The following section was automatically generated running
-<code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">doc</span> <span class="pre">config</span></code> on 2024-10-03T14:04:09.</p>
+<code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">doc</span> <span class="pre">config</span></code> on 2024-10-07T09:22:32.</p>
 <section id="config">
 <h2>Config<a class="headerlink" href="#config" title="Link to this heading"></a></h2>
 <p><strong>Title:</strong> Config</p>
@@ -4450,19 +4451,25 @@ $ mamba activate .conda/
 <tr class="row-even"><td><p><a class="reference external" href="#fullpos_config_path">config_path</a></p></td>
 <td><p>string</p></td>
 <td><p>No</p></td>
-<td><p>-</p></td>
+<td><p>“&#64;DEODE_HOME&#64;/data/namelist_generation_input/&#64;CYCLE&#64;/fullpos”</p></td>
 <td><p>Path to fullpos config files</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference external" href="#fullpos_selection">selection</a></p></td>
+<tr class="row-odd"><td><p><a class="reference external" href="#fullpos_main">main</a></p></td>
 <td><p>array of string</p></td>
 <td><p>No</p></td>
-<td><p>-</p></td>
-<td><p>List of rules and selections to include</p></td>
+<td><p>[“rules”, “namfpc_header”]</p></td>
+<td><p>List of mandatory rules</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference external" href="#fullpos_domain_name">domain_name</a></p></td>
-<td><p>string</p></td>
+<tr class="row-even"><td><p><a class="reference external" href="#fullpos_selection">selection</a></p></td>
+<td><p>object</p></td>
 <td><p>No</p></td>
 <td><p>-</p></td>
+<td><p>List of selections to include</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="#fullpos_domain_name">domain_name</a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>“DOMAIN”</p></td>
 <td><p>Name of your domain as used by fullpos</p></td>
 </tr>
 </tbody>
@@ -4484,12 +4491,15 @@ $ mamba activate .conda/
 <tr class="row-odd"><td><p><strong>Required</strong></p></td>
 <td><p>No</p></td>
 </tr>
+<tr class="row-even"><td><p><strong>Default</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;&#64;DEODE_HOME&#64;/data/namelist_generation_input/&#64;CYCLE&#64;/fullpos&quot;</span></code></p></td>
+</tr>
 </tbody>
 </table>
-<p><a name="fullpos_selection"></a></p>
+<p><a name="fullpos_main"></a></p>
 </section>
-<section id="property-config-fullpos-selection">
-<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">fullpos</span> <span class="pre">&gt;</span> <span class="pre">selection</span></code><a class="headerlink" href="#property-config-fullpos-selection" title="Link to this heading"></a></h4>
+<section id="property-config-fullpos-main">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">fullpos</span> <span class="pre">&gt;</span> <span class="pre">main</span></code><a class="headerlink" href="#property-config-fullpos-main" title="Link to this heading"></a></h4>
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p></p></th>
@@ -4503,9 +4513,12 @@ $ mamba activate .conda/
 <tr class="row-odd"><td><p><strong>Required</strong></p></td>
 <td><p>No</p></td>
 </tr>
+<tr class="row-even"><td><p><strong>Default</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[&quot;rules&quot;,</span> <span class="pre">&quot;namfpc_header&quot;]</span></code></p></td>
+</tr>
 </tbody>
 </table>
-<p><strong>Description:</strong> List of rules and selections to include</p>
+<p><strong>Description:</strong> List of mandatory rules</p>
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p></p></th>
@@ -4537,14 +4550,110 @@ $ mamba activate .conda/
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><a class="reference external" href="#fullpos_selection_items">selection items</a></p></td>
+<tr class="row-even"><td><p><a class="reference external" href="#fullpos_main_items">main items</a></p></td>
 <td><p>-</p></td>
 </tr>
 </tbody>
 </table>
 <p><a name="autogenerated_heading_18"></a></p>
-<section id="config-fullpos-selection-selection-items">
-<h5>Config &gt; fullpos &gt; selection &gt; selection items<a class="headerlink" href="#config-fullpos-selection-selection-items" title="Link to this heading"></a></h5>
+<section id="config-fullpos-main-main-items">
+<h5>Config &gt; fullpos &gt; main &gt; main items<a class="headerlink" href="#config-fullpos-main-main-items" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<p><a name="fullpos_selection"></a></p>
+</section>
+</section>
+<section id="property-config-fullpos-selection">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">fullpos</span> <span class="pre">&gt;</span> <span class="pre">selection</span></code><a class="headerlink" href="#property-config-fullpos-selection" title="Link to this heading"></a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">object</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Additional properties</strong></p></td>
+<td><p><a class="reference external" href="#fullpos_selection_additionalProperties" title="Each additional property must conform to the following schema">[Should-conform]</a></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> List of selections to include</p>
+<p><a name="fullpos_selection_additionalProperties"></a></p>
+<section id="property-config-fullpos-selection-additionalproperties">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">fullpos</span> <span class="pre">&gt;</span> <span class="pre">selection</span> <span class="pre">&gt;</span> <span class="pre">additionalProperties</span></code><a class="headerlink" href="#property-config-fullpos-selection-additionalproperties" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">array</span> <span class="pre">of</span> <span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p>Array restrictions</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Min items</strong></p></td>
+<td><p>N/A</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Max items</strong></p></td>
+<td><p>N/A</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Items unicity</strong></p></td>
+<td><p>False</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Additional items</strong></p></td>
+<td><p>False</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Tuple validation</strong></p></td>
+<td><p>See below</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Each item of this array must be</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="#fullpos_selection_additionalProperties_items">additionalProperties items</a></p></td>
+<td><p>-</p></td>
+</tr>
+</tbody>
+</table>
+<p><a name="autogenerated_heading_19"></a></p>
+<section id="config-fullpos-selection-additionalproperties-additionalproperties-items">
+<h6>Config &gt; fullpos &gt; selection &gt; additionalProperties &gt; additionalProperties items<a class="headerlink" href="#config-fullpos-selection-additionalproperties-additionalproperties-items" title="Link to this heading"></a></h6>
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p></p></th>
@@ -4563,6 +4672,7 @@ $ mamba activate .conda/
 <p><a name="fullpos_domain_name"></a></p>
 </section>
 </section>
+</section>
 <section id="property-config-fullpos-domain-name">
 <h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">fullpos</span> <span class="pre">&gt;</span> <span class="pre">domain_name</span></code><a class="headerlink" href="#property-config-fullpos-domain-name" title="Link to this heading"></a></h4>
 <table class="docutils align-default">
@@ -4577,6 +4687,9 @@ $ mamba activate .conda/
 </tr>
 <tr class="row-odd"><td><p><strong>Required</strong></p></td>
 <td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Default</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;DOMAIN&quot;</span></code></p></td>
 </tr>
 </tbody>
 </table>
@@ -4972,7 +5085,7 @@ $ mamba activate .conda/
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_19"></a></p>
+<p><a name="autogenerated_heading_20"></a></p>
 <section id="id11">
 <h6>The following properties are required<a class="headerlink" href="#id11" title="Link to this heading"></a></h6>
 <ul class="simple">
@@ -5003,7 +5116,7 @@ $ mamba activate .conda/
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_20"></a></p>
+<p><a name="autogenerated_heading_21"></a></p>
 <section id="id12">
 <h6>The following properties are required<a class="headerlink" href="#id12" title="Link to this heading"></a></h6>
 <ul class="simple">
@@ -12637,7 +12750,7 @@ $ mamba activate .conda/
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_21"></a></p>
+<p><a name="autogenerated_heading_22"></a></p>
 <section id="config-platform-archive-types-archive-types-items">
 <h5>Config &gt; platform &gt; archive_types &gt; archive_types items<a class="headerlink" href="#config-platform-archive-types-archive-types-items" title="Link to this heading"></a></h5>
 <table class="docutils align-default">
@@ -13838,7 +13951,7 @@ $ mamba activate .conda/
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_22"></a></p>
+<p><a name="autogenerated_heading_23"></a></p>
 <section id="config-submission-submit-types-submit-types-items">
 <h5>Config &gt; submission &gt; submit_types &gt; submit_types items<a class="headerlink" href="#config-submission-submit-types-submit-types-items" title="Link to this heading"></a></h5>
 <table class="docutils align-default">
@@ -14039,7 +14152,7 @@ $ mamba activate .conda/
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_23"></a></p>
+<p><a name="autogenerated_heading_24"></a></p>
 <section id="config-submission-serial-tasks-tasks-items">
 <h6>Config &gt; submission &gt; serial &gt; tasks &gt; tasks items<a class="headerlink" href="#config-submission-serial-tasks-tasks-items" title="Link to this heading"></a></h6>
 <table class="docutils align-default">
@@ -14287,7 +14400,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_24"></a></p>
+<p><a name="autogenerated_heading_25"></a></p>
 </section>
 <section id="config-submission-serial-modules-items">
 <h6>Config &gt; submission &gt; serial &gt; MODULES &gt; ^(.<em>)$ &gt; ^(.</em>)$ items<a class="headerlink" href="#config-submission-serial-modules-items" title="Link to this heading"></a></h6>
@@ -14447,7 +14560,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_25"></a></p>
+<p><a name="autogenerated_heading_26"></a></p>
 <section id="config-submission-parallel-tasks-tasks-items">
 <h6>Config &gt; submission &gt; parallel &gt; tasks &gt; tasks items<a class="headerlink" href="#config-submission-parallel-tasks-tasks-items" title="Link to this heading"></a></h6>
 <table class="docutils align-default">
@@ -14695,7 +14808,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_26"></a></p>
+<p><a name="autogenerated_heading_27"></a></p>
 </section>
 <section id="config-submission-parallel-modules-items">
 <h6>Config &gt; submission &gt; parallel &gt; MODULES &gt; ^(.<em>)$ &gt; ^(.</em>)$ items<a class="headerlink" href="#config-submission-parallel-modules-items" title="Link to this heading"></a></h6>
@@ -14855,7 +14968,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_27"></a></p>
+<p><a name="autogenerated_heading_28"></a></p>
 <section id="config-submission-background-vm-tasks-tasks-items">
 <h6>Config &gt; submission &gt; background_vm &gt; tasks &gt; tasks items<a class="headerlink" href="#config-submission-background-vm-tasks-tasks-items" title="Link to this heading"></a></h6>
 <table class="docutils align-default">
@@ -15103,7 +15216,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_28"></a></p>
+<p><a name="autogenerated_heading_29"></a></p>
 </section>
 <section id="config-submission-background-vm-modules-items">
 <h6>Config &gt; submission &gt; background_vm &gt; MODULES &gt; ^(.<em>)$ &gt; ^(.</em>)$ items<a class="headerlink" href="#config-submission-background-vm-modules-items" title="Link to this heading"></a></h6>
@@ -15263,7 +15376,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_29"></a></p>
+<p><a name="autogenerated_heading_30"></a></p>
 <section id="config-submission-background-hpc-tasks-tasks-items">
 <h6>Config &gt; submission &gt; background_hpc &gt; tasks &gt; tasks items<a class="headerlink" href="#config-submission-background-hpc-tasks-tasks-items" title="Link to this heading"></a></h6>
 <table class="docutils align-default">
@@ -15511,7 +15624,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_30"></a></p>
+<p><a name="autogenerated_heading_31"></a></p>
 </section>
 <section id="config-submission-background-hpc-modules-items">
 <h6>Config &gt; submission &gt; background_hpc &gt; MODULES &gt; ^(.<em>)$ &gt; ^(.</em>)$ items<a class="headerlink" href="#config-submission-background-hpc-modules-items" title="Link to this heading"></a></h6>
@@ -15671,7 +15784,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_31"></a></p>
+<p><a name="autogenerated_heading_32"></a></p>
 <section id="config-submission-gnu-tasks-tasks-items">
 <h6>Config &gt; submission &gt; gnu &gt; tasks &gt; tasks items<a class="headerlink" href="#config-submission-gnu-tasks-tasks-items" title="Link to this heading"></a></h6>
 <table class="docutils align-default">
@@ -15919,7 +16032,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_32"></a></p>
+<p><a name="autogenerated_heading_33"></a></p>
 </section>
 <section id="config-submission-gnu-modules-items">
 <h6>Config &gt; submission &gt; gnu &gt; MODULES &gt; ^(.<em>)$ &gt; ^(.</em>)$ items<a class="headerlink" href="#config-submission-gnu-modules-items" title="Link to this heading"></a></h6>
@@ -16352,7 +16465,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_33"></a></p>
+<p><a name="autogenerated_heading_34"></a></p>
 <section id="at-least-one-of-the-items-must-be">
 <h5>At least one of the items must be<a class="headerlink" href="#at-least-one-of-the-items-must-be" title="Link to this heading"></a></h5>
 <table class="docutils align-default">
@@ -16415,7 +16528,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_34"></a></p>
+<p><a name="autogenerated_heading_35"></a></p>
 <section id="id13">
 <h5>At least one of the items must be<a class="headerlink" href="#id13" title="Link to this heading"></a></h5>
 <table class="docutils align-default">
@@ -16707,12 +16820,12 @@ must respect the following conditions</p>
 </section>
 <section id="combine-selection-files">
 <h4>Combine selection files<a class="headerlink" href="#combine-selection-files" title="Link to this heading"></a></h4>
-<p>A number of selection files can be combined by extending the <code class="docutils literal notranslate"><span class="pre">selection</span></code> in the fullpos part of the config file</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">fullpos</span><span class="p">]</span>
- <span class="n">selection</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;rules&quot;</span><span class="p">,</span> <span class="s2">&quot;namfpc_header&quot;</span><span class="p">,</span> <span class="s2">&quot;master_selection&quot;</span> <span class="p">,</span><span class="s2">&quot;aq_selection&quot;</span><span class="p">]</span>
+<p>A number of selection files can be combined by adding keys to <code class="docutils literal notranslate"><span class="pre">fullpos.selection</span></code> in the fullpos part of the config file</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">fullpos</span><span class="o">.</span><span class="n">selection</span><span class="p">]</span>
+ <span class="n">AROME</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;master_selection&quot;</span> <span class="p">,</span><span class="s2">&quot;aq_selection&quot;</span><span class="p">]</span>
 </pre></div>
 </div>
-<p>This allows to define different combination of output depending on other configuration choices.</p>
+<p>The name <code class="docutils literal notranslate"><span class="pre">AROME</span></code> here is just a label. This allows to define different combination of output depending on other configuration choices.</p>
 </section>
 </section>
 <section id="example">
@@ -16977,7 +17090,7 @@ Example value of the archive folder path is “/ec/res4/scratch/bgmt/deode/CY48t
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-10-03T14:04:11Z.
+      <span class="lastupdated">Last updated on 2024-10-07T09:22:34Z.
       </span></p>
   </div>
 
