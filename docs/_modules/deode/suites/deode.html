@@ -142,6 +142,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../deode.tasks.html#module-deode.tasks.extractsqlite">deode.tasks.extractsqlite module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../deode.tasks.html#module-deode.tasks.forecast">deode.tasks.forecast module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../deode.tasks.html#module-deode.tasks.gmtedsoil">deode.tasks.gmtedsoil module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../deode.tasks.html#module-deode.tasks.gribmodify">deode.tasks.gribmodify module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../deode.tasks.html#module-deode.tasks.impacts">deode.tasks.impacts module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../deode.tasks.html#module-deode.tasks.iomerge">deode.tasks.iomerge module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../deode.tasks.html#module-deode.tasks.marsprep">deode.tasks.marsprep module</a></li>
@@ -515,6 +516,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.toolbox.FileManager"><code class="docutils literal notranslate"><span class="pre">FileManager</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../deode.html#deode.toolbox.FileManager.create_list"><code class="docutils literal notranslate"><span class="pre">FileManager.create_list()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../deode.html#deode.toolbox.FileManager.get_input"><code class="docutils literal notranslate"><span class="pre">FileManager.get_input()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../deode.html#deode.toolbox.FileManager.get_output"><code class="docutils literal notranslate"><span class="pre">FileManager.get_output()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../deode.html#deode.toolbox.FileManager.input"><code class="docutils literal notranslate"><span class="pre">FileManager.input()</span></code></a></li>
@@ -679,6 +681,12 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-include">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">include</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-gribmodify">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">gribmodify</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-gribmodify-3">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">gribmodify</span> <span class="pre">&gt;</span> <span class="pre">3</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-gribmodify-2">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">gribmodify</span> <span class="pre">&gt;</span> <span class="pre">2</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-gribmodify-1">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">gribmodify</span> <span class="pre">&gt;</span> <span class="pre">1</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-archiving">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-archiving-prefix">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">prefix</span></code></a></li>
 </ul>
@@ -1534,10 +1542,25 @@
                         <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
                     <span class="p">)</span>
 
+            <span class="n">creategrib_trigger</span> <span class="o">=</span> <span class="n">EcflowSuiteTriggers</span><span class="p">([</span><span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">forecast_task</span><span class="p">)])</span>
+
+            <span class="n">add_total_prec_task</span> <span class="o">=</span> <span class="n">EcflowSuiteTask</span><span class="p">(</span>
+                <span class="s2">&quot;AddTotalPrec&quot;</span><span class="p">,</span>
+                <span class="n">forecasting</span><span class="p">,</span>
+                <span class="n">config</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">task_settings</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
+                <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">trigger</span><span class="o">=</span><span class="n">creategrib_trigger</span><span class="p">,</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="n">add_total_prec_trigger</span> <span class="o">=</span> <span class="n">EcflowSuiteTriggers</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">add_total_prec_task</span><span class="p">)]</span>
+            <span class="p">)</span>
+
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">creategrib</span><span class="p">:</span>
-                <span class="n">creategrib_trigger</span> <span class="o">=</span> <span class="n">EcflowSuiteTriggers</span><span class="p">(</span>
-                    <span class="p">[</span><span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">forecast_task</span><span class="p">)]</span>
-                <span class="p">)</span>
                 <span class="n">EcflowSuiteTask</span><span class="p">(</span>
                     <span class="s2">&quot;CreateGrib&quot;</span><span class="p">,</span>
                     <span class="n">forecasting</span><span class="p">,</span>
@@ -1550,9 +1573,6 @@
                 <span class="p">)</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_extractsqlite</span><span class="p">:</span>
-                <span class="n">extractsqlite_trigger</span> <span class="o">=</span> <span class="n">EcflowSuiteTriggers</span><span class="p">(</span>
-                    <span class="p">[</span><span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">forecast_task</span><span class="p">)]</span>
-                <span class="p">)</span>
                 <span class="n">EcflowSuiteTask</span><span class="p">(</span>
                     <span class="s2">&quot;ExtractSQLite&quot;</span><span class="p">,</span>
                     <span class="n">forecasting</span><span class="p">,</span>
@@ -1560,7 +1580,7 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">task_settings</span><span class="p">,</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
                     <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
-                    <span class="n">trigger</span><span class="o">=</span><span class="n">extractsqlite_trigger</span><span class="p">,</span>
+                    <span class="n">trigger</span><span class="o">=</span><span class="n">add_total_prec_trigger</span><span class="p">,</span>
                 <span class="p">)</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_impact</span><span class="p">:</span>
@@ -1891,7 +1911,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-10-09T13:21:18Z.
+      <span class="lastupdated">Last updated on 2024-10-16T11:06:36Z.
       </span></p>
   </div>
 

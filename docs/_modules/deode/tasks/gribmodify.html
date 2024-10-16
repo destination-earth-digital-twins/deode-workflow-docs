@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>deode.tasks.e923_update &mdash; Deode Workflow Docs  documentation</title>
+  <title>deode.tasks.gribmodify &mdash; Deode Workflow Docs  documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
@@ -962,7 +962,7 @@
       <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
           <li class="breadcrumb-item"><a href="../../deode.html">deode</a></li>
-      <li class="breadcrumb-item active">deode.tasks.e923_update</li>
+      <li class="breadcrumb-item active">deode.tasks.gribmodify</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -971,82 +971,153 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>Source code for deode.tasks.e923_update</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;E923Update.&quot;&quot;&quot;</span>
-
-<span class="kn">import</span> <span class="nn">glob</span>
-<span class="kn">import</span> <span class="nn">os</span>
+  <h1>Source code for deode.tasks.gribmodify</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;AddTotalPrec.&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">..datetime_utils</span> <span class="kn">import</span> <span class="n">as_datetime</span>
+<span class="kn">from</span> <span class="nn">..logs</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span> <span class="nn">..toolbox</span> <span class="kn">import</span> <span class="n">FileManager</span>
 <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">Task</span>
-<span class="kn">from</span> <span class="nn">.batch</span> <span class="kn">import</span> <span class="n">BatchJob</span>
+
+<span class="c1"># For now (on ATOS), only tasks with prgenv/gnu can import eccodes in python</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">eccodes</span>
+<span class="k">except</span> <span class="p">(</span><span class="ne">ImportError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">,</span> <span class="ne">RuntimeError</span><span class="p">):</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;eccodes python API could not be imported. Usually OK.&quot;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="E923Update">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.e923_update.E923Update">[docs]</a>
-<span class="k">class</span> <span class="nc">E923Update</span><span class="p">(</span><span class="n">Task</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Methods for updating climfile for ALARO.</span>
-
-<span class="sd">    For mor information see doc/markdown/e923_update.md.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="AddTotalPrec">
+<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.gribmodify.AddTotalPrec">[docs]</a>
+<span class="k">class</span> <span class="nc">AddTotalPrec</span><span class="p">(</span><span class="n">Task</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create grib files.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct object.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct create grib object.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            config (deode.ParsedConfig): Configuration</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Task</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">climdir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_system_value</span><span class="p">(</span><span class="s2">&quot;climdir&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fa_sfx2clim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_binary</span><span class="p">(</span><span class="s2">&quot;fa_sfx2clim&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">archive</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_system_value</span><span class="p">(</span><span class="s2">&quot;archive&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">archive</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;system.archive&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">basetime</span> <span class="o">=</span> <span class="n">as_datetime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.times.basetime&quot;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">month</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">basetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%m&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">forecast_range</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.times.forecast_range&quot;</span><span class="p">]</span>
 
-<div class="viewcode-block" id="E923Update.execute">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.e923_update.E923Update.execute">[docs]</a>
-    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run task.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_settings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.output_settings&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_templates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;file_templates&quot;</span><span class="p">]</span>
 
-<span class="sd">        Define run sequence.</span>
+<div class="viewcode-block" id="AddTotalPrec.add_field_to_grib">
+<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.gribmodify.AddTotalPrec.add_field_to_grib">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_field_to_grib</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">operation</span><span class="p">,</span> <span class="n">short_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add sum of two fields to the same grib.</span>
 
+<span class="sd">        Args:</span>
+<span class="sd">            fname (str): gribe file</span>
+<span class="sd">            params (list): list of paramaterNumbers of input parameters</span>
+<span class="sd">            operation: operarion to compute new field</span>
+<span class="sd">            short_name (str) : short_name of added field</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            NotImplementedError: Operation not implemented yet&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Old climfile</span>
-        <span class="n">climfile</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">climdir</span><span class="si">}</span><span class="s2">/Const.Clim.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">month</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">gid1</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">gid2</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">params</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Parameters are not define&quot;</span><span class="p">)</span>
 
-        <span class="c1"># PGD</span>
-        <span class="n">pgd_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;file_templates.pgd.archive&quot;</span><span class="p">],</span> <span class="n">basetime</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">basetime</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_in</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s2">&quot;ab&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_out</span><span class="p">:</span>
+            <span class="k">while</span> <span class="n">gid1</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">gid2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">gid</span> <span class="o">=</span> <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_grib_new_from_file</span><span class="p">(</span><span class="n">f_in</span><span class="p">)</span>
+                <span class="n">par_nam</span> <span class="o">=</span> <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_get</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="s2">&quot;shortName&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">par_nam</span> <span class="o">==</span> <span class="n">params</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                    <span class="n">gid1</span> <span class="o">=</span> <span class="n">gid</span>
+                <span class="k">elif</span> <span class="n">par_nam</span> <span class="o">==</span> <span class="n">params</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="n">gid2</span> <span class="o">=</span> <span class="n">gid</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_release</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+
+            <span class="n">values1</span> <span class="o">=</span> <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_get_values</span><span class="p">(</span><span class="n">gid1</span><span class="p">)</span>
+            <span class="n">values2</span> <span class="o">=</span> <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_get_values</span><span class="p">(</span><span class="n">gid2</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">operation</span> <span class="o">==</span> <span class="s2">&quot;add&quot;</span><span class="p">:</span>
+                <span class="n">values_sum</span> <span class="o">=</span> <span class="p">[</span><span class="n">v1</span> <span class="o">+</span> <span class="n">v2</span> <span class="k">for</span> <span class="n">v1</span><span class="p">,</span> <span class="n">v2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">values1</span><span class="p">,</span> <span class="n">values2</span><span class="p">)]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Operation </span><span class="si">{}</span><span class="s2"> not implemented yet.&quot;</span><span class="p">,</span> <span class="n">operation</span><span class="p">)</span>
+
+            <span class="n">gid_sum</span> <span class="o">=</span> <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_clone</span><span class="p">(</span><span class="n">gid1</span><span class="p">)</span>
+
+            <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_set_values</span><span class="p">(</span><span class="n">gid_sum</span><span class="p">,</span> <span class="n">values_sum</span><span class="p">)</span>
+            <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_set</span><span class="p">(</span><span class="n">gid_sum</span><span class="p">,</span> <span class="s2">&quot;shortNameECMF&quot;</span><span class="p">,</span> <span class="n">short_name</span><span class="p">)</span>
+            <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_set</span><span class="p">(</span><span class="n">gid_sum</span><span class="p">,</span> <span class="s2">&quot;shortName&quot;</span><span class="p">,</span> <span class="n">short_name</span><span class="p">)</span>
+
+            <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_write</span><span class="p">(</span><span class="n">gid_sum</span><span class="p">,</span> <span class="n">f_out</span><span class="p">)</span>
+            <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_release</span><span class="p">(</span><span class="n">gid1</span><span class="p">)</span>
+            <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_release</span><span class="p">(</span><span class="n">gid2</span><span class="p">)</span>
+            <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_release</span><span class="p">(</span><span class="n">gid_sum</span><span class="p">)</span>
+            <span class="n">f_in</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">f_out</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="AddTotalPrec.find_par">
+<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.gribmodify.AddTotalPrec.find_par">[docs]</a>
+    <span class="k">def</span> <span class="nf">find_par</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">short_name</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if field with shortName already exists in grib.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            short_name: shortName,</span>
+<span class="sd">            fname: grib file</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if field exists</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">found</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_in</span><span class="p">:</span>
+            <span class="k">while</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
+                <span class="n">gid</span> <span class="o">=</span> <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_grib_new_from_file</span><span class="p">(</span><span class="n">f_in</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">gid</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_get</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="s2">&quot;shortName&quot;</span><span class="p">)</span>
+                <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_release</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+                <span class="n">found</span> <span class="o">=</span> <span class="n">name</span> <span class="o">==</span> <span class="n">short_name</span>
+            <span class="n">f_in</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">found</span></div>
+
+
+<div class="viewcode-block" id="AddTotalPrec.execute">
+<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.gribmodify.AddTotalPrec.execute">[docs]</a>
+    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute add_total_precip.&quot;&quot;&quot;</span>
+        <span class="n">file_handle</span> <span class="o">=</span> <span class="n">FileManager</span><span class="o">.</span><span class="n">create_list</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">basetime</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">forecast_range</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">file_templates</span><span class="p">[</span><span class="s2">&quot;fullpos&quot;</span><span class="p">][</span><span class="s2">&quot;archive&quot;</span><span class="p">],</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">output_settings</span><span class="p">[</span><span class="s2">&quot;fullpos&quot;</span><span class="p">],</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">climdir</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">pgd_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;pgd_file&quot;</span><span class="p">)</span>
-        <span class="c1"># sfx init</span>
-        <span class="n">sfx_init</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">archive</span><span class="si">}</span><span class="s2">/ICMSH@CNMEXP@INIT.sfx&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="n">sfx_init</span><span class="p">,</span> <span class="s2">&quot;input_sfx&quot;</span><span class="p">)</span>
-        <span class="c1"># Old climfile</span>
-        <span class="n">climfile</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">climdir</span><span class="si">}</span><span class="s2">/Const.Clim.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">month</span><span class="si">}</span><span class="s2">&quot;</span>
-
-        <span class="c1"># namelist</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;nam&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">namelist</span><span class="p">:</span>
-            <span class="n">namelist</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
-<span class="w">                </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">&amp;NAM</span>
-<span class="sd">  L_Z0=.T.,</span>
-<span class="sd">  LZ0THER=.F.,</span>
-<span class="sd">  FACZ0=0.53,</span>
-<span class="sd">  FACZ0_VEG=1.00,</span>
-<span class="sd">  NLISSZ=3,</span>
-<span class="sd">  NLISSZ_VEG=3,</span>
-<span class="sd">/</span>
-<span class="sd">&quot;&quot;&quot;</span>
-            <span class="p">)</span>
-            <span class="n">namelist</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="n">batch</span> <span class="o">=</span> <span class="n">BatchJob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">,</span> <span class="n">wrapper</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="p">)</span>
-        <span class="n">batch</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">fa_sfx2clim</span><span class="si">}</span><span class="s2"> nam pgd_file input_sfx </span><span class="si">{</span><span class="n">climfile</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">archive_logs</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;NODE.*&quot;</span><span class="p">),</span> <span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">climdir</span><span class="p">)</span></div>
+        <span class="k">del</span> <span class="n">file_handle</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">basetime</span><span class="p">]</span>
+        <span class="n">modify_rules</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;gribmodify&quot;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">file_handle</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">modify_rules</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_par</span><span class="p">(</span><span class="n">modify_rules</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s2">&quot;output&quot;</span><span class="p">],</span> <span class="n">fname</span><span class="p">):</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                        <span class="s2">&quot;Adding field with shortName: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">modify_rules</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s2">&quot;output&quot;</span><span class="p">]</span>
+                    <span class="p">)</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_par</span><span class="p">(</span>
+                        <span class="n">modify_rules</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s2">&quot;input&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">fname</span>
+                    <span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_par</span><span class="p">(</span><span class="n">modify_rules</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s2">&quot;input&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">fname</span><span class="p">):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">add_field_to_grib</span><span class="p">(</span>
+                            <span class="n">fname</span><span class="p">,</span>
+                            <span class="n">modify_rules</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s2">&quot;input&quot;</span><span class="p">],</span>
+                            <span class="n">modify_rules</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s2">&quot;operator&quot;</span><span class="p">],</span>
+                            <span class="n">modify_rules</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s2">&quot;output&quot;</span><span class="p">],</span>
+                        <span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                            <span class="s2">&quot;There are no input parameters </span><span class="si">{}</span><span class="s2"> for output parameter </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="n">modify_rules</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s2">&quot;input&quot;</span><span class="p">],</span>
+                            <span class="n">modify_rules</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s2">&quot;output&quot;</span><span class="p">],</span>
+                        <span class="p">)</span></div>
 </div>
 
 </pre></div>
