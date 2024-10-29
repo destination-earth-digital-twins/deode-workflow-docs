@@ -1,5 +1,5 @@
 The following section was automatically generated running
-        `deode doc config` on 2024-10-29T12:58:07.
+        `deode doc config` on 2024-10-29T15:30:23.
 
 # Config
 
@@ -17,6 +17,7 @@ The following section was automatically generated running
 | ----------------------------------- | ------ | -------- | ------- | --------------------------------------------------------------- |
 | [general](#general)                 | object | Yes      | -       | General Section                                                 |
 | [suite_control](#suite_control)     | object | No       | -       | Suite control                                                   |
+| [clean_old_data](#clean_old_data)   | object | No       | -       | Cleaning old data                                               |
 | [system](#system)                   | object | No       | -       | System                                                          |
 | [boundaries](#boundaries)           | object | No       | -       | Boundary Section                                                |
 | [pgd](#pgd)                         | object | No       | -       | Pgd Section                                                     |
@@ -837,20 +838,21 @@ Must be one of:
 
 **Description:** Suite control options
 
-| Property                                                                  | Type             | Required | Default                | Title/Description                                                                                                                                                                                                                                                       |
-| ------------------------------------------------------------------------- | ---------------- | -------- | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [suite_definition](#suite_control_suite_definition)                       | string           | No       | "DeodeSuiteDefinition" | Suite definition to play in EcFlow                                                                                                                                                                                                                                      |
-| [do_soil](#suite_control_do_soil)                                         | boolean          | No       | -                      | Activate preparation of SOILGRID data as input for PGD                                                                                                                                                                                                                  |
-| [do_pgd](#suite_control_do_pgd)                                           | boolean          | No       | -                      | Activate generation of a PGD file                                                                                                                                                                                                                                       |
-| [mode](#suite_control_mode)                                               | enum (of string) | No       | -                      | Choose a strategy to achieve initial/initial_sfx files (start:  start from interpolated files and then propagate the FG between cycles, restart: start from a previous run and then propagate the FG between cycles, cold_start: always start from interpolated files). |
-| [interpolate_boundaries](#suite_control_interpolate_boundaries)           | boolean          | No       | -                      | Activates the boundary interpolation                                                                                                                                                                                                                                    |
-| [do_marsprep](#suite_control_do_marsprep)                                 | boolean          | No       | -                      | Run marsprep or skip extraction                                                                                                                                                                                                                                         |
-| [do_extractsqlite](#suite_control_do_extractsqlite)                       | boolean          | No       | -                      | Activates extraction of selected points to SQLite files for verification.                                                                                                                                                                                               |
-| [create_static_data](#suite_control_create_static_data)                   | boolean          | No       | -                      | Activate the generation of PGD and monthly climate files in the suite                                                                                                                                                                                                   |
-| [create_time_dependent_suite](#suite_control_create_time_dependent_suite) | boolean          | No       | -                      | Activate the time dependent part of the suite                                                                                                                                                                                                                           |
-| [split_mars](#suite_control_split_mars)                                   | boolean          | No       | false                  | Do marsprep only for one step before c903                                                                                                                                                                                                                               |
-| [do_cleaning](#suite_control_do_cleaning)                                 | boolean          | No       | false                  | Do file cleaning                                                                                                                                                                                                                                                        |
-| [n_io_merge](#suite_control_n_io_merge)                                   | integer          | No       | 1                      | Number of IOmerge tasks                                                                                                                                                                                                                                                 |
+| Property                                                                    | Type             | Required | Default                | Title/Description                                                                                                                                                                                                                                                       |
+| --------------------------------------------------------------------------- | ---------------- | -------- | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [suite_definition](#suite_control_suite_definition)                         | string           | No       | "DeodeSuiteDefinition" | Suite definition to play in EcFlow                                                                                                                                                                                                                                      |
+| [do_soil](#suite_control_do_soil)                                           | boolean          | No       | -                      | Activate preparation of SOILGRID data as input for PGD                                                                                                                                                                                                                  |
+| [do_pgd](#suite_control_do_pgd)                                             | boolean          | No       | -                      | Activate generation of a PGD file                                                                                                                                                                                                                                       |
+| [mode](#suite_control_mode)                                                 | enum (of string) | No       | -                      | Choose a strategy to achieve initial/initial_sfx files (start:  start from interpolated files and then propagate the FG between cycles, restart: start from a previous run and then propagate the FG between cycles, cold_start: always start from interpolated files). |
+| [interpolate_boundaries](#suite_control_interpolate_boundaries)             | boolean          | No       | -                      | Activates the boundary interpolation                                                                                                                                                                                                                                    |
+| [do_marsprep](#suite_control_do_marsprep)                                   | boolean          | No       | -                      | Run marsprep or skip extraction                                                                                                                                                                                                                                         |
+| [do_extractsqlite](#suite_control_do_extractsqlite)                         | boolean          | No       | -                      | Activates extraction of selected points to SQLite files for verification.                                                                                                                                                                                               |
+| [create_static_data](#suite_control_create_static_data)                     | boolean          | No       | -                      | Activate the generation of PGD and monthly climate files in the suite                                                                                                                                                                                                   |
+| [create_time_dependent_suite](#suite_control_create_time_dependent_suite)   | boolean          | No       | -                      | Activate the time dependent part of the suite                                                                                                                                                                                                                           |
+| [split_mars](#suite_control_split_mars)                                     | boolean          | No       | false                  | Do marsprep only for one step before c903                                                                                                                                                                                                                               |
+| [do_cleaning](#suite_control_do_cleaning)                                   | boolean          | No       | false                  | Do file cleaning                                                                                                                                                                                                                                                        |
+| [n_io_merge](#suite_control_n_io_merge)                                     | integer          | No       | 1                      | Number of IOmerge tasks                                                                                                                                                                                                                                                 |
+| [DeodeCleaningSuiteDefinition](#suite_control_DeodeCleaningSuiteDefinition) | object           | No       | -                      | -                                                                                                                                                                                                                                                                       |
 
 <a name="suite_control_suite_definition"></a>
 ### Property `Config > suite_control > suite_definition`
@@ -980,6 +982,180 @@ Must be one of:
 | **Default**  | `1`       |
 
 **Description:** Number of IOmerge tasks
+
+<a name="suite_control_DeodeCleaningSuiteDefinition"></a>
+### Property `Config > suite_control > DeodeCleaningSuiteDefinition`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+| Property                                                                                   | Type             | Required | Default | Title/Description                                              |
+| ------------------------------------------------------------------------------------------ | ---------------- | -------- | ------- | -------------------------------------------------------------- |
+| [do_clean_scratch_data](#suite_control_DeodeCleaningSuiteDefinition_do_clean_scratch_data) | boolean          | No       | true    | Activate cleaning the scratch data                             |
+| [do_clean_suites](#suite_control_DeodeCleaningSuiteDefinition_do_clean_suites)             | boolean          | No       | true    | Activate cleaning the suites                                   |
+| [do_clean_IFS](#suite_control_DeodeCleaningSuiteDefinition_do_clean_IFS)                   | boolean          | No       | true    | Activate cleaning IFS data                                     |
+| [days_in_week](#suite_control_DeodeCleaningSuiteDefinition_days_in_week)                   | array of integer | No       | -       | List of days when cleaning suite will run, 0-6 Sunday-Saturday |
+| [time_to_run](#suite_control_DeodeCleaningSuiteDefinition_time_to_run)                     | string           | No       | -       | Time to run                                                    |
+
+<a name="suite_control_DeodeCleaningSuiteDefinition_do_clean_scratch_data"></a>
+#### Property `Config > suite_control > DeodeCleaningSuiteDefinition > do_clean_scratch_data`
+
+|              |           |
+| ------------ | --------- |
+| **Type**     | `boolean` |
+| **Required** | No        |
+| **Default**  | `true`    |
+
+**Description:** Activate cleaning the scratch data
+
+<a name="suite_control_DeodeCleaningSuiteDefinition_do_clean_suites"></a>
+#### Property `Config > suite_control > DeodeCleaningSuiteDefinition > do_clean_suites`
+
+|              |           |
+| ------------ | --------- |
+| **Type**     | `boolean` |
+| **Required** | No        |
+| **Default**  | `true`    |
+
+**Description:** Activate cleaning the suites
+
+<a name="suite_control_DeodeCleaningSuiteDefinition_do_clean_IFS"></a>
+#### Property `Config > suite_control > DeodeCleaningSuiteDefinition > do_clean_IFS`
+
+|              |           |
+| ------------ | --------- |
+| **Type**     | `boolean` |
+| **Required** | No        |
+| **Default**  | `true`    |
+
+**Description:** Activate cleaning IFS data
+
+<a name="suite_control_DeodeCleaningSuiteDefinition_days_in_week"></a>
+#### Property `Config > suite_control > DeodeCleaningSuiteDefinition > days_in_week`
+
+|              |                    |
+| ------------ | ------------------ |
+| **Type**     | `array of integer` |
+| **Required** | No                 |
+
+**Description:** List of days when cleaning suite will run, 0-6 Sunday-Saturday
+
+|                      | Array restrictions |
+| -------------------- | ------------------ |
+| **Min items**        | N/A                |
+| **Max items**        | N/A                |
+| **Items unicity**    | False              |
+| **Additional items** | False              |
+| **Tuple validation** | See below          |
+
+| Each item of this array must be                                                      | Description |
+| ------------------------------------------------------------------------------------ | ----------- |
+| [days_in_week items](#suite_control_DeodeCleaningSuiteDefinition_days_in_week_items) | -           |
+
+<a name="autogenerated_heading_18"></a>
+##### Config > suite_control > DeodeCleaningSuiteDefinition > days_in_week > days_in_week items
+
+|              |           |
+| ------------ | --------- |
+| **Type**     | `integer` |
+| **Required** | No        |
+
+<a name="suite_control_DeodeCleaningSuiteDefinition_time_to_run"></a>
+#### Property `Config > suite_control > DeodeCleaningSuiteDefinition > time_to_run`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Time to run
+
+| Restrictions                      |                                                                                                                                                      |
+| --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Must match regular expression** | ```^([01]\d\|2[0-3]):[0-5]\d:[0-5]\dZ$``` [Test](https://regex101.com/?regex=%5E%28%5B01%5D%5Cd%7C2%5B0-3%5D%29%3A%5B0-5%5D%5Cd%3A%5B0-5%5D%5CdZ%24) |
+
+<a name="clean_old_data"></a>
+## Property `Config > clean_old_data`
+
+**Title:** Cleaning old data
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+| Property                                                   | Type   | Required | Default | Title/Description        |
+| ---------------------------------------------------------- | ------ | -------- | ------- | ------------------------ |
+| [scratch_data_period](#clean_old_data_scratch_data_period) | string | No       | "P14D"  | Age for old data in days |
+| [suites_period](#clean_old_data_suites_period)             | string | No       | "P14D"  | Age for old data in days |
+| [IFS_period](#clean_old_data_IFS_period)                   | string | No       | "P7D"   | Age for old data in days |
+| [ignore](#clean_old_data_ignore)                           | array  | No       | []      | -                        |
+
+<a name="clean_old_data_scratch_data_period"></a>
+### Property `Config > clean_old_data > scratch_data_period`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+| **Default**  | `"P14D"` |
+
+**Description:** Age for old data in days
+
+| Restrictions                      |                                                                                                                                                                           |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Must match regular expression** | ```^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?$``` [Test](https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%24) |
+
+<a name="clean_old_data_suites_period"></a>
+### Property `Config > clean_old_data > suites_period`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+| **Default**  | `"P14D"` |
+
+**Description:** Age for old data in days
+
+| Restrictions                      |                                                                                                                                                                           |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Must match regular expression** | ```^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?$``` [Test](https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%24) |
+
+<a name="clean_old_data_IFS_period"></a>
+### Property `Config > clean_old_data > IFS_period`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+| **Default**  | `"P7D"`  |
+
+**Description:** Age for old data in days
+
+| Restrictions                      |                                                                                                                                                                           |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Must match regular expression** | ```^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?$``` [Test](https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%24) |
+
+<a name="clean_old_data_ignore"></a>
+### Property `Config > clean_old_data > ignore`
+
+|              |         |
+| ------------ | ------- |
+| **Type**     | `array` |
+| **Required** | No      |
+| **Default**  | `[]`    |
+
+|                      | Array restrictions |
+| -------------------- | ------------------ |
+| **Min items**        | N/A                |
+| **Max items**        | N/A                |
+| **Items unicity**    | False              |
+| **Additional items** | False              |
+| **Tuple validation** | N/A                |
 
 <a name="system"></a>
 ## Property `Config > system`
@@ -1459,7 +1635,7 @@ Must be one of:
 | --------------------------------- | ----------- |
 | [main items](#fullpos_main_items) | -           |
 
-<a name="autogenerated_heading_18"></a>
+<a name="autogenerated_heading_19"></a>
 #### Config > fullpos > main > main items
 
 |              |          |
@@ -1498,7 +1674,7 @@ Must be one of:
 | --------------------------------------------------------------------------- | ----------- |
 | [additionalProperties items](#fullpos_selection_additionalProperties_items) | -           |
 
-<a name="autogenerated_heading_19"></a>
+<a name="autogenerated_heading_20"></a>
 ##### Config > fullpos > selection > additionalProperties > additionalProperties items
 
 |              |          |
@@ -1636,7 +1812,7 @@ Must be one of:
 | ---------------------------------------- | ----------- |
 | [input items](#gribmodify_3_input_items) | -           |
 
-<a name="autogenerated_heading_20"></a>
+<a name="autogenerated_heading_21"></a>
 ##### Config > gribmodify > 3 > input > input items
 
 |              |          |
@@ -1711,7 +1887,7 @@ Must be one of:
 | ---------------------------------------- | ----------- |
 | [input items](#gribmodify_2_input_items) | -           |
 
-<a name="autogenerated_heading_21"></a>
+<a name="autogenerated_heading_22"></a>
 ##### Config > gribmodify > 2 > input > input items
 
 |              |          |
@@ -1786,7 +1962,7 @@ Must be one of:
 | ---------------------------------------- | ----------- |
 | [input items](#gribmodify_1_input_items) | -           |
 
-<a name="autogenerated_heading_22"></a>
+<a name="autogenerated_heading_23"></a>
 ##### Config > gribmodify > 1 > input > input items
 
 |              |          |
@@ -1913,7 +2089,7 @@ Must be one of:
 | **Required**              | No                                                                        |
 | **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
 
-<a name="autogenerated_heading_23"></a>
+<a name="autogenerated_heading_24"></a>
 ##### The following properties are required
 * include
 * ncycles_delay
@@ -1928,7 +2104,7 @@ Must be one of:
 | **Required**              | No                                                                        |
 | **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
 
-<a name="autogenerated_heading_24"></a>
+<a name="autogenerated_heading_25"></a>
 ##### The following properties are required
 * include
 * cleaning_delay
@@ -3215,7 +3391,7 @@ Must be one of:
 | -------------------------------------------- | ----------- |
 | [gen_macros items](#macros_gen_macros_items) | -           |
 
-<a name="autogenerated_heading_25"></a>
+<a name="autogenerated_heading_26"></a>
 #### Config > macros > gen_macros > gen_macros items
 
 |                           |                                                                           |
@@ -3268,7 +3444,7 @@ Must be one of:
 | ------------------------------------------------ | ----------- |
 | [group_macros items](#macros_group_macros_items) | -           |
 
-<a name="autogenerated_heading_26"></a>
+<a name="autogenerated_heading_27"></a>
 #### Config > macros > group_macros > group_macros items
 
 |              |          |
@@ -3298,7 +3474,7 @@ Must be one of:
 | ------------------------------------------ | ----------- |
 | [os_macros items](#macros_os_macros_items) | -           |
 
-<a name="autogenerated_heading_27"></a>
+<a name="autogenerated_heading_28"></a>
 #### Config > macros > os_macros > os_macros items
 
 |              |          |
@@ -3346,7 +3522,7 @@ Must be one of:
 | -------------------------------------------------------- | ----------- |
 | [gen_macros items](#macros_user_macros_gen_macros_items) | -           |
 
-<a name="autogenerated_heading_28"></a>
+<a name="autogenerated_heading_29"></a>
 ##### Config > macros > user_macros > gen_macros > gen_macros items
 
 |                           |                                                                           |
@@ -3399,7 +3575,7 @@ Must be one of:
 | ------------------------------------------------------------ | ----------- |
 | [group_macros items](#macros_user_macros_group_macros_items) | -           |
 
-<a name="autogenerated_heading_29"></a>
+<a name="autogenerated_heading_30"></a>
 ##### Config > macros > user_macros > group_macros > group_macros items
 
 |              |          |
@@ -3429,7 +3605,7 @@ Must be one of:
 | ------------------------------------------------ | ----------- |
 | [ignore items](#macros_user_macros_ignore_items) | -           |
 
-<a name="autogenerated_heading_30"></a>
+<a name="autogenerated_heading_31"></a>
 ##### Config > macros > user_macros > ignore > ignore items
 
 |              |          |
@@ -3459,7 +3635,7 @@ Must be one of:
 | ------------------------------------------------------ | ----------- |
 | [os_macros items](#macros_user_macros_os_macros_items) | -           |
 
-<a name="autogenerated_heading_31"></a>
+<a name="autogenerated_heading_32"></a>
 ##### Config > macros > user_macros > os_macros > os_macros items
 
 |              |          |
@@ -5920,7 +6096,7 @@ Must be one of:
 | ---------------------------------------------------- | ----------- |
 | [archive_types items](#platform_archive_types_items) | -           |
 
-<a name="autogenerated_heading_32"></a>
+<a name="autogenerated_heading_33"></a>
 #### Config > platform > archive_types > archive_types items
 
 |              |                    |
@@ -6451,7 +6627,7 @@ Must be one of:
 | ---------------------------------------------------- | ----------- |
 | [submit_types items](#submission_submit_types_items) | -           |
 
-<a name="autogenerated_heading_33"></a>
+<a name="autogenerated_heading_34"></a>
 #### Config > submission > submit_types > submit_types items
 
 |              |          |
@@ -6526,7 +6702,7 @@ Must be one of:
 | --------------------------------------------- | ----------- |
 | [tasks items](#submission_serial_tasks_items) | -           |
 
-<a name="autogenerated_heading_34"></a>
+<a name="autogenerated_heading_35"></a>
 ##### Config > submission > serial > tasks > tasks items
 
 |              |          |
@@ -6635,7 +6811,7 @@ must respect the following conditions
 | --------------------------------------------------------- | ----------- |
 | [^(.*)$ items](#submission_serial_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_35"></a>
+<a name="autogenerated_heading_36"></a>
 ##### Config > submission > serial > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -6689,7 +6865,7 @@ must respect the following conditions
 | ----------------------------------------------- | ----------- |
 | [tasks items](#submission_parallel_tasks_items) | -           |
 
-<a name="autogenerated_heading_36"></a>
+<a name="autogenerated_heading_37"></a>
 ##### Config > submission > parallel > tasks > tasks items
 
 |              |          |
@@ -6798,7 +6974,7 @@ must respect the following conditions
 | ----------------------------------------------------------- | ----------- |
 | [^(.*)$ items](#submission_parallel_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_37"></a>
+<a name="autogenerated_heading_38"></a>
 ##### Config > submission > parallel > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -6852,7 +7028,7 @@ must respect the following conditions
 | ---------------------------------------------------- | ----------- |
 | [tasks items](#submission_background_vm_tasks_items) | -           |
 
-<a name="autogenerated_heading_38"></a>
+<a name="autogenerated_heading_39"></a>
 ##### Config > submission > background_vm > tasks > tasks items
 
 |              |          |
@@ -6961,7 +7137,7 @@ must respect the following conditions
 | ---------------------------------------------------------------- | ----------- |
 | [^(.*)$ items](#submission_background_vm_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_39"></a>
+<a name="autogenerated_heading_40"></a>
 ##### Config > submission > background_vm > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -7015,7 +7191,7 @@ must respect the following conditions
 | ----------------------------------------------------- | ----------- |
 | [tasks items](#submission_background_hpc_tasks_items) | -           |
 
-<a name="autogenerated_heading_40"></a>
+<a name="autogenerated_heading_41"></a>
 ##### Config > submission > background_hpc > tasks > tasks items
 
 |              |          |
@@ -7124,7 +7300,7 @@ must respect the following conditions
 | ----------------------------------------------------------------- | ----------- |
 | [^(.*)$ items](#submission_background_hpc_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_41"></a>
+<a name="autogenerated_heading_42"></a>
 ##### Config > submission > background_hpc > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -7178,7 +7354,7 @@ must respect the following conditions
 | ------------------------------------------ | ----------- |
 | [tasks items](#submission_gnu_tasks_items) | -           |
 
-<a name="autogenerated_heading_42"></a>
+<a name="autogenerated_heading_43"></a>
 ##### Config > submission > gnu > tasks > tasks items
 
 |              |          |
@@ -7287,7 +7463,7 @@ must respect the following conditions
 | ------------------------------------------------------ | ----------- |
 | [^(.*)$ items](#submission_gnu_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_43"></a>
+<a name="autogenerated_heading_44"></a>
 ##### Config > submission > gnu > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -7464,7 +7640,7 @@ must respect the following conditions
 | **Additional items** | False              |
 | **Tuple validation** | See below          |
 
-<a name="autogenerated_heading_44"></a>
+<a name="autogenerated_heading_45"></a>
 #### At least one of the items must be
 
 |              |          |
@@ -7490,7 +7666,7 @@ must respect the following conditions
 | **Additional items** | False              |
 | **Tuple validation** | See below          |
 
-<a name="autogenerated_heading_45"></a>
+<a name="autogenerated_heading_46"></a>
 #### At least one of the items must be
 
 |              |          |
