@@ -1,5 +1,5 @@
 The following section was automatically generated running
-        `deode doc config` on 2024-10-29T12:38:11.
+        `deode doc config` on 2024-10-29T12:58:07.
 
 # Config
 
@@ -3484,14 +3484,14 @@ Must be one of:
 | ---------------------------------------- | ------ | -------- | ------- | ----------------------------------------------------- |
 | [HRES](#mars_HRES)                       | object | No       | -       | Operational HRES                                      |
 | [IFSENS](#mars_IFSENS)                   | object | No       | -       | Operational ensemble forecasts                        |
-| [ATOS_DT](#mars_ATOS_DT)                 | object | No       | -       | Global DT near real-time runs on ATOS based on CY48r1 |
 | [atos_bologna_DT](#mars_atos_bologna_DT) | object | No       | -       | Global DT near real-time runs on ATOS based on CY49r1 |
+| [ATOS_DT](#mars_ATOS_DT)                 | object | No       | -       | Global DT near real-time runs on ATOS based on CY48r1 |
 | [DT12](#mars_DT12)                       | object | No       | -       | Global DT runs on ATOS but starting at 12Z            |
 | [i5qp](#mars_i5qp)                       | object | No       | -       | Paris RDP case Tco2559                                |
 | [i7u4](#mars_i7u4)                       | object | No       | -       | Paris RDP case Tco3999 with Urban scheme              |
 | [i7ye](#mars_i7ye)                       | object | No       | -       | Paris RDP case Tco3999 without Urban scheme           |
 | [i8hy](#mars_i8hy)                       | object | No       | -       | AQ winter case over central Europe                    |
-| [LUMI_DT](#mars_LUMI_DT)                 | object | No       | -       | Global DT near real-time runs on LUMI                 |
+| [lumi_DT](#mars_lumi_DT)                 | object | No       | -       | Global DT near real-time runs on LUMI                 |
 
 <a name="mars_HRES"></a>
 ### Property `Config > mars > HRES`
@@ -3936,246 +3936,6 @@ Must be one of:
 
 **Description:** MARS stream
 
-<a name="mars_ATOS_DT"></a>
-### Property `Config > mars > ATOS_DT`
-
-**Title:** Global DT near real-time runs on ATOS based on CY48r1
-
-|                           |                                                                           |
-| ------------------------- | ------------------------------------------------------------------------- |
-| **Type**                  | `object`                                                                  |
-| **Required**              | No                                                                        |
-| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
-
-**Description:** Parameters for global DT data
-
-| Property                                           | Type             | Required | Default | Title/Description                                                                                                                                     |
-| -------------------------------------------------- | ---------------- | -------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [ifs_cycle_start](#mars_ATOS_DT_ifs_cycle_start)   | string           | No       | "PT0H"  | Boundary model cycle start hour. Required to be set if bdcycle_start % bdcycle != 0                                                                   |
-| [default](#mars_ATOS_DT_default)                   | string           | No       | -       | Other section to copy settings from if not given here                                                                                                 |
-| [class](#mars_ATOS_DT_class)                       | string           | No       | -       | Class of expver                                                                                                                                       |
-| [levelist](#mars_ATOS_DT_levelist)                 | string           | No       | -       | Dictionary (date:levels), with dates of change in the number of levels.                                                                               |
-| [grid](#mars_ATOS_DT_grid)                         | string           | No       | -       | Dictionary (date:resolution), with dates of change in the resolution.                                                                                 |
-| [ifs_cycle_length](#mars_ATOS_DT_ifs_cycle_length) | string           | No       | -       | Boundary model cycle interval                                                                                                                         |
-| [start_date](#mars_ATOS_DT_start_date)             | string           | No       | -       | Date from when are data available in Mars                                                                                                             |
-| [GG](#mars_ATOS_DT_GG)                             | string           | No       | -       | List of parameters for grid point data, for detailed information about the parameters check <a href='https://codes.ecmwf.int/grib/param-db/'>here</a> |
-| [GG_sea](#mars_ATOS_DT_GG_sea)                     | string           | No       | -       | Parameters for grid point sea data, for detailed information about the parameters check <a href='https://codes.ecmwf.int/grib/param-db/'>here</a>     |
-| [tco](#mars_ATOS_DT_tco)                           | enum (of string) | No       | -       | Truncation for static RD data                                                                                                                         |
-| [grid_ML](#mars_ATOS_DT_grid_ML)                   | string           | No       | -       | Grid parameter for mars request of model level fields                                                                                                 |
-| [SH](#mars_ATOS_DT_SH)                             | string           | No       | -       | Parameters for spectral harmonic data, for detailed information about the parameters check <a href='https://codes.ecmwf.int/grib/param-db/'>here</a>  |
-| [SHZ](#mars_ATOS_DT_SHZ)                           | string           | No       | -       | Geopotential on ground, for detailed information about the parameters check <a href='https://codes.ecmwf.int/grib/param-db/'>here</a>                 |
-| [UA](#mars_ATOS_DT_UA)                             | string           | No       | -       | Upper air grid point parameters, for detailed information about the parameters check <a href='https://codes.ecmwf.int/grib/param-db/'>here</a>        |
-| [SHZ_type](#mars_ATOS_DT_SHZ_type)                 | string           | No       | -       | Type for geopotential                                                                                                                                 |
-| [GGZ_type](#mars_ATOS_DT_GGZ_type)                 | string           | No       | -       | Type for geopotential in gridpoint                                                                                                                    |
-| [stream](#mars_ATOS_DT_stream)                     | Combination      | No       | -       | MARS stream or dictionary (run:stream) to use the right stream for a given run.                                                                       |
-
-<a name="mars_ATOS_DT_ifs_cycle_start"></a>
-#### Property `Config > mars > ATOS_DT > ifs_cycle_start`
-
-|              |          |
-| ------------ | -------- |
-| **Type**     | `string` |
-| **Required** | No       |
-| **Default**  | `"PT0H"` |
-
-**Description:** Boundary model cycle start hour. Required to be set if bdcycle_start % bdcycle != 0
-
-| Restrictions                      |                                                                                                                                                                                                                                                                                                         |
-| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Must match regular expression** | ```^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$``` [Test](https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24) |
-
-<a name="mars_ATOS_DT_default"></a>
-#### Property `Config > mars > ATOS_DT > default`
-
-|              |          |
-| ------------ | -------- |
-| **Type**     | `string` |
-| **Required** | No       |
-
-**Description:** Other section to copy settings from if not given here
-
-<a name="mars_ATOS_DT_class"></a>
-#### Property `Config > mars > ATOS_DT > class`
-
-|              |          |
-| ------------ | -------- |
-| **Type**     | `string` |
-| **Required** | No       |
-
-**Description:** Class of expver
-
-<a name="mars_ATOS_DT_levelist"></a>
-#### Property `Config > mars > ATOS_DT > levelist`
-
-|              |          |
-| ------------ | -------- |
-| **Type**     | `string` |
-| **Required** | No       |
-
-**Description:** Dictionary (date:levels), with dates of change in the number of levels.
-
-<a name="mars_ATOS_DT_grid"></a>
-#### Property `Config > mars > ATOS_DT > grid`
-
-|              |          |
-| ------------ | -------- |
-| **Type**     | `string` |
-| **Required** | No       |
-
-**Description:** Dictionary (date:resolution), with dates of change in the resolution.
-
-<a name="mars_ATOS_DT_ifs_cycle_length"></a>
-#### Property `Config > mars > ATOS_DT > ifs_cycle_length`
-
-|              |          |
-| ------------ | -------- |
-| **Type**     | `string` |
-| **Required** | No       |
-
-**Description:** Boundary model cycle interval
-
-| Restrictions                      |                                                                                                                                                                                                                                                                                                         |
-| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Must match regular expression** | ```^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$``` [Test](https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24) |
-
-<a name="mars_ATOS_DT_start_date"></a>
-#### Property `Config > mars > ATOS_DT > start_date`
-
-|              |             |
-| ------------ | ----------- |
-| **Type**     | `string`    |
-| **Required** | No          |
-| **Format**   | `date-time` |
-
-**Description:** Date from when are data available in Mars
-
-<a name="mars_ATOS_DT_GG"></a>
-#### Property `Config > mars > ATOS_DT > GG`
-
-|              |          |
-| ------------ | -------- |
-| **Type**     | `string` |
-| **Required** | No       |
-
-**Description:** List of parameters for grid point data, for detailed information about the parameters check <a href='https://codes.ecmwf.int/grib/param-db/'>here</a>
-
-<a name="mars_ATOS_DT_GG_sea"></a>
-#### Property `Config > mars > ATOS_DT > GG_sea`
-
-|              |          |
-| ------------ | -------- |
-| **Type**     | `string` |
-| **Required** | No       |
-
-**Description:** Parameters for grid point sea data, for detailed information about the parameters check <a href='https://codes.ecmwf.int/grib/param-db/'>here</a>
-
-<a name="mars_ATOS_DT_tco"></a>
-#### Property `Config > mars > ATOS_DT > tco`
-
-|              |                    |
-| ------------ | ------------------ |
-| **Type**     | `enum (of string)` |
-| **Required** | No                 |
-
-**Description:** Truncation for static RD data
-
-Must be one of:
-* "255"
-* "399"
-
-<a name="mars_ATOS_DT_grid_ML"></a>
-#### Property `Config > mars > ATOS_DT > grid_ML`
-
-|              |          |
-| ------------ | -------- |
-| **Type**     | `string` |
-| **Required** | No       |
-
-**Description:** Grid parameter for mars request of model level fields
-
-<a name="mars_ATOS_DT_SH"></a>
-#### Property `Config > mars > ATOS_DT > SH`
-
-|              |          |
-| ------------ | -------- |
-| **Type**     | `string` |
-| **Required** | No       |
-
-**Description:** Parameters for spectral harmonic data, for detailed information about the parameters check <a href='https://codes.ecmwf.int/grib/param-db/'>here</a>
-
-<a name="mars_ATOS_DT_SHZ"></a>
-#### Property `Config > mars > ATOS_DT > SHZ`
-
-|              |          |
-| ------------ | -------- |
-| **Type**     | `string` |
-| **Required** | No       |
-
-**Description:** Geopotential on ground, for detailed information about the parameters check <a href='https://codes.ecmwf.int/grib/param-db/'>here</a>
-
-<a name="mars_ATOS_DT_UA"></a>
-#### Property `Config > mars > ATOS_DT > UA`
-
-|              |          |
-| ------------ | -------- |
-| **Type**     | `string` |
-| **Required** | No       |
-
-**Description:** Upper air grid point parameters, for detailed information about the parameters check <a href='https://codes.ecmwf.int/grib/param-db/'>here</a>
-
-<a name="mars_ATOS_DT_SHZ_type"></a>
-#### Property `Config > mars > ATOS_DT > SHZ_type`
-
-|              |          |
-| ------------ | -------- |
-| **Type**     | `string` |
-| **Required** | No       |
-
-**Description:** Type for geopotential
-
-<a name="mars_ATOS_DT_GGZ_type"></a>
-#### Property `Config > mars > ATOS_DT > GGZ_type`
-
-|              |          |
-| ------------ | -------- |
-| **Type**     | `string` |
-| **Required** | No       |
-
-**Description:** Type for geopotential in gridpoint
-
-<a name="mars_ATOS_DT_stream"></a>
-#### Property `Config > mars > ATOS_DT > stream`
-
-|                           |                                                                           |
-| ------------------------- | ------------------------------------------------------------------------- |
-| **Type**                  | `combining`                                                               |
-| **Required**              | No                                                                        |
-| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
-
-**Description:** MARS stream or dictionary (run:stream) to use the right stream for a given run.
-
-| Any of(Option)                          |
-| --------------------------------------- |
-| [item 0](#mars_ATOS_DT_stream_anyOf_i0) |
-| [item 1](#mars_ATOS_DT_stream_anyOf_i1) |
-
-<a name="mars_ATOS_DT_stream_anyOf_i0"></a>
-##### Property `Config > mars > ATOS_DT > stream > anyOf > item 0`
-
-|              |          |
-| ------------ | -------- |
-| **Type**     | `string` |
-| **Required** | No       |
-
-<a name="mars_ATOS_DT_stream_anyOf_i1"></a>
-##### Property `Config > mars > ATOS_DT > stream > anyOf > item 1`
-
-|                           |                                                                           |
-| ------------------------- | ------------------------------------------------------------------------- |
-| **Type**                  | `object`                                                                  |
-| **Required**              | No                                                                        |
-| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
-
 <a name="mars_atos_bologna_DT"></a>
 ### Property `Config > mars > atos_bologna_DT`
 
@@ -4409,6 +4169,246 @@ Must be one of:
 
 <a name="mars_atos_bologna_DT_stream_anyOf_i1"></a>
 ##### Property `Config > mars > atos_bologna_DT > stream > anyOf > item 1`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+<a name="mars_ATOS_DT"></a>
+### Property `Config > mars > ATOS_DT`
+
+**Title:** Global DT near real-time runs on ATOS based on CY48r1
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Parameters for global DT data
+
+| Property                                           | Type             | Required | Default | Title/Description                                                                                                                                     |
+| -------------------------------------------------- | ---------------- | -------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [ifs_cycle_start](#mars_ATOS_DT_ifs_cycle_start)   | string           | No       | "PT0H"  | Boundary model cycle start hour. Required to be set if bdcycle_start % bdcycle != 0                                                                   |
+| [default](#mars_ATOS_DT_default)                   | string           | No       | -       | Other section to copy settings from if not given here                                                                                                 |
+| [class](#mars_ATOS_DT_class)                       | string           | No       | -       | Class of expver                                                                                                                                       |
+| [levelist](#mars_ATOS_DT_levelist)                 | string           | No       | -       | Dictionary (date:levels), with dates of change in the number of levels.                                                                               |
+| [grid](#mars_ATOS_DT_grid)                         | string           | No       | -       | Dictionary (date:resolution), with dates of change in the resolution.                                                                                 |
+| [ifs_cycle_length](#mars_ATOS_DT_ifs_cycle_length) | string           | No       | -       | Boundary model cycle interval                                                                                                                         |
+| [start_date](#mars_ATOS_DT_start_date)             | string           | No       | -       | Date from when are data available in Mars                                                                                                             |
+| [GG](#mars_ATOS_DT_GG)                             | string           | No       | -       | List of parameters for grid point data, for detailed information about the parameters check <a href='https://codes.ecmwf.int/grib/param-db/'>here</a> |
+| [GG_sea](#mars_ATOS_DT_GG_sea)                     | string           | No       | -       | Parameters for grid point sea data, for detailed information about the parameters check <a href='https://codes.ecmwf.int/grib/param-db/'>here</a>     |
+| [tco](#mars_ATOS_DT_tco)                           | enum (of string) | No       | -       | Truncation for static RD data                                                                                                                         |
+| [grid_ML](#mars_ATOS_DT_grid_ML)                   | string           | No       | -       | Grid parameter for mars request of model level fields                                                                                                 |
+| [SH](#mars_ATOS_DT_SH)                             | string           | No       | -       | Parameters for spectral harmonic data, for detailed information about the parameters check <a href='https://codes.ecmwf.int/grib/param-db/'>here</a>  |
+| [SHZ](#mars_ATOS_DT_SHZ)                           | string           | No       | -       | Geopotential on ground, for detailed information about the parameters check <a href='https://codes.ecmwf.int/grib/param-db/'>here</a>                 |
+| [UA](#mars_ATOS_DT_UA)                             | string           | No       | -       | Upper air grid point parameters, for detailed information about the parameters check <a href='https://codes.ecmwf.int/grib/param-db/'>here</a>        |
+| [SHZ_type](#mars_ATOS_DT_SHZ_type)                 | string           | No       | -       | Type for geopotential                                                                                                                                 |
+| [GGZ_type](#mars_ATOS_DT_GGZ_type)                 | string           | No       | -       | Type for geopotential in gridpoint                                                                                                                    |
+| [stream](#mars_ATOS_DT_stream)                     | Combination      | No       | -       | MARS stream or dictionary (run:stream) to use the right stream for a given run.                                                                       |
+
+<a name="mars_ATOS_DT_ifs_cycle_start"></a>
+#### Property `Config > mars > ATOS_DT > ifs_cycle_start`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+| **Default**  | `"PT0H"` |
+
+**Description:** Boundary model cycle start hour. Required to be set if bdcycle_start % bdcycle != 0
+
+| Restrictions                      |                                                                                                                                                                                                                                                                                                         |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Must match regular expression** | ```^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$``` [Test](https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24) |
+
+<a name="mars_ATOS_DT_default"></a>
+#### Property `Config > mars > ATOS_DT > default`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Other section to copy settings from if not given here
+
+<a name="mars_ATOS_DT_class"></a>
+#### Property `Config > mars > ATOS_DT > class`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Class of expver
+
+<a name="mars_ATOS_DT_levelist"></a>
+#### Property `Config > mars > ATOS_DT > levelist`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Dictionary (date:levels), with dates of change in the number of levels.
+
+<a name="mars_ATOS_DT_grid"></a>
+#### Property `Config > mars > ATOS_DT > grid`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Dictionary (date:resolution), with dates of change in the resolution.
+
+<a name="mars_ATOS_DT_ifs_cycle_length"></a>
+#### Property `Config > mars > ATOS_DT > ifs_cycle_length`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Boundary model cycle interval
+
+| Restrictions                      |                                                                                                                                                                                                                                                                                                         |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Must match regular expression** | ```^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$``` [Test](https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24) |
+
+<a name="mars_ATOS_DT_start_date"></a>
+#### Property `Config > mars > ATOS_DT > start_date`
+
+|              |             |
+| ------------ | ----------- |
+| **Type**     | `string`    |
+| **Required** | No          |
+| **Format**   | `date-time` |
+
+**Description:** Date from when are data available in Mars
+
+<a name="mars_ATOS_DT_GG"></a>
+#### Property `Config > mars > ATOS_DT > GG`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** List of parameters for grid point data, for detailed information about the parameters check <a href='https://codes.ecmwf.int/grib/param-db/'>here</a>
+
+<a name="mars_ATOS_DT_GG_sea"></a>
+#### Property `Config > mars > ATOS_DT > GG_sea`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Parameters for grid point sea data, for detailed information about the parameters check <a href='https://codes.ecmwf.int/grib/param-db/'>here</a>
+
+<a name="mars_ATOS_DT_tco"></a>
+#### Property `Config > mars > ATOS_DT > tco`
+
+|              |                    |
+| ------------ | ------------------ |
+| **Type**     | `enum (of string)` |
+| **Required** | No                 |
+
+**Description:** Truncation for static RD data
+
+Must be one of:
+* "255"
+* "399"
+
+<a name="mars_ATOS_DT_grid_ML"></a>
+#### Property `Config > mars > ATOS_DT > grid_ML`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Grid parameter for mars request of model level fields
+
+<a name="mars_ATOS_DT_SH"></a>
+#### Property `Config > mars > ATOS_DT > SH`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Parameters for spectral harmonic data, for detailed information about the parameters check <a href='https://codes.ecmwf.int/grib/param-db/'>here</a>
+
+<a name="mars_ATOS_DT_SHZ"></a>
+#### Property `Config > mars > ATOS_DT > SHZ`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Geopotential on ground, for detailed information about the parameters check <a href='https://codes.ecmwf.int/grib/param-db/'>here</a>
+
+<a name="mars_ATOS_DT_UA"></a>
+#### Property `Config > mars > ATOS_DT > UA`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Upper air grid point parameters, for detailed information about the parameters check <a href='https://codes.ecmwf.int/grib/param-db/'>here</a>
+
+<a name="mars_ATOS_DT_SHZ_type"></a>
+#### Property `Config > mars > ATOS_DT > SHZ_type`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Type for geopotential
+
+<a name="mars_ATOS_DT_GGZ_type"></a>
+#### Property `Config > mars > ATOS_DT > GGZ_type`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Type for geopotential in gridpoint
+
+<a name="mars_ATOS_DT_stream"></a>
+#### Property `Config > mars > ATOS_DT > stream`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `combining`                                                               |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** MARS stream or dictionary (run:stream) to use the right stream for a given run.
+
+| Any of(Option)                          |
+| --------------------------------------- |
+| [item 0](#mars_ATOS_DT_stream_anyOf_i0) |
+| [item 1](#mars_ATOS_DT_stream_anyOf_i1) |
+
+<a name="mars_ATOS_DT_stream_anyOf_i0"></a>
+##### Property `Config > mars > ATOS_DT > stream > anyOf > item 0`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+<a name="mars_ATOS_DT_stream_anyOf_i1"></a>
+##### Property `Config > mars > ATOS_DT > stream > anyOf > item 1`
 
 |                           |                                                                           |
 | ------------------------- | ------------------------------------------------------------------------- |
@@ -5616,8 +5616,8 @@ Must be one of:
 | **Required**              | No                                                                        |
 | **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
 
-<a name="mars_LUMI_DT"></a>
-### Property `Config > mars > LUMI_DT`
+<a name="mars_lumi_DT"></a>
+### Property `Config > mars > lumi_DT`
 
 **Title:** Global DT near real-time runs on LUMI
 
@@ -5631,26 +5631,26 @@ Must be one of:
 
 | Property                                           | Type             | Required | Default | Title/Description                                                                                                                                     |
 | -------------------------------------------------- | ---------------- | -------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [ifs_cycle_start](#mars_LUMI_DT_ifs_cycle_start)   | string           | No       | "PT0H"  | Boundary model cycle start hour. Required to be set if bdcycle_start % bdcycle != 0                                                                   |
-| [default](#mars_LUMI_DT_default)                   | string           | No       | -       | Other section to copy settings from if not given here                                                                                                 |
-| [class](#mars_LUMI_DT_class)                       | string           | No       | -       | Class of expver                                                                                                                                       |
-| [levelist](#mars_LUMI_DT_levelist)                 | string           | No       | -       | Dictionary (date:levels), with dates of change in the number of levels.                                                                               |
-| [grid](#mars_LUMI_DT_grid)                         | string           | No       | -       | Dictionary (date:resolution), with dates of change in the resolution.                                                                                 |
-| [ifs_cycle_length](#mars_LUMI_DT_ifs_cycle_length) | string           | No       | -       | Boundary model cycle interval                                                                                                                         |
-| [start_date](#mars_LUMI_DT_start_date)             | string           | No       | -       | Date from when are data available in Mars                                                                                                             |
-| [GG](#mars_LUMI_DT_GG)                             | string           | No       | -       | List of parameters for grid point data, for detailed information about the parameters check <a href='https://codes.ecmwf.int/grib/param-db/'>here</a> |
-| [GG_sea](#mars_LUMI_DT_GG_sea)                     | string           | No       | -       | Parameters for grid point sea data, for detailed information about the parameters check <a href='https://codes.ecmwf.int/grib/param-db/'>here</a>     |
-| [tco](#mars_LUMI_DT_tco)                           | enum (of string) | No       | -       | Truncation for static RD data                                                                                                                         |
-| [grid_ML](#mars_LUMI_DT_grid_ML)                   | string           | No       | -       | Grid parameter for mars request of model level fields                                                                                                 |
-| [SH](#mars_LUMI_DT_SH)                             | string           | No       | -       | Parameters for spectral harmonic data, for detailed information about the parameters check <a href='https://codes.ecmwf.int/grib/param-db/'>here</a>  |
-| [SHZ](#mars_LUMI_DT_SHZ)                           | string           | No       | -       | Geopotential on ground, for detailed information about the parameters check <a href='https://codes.ecmwf.int/grib/param-db/'>here</a>                 |
-| [UA](#mars_LUMI_DT_UA)                             | string           | No       | -       | Upper air grid point parameters, for detailed information about the parameters check <a href='https://codes.ecmwf.int/grib/param-db/'>here</a>        |
-| [SHZ_type](#mars_LUMI_DT_SHZ_type)                 | string           | No       | -       | Type for geopotential                                                                                                                                 |
-| [GGZ_type](#mars_LUMI_DT_GGZ_type)                 | string           | No       | -       | Type for geopotential in gridpoint                                                                                                                    |
-| [stream](#mars_LUMI_DT_stream)                     | Combination      | No       | -       | MARS stream or dictionary (run:stream) to use the right stream for a given run.                                                                       |
+| [ifs_cycle_start](#mars_lumi_DT_ifs_cycle_start)   | string           | No       | "PT0H"  | Boundary model cycle start hour. Required to be set if bdcycle_start % bdcycle != 0                                                                   |
+| [default](#mars_lumi_DT_default)                   | string           | No       | -       | Other section to copy settings from if not given here                                                                                                 |
+| [class](#mars_lumi_DT_class)                       | string           | No       | -       | Class of expver                                                                                                                                       |
+| [levelist](#mars_lumi_DT_levelist)                 | string           | No       | -       | Dictionary (date:levels), with dates of change in the number of levels.                                                                               |
+| [grid](#mars_lumi_DT_grid)                         | string           | No       | -       | Dictionary (date:resolution), with dates of change in the resolution.                                                                                 |
+| [ifs_cycle_length](#mars_lumi_DT_ifs_cycle_length) | string           | No       | -       | Boundary model cycle interval                                                                                                                         |
+| [start_date](#mars_lumi_DT_start_date)             | string           | No       | -       | Date from when are data available in Mars                                                                                                             |
+| [GG](#mars_lumi_DT_GG)                             | string           | No       | -       | List of parameters for grid point data, for detailed information about the parameters check <a href='https://codes.ecmwf.int/grib/param-db/'>here</a> |
+| [GG_sea](#mars_lumi_DT_GG_sea)                     | string           | No       | -       | Parameters for grid point sea data, for detailed information about the parameters check <a href='https://codes.ecmwf.int/grib/param-db/'>here</a>     |
+| [tco](#mars_lumi_DT_tco)                           | enum (of string) | No       | -       | Truncation for static RD data                                                                                                                         |
+| [grid_ML](#mars_lumi_DT_grid_ML)                   | string           | No       | -       | Grid parameter for mars request of model level fields                                                                                                 |
+| [SH](#mars_lumi_DT_SH)                             | string           | No       | -       | Parameters for spectral harmonic data, for detailed information about the parameters check <a href='https://codes.ecmwf.int/grib/param-db/'>here</a>  |
+| [SHZ](#mars_lumi_DT_SHZ)                           | string           | No       | -       | Geopotential on ground, for detailed information about the parameters check <a href='https://codes.ecmwf.int/grib/param-db/'>here</a>                 |
+| [UA](#mars_lumi_DT_UA)                             | string           | No       | -       | Upper air grid point parameters, for detailed information about the parameters check <a href='https://codes.ecmwf.int/grib/param-db/'>here</a>        |
+| [SHZ_type](#mars_lumi_DT_SHZ_type)                 | string           | No       | -       | Type for geopotential                                                                                                                                 |
+| [GGZ_type](#mars_lumi_DT_GGZ_type)                 | string           | No       | -       | Type for geopotential in gridpoint                                                                                                                    |
+| [stream](#mars_lumi_DT_stream)                     | Combination      | No       | -       | MARS stream or dictionary (run:stream) to use the right stream for a given run.                                                                       |
 
-<a name="mars_LUMI_DT_ifs_cycle_start"></a>
-#### Property `Config > mars > LUMI_DT > ifs_cycle_start`
+<a name="mars_lumi_DT_ifs_cycle_start"></a>
+#### Property `Config > mars > lumi_DT > ifs_cycle_start`
 
 |              |          |
 | ------------ | -------- |
@@ -5664,8 +5664,8 @@ Must be one of:
 | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Must match regular expression** | ```^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$``` [Test](https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24) |
 
-<a name="mars_LUMI_DT_default"></a>
-#### Property `Config > mars > LUMI_DT > default`
+<a name="mars_lumi_DT_default"></a>
+#### Property `Config > mars > lumi_DT > default`
 
 |              |          |
 | ------------ | -------- |
@@ -5674,8 +5674,8 @@ Must be one of:
 
 **Description:** Other section to copy settings from if not given here
 
-<a name="mars_LUMI_DT_class"></a>
-#### Property `Config > mars > LUMI_DT > class`
+<a name="mars_lumi_DT_class"></a>
+#### Property `Config > mars > lumi_DT > class`
 
 |              |          |
 | ------------ | -------- |
@@ -5684,8 +5684,8 @@ Must be one of:
 
 **Description:** Class of expver
 
-<a name="mars_LUMI_DT_levelist"></a>
-#### Property `Config > mars > LUMI_DT > levelist`
+<a name="mars_lumi_DT_levelist"></a>
+#### Property `Config > mars > lumi_DT > levelist`
 
 |              |          |
 | ------------ | -------- |
@@ -5694,8 +5694,8 @@ Must be one of:
 
 **Description:** Dictionary (date:levels), with dates of change in the number of levels.
 
-<a name="mars_LUMI_DT_grid"></a>
-#### Property `Config > mars > LUMI_DT > grid`
+<a name="mars_lumi_DT_grid"></a>
+#### Property `Config > mars > lumi_DT > grid`
 
 |              |          |
 | ------------ | -------- |
@@ -5704,8 +5704,8 @@ Must be one of:
 
 **Description:** Dictionary (date:resolution), with dates of change in the resolution.
 
-<a name="mars_LUMI_DT_ifs_cycle_length"></a>
-#### Property `Config > mars > LUMI_DT > ifs_cycle_length`
+<a name="mars_lumi_DT_ifs_cycle_length"></a>
+#### Property `Config > mars > lumi_DT > ifs_cycle_length`
 
 |              |          |
 | ------------ | -------- |
@@ -5718,8 +5718,8 @@ Must be one of:
 | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Must match regular expression** | ```^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$``` [Test](https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24) |
 
-<a name="mars_LUMI_DT_start_date"></a>
-#### Property `Config > mars > LUMI_DT > start_date`
+<a name="mars_lumi_DT_start_date"></a>
+#### Property `Config > mars > lumi_DT > start_date`
 
 |              |             |
 | ------------ | ----------- |
@@ -5729,8 +5729,8 @@ Must be one of:
 
 **Description:** Date from when are data available in Mars
 
-<a name="mars_LUMI_DT_GG"></a>
-#### Property `Config > mars > LUMI_DT > GG`
+<a name="mars_lumi_DT_GG"></a>
+#### Property `Config > mars > lumi_DT > GG`
 
 |              |          |
 | ------------ | -------- |
@@ -5739,8 +5739,8 @@ Must be one of:
 
 **Description:** List of parameters for grid point data, for detailed information about the parameters check <a href='https://codes.ecmwf.int/grib/param-db/'>here</a>
 
-<a name="mars_LUMI_DT_GG_sea"></a>
-#### Property `Config > mars > LUMI_DT > GG_sea`
+<a name="mars_lumi_DT_GG_sea"></a>
+#### Property `Config > mars > lumi_DT > GG_sea`
 
 |              |          |
 | ------------ | -------- |
@@ -5749,8 +5749,8 @@ Must be one of:
 
 **Description:** Parameters for grid point sea data, for detailed information about the parameters check <a href='https://codes.ecmwf.int/grib/param-db/'>here</a>
 
-<a name="mars_LUMI_DT_tco"></a>
-#### Property `Config > mars > LUMI_DT > tco`
+<a name="mars_lumi_DT_tco"></a>
+#### Property `Config > mars > lumi_DT > tco`
 
 |              |                    |
 | ------------ | ------------------ |
@@ -5763,8 +5763,8 @@ Must be one of:
 * "255"
 * "399"
 
-<a name="mars_LUMI_DT_grid_ML"></a>
-#### Property `Config > mars > LUMI_DT > grid_ML`
+<a name="mars_lumi_DT_grid_ML"></a>
+#### Property `Config > mars > lumi_DT > grid_ML`
 
 |              |          |
 | ------------ | -------- |
@@ -5773,8 +5773,8 @@ Must be one of:
 
 **Description:** Grid parameter for mars request of model level fields
 
-<a name="mars_LUMI_DT_SH"></a>
-#### Property `Config > mars > LUMI_DT > SH`
+<a name="mars_lumi_DT_SH"></a>
+#### Property `Config > mars > lumi_DT > SH`
 
 |              |          |
 | ------------ | -------- |
@@ -5783,8 +5783,8 @@ Must be one of:
 
 **Description:** Parameters for spectral harmonic data, for detailed information about the parameters check <a href='https://codes.ecmwf.int/grib/param-db/'>here</a>
 
-<a name="mars_LUMI_DT_SHZ"></a>
-#### Property `Config > mars > LUMI_DT > SHZ`
+<a name="mars_lumi_DT_SHZ"></a>
+#### Property `Config > mars > lumi_DT > SHZ`
 
 |              |          |
 | ------------ | -------- |
@@ -5793,8 +5793,8 @@ Must be one of:
 
 **Description:** Geopotential on ground, for detailed information about the parameters check <a href='https://codes.ecmwf.int/grib/param-db/'>here</a>
 
-<a name="mars_LUMI_DT_UA"></a>
-#### Property `Config > mars > LUMI_DT > UA`
+<a name="mars_lumi_DT_UA"></a>
+#### Property `Config > mars > lumi_DT > UA`
 
 |              |          |
 | ------------ | -------- |
@@ -5803,8 +5803,8 @@ Must be one of:
 
 **Description:** Upper air grid point parameters, for detailed information about the parameters check <a href='https://codes.ecmwf.int/grib/param-db/'>here</a>
 
-<a name="mars_LUMI_DT_SHZ_type"></a>
-#### Property `Config > mars > LUMI_DT > SHZ_type`
+<a name="mars_lumi_DT_SHZ_type"></a>
+#### Property `Config > mars > lumi_DT > SHZ_type`
 
 |              |          |
 | ------------ | -------- |
@@ -5813,8 +5813,8 @@ Must be one of:
 
 **Description:** Type for geopotential
 
-<a name="mars_LUMI_DT_GGZ_type"></a>
-#### Property `Config > mars > LUMI_DT > GGZ_type`
+<a name="mars_lumi_DT_GGZ_type"></a>
+#### Property `Config > mars > lumi_DT > GGZ_type`
 
 |              |          |
 | ------------ | -------- |
@@ -5823,8 +5823,8 @@ Must be one of:
 
 **Description:** Type for geopotential in gridpoint
 
-<a name="mars_LUMI_DT_stream"></a>
-#### Property `Config > mars > LUMI_DT > stream`
+<a name="mars_lumi_DT_stream"></a>
+#### Property `Config > mars > lumi_DT > stream`
 
 |                           |                                                                           |
 | ------------------------- | ------------------------------------------------------------------------- |
@@ -5836,19 +5836,19 @@ Must be one of:
 
 | Any of(Option)                          |
 | --------------------------------------- |
-| [item 0](#mars_LUMI_DT_stream_anyOf_i0) |
-| [item 1](#mars_LUMI_DT_stream_anyOf_i1) |
+| [item 0](#mars_lumi_DT_stream_anyOf_i0) |
+| [item 1](#mars_lumi_DT_stream_anyOf_i1) |
 
-<a name="mars_LUMI_DT_stream_anyOf_i0"></a>
-##### Property `Config > mars > LUMI_DT > stream > anyOf > item 0`
+<a name="mars_lumi_DT_stream_anyOf_i0"></a>
+##### Property `Config > mars > lumi_DT > stream > anyOf > item 0`
 
 |              |          |
 | ------------ | -------- |
 | **Type**     | `string` |
 | **Required** | No       |
 
-<a name="mars_LUMI_DT_stream_anyOf_i1"></a>
-##### Property `Config > mars > LUMI_DT > stream > anyOf > item 1`
+<a name="mars_lumi_DT_stream_anyOf_i1"></a>
+##### Property `Config > mars > lumi_DT > stream > anyOf > item 1`
 
 |                           |                                                                           |
 | ------------------------- | ------------------------------------------------------------------------- |
