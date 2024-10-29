@@ -160,6 +160,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.argparse_wrapper">deode.argparse_wrapper module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.argparse_wrapper.add_keep_def_file"><code class="docutils literal notranslate"><span class="pre">add_keep_def_file()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.argparse_wrapper.add_namelist_args"><code class="docutils literal notranslate"><span class="pre">add_namelist_args()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.argparse_wrapper.get_parsed_args"><code class="docutils literal notranslate"><span class="pre">get_parsed_args()</span></code></a></li>
 </ul>
@@ -1149,6 +1150,9 @@
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Start suite as well&quot;</span><span class="p">,</span>
         <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span>
+    <span class="n">add_keep_def_file</span><span class="p">(</span>
+        <span class="n">parser_case</span><span class="p">,</span> <span class="n">help_message</span><span class="o">=</span><span class="s2">&quot;Keep suite definition file in case of submission&quot;</span>
+    <span class="p">)</span>
     <span class="n">parser_case</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">run_command</span><span class="o">=</span><span class="n">create_exp</span><span class="p">)</span>
 
     <span class="c1">############################################</span>
@@ -1173,7 +1177,13 @@
     <span class="n">parser_start_suite</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s2">&quot;--start-command&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Start command for server&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span>
     <span class="p">)</span>
-    <span class="n">parser_start_suite</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--begin&quot;</span><span class="p">,</span> <span class="s2">&quot;-b&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Begin suite&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">parser_start_suite</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--def-file&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;-f&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Suite definition file&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">add_keep_def_file</span><span class="p">(</span><span class="n">parser_start_suite</span><span class="p">)</span>
     <span class="n">parser_start_suite</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">run_command</span><span class="o">=</span><span class="n">start_suite</span><span class="p">)</span>
 
     <span class="c1">###########################################</span>
@@ -1445,6 +1455,29 @@
 
     <span class="k">return</span> <span class="n">parser_object</span></div>
 
+
+
+<div class="viewcode-block" id="add_keep_def_file">
+<a class="viewcode-back" href="../../deode.html#deode.argparse_wrapper.add_keep_def_file">[docs]</a>
+<span class="k">def</span> <span class="nf">add_keep_def_file</span><span class="p">(</span>
+    <span class="n">parser_object</span><span class="p">,</span> <span class="n">help_message</span><span class="o">=</span><span class="s2">&quot;Keep suite definition file after submission&quot;</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Add object args.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        parser_object (args oject): args object to update</span>
+<span class="sd">        help_message (str): Help text</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">parser_object</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--keep-def-file&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;-k&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="n">help_message</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
 </pre></div>
 
            </div>
@@ -1455,7 +1488,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-10-28T18:55:04Z.
+      <span class="lastupdated">Last updated on 2024-10-29T12:38:13Z.
       </span></p>
   </div>
 

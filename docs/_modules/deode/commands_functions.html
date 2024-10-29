@@ -160,6 +160,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.argparse_wrapper">deode.argparse_wrapper module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.argparse_wrapper.add_keep_def_file"><code class="docutils literal notranslate"><span class="pre">add_keep_def_file()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.argparse_wrapper.add_namelist_args"><code class="docutils literal notranslate"><span class="pre">add_namelist_args()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.argparse_wrapper.get_parsed_args"><code class="docutils literal notranslate"><span class="pre">get_parsed_args()</span></code></a></li>
 </ul>
@@ -1135,7 +1136,7 @@
         <span class="p">)</span>
         <span class="n">args</span><span class="o">.</span><span class="n">start_command</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">args</span><span class="o">.</span><span class="n">config_file</span> <span class="o">=</span> <span class="n">output_file</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">begin</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">def_file</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="n">start_suite</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span></div>
 
 
@@ -1229,9 +1230,13 @@
     <span class="p">)</span>
 
     <span class="n">server</span> <span class="o">=</span> <span class="n">EcflowServer</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">start_command</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">start_command</span><span class="p">)</span>
-    <span class="n">defs</span> <span class="o">=</span> <span class="n">get_suite</span><span class="p">(</span><span class="n">suite_def</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
-    <span class="n">def_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">suite_name</span><span class="si">}</span><span class="s2">.def&quot;</span>
-    <span class="n">defs</span><span class="o">.</span><span class="n">save_as_defs</span><span class="p">(</span><span class="n">def_file</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">def_file</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+        <span class="n">defs</span> <span class="o">=</span> <span class="n">get_suite</span><span class="p">(</span><span class="n">suite_def</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+        <span class="n">def_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">suite_name</span><span class="si">}</span><span class="s2">.def&quot;</span>
+        <span class="n">defs</span><span class="o">.</span><span class="n">save_as_defs</span><span class="p">(</span><span class="n">def_file</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">def_file</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">def_file</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Start suite from: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">def_file</span><span class="p">)</span>
 
     <span class="c1"># Clean, then copy troika and containers</span>
     <span class="n">srv</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ecf_remoteuser</span><span class="si">}</span><span class="s2">@</span><span class="si">{</span><span class="n">ecf_host</span><span class="si">}</span><span class="s2">&quot;</span>
@@ -1287,8 +1292,11 @@
             <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="s2">&quot;Copying </span><span class="si">{temp_troika_config_file}</span><span class="s2"> FAILED.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;--- File copying to Ecflow server DONE ---&quot;</span><span class="p">)</span>
 
-    <span class="n">server</span><span class="o">.</span><span class="n">start_suite</span><span class="p">(</span><span class="n">suite_name</span><span class="p">,</span> <span class="n">def_file</span><span class="p">,</span> <span class="n">begin</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">begin</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Done with suite.&quot;</span><span class="p">)</span></div>
+    <span class="n">server</span><span class="o">.</span><span class="n">start_suite</span><span class="p">(</span><span class="n">suite_name</span><span class="p">,</span> <span class="n">def_file</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Done with suite.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">keep_def_file</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">def_file</span><span class="p">)</span></div>
 
 
 
@@ -1552,7 +1560,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-10-28T18:55:04Z.
+      <span class="lastupdated">Last updated on 2024-10-29T12:38:13Z.
       </span></p>
   </div>
 
