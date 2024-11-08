@@ -644,6 +644,10 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-clean-old-data-suites-period">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">clean_old_data</span> <span class="pre">&gt;</span> <span class="pre">suites_period</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-clean-old-data-ifs-period">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">clean_old_data</span> <span class="pre">&gt;</span> <span class="pre">IFS_period</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-clean-old-data-ignore">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">clean_old_data</span> <span class="pre">&gt;</span> <span class="pre">ignore</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-clean-old-data-suite-format">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">clean_old_data</span> <span class="pre">&gt;</span> <span class="pre">suite_format</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-clean-old-data-scratch-format">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">clean_old_data</span> <span class="pre">&gt;</span> <span class="pre">scratch_format</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-clean-old-data-ifs-format">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">clean_old_data</span> <span class="pre">&gt;</span> <span class="pre">ifs_format</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-clean-old-data-scratch-ext">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">clean_old_data</span> <span class="pre">&gt;</span> <span class="pre">scratch_ext</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-system">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">system</span></code></a><ul>
@@ -1079,6 +1083,7 @@
         <span class="n">ecf_home</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;scheduler.ecfvars.ecf_home&quot;</span><span class="p">]</span>
         <span class="n">ecf_ssl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;scheduler.ecfvars.ecf_ssl&quot;</span><span class="p">]</span>
         <span class="n">ecf_host</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;scheduler.ecfvars.ecf_host&quot;</span><span class="p">]</span>
+        <span class="n">ecf_tries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;scheduler.ecfvars.ecf_tries&quot;</span><span class="p">]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">ecf_user</span> <span class="o">=</span> <span class="n">ecf_user</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ecf_host</span> <span class="o">=</span> <span class="n">ecf_host</span>
@@ -1151,7 +1156,7 @@
             <span class="s2">&quot;ECF_USER&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_user</span><span class="p">,</span>
             <span class="s2">&quot;ECFTYPES&quot;</span><span class="p">:</span> <span class="s2">&quot;fc&quot;</span><span class="p">,</span>
             <span class="s2">&quot;ECF_EXTN&quot;</span><span class="p">:</span> <span class="s2">&quot;.bash&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;ECF_TRIES&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="s2">&quot;ECF_TRIES&quot;</span><span class="p">:</span> <span class="n">ecf_tries</span><span class="p">,</span>
             <span class="s2">&quot;ECF_FILES&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
             <span class="s2">&quot;ECF_INCLUDE&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_include</span><span class="p">,</span>
             <span class="s2">&quot;ECF_SSL&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_ssl</span><span class="p">,</span>
@@ -1675,7 +1680,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-11-07T15:03:21Z.
+      <span class="lastupdated">Last updated on 2024-11-08T11:43:29Z.
       </span></p>
   </div>
 

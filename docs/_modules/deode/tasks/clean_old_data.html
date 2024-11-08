@@ -644,6 +644,10 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-clean-old-data-suites-period">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">clean_old_data</span> <span class="pre">&gt;</span> <span class="pre">suites_period</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-clean-old-data-ifs-period">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">clean_old_data</span> <span class="pre">&gt;</span> <span class="pre">IFS_period</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-clean-old-data-ignore">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">clean_old_data</span> <span class="pre">&gt;</span> <span class="pre">ignore</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-clean-old-data-suite-format">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">clean_old_data</span> <span class="pre">&gt;</span> <span class="pre">suite_format</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-clean-old-data-scratch-format">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">clean_old_data</span> <span class="pre">&gt;</span> <span class="pre">scratch_format</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-clean-old-data-ifs-format">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">clean_old_data</span> <span class="pre">&gt;</span> <span class="pre">ifs_format</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-clean-old-data-scratch-ext">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">clean_old_data</span> <span class="pre">&gt;</span> <span class="pre">scratch_ext</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-system">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">system</span></code></a><ul>
@@ -1010,7 +1014,9 @@
   <h1>Source code for deode.tasks.clean_old_data</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Clean old data.&quot;&quot;&quot;</span>
 
+<span class="kn">import</span> <span class="nn">glob</span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 
@@ -1052,56 +1058,58 @@
 
 <div class="viewcode-block" id="CleanOldData.get_old">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.clean_old_data.CleanOldData.get_old">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_old</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">cutoff_time</span><span class="p">,</span> <span class="n">return_files</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_old</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">form</span><span class="p">,</span> <span class="n">cutoff_time</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get directories which are older cutoff.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            path (str): Path to start of searching old directories</span>
+<span class="sd">            form (str): regex for path</span>
 <span class="sd">            cutoff_time (int): Directories or files older then cutoff</span>
-<span class="sd">            return_files (boolean): return files to clean, default False</span>
 <span class="sd">            ignore (list): List of directories to ignore</span>
 <span class="sd">        Returns:</span>
-<span class="sd">            dic_to_remove (dict): Dictionary of directories for remove</span>
+<span class="sd">            list_to_remove (list): List of directories for remove</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">dic_to_remove</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">_dirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
-            <span class="n">dirs</span> <span class="o">=</span> <span class="n">_dirs</span> <span class="k">if</span> <span class="n">ignore</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">_dirs</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ignore</span><span class="p">]</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">return_files</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">dir_name</span> <span class="ow">in</span> <span class="n">dirs</span><span class="p">:</span>
-                    <span class="n">dir_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">dir_name</span><span class="p">)</span>
-                    <span class="n">dir_mtime</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getmtime</span><span class="p">(</span><span class="n">dir_path</span><span class="p">)</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                        <span class="s2">&quot;path: </span><span class="si">{}</span><span class="s2">, time: </span><span class="si">{}</span><span class="s2">, cutoff: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">dir_path</span><span class="p">,</span> <span class="n">dir_mtime</span><span class="p">,</span> <span class="n">cutoff_time</span>
-                    <span class="p">)</span>
-                    <span class="k">if</span> <span class="n">dir_mtime</span> <span class="o">&lt;</span> <span class="n">cutoff_time</span><span class="p">:</span>
-                        <span class="n">dic_to_remove</span><span class="p">[</span><span class="n">dir_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">dir_path</span>
-                <span class="k">del</span> <span class="n">_dirs</span><span class="p">[:]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
-                    <span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="n">list_to_remove</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">glob_str</span> <span class="o">=</span> <span class="s2">&quot;*/&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;*&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">form</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span> <span class="o">-</span> <span class="n">form</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;^/&quot;</span><span class="p">)))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">glob_str</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">glob_pattern</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">glob_str</span><span class="p">)</span>
+        <span class="n">initial_matches</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">glob_pattern</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;initial: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">initial_matches</span><span class="p">)</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;^&quot;</span> <span class="o">+</span> <span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">+</span> <span class="sa">r</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">form</span><span class="p">)</span>
+        <span class="n">pattern_no_whitespace</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\s+&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">pattern</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;patteren: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">pattern_no_whitespace</span><span class="p">)</span>
+        <span class="n">pattern_compiled</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">pattern_no_whitespace</span><span class="p">)</span>
+        <span class="n">matched_directories</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">initial_matches</span> <span class="k">if</span> <span class="n">pattern_compiled</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">d</span><span class="p">)]</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Matched: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">matched_directories</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">dir_path</span> <span class="ow">in</span> <span class="n">matched_directories</span><span class="p">:</span>
+            <span class="n">dir_mtime</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getmtime</span><span class="p">(</span><span class="n">dir_path</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="s2">&quot;path: </span><span class="si">{}</span><span class="s2">, time: </span><span class="si">{}</span><span class="s2">, cutoff: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">dir_path</span><span class="p">,</span>
+                <span class="n">dir_mtime</span><span class="p">,</span>
+                <span class="n">cutoff_time</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">dir_mtime</span> <span class="o">&lt;</span> <span class="n">cutoff_time</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">ignore</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">dir_path</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ignore</span><span class="p">:</span>
+                        <span class="n">list_to_remove</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dir_path</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">list_to_remove</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dir_path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">list_to_remove</span></div>
 
-                    <span class="n">file_mtime</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getmtime</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                        <span class="s2">&quot;path: </span><span class="si">{}</span><span class="s2">, time: </span><span class="si">{}</span><span class="s2">, cutoff: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span>
-                        <span class="n">file_path</span><span class="p">,</span>
-                        <span class="n">file_mtime</span><span class="p">,</span>
-                        <span class="n">cutoff_time</span><span class="p">,</span>
-                    <span class="p">)</span>
-                    <span class="k">if</span> <span class="n">file_mtime</span> <span class="o">&lt;</span> <span class="n">cutoff_time</span><span class="p">:</span>
-                        <span class="n">dic_to_remove</span><span class="p">[</span><span class="n">filename</span><span class="p">]</span> <span class="o">=</span> <span class="n">file_path</span>
-        <span class="k">return</span> <span class="n">dic_to_remove</span></div>
 
-
-<div class="viewcode-block" id="CleanOldData.remove_dic">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.clean_old_data.CleanOldData.remove_dic">[docs]</a>
-    <span class="k">def</span> <span class="nf">remove_dic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dic</span><span class="p">,</span> <span class="n">files</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove directories/files from the dictionary.</span>
+<div class="viewcode-block" id="CleanOldData.remove_list">
+<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.clean_old_data.CleanOldData.remove_list">[docs]</a>
+    <span class="k">def</span> <span class="nf">remove_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dir_list</span><span class="p">,</span> <span class="n">files</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove directories/files from the list.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            dic    (dictionary): Dictionary of directories/files</span>
-<span class="sd">            files     (boolean): If in dic are files, Default False</span>
+<span class="sd">            dir_list    (list): Dictionary of directories/files</span>
+<span class="sd">            files     (boolean): If in list are files, Default False</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">dir_file</span> <span class="ow">in</span> <span class="n">dic</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">dir_list</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">dir_file</span> <span class="ow">in</span> <span class="n">dir_list</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">files</span><span class="p">:</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">dir_file</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
@@ -1125,8 +1133,13 @@
         <span class="n">CleanOldData</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;CleanScratchData&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">delay</span> <span class="o">=</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;clean_old_data.scratch_data_period&quot;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">scratch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_platform_value</span><span class="p">(</span><span class="s2">&quot;scratch&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_platform_value</span><span class="p">(</span><span class="s2">&quot;scratch&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scratch</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_platform_value</span><span class="p">(</span><span class="s2">&quot;scratch&quot;</span><span class="p">)</span>
+            <span class="o">+</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;clean_old_data.scratch_ext&quot;</span><span class="p">]</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cutoff_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">delay</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scratch_form</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;clean_old_data.scratch_format&quot;</span><span class="p">]</span>
         <span class="n">ignore</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;clean_old_data.ignore&quot;</span><span class="p">])</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Ignore: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ignore</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ignore_dir</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;IFS&quot;</span><span class="p">,</span> <span class="s2">&quot;Clean_old_data&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">ignore</span><span class="p">]</span>
@@ -1135,10 +1148,13 @@
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.clean_old_data.CleanScratchData.execute">[docs]</a>
     <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Run clean data from scratch.&quot;&quot;&quot;</span>
-        <span class="n">dict_to_remove</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_old</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">scratch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff_time</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ignore_dir</span>
+        <span class="n">list_to_remove</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_old</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">scratch</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">scratch_form</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cutoff_time</span><span class="p">,</span>
+            <span class="n">ignore</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ignore_dir</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">remove_dic</span><span class="p">(</span><span class="n">dict_to_remove</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">remove_list</span><span class="p">(</span><span class="n">list_to_remove</span><span class="p">)</span></div>
 </div>
 
 
@@ -1158,29 +1174,33 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;CleanSuites&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ecf_jobout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;scheduler.ecfvars.ecf_jobout&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;scheduler.ecfvars.ecf_files&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">suite_form</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;clean_old_data.suite_format&quot;</span><span class="p">]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">delay</span> <span class="o">=</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;clean_old_data.suites_period&quot;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cutoff_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">delay</span><span class="p">)</span>
         <span class="n">ignore</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;clean_old_data.ignore&quot;</span><span class="p">])</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Ignore: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ignore</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ignore_suite</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;IFS&quot;</span><span class="p">,</span> <span class="s2">&quot;Clean_old_data&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">ignore</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ignore_suite</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;IFS&quot;</span><span class="p">,</span> <span class="s2">&quot;Clean_old_data&quot;</span><span class="p">,</span> <span class="s2">&quot;DE_NWP&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">ignore</span><span class="p">]</span>
 
 <div class="viewcode-block" id="CleanSuites.execute">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.clean_old_data.CleanSuites.execute">[docs]</a>
     <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Run clean suites.&quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Delay: </span><span class="si">{}</span><span class="s2">, Cutoff:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">delay</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff_time</span><span class="p">)</span>
-        <span class="n">dic_to_remove_files</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_old</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff_time</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ignore_suite</span>
+        <span class="n">list_to_remove_files</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_old</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">suite_form</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff_time</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ignore_suite</span>
         <span class="p">)</span>
-        <span class="n">dic_to_remove_jobout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_old</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ecf_jobout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff_time</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ignore_suite</span>
+        <span class="n">list_to_remove_jobout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_old</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ecf_jobout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">suite_form</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff_time</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ignore_suite</span>
         <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">remove_dic</span><span class="p">(</span><span class="n">dic_to_remove_files</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">remove_dic</span><span class="p">(</span><span class="n">dic_to_remove_jobout</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">remove_list</span><span class="p">(</span><span class="n">list_to_remove_files</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">remove_list</span><span class="p">(</span><span class="n">list_to_remove_jobout</span><span class="p">)</span>
 
-        <span class="n">suites</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">dic_to_remove_files</span><span class="p">)</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">dic_to_remove_jobout</span><span class="p">))</span>
+        <span class="n">suites</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">list_to_remove_files</span><span class="p">)</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">list_to_remove_jobout</span><span class="p">))</span>
+        <span class="p">]</span>
         <span class="n">EcflowServer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span><span class="o">.</span><span class="n">remove_suites</span><span class="p">(</span><span class="n">suites</span><span class="p">)</span></div>
 </div>
 
@@ -1199,7 +1219,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">CleanOldData</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;CleanIFSData&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">marsdir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_platform_value</span><span class="p">(</span><span class="s2">&quot;reference_data&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;/IFS&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">marsdir</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_platform_value</span><span class="p">(</span><span class="s2">&quot;scratch&quot;</span><span class="p">)</span>
+            <span class="o">+</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;clean_old_data.scratch_ext&quot;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ifs_form</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;clean_old_data.ifs_format&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">delay</span> <span class="o">=</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;clean_old_data.IFS_period&quot;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cutoff_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">delay</span><span class="p">)</span>
 
@@ -1207,8 +1231,8 @@
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.clean_old_data.CleanIFSData.execute">[docs]</a>
     <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Run clean IFS data.&quot;&quot;&quot;</span>
-        <span class="n">dict_to_remove</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_old</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">marsdir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff_time</span><span class="p">,</span> <span class="n">return_files</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">remove_dic</span><span class="p">(</span><span class="n">dict_to_remove</span><span class="p">,</span> <span class="n">files</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+        <span class="n">list_to_remove</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_old</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">marsdir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ifs_form</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff_time</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">remove_list</span><span class="p">(</span><span class="n">list_to_remove</span><span class="p">,</span> <span class="n">files</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 </div>
 
 </pre></div>
@@ -1221,7 +1245,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-11-07T15:03:21Z.
+      <span class="lastupdated">Last updated on 2024-11-08T11:43:29Z.
       </span></p>
   </div>
 

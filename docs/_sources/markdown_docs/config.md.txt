@@ -1,5 +1,5 @@
 The following section was automatically generated running
-        `deode doc config` on 2024-11-07T15:03:19.
+        `deode doc config` on 2024-11-08T11:43:27.
 
 # Config
 
@@ -1091,12 +1091,16 @@ Must be one of:
 | **Required**              | No                                                                        |
 | **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
 
-| Property                                                   | Type   | Required | Default | Title/Description        |
-| ---------------------------------------------------------- | ------ | -------- | ------- | ------------------------ |
-| [scratch_data_period](#clean_old_data_scratch_data_period) | string | No       | "P14D"  | Age for old data in days |
-| [suites_period](#clean_old_data_suites_period)             | string | No       | "P14D"  | Age for old data in days |
-| [IFS_period](#clean_old_data_IFS_period)                   | string | No       | "P7D"   | Age for old data in days |
-| [ignore](#clean_old_data_ignore)                           | array  | No       | []      | -                        |
+| Property                                                   | Type   | Required | Default                                                                 | Title/Description        |
+| ---------------------------------------------------------- | ------ | -------- | ----------------------------------------------------------------------- | ------------------------ |
+| [scratch_data_period](#clean_old_data_scratch_data_period) | string | No       | "P14D"                                                                  | Age for old data in days |
+| [suites_period](#clean_old_data_suites_period)             | string | No       | "P14D"                                                                  | Age for old data in days |
+| [IFS_period](#clean_old_data_IFS_period)                   | string | No       | "P7D"                                                                   | Age for old data in days |
+| [ignore](#clean_old_data_ignore)                           | array  | No       | []                                                                      | -                        |
+| [suite_format](#clean_old_data_suite_format)               | string | No       | "/"                                                                     | -                        |
+| [scratch_format](#clean_old_data_scratch_format)           | string | No       | "/"                                                                     | -                        |
+| [ifs_format](#clean_old_data_ifs_format)                   | string | No       | "/IFS/(\\d{4})/(0[1-9]|1[0-2])/(0[1-9]|[12]\\d|3[01])/([01]\\d|2[0-3])" | -                        |
+| [scratch_ext](#clean_old_data_scratch_ext)                 | string | No       | "deode"                                                                 | -                        |
 
 <a name="clean_old_data_scratch_data_period"></a>
 ### Property `Config > clean_old_data > scratch_data_period`
@@ -1159,6 +1163,42 @@ Must be one of:
 | **Items unicity**    | False              |
 | **Additional items** | False              |
 | **Tuple validation** | N/A                |
+
+<a name="clean_old_data_suite_format"></a>
+### Property `Config > clean_old_data > suite_format`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+| **Default**  | `"/"`    |
+
+<a name="clean_old_data_scratch_format"></a>
+### Property `Config > clean_old_data > scratch_format`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+| **Default**  | `"/"`    |
+
+<a name="clean_old_data_ifs_format"></a>
+### Property `Config > clean_old_data > ifs_format`
+
+|              |                                                                           |
+| ------------ | ------------------------------------------------------------------------- |
+| **Type**     | `string`                                                                  |
+| **Required** | No                                                                        |
+| **Default**  | `"/IFS/(\\d{4})/(0[1-9]|1[0-2])/(0[1-9]|[12]\\d|3[01])/([01]\\d|2[0-3])"` |
+
+<a name="clean_old_data_scratch_ext"></a>
+### Property `Config > clean_old_data > scratch_ext`
+
+|              |           |
+| ------------ | --------- |
+| **Type**     | `string`  |
+| **Required** | No        |
+| **Default**  | `"deode"` |
 
 <a name="system"></a>
 ## Property `Config > system`
@@ -6430,6 +6470,7 @@ Must be one of:
 
 | Property                                                    | Type        | Required | Default | Title/Description                                                                                                                                        |
 | ----------------------------------------------------------- | ----------- | -------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [ecf_tries](#scheduler_ecfvars_ecf_tries)                   | integer     | No       | 1       | Ecflow tries.                                                                                                                                            |
 | [ecf_host](#scheduler_ecfvars_ecf_host)                     | string      | No       | -       | Ecflow host. HPC dependent.                                                                                                                              |
 | [ecf_port](#scheduler_ecfvars_ecf_port)                     | Combination | No       | -       | Ecflow port, HPC or user dependet. To set depending on userid use \`_set_port_from_user(offset)\` where offset is an interger to be added to the userid  |
 | [ecf_jobout](#scheduler_ecfvars_ecf_jobout)                 | string      | No       | -       | Path to Ecflow job output.                                                                                                                               |
@@ -6439,6 +6480,17 @@ Must be one of:
 | [ecf_user](#scheduler_ecfvars_ecf_user)                     | string      | No       | ""      | Ecflow user, only set when required                                                                                                                      |
 | [ecf_remoteuser](#scheduler_ecfvars_ecf_remoteuser)         | string      | No       | ""      | Ecflow remote user, only set when required                                                                                                               |
 | [ecf_deode_home](#scheduler_ecfvars_ecf_deode_home)         | string      | No       | -       | Deode home directory stripped for parts specific to where a node is mounted on a cluster                                                                 |
+
+<a name="scheduler_ecfvars_ecf_tries"></a>
+#### Property `Config > scheduler > ecfvars > ecf_tries`
+
+|              |           |
+| ------------ | --------- |
+| **Type**     | `integer` |
+| **Required** | No        |
+| **Default**  | `1`       |
+
+**Description:** Ecflow tries.
 
 <a name="scheduler_ecfvars_ecf_host"></a>
 #### Property `Config > scheduler > ecfvars > ecf_host`
