@@ -1061,9 +1061,19 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">bdnr</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;task.args.bd_nr&quot;</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">prep_step</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;task.args.prep_step&quot;</span><span class="p">])</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">basetime</span> <span class="o">&lt;</span> <span class="n">start_date</span><span class="p">:</span>
+        <span class="n">is_end_date</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">KeyError</span><span class="p">):</span>
+            <span class="n">end_date</span> <span class="o">=</span> <span class="n">as_datetime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;end_date&quot;</span><span class="p">])</span>
+            <span class="n">is_end_date</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="n">is_end_date</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">basetime</span> <span class="o">&lt;</span> <span class="n">start_date</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">basetime</span> <span class="o">&gt;</span> <span class="n">end_date</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;No data for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">basetime</span><span class="si">}</span><span class="s2">! Data available after </span><span class="si">{</span><span class="n">start_date</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;No data for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">basetime</span><span class="si">}</span><span class="s2">! The data is available between &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">start_date</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">end_date</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_end_date</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">basetime</span> <span class="o">&lt;</span> <span class="n">start_date</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;No data for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">basetime</span><span class="si">}</span><span class="s2">! The data is available after </span><span class="si">{</span><span class="n">start_date</span><span class="si">}</span><span class="s2">.&quot;</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cycle_length</span> <span class="o">=</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.times.cycle_length&quot;</span><span class="p">])</span>
         <span class="c1"># Get forecast range</span>
@@ -1910,7 +1920,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-11-08T11:43:29Z.
+      <span class="lastupdated">Last updated on 2024-11-12T11:56:58Z.
       </span></p>
   </div>
 
