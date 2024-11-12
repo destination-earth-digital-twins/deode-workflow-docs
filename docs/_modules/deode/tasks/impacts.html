@@ -1148,11 +1148,11 @@
             <span class="k">if</span> <span class="p">(</span>
                 <span class="n">impact_model</span><span class="p">[</span><span class="s2">&quot;active&quot;</span><span class="p">]</span>
                 <span class="ow">and</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">installed_impact</span>
-                <span class="ow">and</span> <span class="n">impact_model</span><span class="p">[</span><span class="s2">&quot;task&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">taskname</span>
+                <span class="ow">and</span> <span class="n">taskname</span> <span class="ow">in</span> <span class="n">impact_model</span>
             <span class="p">):</span>
-                <span class="n">impact_model</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;active&quot;</span><span class="p">)</span>
-                <span class="n">impact_model</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;task&quot;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">impact</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">impact_model</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">impact</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">impact_model</span><span class="p">[</span><span class="n">taskname</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">conf</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;communicate&quot;</span><span class="p">,</span> <span class="s2">&quot;path&quot;</span><span class="p">,</span> <span class="s2">&quot;config_name&quot;</span><span class="p">]:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">impact</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="n">conf</span><span class="p">]</span> <span class="o">=</span> <span class="n">impact_model</span><span class="p">[</span><span class="n">conf</span><span class="p">]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">is_active</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">impact</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
 
@@ -1190,7 +1190,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-11-12T11:56:58Z.
+      <span class="lastupdated">Last updated on 2024-11-12T12:52:13Z.
       </span></p>
   </div>
 
