@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>deode.tasks.base &mdash; Deode Workflow Docs  documentation</title>
+  <title>deode.suites.deode_suite_components &mdash; Deode Workflow Docs  documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
@@ -1004,7 +1004,7 @@
       <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
           <li class="breadcrumb-item"><a href="../../deode.html">deode</a></li>
-      <li class="breadcrumb-item active">deode.tasks.base</li>
+      <li class="breadcrumb-item active">deode.suites.deode_suite_components</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -1013,328 +1013,1095 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>Source code for deode.tasks.base</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Base site class.&quot;&quot;&quot;</span>
+  <h1>Source code for deode.suites.deode_suite_components</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Module to create the different parts of the DEODE ecFlow suite.&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">atexit</span>
-<span class="kn">import</span> <span class="nn">contextlib</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">shutil</span>
-<span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">copy</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Generator</span>
 
-<span class="kn">from</span> <span class="nn">..config_parser</span> <span class="kn">import</span> <span class="n">ConfigParserDefaults</span>
+<span class="kn">from</span> <span class="nn">..datetime_utils</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">as_datetime</span><span class="p">,</span>
+    <span class="n">as_timedelta</span><span class="p">,</span>
+    <span class="n">get_decadal_list</span><span class="p">,</span>
+    <span class="n">get_decade</span><span class="p">,</span>
+    <span class="n">get_month_list</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">..logs</span> <span class="kn">import</span> <span class="n">logger</span>
-<span class="kn">from</span> <span class="nn">..os_utils</span> <span class="kn">import</span> <span class="n">deodemakedirs</span>
-<span class="kn">from</span> <span class="nn">..toolbox</span> <span class="kn">import</span> <span class="n">FileManager</span>
+<span class="kn">from</span> <span class="nn">..submission</span> <span class="kn">import</span> <span class="n">ProcessorLayout</span><span class="p">,</span> <span class="n">TaskSettings</span>
+<span class="kn">from</span> <span class="nn">..tasks.impacts</span> <span class="kn">import</span> <span class="n">ImpactModels</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">EcflowSuiteFamily</span><span class="p">,</span>
+    <span class="n">EcflowSuiteTask</span><span class="p">,</span>
+    <span class="n">EcflowSuiteTrigger</span><span class="p">,</span>
+    <span class="n">EcflowSuiteTriggers</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.suite_utils</span> <span class="kn">import</span> <span class="n">Cycle</span><span class="p">,</span> <span class="n">Cycles</span><span class="p">,</span> <span class="n">batch_times_generator</span><span class="p">,</span> <span class="n">bd_generator</span>
 
 
-<span class="k">def</span> <span class="nf">_get_name</span><span class="p">(</span><span class="n">cname</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">suffix</span><span class="p">,</span> <span class="n">attrname</span><span class="o">=</span><span class="s2">&quot;__plugin_name__&quot;</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get name.</span>
+<div class="viewcode-block" id="PgdInputFamily">
+<a class="viewcode-back" href="../../../deode.suites.html#deode.suites.deode_suite_components.PgdInputFamily">[docs]</a>
+<span class="k">class</span> <span class="nc">PgdInputFamily</span><span class="p">(</span><span class="n">EcflowSuiteFamily</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for creating the PGD input ecFlow family.&quot;&quot;&quot;</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        cname (_type_): cname</span>
-<span class="sd">        cls (_type_): cls</span>
-<span class="sd">        suffix (str): suffix</span>
-<span class="sd">        attrname (str, optional): _description_. Defaults to &quot;__plugin_name__&quot;.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        _type_: Name</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># __dict__ vs. getattr: do not inherit the attribute from a parent class</span>
-    <span class="n">name</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s2">&quot;__dict__&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">attrname</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">name</span>
-    <span class="n">name</span> <span class="o">=</span> <span class="n">cname</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">suffix</span><span class="p">):</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="p">[:</span> <span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">suffix</span><span class="p">)]</span>
-    <span class="k">return</span> <span class="n">name</span>
-
-
-<div class="viewcode-block" id="Task">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.base.Task">[docs]</a>
-<span class="k">class</span> <span class="nc">Task</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base Task class.&quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct base task.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            config (deode.ParsedConfig): Configuration</span>
-<span class="sd">            name (str): Task name</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            ValueError: &quot;You must set wrk&quot;</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
-        <span class="k">if</span> <span class="s2">&quot;.&quot;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
-            <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span> <span class="o">=</span> <span class="n">FileManager</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">platform</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">platform</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;submission.task.wrapper&quot;</span><span class="p">]</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">wrk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_system_value</span><span class="p">(</span><span class="s2">&quot;wrk&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrk</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You must set wrk&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrk</span><span class="p">)</span>
-
-        <span class="n">wdir</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">wrk</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">socket</span><span class="o">.</span><span class="n">gethostname</span><span class="p">()</span><span class="si">}{</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">()</span><span class="si">!s}</span><span class="s2">&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">wdir</span> <span class="o">=</span> <span class="n">wdir</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">unix_group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;platform.unix_group&quot;</span><span class="p">)</span>
-
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Task </span><span class="si">{}</span><span class="s2"> running in </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wdir</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_set_eccodes_environment</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">_set_eccodes_environment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set correct path for ECCODES tables.</span>
-
-<span class="sd">        Respect ECCODES_DEINITION_PATH if set or combine local settings with library</span>
-<span class="sd">        ones in different ways depending on version</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">eccodes_definition_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;ECCODES_DEFINITION_PATH&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">eccodes_definition_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Use ECCODES_DEFINITION_PATH </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">eccodes_definition_path</span><span class="p">)</span>
-            <span class="k">return</span>
-
-        <span class="c1"># Path to local tables</span>
-        <span class="n">deode_eccodes_definition_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span>
-            <span class="n">ConfigParserDefaults</span><span class="o">.</span><span class="n">DATA_DIRECTORY</span> <span class="o">/</span> <span class="s2">&quot;eccodes/definitions&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">parent</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">,</span>
+        <span class="n">task_settings</span><span class="p">:</span> <span class="n">TaskSettings</span><span class="p">,</span>
+        <span class="n">input_template</span><span class="p">,</span>
+        <span class="n">ecf_files</span><span class="p">,</span>
+        <span class="n">trigger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Class initialization.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="s2">&quot;PgdInput&quot;</span><span class="p">,</span>
+            <span class="n">parent</span><span class="p">,</span>
+            <span class="n">ecf_files</span><span class="p">,</span>
+            <span class="n">trigger</span><span class="o">=</span><span class="n">trigger</span><span class="p">,</span>
+            <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
         <span class="p">)</span>
 
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">eccodes_version</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
-                <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;ECCODES_VERSION&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)]</span>
-            <span class="p">)</span>
-        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="n">eccodes_version</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">EcflowSuiteTask</span><span class="p">(</span>
+            <span class="s2">&quot;Gmted&quot;</span><span class="p">,</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">config</span><span class="p">,</span>
+            <span class="n">task_settings</span><span class="p">,</span>
+            <span class="n">ecf_files</span><span class="p">,</span>
+            <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
+            <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+        <span class="p">)</span>
 
-        <span class="n">eccodes_definition_path</span> <span class="o">=</span> <span class="n">deode_eccodes_definition_path</span>
-        <span class="k">if</span> <span class="n">eccodes_version</span> <span class="o">&lt;</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">eccodes_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;ECCODES_DIR&quot;</span><span class="p">]</span>
-                <span class="n">eccodes_definition_path</span> <span class="o">=</span> <span class="s2">&quot;:&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-                    <span class="p">[</span>
-                        <span class="n">eccodes_definition_path</span><span class="p">,</span>
-                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">eccodes_dir</span><span class="si">}</span><span class="s2">/share/eccodes/definitions&quot;</span><span class="p">,</span>
-                    <span class="p">]</span>
+        <span class="k">if</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.do_soil&quot;</span><span class="p">]:</span>
+            <span class="n">EcflowSuiteTask</span><span class="p">(</span>
+                <span class="s2">&quot;Soil&quot;</span><span class="p">,</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">config</span><span class="p">,</span>
+                <span class="n">task_settings</span><span class="p">,</span>
+                <span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
+                <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="E923MonthlyFamily">
+<a class="viewcode-back" href="../../../deode.suites.html#deode.suites.deode_suite_components.E923MonthlyFamily">[docs]</a>
+<span class="k">class</span> <span class="nc">E923MonthlyFamily</span><span class="p">(</span><span class="n">EcflowSuiteFamily</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for creating the E923Monthly ecFlow family.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">parent</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">,</span>
+        <span class="n">task_settings</span><span class="p">:</span> <span class="n">TaskSettings</span><span class="p">,</span>
+        <span class="n">input_template</span><span class="p">,</span>
+        <span class="n">ecf_files</span><span class="p">,</span>
+        <span class="n">trigger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Class initialization.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="s2">&quot;E923Monthly&quot;</span><span class="p">,</span>
+            <span class="n">parent</span><span class="p">,</span>
+            <span class="n">ecf_files</span><span class="p">,</span>
+            <span class="n">trigger</span><span class="o">=</span><span class="n">trigger</span><span class="p">,</span>
+            <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">seasons</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;Q1&quot;</span><span class="p">:</span> <span class="s2">&quot;01,02,03&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Q2&quot;</span><span class="p">:</span> <span class="s2">&quot;04,05,06&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Q3&quot;</span><span class="p">:</span> <span class="s2">&quot;07,08,09&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Q4&quot;</span><span class="p">:</span> <span class="s2">&quot;10,11,12&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;pgd.one_decade&quot;</span><span class="p">]:</span>
+            <span class="n">month_list</span> <span class="o">=</span> <span class="n">get_month_list</span><span class="p">(</span>
+                <span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.times.start&quot;</span><span class="p">],</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.times.end&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">last_month</span> <span class="o">=</span> <span class="n">month_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">last_month</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">last_month</span> <span class="o">=</span> <span class="mi">12</span>
+            <span class="n">next_month</span> <span class="o">=</span> <span class="n">month_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">next_month</span> <span class="o">==</span> <span class="mi">13</span><span class="p">:</span>
+                <span class="n">next_month</span> <span class="o">=</span> <span class="mi">1</span>
+
+            <span class="n">month_list</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">last_month</span><span class="p">)</span>
+            <span class="n">month_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">next_month</span><span class="p">)</span>
+
+            <span class="n">seasons</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">mm</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">month_list</span><span class="p">):</span>
+                <span class="n">seasons</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;m</span><span class="si">{</span><span class="n">mm</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">mm</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="k">for</span> <span class="n">season</span><span class="p">,</span> <span class="n">months</span> <span class="ow">in</span> <span class="n">seasons</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">month_family</span> <span class="o">=</span> <span class="n">EcflowSuiteFamily</span><span class="p">(</span>
+                <span class="n">season</span><span class="p">,</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="n">EcflowSuiteTask</span><span class="p">(</span>
+                <span class="s2">&quot;E923Monthly&quot;</span><span class="p">,</span>
+                <span class="n">month_family</span><span class="p">,</span>
+                <span class="n">config</span><span class="p">,</span>
+                <span class="n">task_settings</span><span class="p">,</span>
+                <span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
+                <span class="n">variables</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;ARGS&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;months=</span><span class="si">{</span><span class="n">months</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">},</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+            <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="PgdNode">
+<a class="viewcode-back" href="../../../deode.suites.html#deode.suites.deode_suite_components.PgdNode">[docs]</a>
+<span class="k">class</span> <span class="nc">PgdNode</span><span class="p">(</span><span class="n">EcflowSuiteFamily</span><span class="p">,</span> <span class="n">EcflowSuiteTask</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for creating the PGD ecFlow family and task.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">node_name</span><span class="p">,</span>
+        <span class="n">parent</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">,</span>
+        <span class="n">task_settings</span><span class="p">:</span> <span class="n">TaskSettings</span><span class="p">,</span>
+        <span class="n">input_template</span><span class="p">,</span>
+        <span class="n">ecf_files</span><span class="p">,</span>
+        <span class="n">trigger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Class initialization.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;pgd.one_decade&quot;</span><span class="p">]:</span>
+            <span class="n">EcflowSuiteFamily</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">node_name</span><span class="p">,</span>
+                <span class="n">parent</span><span class="p">,</span>
+                <span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">trigger</span><span class="o">=</span><span class="n">trigger</span><span class="p">,</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">decade_dates</span> <span class="o">=</span> <span class="n">get_decadal_list</span><span class="p">(</span>
+                <span class="n">as_datetime</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.times.start&quot;</span><span class="p">]),</span>
+                <span class="n">as_datetime</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.times.end&quot;</span><span class="p">]),</span>
+            <span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">dec_date</span> <span class="ow">in</span> <span class="n">decade_dates</span><span class="p">:</span>
+                <span class="n">decade_pgd_family</span> <span class="o">=</span> <span class="n">EcflowSuiteFamily</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;decade_</span><span class="si">{</span><span class="n">get_decade</span><span class="p">(</span><span class="n">dec_date</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="p">,</span>
+                    <span class="n">ecf_files</span><span class="p">,</span>
+                    <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
                 <span class="p">)</span>
-            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+
+                <span class="n">EcflowSuiteTask</span><span class="p">(</span>
+                    <span class="n">node_name</span><span class="p">,</span>
+                    <span class="n">decade_pgd_family</span><span class="p">,</span>
+                    <span class="n">config</span><span class="p">,</span>
+                    <span class="n">task_settings</span><span class="p">,</span>
+                    <span class="n">ecf_files</span><span class="p">,</span>
+                    <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
+                    <span class="n">variables</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;ARGS&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;basetime=</span><span class="si">{</span><span class="n">dec_date</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">},</span>
+                    <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+                <span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">basetime</span> <span class="o">=</span> <span class="n">as_datetime</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.times.basetime&quot;</span><span class="p">])</span>
+            <span class="n">EcflowSuiteTask</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">node_name</span><span class="p">,</span>
+                <span class="n">parent</span><span class="p">,</span>
+                <span class="n">config</span><span class="p">,</span>
+                <span class="n">task_settings</span><span class="p">,</span>
+                <span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
+                <span class="n">variables</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;ARGS&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;basetime=</span><span class="si">{</span><span class="n">basetime</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">},</span>
+                <span class="n">trigger</span><span class="o">=</span><span class="n">trigger</span><span class="p">,</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+            <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="StaticDataFamily">
+<a class="viewcode-back" href="../../../deode.suites.html#deode.suites.deode_suite_components.StaticDataFamily">[docs]</a>
+<span class="k">class</span> <span class="nc">StaticDataFamily</span><span class="p">(</span><span class="n">EcflowSuiteFamily</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for creating the StaticData ecFlow family.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">parent</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">,</span>
+        <span class="n">task_settings</span><span class="p">:</span> <span class="n">TaskSettings</span><span class="p">,</span>
+        <span class="n">input_template</span><span class="p">,</span>
+        <span class="n">ecf_files</span><span class="p">,</span>
+        <span class="n">trigger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Class initialization.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="s2">&quot;StaticData&quot;</span><span class="p">,</span>
+            <span class="n">parent</span><span class="p">,</span>
+            <span class="n">ecf_files</span><span class="p">,</span>
+            <span class="n">trigger</span><span class="o">=</span><span class="n">trigger</span><span class="p">,</span>
+            <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">pgd_node</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.do_pgd&quot;</span><span class="p">]:</span>
+            <span class="n">pgd_input</span> <span class="o">=</span> <span class="n">PgdInputFamily</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">config</span><span class="p">,</span>
+                <span class="n">task_settings</span><span class="p">,</span>
+                <span class="n">input_template</span><span class="p">,</span>
+                <span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="n">pgd_node</span> <span class="o">=</span> <span class="n">PgdNode</span><span class="p">(</span>
+                <span class="s2">&quot;Pgd&quot;</span><span class="p">,</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">config</span><span class="p">,</span>
+                <span class="n">task_settings</span><span class="p">,</span>
+                <span class="n">input_template</span><span class="p">,</span>
+                <span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">trigger</span><span class="o">=</span><span class="n">pgd_input</span><span class="p">,</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="n">e923constant</span> <span class="o">=</span> <span class="n">EcflowSuiteTask</span><span class="p">(</span>
+            <span class="s2">&quot;E923Constant&quot;</span><span class="p">,</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">config</span><span class="p">,</span>
+            <span class="n">task_settings</span><span class="p">,</span>
+            <span class="n">ecf_files</span><span class="p">,</span>
+            <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
+            <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">trigger</span><span class="o">=</span><span class="n">pgd_node</span><span class="p">,</span>
+            <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">E923MonthlyFamily</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">config</span><span class="p">,</span>
+            <span class="n">task_settings</span><span class="p">,</span>
+            <span class="n">input_template</span><span class="p">,</span>
+            <span class="n">ecf_files</span><span class="p">,</span>
+            <span class="n">trigger</span><span class="o">=</span><span class="n">e923constant</span><span class="p">,</span>
+            <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.do_pgd&quot;</span><span class="p">]:</span>
+            <span class="n">pgd_node</span> <span class="o">=</span> <span class="n">PgdNode</span><span class="p">(</span>
+                <span class="s2">&quot;PgdUpdate&quot;</span><span class="p">,</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">config</span><span class="p">,</span>
+                <span class="n">task_settings</span><span class="p">,</span>
+                <span class="n">input_template</span><span class="p">,</span>
+                <span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">trigger</span><span class="o">=</span><span class="n">e923constant</span><span class="p">,</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+            <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="InputDataFamily">
+<a class="viewcode-back" href="../../../deode.suites.html#deode.suites.deode_suite_components.InputDataFamily">[docs]</a>
+<span class="k">class</span> <span class="nc">InputDataFamily</span><span class="p">(</span><span class="n">EcflowSuiteFamily</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for creating the InputDataFamily ecFlow family.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">parent</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">,</span>
+        <span class="n">task_settings</span><span class="p">:</span> <span class="n">TaskSettings</span><span class="p">,</span>
+        <span class="n">input_template</span><span class="p">,</span>
+        <span class="n">ecf_files</span><span class="p">,</span>
+        <span class="n">trigger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">external_marsprep_trigger_node</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Class initialization.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="s2">&quot;InputData&quot;</span><span class="p">,</span>
+            <span class="n">parent</span><span class="p">,</span>
+            <span class="n">ecf_files</span><span class="p">,</span>
+            <span class="n">trigger</span><span class="o">=</span><span class="n">trigger</span><span class="p">,</span>
+            <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">prepare_cycle</span> <span class="o">=</span> <span class="n">EcflowSuiteTask</span><span class="p">(</span>
+            <span class="s2">&quot;PrepareCycle&quot;</span><span class="p">,</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">config</span><span class="p">,</span>
+            <span class="n">task_settings</span><span class="p">,</span>
+            <span class="n">ecf_files</span><span class="p">,</span>
+            <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">marsprep_trigger_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">prepare_cycle</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">external_marsprep_trigger_node</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">marsprep_trigger_nodes</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">external_marsprep_trigger_node</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.do_marsprep&quot;</span><span class="p">]</span>
+            <span class="ow">and</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.interpolate_boundaries&quot;</span><span class="p">]</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.split_mars&quot;</span><span class="p">]</span>
+        <span class="p">):</span>
+            <span class="n">EcflowSuiteTask</span><span class="p">(</span>
+                <span class="s2">&quot;Marsprep&quot;</span><span class="p">,</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">config</span><span class="p">,</span>
+                <span class="n">task_settings</span><span class="p">,</span>
+                <span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
+                <span class="n">trigger</span><span class="o">=</span><span class="n">marsprep_trigger_nodes</span><span class="p">,</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+            <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="PrepFamily">
+<a class="viewcode-back" href="../../../deode.suites.html#deode.suites.deode_suite_components.PrepFamily">[docs]</a>
+<span class="k">class</span> <span class="nc">PrepFamily</span><span class="p">(</span><span class="n">EcflowSuiteFamily</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for creating the PrepFamily ecFlow family.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">parent</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">,</span>
+        <span class="n">task_settings</span><span class="p">:</span> <span class="n">TaskSettings</span><span class="p">,</span>
+        <span class="n">input_template</span><span class="p">,</span>
+        <span class="n">ecf_files</span><span class="p">,</span>
+        <span class="n">trigger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Class initialization.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="s2">&quot;Prep&quot;</span><span class="p">,</span>
+            <span class="n">parent</span><span class="p">,</span>
+            <span class="n">ecf_files</span><span class="p">,</span>
+            <span class="n">trigger</span><span class="o">=</span><span class="n">trigger</span><span class="p">,</span>
+            <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">bdnr</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.mode&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;restart&quot;</span><span class="p">:</span>
+            <span class="n">bdnr</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="n">split_mars_task</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.split_mars&quot;</span><span class="p">]:</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;bd_nr=</span><span class="si">{</span><span class="n">bdnr</span><span class="si">}</span><span class="s2">;prep_step=True&quot;</span>
+            <span class="n">variables</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;ARGS&quot;</span><span class="p">:</span> <span class="n">args</span><span class="p">}</span>
+            <span class="n">split_mars_task</span> <span class="o">=</span> <span class="n">EcflowSuiteTask</span><span class="p">(</span>
+                <span class="s2">&quot;marsprep&quot;</span><span class="p">,</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">config</span><span class="p">,</span>
+                <span class="n">task_settings</span><span class="p">,</span>
+                <span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
+                <span class="n">variables</span><span class="o">=</span><span class="n">variables</span><span class="p">,</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="n">EcflowSuiteTask</span><span class="p">(</span>
+            <span class="s2">&quot;Prep&quot;</span><span class="p">,</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">config</span><span class="p">,</span>
+            <span class="n">task_settings</span><span class="p">,</span>
+            <span class="n">ecf_files</span><span class="p">,</span>
+            <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
+            <span class="n">trigger</span><span class="o">=</span><span class="n">split_mars_task</span><span class="p">,</span>
+            <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="LBCFamilyGenerator">
+<a class="viewcode-back" href="../../../deode.suites.html#deode.suites.deode_suite_components.LBCFamilyGenerator">[docs]</a>
+<span class="k">class</span> <span class="nc">LBCFamilyGenerator</span><span class="p">(</span><span class="n">EcflowSuiteFamily</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for creating the ecFlow LBCFamilyGenerator.</span>
+
+<span class="sd">    When iterating over this class, it will create a new LBC family for each</span>
+<span class="sd">    time in the lbc_time_generator.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">parent</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">,</span>
+        <span class="n">task_settings</span><span class="p">:</span> <span class="n">TaskSettings</span><span class="p">,</span>
+        <span class="n">input_template</span><span class="p">,</span>
+        <span class="n">ecf_files</span><span class="p">,</span>
+        <span class="n">bdint</span><span class="p">:</span> <span class="n">timedelta</span><span class="p">,</span>
+        <span class="n">lbc_time_generator</span><span class="p">:</span> <span class="n">Generator</span><span class="p">[</span><span class="n">datetime</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
+        <span class="n">trigger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">do_prep</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Class initialization.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">task_settings</span> <span class="o">=</span> <span class="n">task_settings</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_template</span> <span class="o">=</span> <span class="n">input_template</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span> <span class="o">=</span> <span class="n">ecf_files</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trigger</span> <span class="o">=</span> <span class="n">trigger</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span> <span class="o">=</span> <span class="n">ecf_files_remotely</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">do_prep</span> <span class="o">=</span> <span class="n">do_prep</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bdint</span> <span class="o">=</span> <span class="n">bdint</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lbc_time_generator</span> <span class="o">=</span> <span class="n">lbc_time_generator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bd_generator_instance</span> <span class="o">=</span> <span class="n">bd_generator</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bdint</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.mode&quot;</span><span class="p">],</span> <span class="n">do_prep</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">do_prep</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">inthourbdint</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bdint</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span> <span class="o">//</span> <span class="mi">3600</span><span class="p">)</span>
+        <span class="n">inthourbdintx</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">inthourbdint</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">inthourbdint</span>
+
+        <span class="k">for</span> <span class="n">lbc_time</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lbc_time_generator</span><span class="p">:</span>
+            <span class="n">bdnr</span><span class="p">,</span> <span class="n">subbdnr</span><span class="p">,</span> <span class="n">subminbdnr</span><span class="p">,</span> <span class="n">bd_nr</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bd_generator_instance</span><span class="p">)</span>
+            <span class="n">date_string</span> <span class="o">=</span> <span class="n">lbc_time</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(</span><span class="n">sep</span><span class="o">=</span><span class="s2">&quot;T&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;+00:00&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">)</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;bd_time=</span><span class="si">{</span><span class="n">date_string</span><span class="si">}</span><span class="s2">;bd_nr=</span><span class="si">{</span><span class="n">bd_nr</span><span class="si">}</span><span class="s2">;prep_step=False&quot;</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;bd_time=</span><span class="si">{</span><span class="n">date_string</span><span class="si">}</span><span class="s2">;bd_nr=</span><span class="si">{</span><span class="n">bd_nr</span><span class="si">}</span><span class="s2">;prep_step=False&quot;</span>
+            <span class="n">variables</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;ARGS&quot;</span><span class="p">:</span> <span class="n">args</span><span class="p">}</span>
+
+            <span class="n">lbc_family_name</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;LBC</span><span class="si">{</span><span class="n">bdnr</span><span class="o">*</span><span class="n">inthourbdintx</span><span class="si">:</span><span class="s2">02</span><span class="si">}{</span><span class="n">subbdnr</span><span class="si">:</span><span class="s2">02</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="o">+</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">subminbdnr</span><span class="si">:</span><span class="s2">02</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">subminbdnr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">subbdnr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;LBC</span><span class="si">{</span><span class="n">bdnr</span><span class="o">*</span><span class="n">inthourbdintx</span><span class="si">:</span><span class="s2">02</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+                <span class="n">lbc_family_name</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">trigger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">trigger</span><span class="p">,</span>
+                <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="n">split_mars_task</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.split_mars&quot;</span><span class="p">]:</span>
+                <span class="n">split_mars_task</span> <span class="o">=</span> <span class="n">EcflowSuiteTask</span><span class="p">(</span>
+                    <span class="s2">&quot;Marsprep&quot;</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">task_settings</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
+                    <span class="n">input_template</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">input_template</span><span class="p">,</span>
+                    <span class="n">variables</span><span class="o">=</span><span class="n">variables</span><span class="p">,</span>
+                    <span class="n">trigger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+                <span class="p">)</span>
+
+            <span class="n">interpolation_task_name</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s2">&quot;C903&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.do_marsprep&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="s2">&quot;E927&quot;</span>
+            <span class="p">)</span>
+            <span class="n">EcflowSuiteTask</span><span class="p">(</span>
+                <span class="n">interpolation_task_name</span><span class="p">,</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">task_settings</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">input_template</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">input_template</span><span class="p">,</span>
+                <span class="n">variables</span><span class="o">=</span><span class="n">variables</span><span class="p">,</span>
+                <span class="n">trigger</span><span class="o">=</span><span class="n">split_mars_task</span><span class="p">,</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="k">yield</span> <span class="bp">self</span></div>
+
+
+
+<div class="viewcode-block" id="BatchFamilyGenerator">
+<a class="viewcode-back" href="../../../deode.suites.html#deode.suites.deode_suite_components.BatchFamilyGenerator">[docs]</a>
+<span class="k">class</span> <span class="nc">BatchFamilyGenerator</span><span class="p">(</span><span class="n">EcflowSuiteFamily</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for creating the ecFlow BatchFamilyGenerator.</span>
+
+<span class="sd">    When iterating over this class, it will create a new batch family for each</span>
+<span class="sd">    batch in the batch_times_generator.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">parent</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">,</span>
+        <span class="n">task_settings</span><span class="p">:</span> <span class="n">TaskSettings</span><span class="p">,</span>
+        <span class="n">input_template</span><span class="p">,</span>
+        <span class="n">ecf_files</span><span class="p">,</span>
+        <span class="n">cycle</span><span class="p">:</span> <span class="n">Cycle</span><span class="p">,</span>
+        <span class="n">trigger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">lbc_family_trigger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">do_prep</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Class initialization.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">task_settings</span> <span class="o">=</span> <span class="n">task_settings</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_template</span> <span class="o">=</span> <span class="n">input_template</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span> <span class="o">=</span> <span class="n">ecf_files</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cycle</span> <span class="o">=</span> <span class="n">cycle</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trigger</span> <span class="o">=</span> <span class="n">trigger</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lbc_family_trigger</span> <span class="o">=</span> <span class="n">lbc_family_trigger</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span> <span class="o">=</span> <span class="n">ecf_files_remotely</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">do_prep</span> <span class="o">=</span> <span class="n">do_prep</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">basetime</span> <span class="o">=</span> <span class="n">as_datetime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cycle</span><span class="o">.</span><span class="n">basetime</span><span class="p">)</span>
+        <span class="n">forecast_range</span> <span class="o">=</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.times.forecast_range&quot;</span><span class="p">])</span>
+        <span class="n">endtime</span> <span class="o">=</span> <span class="n">basetime</span> <span class="o">+</span> <span class="n">forecast_range</span>
+        <span class="n">bdint</span> <span class="o">=</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;boundaries.bdint&quot;</span><span class="p">])</span>
+        <span class="n">bdtasks_per_batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;boundaries.bdtasks_per_batch&quot;</span><span class="p">]</span>
+        <span class="n">batch_times_generator_instance</span> <span class="o">=</span> <span class="n">batch_times_generator</span><span class="p">(</span>
+            <span class="n">basetime</span><span class="p">,</span>
+            <span class="n">endtime</span><span class="p">,</span>
+            <span class="n">bdint</span><span class="p">,</span>
+            <span class="n">bdtasks_per_batch</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.mode&quot;</span><span class="p">],</span>
+            <span class="n">do_prep</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">do_prep</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">lbc_family_generator_instance</span> <span class="o">=</span> <span class="n">LBCFamilyGenerator</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">task_settings</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">input_template</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
+            <span class="n">bdint</span><span class="p">,</span>
+            <span class="n">batch_times_generator_instance</span><span class="p">,</span>
+            <span class="n">trigger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lbc_family_trigger</span><span class="p">,</span>
+            <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+            <span class="n">do_prep</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">do_prep</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">batch_trigger</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trigger</span>
+        <span class="k">for</span> <span class="n">batch_nr</span> <span class="ow">in</span> <span class="n">batch_times_generator_instance</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Batch</span><span class="si">{</span><span class="n">batch_nr</span><span class="si">:</span><span class="s2">02</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">trigger</span><span class="o">=</span><span class="n">batch_trigger</span><span class="p">,</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Iterate through the LBC family generator to create the next</span>
+            <span class="c1"># bdtasks_per_batch LBC families</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">islice</span><span class="p">(</span><span class="n">lbc_family_generator_instance</span><span class="p">,</span> <span class="n">bdtasks_per_batch</span><span class="p">):</span>
                 <span class="k">pass</span>
 
-        <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;ECCODES_DEFINITION_PATH&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">eccodes_definition_path</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="s2">&quot;Set ECCODES_DEFINITION_PATH to </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;ECCODES_DEFINITION_PATH&quot;</span><span class="p">]</span>
+            <span class="k">yield</span> <span class="bp">self</span>
+
+            <span class="c1"># Update trigger to make next batch dependent on current</span>
+            <span class="n">batch_trigger</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="InterpolationFamily">
+<a class="viewcode-back" href="../../../deode.suites.html#deode.suites.deode_suite_components.InterpolationFamily">[docs]</a>
+<span class="k">class</span> <span class="nc">InterpolationFamily</span><span class="p">(</span><span class="n">EcflowSuiteFamily</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for creating the Interpolation ecFlow family.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">parent</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">,</span>
+        <span class="n">task_settings</span><span class="p">:</span> <span class="n">TaskSettings</span><span class="p">,</span>
+        <span class="n">input_template</span><span class="p">,</span>
+        <span class="n">ecf_files</span><span class="p">,</span>
+        <span class="n">cycles</span><span class="p">:</span> <span class="n">Cycles</span><span class="p">,</span>
+        <span class="n">trigger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">do_prep</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Class initialization.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="s2">&quot;Interpolation&quot;</span><span class="p">,</span>
+            <span class="n">parent</span><span class="p">,</span>
+            <span class="n">ecf_files</span><span class="p">,</span>
+            <span class="n">trigger</span><span class="o">=</span><span class="n">trigger</span><span class="p">,</span>
+            <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
         <span class="p">)</span>
 
-<div class="viewcode-block" id="Task.archive_logs">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.base.Task.archive_logs">[docs]</a>
-    <span class="k">def</span> <span class="nf">archive_logs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Archive files in a log directory.</span>
+        <span class="n">e923_update_task</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">csc</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.csc&quot;</span><span class="p">]</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            files (str,list): File(s) to be archived</span>
-<span class="sd">            target (str): Target directory for archiving</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">target</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrk</span>
-        <span class="n">logdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="s2">&quot;logs&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-        <span class="n">deodemakedirs</span><span class="p">(</span><span class="n">logdir</span><span class="p">,</span> <span class="n">unixgroup</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">unix_group</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">logdir</span><span class="p">,</span> <span class="n">provider_id</span><span class="o">=</span><span class="s2">&quot;copy&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">logdir</span><span class="p">,</span> <span class="n">provider_id</span><span class="o">=</span><span class="s2">&quot;copy&quot;</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="Task.create_wrkdir">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.base.Task.create_wrkdir">[docs]</a>
-    <span class="k">def</span> <span class="nf">create_wrkdir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a cycle working directory.&quot;&quot;&quot;</span>
-        <span class="n">deodemakedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wrk</span><span class="p">,</span> <span class="n">unixgroup</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">unix_group</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="Task.create_wdir">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.base.Task.create_wdir">[docs]</a>
-    <span class="k">def</span> <span class="nf">create_wdir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create task working directory and check for unix group and set permissions.&quot;&quot;&quot;</span>
-        <span class="n">deodemakedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wdir</span><span class="p">,</span> <span class="n">unixgroup</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">unix_group</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="Task.change_to_wdir">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.base.Task.change_to_wdir">[docs]</a>
-    <span class="k">def</span> <span class="nf">change_to_wdir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Change to task working dir.&quot;&quot;&quot;</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wdir</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="Task.remove_wdir">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.base.Task.remove_wdir">[docs]</a>
-    <span class="k">def</span> <span class="nf">remove_wdir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove working directory.&quot;&quot;&quot;</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wrk</span><span class="p">)</span>
-        <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wdir</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Remove </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wdir</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="Task.rename_wdir">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.base.Task.rename_wdir">[docs]</a>
-    <span class="k">def</span> <span class="nf">rename_wdir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;Failed_task_&quot;</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Rename failed working directory.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wdir</span><span class="p">):</span>
-            <span class="n">fdir</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">wrk</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">prefix</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">fdir</span><span class="p">):</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> exists. Remove it&quot;</span><span class="p">,</span> <span class="n">fdir</span><span class="p">)</span>
-                <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">fdir</span><span class="p">)</span>
-            <span class="n">pid</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wdir</span><span class="p">)</span>
-            <span class="n">fdir</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fdir</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">pid</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wdir</span><span class="p">,</span> <span class="n">fdir</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Renamed </span><span class="si">{}</span><span class="s2"> to </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wdir</span><span class="p">,</span> <span class="n">fdir</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="Task.get_binary">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.base.Task.get_binary">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_binary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">binary_name</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine binary path from task or system config section.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            binary_name (str): Name of binary</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            bindir (str): full path to binary</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">binary</span> <span class="o">=</span> <span class="n">binary_name</span>
-        <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">KeyError</span><span class="p">):</span>
-            <span class="n">binary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;submission.task_exceptions.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.binary&quot;</span><span class="p">]</span>
-
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">bindir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;submission.task_exceptions.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.bindir&quot;</span><span class="p">]</span>
-        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">binaries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span>
-                    <span class="sa">f</span><span class="s2">&quot;submission.task_exceptions.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.binaries.</span><span class="si">{</span><span class="n">binary_name</span><span class="si">}</span><span class="s2">&quot;</span>
-                <span class="p">]</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;binaries:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">binaries</span><span class="p">)</span>
-
-                <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">KeyError</span><span class="p">):</span>
-                    <span class="n">binary</span> <span class="o">=</span> <span class="n">binaries</span><span class="p">[</span><span class="s2">&quot;binary&quot;</span><span class="p">]</span>
-                <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">KeyError</span><span class="p">):</span>
-                    <span class="n">bindir</span> <span class="o">=</span> <span class="n">binaries</span><span class="p">[</span><span class="s2">&quot;bindir&quot;</span><span class="p">]</span>
-            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="n">bindir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;submission.bindir&quot;</span><span class="p">]</span>
-
-        <span class="n">bindir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">bindir</span><span class="p">)</span>
-
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;binary:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">binary</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;bindir:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">bindir</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">bindir</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">binary</span><span class="si">}</span><span class="s2">&quot;</span></div>
-
-
-<div class="viewcode-block" id="Task.execute">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.base.Task.execute">[docs]</a>
-    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Do nothing for base execute task.&quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Using empty base class execute&quot;</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="Task.prep">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.base.Task.prep">[docs]</a>
-    <span class="k">def</span> <span class="nf">prep</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Do default preparation before execution.</span>
-
-<span class="sd">        E.g. clean</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Base class prep&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">create_wdir</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">change_to_wdir</span><span class="p">()</span>
-
-        <span class="n">atexit</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rename_wdir</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="Task.post">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.base.Task.post">[docs]</a>
-    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Do default postfix.</span>
-
-<span class="sd">        E.g. clean</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Base class post&quot;</span><span class="p">)</span>
-        <span class="c1"># Clean workdir</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.keep_workdirs&quot;</span><span class="p">]:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">rename_wdir</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;Finished_task_&quot;</span><span class="p">)</span>
-
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">remove_wdir</span><span class="p">()</span></div>
-
-
-<div class="viewcode-block" id="Task.run">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.base.Task.run">[docs]</a>
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run task.</span>
-
-<span class="sd">        Define run sequence.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">prep</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">post</span><span class="p">()</span></div>
-
-
-<div class="viewcode-block" id="Task.get_task_setting">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.base.Task.get_task_setting">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_task_setting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">setting</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get task setting.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            setting (str): Setting to find in task.{self.name}</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            value : Found setting</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">task_subsection_name_in_config</span> <span class="o">=</span> <span class="n">_get_name</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span>
-            <span class="n">Task</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span>
-            <span class="n">attrname</span><span class="o">=</span><span class="s2">&quot;__type_name__&quot;</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="n">setting_to_be_retrieved</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;task.</span><span class="si">{</span><span class="n">task_subsection_name_in_config</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">setting</span><span class="si">}</span><span class="s2">&quot;</span>
-
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="n">setting_to_be_retrieved</span><span class="p">]</span>
-        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
-                <span class="s2">&quot;Task setting &#39;</span><span class="si">{}</span><span class="s2">&#39; not found in config.&quot;</span><span class="p">,</span> <span class="n">setting_to_be_retrieved</span>
+        <span class="k">if</span> <span class="n">do_prep</span><span class="p">:</span>
+            <span class="n">prep_fam</span> <span class="o">=</span> <span class="n">PrepFamily</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">config</span><span class="p">,</span>
+                <span class="n">task_settings</span><span class="p">,</span>
+                <span class="n">input_template</span><span class="p">,</span>
+                <span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="k">return</span> <span class="kc">None</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Setting = </span><span class="si">{}</span><span class="s2"> value =</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">setting_to_be_retrieved</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">csc</span> <span class="o">==</span> <span class="s2">&quot;ALARO&quot;</span><span class="p">:</span>
+                <span class="n">e923_update_task</span> <span class="o">=</span> <span class="n">EcflowSuiteTask</span><span class="p">(</span>
+                    <span class="s2">&quot;E923Update&quot;</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="p">,</span>
+                    <span class="n">config</span><span class="p">,</span>
+                    <span class="n">task_settings</span><span class="p">,</span>
+                    <span class="n">ecf_files</span><span class="p">,</span>
+                    <span class="n">trigger</span><span class="o">=</span><span class="n">prep_fam</span><span class="p">,</span>
+                    <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
+                    <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+                <span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">value</span></div>
-</div>
+            <span class="k">if</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.mode&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;cold_start&quot;</span> <span class="ow">or</span> <span class="n">csc</span> <span class="o">==</span> <span class="s2">&quot;ALARO&quot;</span><span class="p">:</span>
+                <span class="n">do_prep</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">csc</span> <span class="o">==</span> <span class="s2">&quot;ALARO&quot;</span> <span class="ow">and</span> <span class="n">cycles</span><span class="o">.</span><span class="n">end_of_month</span><span class="p">:</span>
+            <span class="n">do_prep</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="n">batch_family_generator_instance</span> <span class="o">=</span> <span class="n">BatchFamilyGenerator</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">config</span><span class="p">,</span>
+            <span class="n">task_settings</span><span class="p">,</span>
+            <span class="n">input_template</span><span class="p">,</span>
+            <span class="n">ecf_files</span><span class="p">,</span>
+            <span class="n">cycles</span><span class="o">.</span><span class="n">current_cycle</span><span class="p">,</span>
+            <span class="n">lbc_family_trigger</span><span class="o">=</span><span class="n">e923_update_task</span><span class="p">,</span>
+            <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+            <span class="n">do_prep</span><span class="o">=</span><span class="n">do_prep</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="c1"># Iterate over the batch times to create the batch families</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">batch_family_generator_instance</span><span class="p">:</span>
+            <span class="k">pass</span></div>
 
 
 
-<div class="viewcode-block" id="UnitTest">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.base.UnitTest">[docs]</a>
-<span class="k">class</span> <span class="nc">UnitTest</span><span class="p">(</span><span class="n">Task</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base Task class.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="InitializationFamily">
+<a class="viewcode-back" href="../../../deode.suites.html#deode.suites.deode_suite_components.InitializationFamily">[docs]</a>
+<span class="k">class</span> <span class="nc">InitializationFamily</span><span class="p">(</span><span class="n">EcflowSuiteFamily</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for creating the Initialization ecFlow family.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct test task.</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">parent</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">,</span>
+        <span class="n">task_settings</span><span class="p">:</span> <span class="n">TaskSettings</span><span class="p">,</span>
+        <span class="n">input_template</span><span class="p">,</span>
+        <span class="n">ecf_files</span><span class="p">,</span>
+        <span class="n">trigger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Class initialization.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="s2">&quot;Initialization&quot;</span><span class="p">,</span>
+            <span class="n">parent</span><span class="p">,</span>
+            <span class="n">ecf_files</span><span class="p">,</span>
+            <span class="n">trigger</span><span class="o">=</span><span class="n">trigger</span><span class="p">,</span>
+            <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+        <span class="p">)</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            config (deode.ParsedConfig): Configuration</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">Task</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span></div>
+        <span class="n">EcflowSuiteTask</span><span class="p">(</span>
+            <span class="s2">&quot;FirstGuess&quot;</span><span class="p">,</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">config</span><span class="p">,</span>
+            <span class="n">task_settings</span><span class="p">,</span>
+            <span class="n">ecf_files</span><span class="p">,</span>
+            <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
+            <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="MergeIOFamily">
+<a class="viewcode-back" href="../../../deode.suites.html#deode.suites.deode_suite_components.MergeIOFamily">[docs]</a>
+<span class="k">class</span> <span class="nc">MergeIOFamily</span><span class="p">(</span><span class="n">EcflowSuiteFamily</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for creating the MergeIO ecFlow family.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">parent</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">,</span>
+        <span class="n">task_settings</span><span class="p">:</span> <span class="n">TaskSettings</span><span class="p">,</span>
+        <span class="n">input_template</span><span class="p">,</span>
+        <span class="n">ecf_files</span><span class="p">,</span>
+        <span class="n">n_io_merge</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">nproc_io</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">trigger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Class initialization.&quot;&quot;&quot;</span>
+        <span class="c1"># these tasks should trigger when the Forecast is *active* or *complete*</span>
+        <span class="n">iomerge_trigger</span> <span class="o">=</span> <span class="n">EcflowSuiteTriggers</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">trigger</span><span class="p">,</span> <span class="s2">&quot;active&quot;</span><span class="p">),</span>
+                <span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">trigger</span><span class="p">,</span> <span class="s2">&quot;complete&quot;</span><span class="p">),</span>
+            <span class="p">],</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;OR&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="s2">&quot;MergeIO&quot;</span><span class="p">,</span>
+            <span class="n">parent</span><span class="p">,</span>
+            <span class="n">ecf_files</span><span class="p">,</span>
+            <span class="n">trigger</span><span class="o">=</span><span class="n">iomerge_trigger</span><span class="p">,</span>
+            <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">ionr</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_io_merge</span><span class="p">):</span>
+            <span class="n">iomerge_sub</span> <span class="o">=</span> <span class="n">EcflowSuiteFamily</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;IO_</span><span class="si">{</span><span class="n">ionr</span><span class="si">:</span><span class="s2">02</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;ionr=</span><span class="si">{</span><span class="n">ionr</span><span class="si">}</span><span class="s2">;nproc_io=</span><span class="si">{</span><span class="n">nproc_io</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">EcflowSuiteTask</span><span class="p">(</span>
+                <span class="s2">&quot;IOmerge&quot;</span><span class="p">,</span>
+                <span class="n">iomerge_sub</span><span class="p">,</span>
+                <span class="n">config</span><span class="p">,</span>
+                <span class="n">task_settings</span><span class="p">,</span>
+                <span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
+                <span class="n">variables</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;ARGS&quot;</span><span class="p">:</span> <span class="n">args</span><span class="p">},</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+            <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="ForecastFamily">
+<a class="viewcode-back" href="../../../deode.suites.html#deode.suites.deode_suite_components.ForecastFamily">[docs]</a>
+<span class="k">class</span> <span class="nc">ForecastFamily</span><span class="p">(</span><span class="n">EcflowSuiteFamily</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for creating the Forecast ecFlow family.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">parent</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">,</span>
+        <span class="n">task_settings</span><span class="p">:</span> <span class="n">TaskSettings</span><span class="p">,</span>
+        <span class="n">input_template</span><span class="p">,</span>
+        <span class="n">ecf_files</span><span class="p">,</span>
+        <span class="n">trigger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Class initialization.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="s2">&quot;Forecasting&quot;</span><span class="p">,</span>
+            <span class="n">parent</span><span class="p">,</span>
+            <span class="n">ecf_files</span><span class="p">,</span>
+            <span class="n">trigger</span><span class="o">=</span><span class="n">trigger</span><span class="p">,</span>
+            <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Get the number of I/O processors</span>
+        <span class="n">settings</span> <span class="o">=</span> <span class="n">task_settings</span><span class="o">.</span><span class="n">get_settings</span><span class="p">(</span><span class="s2">&quot;Forecast&quot;</span><span class="p">)</span>
+        <span class="n">procs</span> <span class="o">=</span> <span class="n">ProcessorLayout</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span>
+        <span class="n">nproc_io</span> <span class="o">=</span> <span class="n">procs</span><span class="o">.</span><span class="n">nproc_io</span> <span class="k">if</span> <span class="n">procs</span><span class="o">.</span><span class="n">nproc_io</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">0</span>
+        <span class="n">n_io_merge</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.n_io_merge&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">nproc_io</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">task_settings</span><span class="o">.</span><span class="n">get_task_settings</span><span class="p">(</span><span class="s2">&quot;Forecast&quot;</span><span class="p">))</span>
+
+        <span class="n">forecast_task</span> <span class="o">=</span> <span class="n">EcflowSuiteTask</span><span class="p">(</span>
+            <span class="s2">&quot;Forecast&quot;</span><span class="p">,</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">config</span><span class="p">,</span>
+            <span class="n">task_settings</span><span class="p">,</span>
+            <span class="n">ecf_files</span><span class="p">,</span>
+            <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
+            <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">n_io_merge</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">MergeIOFamily</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">config</span><span class="p">,</span>
+                <span class="n">task_settings</span><span class="p">,</span>
+                <span class="n">input_template</span><span class="p">,</span>
+                <span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">n_io_merge</span><span class="p">,</span>
+                <span class="n">nproc_io</span><span class="p">,</span>
+                <span class="n">trigger</span><span class="o">=</span><span class="n">forecast_task</span><span class="p">,</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="n">add_total_prec_task</span> <span class="o">=</span> <span class="n">EcflowSuiteTask</span><span class="p">(</span>
+            <span class="s2">&quot;AddTotalPrec&quot;</span><span class="p">,</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">config</span><span class="p">,</span>
+            <span class="n">task_settings</span><span class="p">,</span>
+            <span class="n">ecf_files</span><span class="p">,</span>
+            <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
+            <span class="n">trigger</span><span class="o">=</span><span class="n">forecast_task</span><span class="p">,</span>
+            <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;task.CreateGrib.conversions&quot;</span><span class="p">,</span> <span class="p">[]))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">EcflowSuiteTask</span><span class="p">(</span>
+                <span class="s2">&quot;CreateGrib&quot;</span><span class="p">,</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">config</span><span class="p">,</span>
+                <span class="n">task_settings</span><span class="p">,</span>
+                <span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
+                <span class="n">trigger</span><span class="o">=</span><span class="n">forecast_task</span><span class="p">,</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.do_extractsqlite&quot;</span><span class="p">]:</span>
+            <span class="n">EcflowSuiteTask</span><span class="p">(</span>
+                <span class="s2">&quot;ExtractSQLite&quot;</span><span class="p">,</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">config</span><span class="p">,</span>
+                <span class="n">task_settings</span><span class="p">,</span>
+                <span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
+                <span class="n">trigger</span><span class="o">=</span><span class="n">add_total_prec_task</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">ImpactModels</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;StartImpactModels&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">is_active</span><span class="p">:</span>
+            <span class="n">EcflowSuiteTask</span><span class="p">(</span>
+                <span class="s2">&quot;StartImpactModels&quot;</span><span class="p">,</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">config</span><span class="p">,</span>
+                <span class="n">task_settings</span><span class="p">,</span>
+                <span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
+                <span class="n">trigger</span><span class="o">=</span><span class="n">forecast_task</span><span class="p">,</span>
+            <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="CycleFamily">
+<a class="viewcode-back" href="../../../deode.suites.html#deode.suites.deode_suite_components.CycleFamily">[docs]</a>
+<span class="k">class</span> <span class="nc">CycleFamily</span><span class="p">(</span><span class="n">EcflowSuiteFamily</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for creating the Cycle ecFlow family.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">parent</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">,</span>
+        <span class="n">task_settings</span><span class="p">:</span> <span class="n">TaskSettings</span><span class="p">,</span>
+        <span class="n">input_template</span><span class="p">,</span>
+        <span class="n">ecf_files</span><span class="p">,</span>
+        <span class="n">trigger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Class initialization.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="s2">&quot;Cycle&quot;</span><span class="p">,</span>
+            <span class="n">parent</span><span class="p">,</span>
+            <span class="n">ecf_files</span><span class="p">,</span>
+            <span class="n">trigger</span><span class="o">=</span><span class="n">trigger</span><span class="p">,</span>
+            <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">initialization_family</span> <span class="o">=</span> <span class="n">InitializationFamily</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">config</span><span class="p">,</span>
+            <span class="n">task_settings</span><span class="p">,</span>
+            <span class="n">input_template</span><span class="p">,</span>
+            <span class="n">ecf_files</span><span class="p">,</span>
+            <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">ForecastFamily</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">config</span><span class="p">,</span>
+            <span class="n">task_settings</span><span class="p">,</span>
+            <span class="n">input_template</span><span class="p">,</span>
+            <span class="n">ecf_files</span><span class="p">,</span>
+            <span class="n">trigger</span><span class="o">=</span><span class="n">initialization_family</span><span class="p">,</span>
+            <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="PostCycleFamily">
+<a class="viewcode-back" href="../../../deode.suites.html#deode.suites.deode_suite_components.PostCycleFamily">[docs]</a>
+<span class="k">class</span> <span class="nc">PostCycleFamily</span><span class="p">(</span><span class="n">EcflowSuiteFamily</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for creating the PostCycle ecFlow family.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">parent</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">,</span>
+        <span class="n">task_settings</span><span class="p">:</span> <span class="n">TaskSettings</span><span class="p">,</span>
+        <span class="n">input_template</span><span class="p">,</span>
+        <span class="n">ecf_files</span><span class="p">,</span>
+        <span class="n">cycle</span><span class="p">:</span> <span class="n">Cycle</span><span class="p">,</span>
+        <span class="n">ecf_out</span><span class="p">,</span>
+        <span class="n">suite_name</span><span class="p">,</span>
+        <span class="n">trigger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">external_cycle_cleaning_trigger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Class initialization.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="s2">&quot;PostCycle&quot;</span><span class="p">,</span>
+            <span class="n">parent</span><span class="p">,</span>
+            <span class="n">ecf_files</span><span class="p">,</span>
+            <span class="n">trigger</span><span class="o">=</span><span class="n">trigger</span><span class="p">,</span>
+            <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">task_logs</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;system.wrk&quot;</span><span class="p">]</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="s2">&quot;;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;joboutdir=</span><span class="si">{</span><span class="n">ecf_out</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">suite_name</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;/</span><span class="si">{</span><span class="n">cycle</span><span class="o">.</span><span class="n">day</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">cycle</span><span class="o">.</span><span class="n">time</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">),</span>
+                <span class="sa">f</span><span class="s2">&quot;tarname=</span><span class="si">{</span><span class="n">cycle</span><span class="o">.</span><span class="n">day</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">cycle</span><span class="o">.</span><span class="n">time</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">&quot;task_logs=</span><span class="si">{</span><span class="n">task_logs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">variables</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;ARGS&quot;</span><span class="p">:</span> <span class="n">args</span><span class="p">}</span>
+        <span class="n">collect_logs_hour</span> <span class="o">=</span> <span class="n">EcflowSuiteTask</span><span class="p">(</span>
+            <span class="s2">&quot;CollectLogs&quot;</span><span class="p">,</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">config</span><span class="p">,</span>
+            <span class="n">task_settings</span><span class="p">,</span>
+            <span class="n">ecf_files</span><span class="p">,</span>
+            <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
+            <span class="n">variables</span><span class="o">=</span><span class="n">variables</span><span class="p">,</span>
+            <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">cleaning_triggers</span> <span class="o">=</span> <span class="p">[</span><span class="n">collect_logs_hour</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.do_archiving&quot;</span><span class="p">]:</span>
+            <span class="n">archive_hour</span> <span class="o">=</span> <span class="n">EcflowSuiteTask</span><span class="p">(</span>
+                <span class="s2">&quot;ArchiveHour&quot;</span><span class="p">,</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">config</span><span class="p">,</span>
+                <span class="n">task_settings</span><span class="p">,</span>
+                <span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
+                <span class="n">trigger</span><span class="o">=</span><span class="n">collect_logs_hour</span><span class="p">,</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">cleaning_triggers</span> <span class="o">=</span> <span class="p">[</span><span class="n">archive_hour</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.do_cleaning&quot;</span><span class="p">]</span>
+            <span class="ow">and</span> <span class="n">external_cycle_cleaning_trigger</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="p">):</span>
+            <span class="n">cleaning_triggers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">external_cycle_cleaning_trigger</span><span class="p">)</span>
+
+            <span class="n">EcflowSuiteTask</span><span class="p">(</span>
+                <span class="s2">&quot;CycleCleaning&quot;</span><span class="p">,</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">config</span><span class="p">,</span>
+                <span class="n">task_settings</span><span class="p">,</span>
+                <span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
+                <span class="n">trigger</span><span class="o">=</span><span class="n">cleaning_triggers</span><span class="p">,</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+            <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="TimeDependentFamily">
+<a class="viewcode-back" href="../../../deode.suites.html#deode.suites.deode_suite_components.TimeDependentFamily">[docs]</a>
+<span class="k">class</span> <span class="nc">TimeDependentFamily</span><span class="p">(</span><span class="n">EcflowSuiteFamily</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for creating the time dependent part of a DW suite.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">parent</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">,</span>
+        <span class="n">task_settings</span><span class="p">:</span> <span class="n">TaskSettings</span><span class="p">,</span>
+        <span class="n">input_template</span><span class="p">,</span>
+        <span class="n">ecf_files</span><span class="p">,</span>
+        <span class="n">ecf_out</span><span class="p">,</span>
+        <span class="n">suite_name</span><span class="p">,</span>
+        <span class="n">trigger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">do_prep</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Class initialization.&quot;&quot;&quot;</span>
+        <span class="n">cycles</span> <span class="o">=</span> <span class="n">Cycles</span><span class="p">(</span>
+            <span class="n">first_cycle</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.times.start&quot;</span><span class="p">],</span>
+            <span class="n">last_cycle</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.times.end&quot;</span><span class="p">],</span>
+            <span class="n">cycle_length</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.times.cycle_length&quot;</span><span class="p">],</span>
+        <span class="p">)</span>
+
+        <span class="n">prev_cycle_trigger</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">prev_interpolation_trigger</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">postcycle_family</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">unique_days</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">day_family</span><span class="p">:</span> <span class="n">EcflowSuiteFamily</span>
+
+        <span class="k">for</span> <span class="n">cycle</span> <span class="ow">in</span> <span class="n">cycles</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">cycle</span><span class="o">.</span><span class="n">day</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">unique_days</span><span class="p">:</span>
+                <span class="n">day_family</span> <span class="o">=</span> <span class="n">EcflowSuiteFamily</span><span class="p">(</span>
+                    <span class="n">cycle</span><span class="o">.</span><span class="n">day</span><span class="p">,</span>
+                    <span class="n">parent</span><span class="p">,</span>
+                    <span class="n">ecf_files</span><span class="p">,</span>
+                    <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">unique_days</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">cycle</span><span class="o">.</span><span class="n">day</span><span class="p">)</span>
+
+            <span class="n">time_variables</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;BASETIME&quot;</span><span class="p">:</span> <span class="n">cycle</span><span class="o">.</span><span class="n">basetime</span><span class="p">,</span>
+                <span class="s2">&quot;VALIDTIME&quot;</span><span class="p">:</span> <span class="n">cycle</span><span class="o">.</span><span class="n">validtime</span><span class="p">,</span>
+            <span class="p">}</span>
+            <span class="n">time_family</span> <span class="o">=</span> <span class="n">EcflowSuiteFamily</span><span class="p">(</span>
+                <span class="n">cycle</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
+                <span class="n">day_family</span><span class="p">,</span>
+                <span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">variables</span><span class="o">=</span><span class="n">time_variables</span><span class="p">,</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">inputdata</span> <span class="o">=</span> <span class="n">InputDataFamily</span><span class="p">(</span>
+                <span class="n">time_family</span><span class="p">,</span>
+                <span class="n">config</span><span class="p">,</span>
+                <span class="n">task_settings</span><span class="p">,</span>
+                <span class="n">input_template</span><span class="p">,</span>
+                <span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">trigger</span><span class="o">=</span><span class="n">trigger</span><span class="p">,</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+                <span class="n">external_marsprep_trigger_node</span><span class="o">=</span><span class="n">prev_interpolation_trigger</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">ready_for_cycle</span> <span class="o">=</span> <span class="p">[</span><span class="n">inputdata</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.interpolate_boundaries&quot;</span><span class="p">]:</span>
+                <span class="n">int_family</span> <span class="o">=</span> <span class="n">InterpolationFamily</span><span class="p">(</span>
+                    <span class="n">time_family</span><span class="p">,</span>
+                    <span class="n">config</span><span class="p">,</span>
+                    <span class="n">task_settings</span><span class="p">,</span>
+                    <span class="n">input_template</span><span class="p">,</span>
+                    <span class="n">ecf_files</span><span class="p">,</span>
+                    <span class="n">cycles</span><span class="p">,</span>
+                    <span class="n">trigger</span><span class="o">=</span><span class="n">inputdata</span><span class="p">,</span>
+                    <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+                    <span class="n">do_prep</span><span class="o">=</span><span class="n">do_prep</span><span class="p">,</span>
+                <span class="p">)</span>
+
+                <span class="n">ready_for_cycle</span> <span class="o">=</span> <span class="n">prev_interpolation_trigger</span> <span class="o">=</span> <span class="p">[</span><span class="n">int_family</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">prev_cycle_trigger</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">ready_for_cycle</span> <span class="o">=</span> <span class="n">ready_for_cycle</span> <span class="o">+</span> <span class="n">prev_cycle_trigger</span>
+
+            <span class="n">cycle_family</span> <span class="o">=</span> <span class="n">CycleFamily</span><span class="p">(</span>
+                <span class="n">time_family</span><span class="p">,</span>
+                <span class="n">config</span><span class="p">,</span>
+                <span class="n">task_settings</span><span class="p">,</span>
+                <span class="n">input_template</span><span class="p">,</span>
+                <span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">trigger</span><span class="o">=</span><span class="n">ready_for_cycle</span><span class="p">,</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">prev_cycle_trigger</span> <span class="o">=</span> <span class="p">[</span><span class="n">cycle_family</span><span class="p">]</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_last_node</span> <span class="o">=</span> <span class="n">postcycle_family</span> <span class="o">=</span> <span class="n">PostCycleFamily</span><span class="p">(</span>
+                <span class="n">time_family</span><span class="p">,</span>
+                <span class="n">config</span><span class="p">,</span>
+                <span class="n">task_settings</span><span class="p">,</span>
+                <span class="n">input_template</span><span class="p">,</span>
+                <span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">cycle</span><span class="p">,</span>
+                <span class="n">ecf_out</span><span class="o">=</span><span class="n">ecf_out</span><span class="p">,</span>
+                <span class="n">suite_name</span><span class="o">=</span><span class="n">suite_name</span><span class="p">,</span>
+                <span class="n">trigger</span><span class="o">=</span><span class="n">cycle_family</span><span class="p">,</span>
+                <span class="n">external_cycle_cleaning_trigger</span><span class="o">=</span><span class="n">postcycle_family</span><span class="p">,</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+            <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">last_node</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the last family node of self.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_node</span></div>
 
 </pre></div>
 

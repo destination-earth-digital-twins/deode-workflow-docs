@@ -123,7 +123,9 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../deode.suites.html#module-deode.suites.base">deode.suites.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../deode.suites.html#module-deode.suites.clean_old_data">deode.suites.clean_old_data module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../deode.suites.html#module-deode.suites.deode">deode.suites.deode module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../deode.suites.html#module-deode.suites.deode_suite_components">deode.suites.deode_suite_components module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../deode.suites.html#module-deode.suites.discover_suite">deode.suites.discover_suite module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../deode.suites.html#module-deode.suites.suite_utils">deode.suites.suite_utils module</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../deode.tasks.html">deode.tasks package</a><ul>
@@ -1015,6 +1017,7 @@
 <span></span><span class="sd">&quot;&quot;&quot;Ecflow suites base class.&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">from</span> <span class="nn">..logs</span> <span class="kn">import</span> <span class="n">LogDefaults</span><span class="p">,</span> <span class="n">logger</span>
 <span class="kn">from</span> <span class="nn">..submission</span> <span class="kn">import</span> <span class="n">TaskSettings</span>
@@ -1065,12 +1068,10 @@
         <span class="k">if</span> <span class="n">ecflow</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">dry_run</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ModuleNotFoundError</span><span class="p">(</span><span class="s2">&quot;Ecflow not found&quot;</span><span class="p">)</span>
 
-        <span class="n">suite_name</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.case&quot;</span><span class="p">]</span>
-        <span class="n">task_settings</span> <span class="o">=</span> <span class="n">TaskSettings</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">task_settings</span> <span class="o">=</span> <span class="n">TaskSettings</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">suite_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.case&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">task_settings</span> <span class="o">=</span> <span class="n">task_settings</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">platform</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
@@ -1184,7 +1185,7 @@
         <span class="p">}</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">suite</span> <span class="o">=</span> <span class="n">EcflowSuite</span><span class="p">(</span>
-            <span class="n">suite_name</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
             <span class="n">ecf_files</span><span class="p">,</span>
             <span class="n">variables</span><span class="o">=</span><span class="n">variables</span><span class="p">,</span>
             <span class="n">dry_run</span><span class="o">=</span><span class="n">dry_run</span><span class="p">,</span>
@@ -1210,7 +1211,9 @@
 <span class="k">class</span> <span class="nc">EcflowNode</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A Node class is the abstract base class for Suite, Family and Task.</span>
 
-<span class="sd">    Every Node instance has a name, and a path relative to a suite</span>
+<span class="sd">    Every Node instance has a name, and a path relative to a suite.</span>
+<span class="sd">    The trigger of a node can either be another EcflowNode, a list of EcflowNode</span>
+<span class="sd">    objects or an EcflowSuiteTriggers object.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -1220,7 +1223,9 @@
         <span class="n">parent</span><span class="p">,</span>
         <span class="n">ecf_files</span><span class="p">,</span>
         <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">trigger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">trigger</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
+            <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;EcflowSuiteTriggers&quot;</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="s2">&quot;EcflowNode&quot;</span><span class="p">],</span> <span class="s2">&quot;EcflowNode&quot;</span><span class="p">]</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">def_status</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">cron</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1233,7 +1238,8 @@
 <span class="sd">            parent (EcflowNode): Parent node</span>
 <span class="sd">            ecf_files (str): Location of ecf files</span>
 <span class="sd">            variables (dict, optional): Variables to map. Defaults to None</span>
-<span class="sd">            trigger (EcflowSuiteTriggers): Trigger. Defaults to None</span>
+<span class="sd">            trigger (Union[EcflowSuiteTriggers, List[EcflowNode], EcflowNode]):</span>
+<span class="sd">                Trigger. Defaults to None</span>
 <span class="sd">            def_status (str, ecflow.Defstatus): Def status. Defaults to None</span>
 <span class="sd">            ecf_files_remotely(str, optional): Remote file prefix</span>
 <span class="sd">            cron (EcflowSuiteCron): Cron. Defauts to None</span>
@@ -1291,14 +1297,40 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">ecf_node</span><span class="o">.</span><span class="n">add_variable</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">trigger</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Add trigger to the node from an EcflowSuiteTriggers object</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">trigger</span><span class="p">,</span> <span class="n">EcflowSuiteTriggers</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">trigger</span><span class="o">.</span><span class="n">trigger_string</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_node</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">ecf_node</span><span class="o">.</span><span class="n">add_trigger</span><span class="p">(</span><span class="n">trigger</span><span class="o">.</span><span class="n">trigger_string</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Empty trigger&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">trigger</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">trigger</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Empty trigger list&quot;</span><span class="p">)</span>
+                <span class="c1"># Resolve the trigger list into an EcflowSuiteTriggers object,</span>
+                <span class="c1"># and add the trigger string to the node</span>
+                <span class="k">elif</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">EcflowNode</span><span class="p">)</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">trigger</span><span class="p">):</span>
+                    <span class="n">trigger</span> <span class="o">=</span> <span class="n">EcflowSuiteTriggers</span><span class="p">(</span>
+                        <span class="p">[</span><span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">trigger</span><span class="p">]</span>
+                    <span class="p">)</span>
+                    <span class="k">if</span> <span class="n">trigger</span><span class="o">.</span><span class="n">trigger_string</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_node</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ecf_node</span><span class="o">.</span><span class="n">add_trigger</span><span class="p">(</span><span class="n">trigger</span><span class="o">.</span><span class="n">trigger_string</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                        <span class="s2">&quot;When parsing a list of trigger, the &quot;</span>
+                        <span class="o">+</span> <span class="s2">&quot;triggers must be EcflowNode objects&quot;</span>
+                    <span class="p">)</span>
+            <span class="c1"># Turn the EcflowNode trigger into an EcflowSuiteTriggers object</span>
+            <span class="c1"># and add the trigger string to the node</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">trigger</span><span class="p">,</span> <span class="n">EcflowNode</span><span class="p">):</span>
+                <span class="n">trigger</span> <span class="o">=</span> <span class="n">EcflowSuiteTriggers</span><span class="p">([</span><span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">trigger</span><span class="p">)])</span>
+                <span class="k">if</span> <span class="n">trigger</span><span class="o">.</span><span class="n">trigger_string</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_node</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">ecf_node</span><span class="o">.</span><span class="n">add_trigger</span><span class="p">(</span><span class="n">trigger</span><span class="o">.</span><span class="n">trigger_string</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Triggers must be an EcflowSuiteTriggers object&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                    <span class="s2">&quot;Triggers must be an EcflowSuiteTriggers, List[EcflowNode]&quot;</span>
+                    <span class="o">+</span> <span class="s2">&quot; or a EcflowNode object&quot;</span>
+                <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">trigger</span> <span class="o">=</span> <span class="n">trigger</span>
 
         <span class="k">if</span> <span class="n">cron</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -1680,7 +1712,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-11-12T12:52:13Z.
+      <span class="lastupdated">Last updated on 2024-11-14T07:20:19Z.
       </span></p>
   </div>
 

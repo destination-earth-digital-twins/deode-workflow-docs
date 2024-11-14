@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>deode.tasks.base &mdash; Deode Workflow Docs  documentation</title>
+  <title>deode.suites.suite_utils &mdash; Deode Workflow Docs  documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
@@ -1004,7 +1004,7 @@
       <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
           <li class="breadcrumb-item"><a href="../../deode.html">deode</a></li>
-      <li class="breadcrumb-item active">deode.tasks.base</li>
+      <li class="breadcrumb-item active">deode.suites.suite_utils</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -1013,328 +1013,222 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>Source code for deode.tasks.base</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Base site class.&quot;&quot;&quot;</span>
+  <h1>Source code for deode.suites.suite_utils</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Module for utility functions used in the suite definition scripts.&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">atexit</span>
-<span class="kn">import</span> <span class="nn">contextlib</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">shutil</span>
-<span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
-<span class="kn">from</span> <span class="nn">..config_parser</span> <span class="kn">import</span> <span class="n">ConfigParserDefaults</span>
+<span class="kn">from</span> <span class="nn">..datetime_utils</span> <span class="kn">import</span> <span class="n">as_datetime</span><span class="p">,</span> <span class="n">as_timedelta</span>
 <span class="kn">from</span> <span class="nn">..logs</span> <span class="kn">import</span> <span class="n">logger</span>
-<span class="kn">from</span> <span class="nn">..os_utils</span> <span class="kn">import</span> <span class="n">deodemakedirs</span>
-<span class="kn">from</span> <span class="nn">..toolbox</span> <span class="kn">import</span> <span class="n">FileManager</span>
 
 
-<span class="k">def</span> <span class="nf">_get_name</span><span class="p">(</span><span class="n">cname</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">suffix</span><span class="p">,</span> <span class="n">attrname</span><span class="o">=</span><span class="s2">&quot;__plugin_name__&quot;</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get name.</span>
+<div class="viewcode-block" id="Cycle">
+<a class="viewcode-back" href="../../../deode.suites.html#deode.suites.suite_utils.Cycle">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">Cycle</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for representing a cycle.&quot;&quot;&quot;</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        cname (_type_): cname</span>
-<span class="sd">        cls (_type_): cls</span>
-<span class="sd">        suffix (str): suffix</span>
-<span class="sd">        attrname (str, optional): _description_. Defaults to &quot;__plugin_name__&quot;.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        _type_: Name</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># __dict__ vs. getattr: do not inherit the attribute from a parent class</span>
-    <span class="n">name</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s2">&quot;__dict__&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">attrname</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">name</span>
-    <span class="n">name</span> <span class="o">=</span> <span class="n">cname</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">suffix</span><span class="p">):</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="p">[:</span> <span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">suffix</span><span class="p">)]</span>
-    <span class="k">return</span> <span class="n">name</span>
+    <span class="n">day</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">time</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">validtime</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">basetime</span><span class="p">:</span> <span class="nb">str</span></div>
 
 
-<div class="viewcode-block" id="Task">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.base.Task">[docs]</a>
-<span class="k">class</span> <span class="nc">Task</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base Task class.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct base task.</span>
+<div class="viewcode-block" id="Cycles">
+<a class="viewcode-back" href="../../../deode.suites.html#deode.suites.suite_utils.Cycles">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Cycles</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for generating and iterating over Cycle objects.&quot;&quot;&quot;</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            config (deode.ParsedConfig): Configuration</span>
-<span class="sd">            name (str): Task name</span>
+    <span class="n">first_cycle</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># Format parseable by as_datetime</span>
+    <span class="n">last_cycle</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># Format parseable by as_datetime</span>
+    <span class="n">cycle_length</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># ISO 8601 format</span>
+    <span class="n">_current_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">_cycles</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Cycle</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Generate cycles.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_generate_cycles</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_generate_cycles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate cycles.&quot;&quot;&quot;</span>
+        <span class="c1"># Convert attributes to datetime objects.</span>
+        <span class="n">cycle_time</span> <span class="o">=</span> <span class="n">as_datetime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">first_cycle</span><span class="p">)</span>
+        <span class="n">last_cycle_time</span> <span class="o">=</span> <span class="n">as_datetime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_cycle</span><span class="p">)</span>
+        <span class="n">cycle_length_timedelta</span> <span class="o">=</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cycle_length</span><span class="p">)</span>
+
+        <span class="c1"># Generate cycles.</span>
+        <span class="k">while</span> <span class="n">cycle_time</span> <span class="o">&lt;=</span> <span class="n">last_cycle_time</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;cycle_time </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">cycle_time</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cycles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">Cycle</span><span class="p">(</span>
+                    <span class="n">day</span><span class="o">=</span><span class="n">cycle_time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">),</span>
+                    <span class="n">time</span><span class="o">=</span><span class="n">cycle_time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%H%M&quot;</span><span class="p">),</span>
+                    <span class="n">validtime</span><span class="o">=</span><span class="n">cycle_time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">T%H:%M:%SZ&quot;</span><span class="p">),</span>
+                    <span class="n">basetime</span><span class="o">=</span><span class="n">cycle_time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">T%H:%M:%SZ&quot;</span><span class="p">),</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">cycle_time</span> <span class="o">+=</span> <span class="n">cycle_length_timedelta</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">current_index</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the current cycle index.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_index</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">current_cycle</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Cycle</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the current Cycle object.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cycles</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_index</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">next_cycle</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Cycle</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the next Cycle object.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            ValueError: &quot;You must set wrk&quot;</span>
-
+<span class="sd">            StopIteration: If there are no more cycles.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
-        <span class="k">if</span> <span class="s2">&quot;.&quot;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
-            <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span> <span class="o">=</span> <span class="n">FileManager</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">platform</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">platform</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;submission.task.wrapper&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cycles</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cycles</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">wrk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_system_value</span><span class="p">(</span><span class="s2">&quot;wrk&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrk</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You must set wrk&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrk</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">StopIteration</span>
 
-        <span class="n">wdir</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">wrk</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">socket</span><span class="o">.</span><span class="n">gethostname</span><span class="p">()</span><span class="si">}{</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">()</span><span class="si">!s}</span><span class="s2">&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">wdir</span> <span class="o">=</span> <span class="n">wdir</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">unix_group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;platform.unix_group&quot;</span><span class="p">)</span>
-
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Task </span><span class="si">{}</span><span class="s2"> running in </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wdir</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_set_eccodes_environment</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">_set_eccodes_environment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set correct path for ECCODES tables.</span>
-
-<span class="sd">        Respect ECCODES_DEINITION_PATH if set or combine local settings with library</span>
-<span class="sd">        ones in different ways depending on version</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">eccodes_definition_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;ECCODES_DEFINITION_PATH&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">eccodes_definition_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Use ECCODES_DEFINITION_PATH </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">eccodes_definition_path</span><span class="p">)</span>
-            <span class="k">return</span>
-
-        <span class="c1"># Path to local tables</span>
-        <span class="n">deode_eccodes_definition_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span>
-            <span class="n">ConfigParserDefaults</span><span class="o">.</span><span class="n">DATA_DIRECTORY</span> <span class="o">/</span> <span class="s2">&quot;eccodes/definitions&quot;</span>
-        <span class="p">)</span>
-
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">eccodes_version</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
-                <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;ECCODES_VERSION&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)]</span>
-            <span class="p">)</span>
-        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="n">eccodes_version</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-
-        <span class="n">eccodes_definition_path</span> <span class="o">=</span> <span class="n">deode_eccodes_definition_path</span>
-        <span class="k">if</span> <span class="n">eccodes_version</span> <span class="o">&lt;</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">eccodes_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;ECCODES_DIR&quot;</span><span class="p">]</span>
-                <span class="n">eccodes_definition_path</span> <span class="o">=</span> <span class="s2">&quot;:&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-                    <span class="p">[</span>
-                        <span class="n">eccodes_definition_path</span><span class="p">,</span>
-                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">eccodes_dir</span><span class="si">}</span><span class="s2">/share/eccodes/definitions&quot;</span><span class="p">,</span>
-                    <span class="p">]</span>
-                <span class="p">)</span>
-            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="k">pass</span>
-
-        <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;ECCODES_DEFINITION_PATH&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">eccodes_definition_path</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="s2">&quot;Set ECCODES_DEFINITION_PATH to </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;ECCODES_DEFINITION_PATH&quot;</span><span class="p">]</span>
-        <span class="p">)</span>
-
-<div class="viewcode-block" id="Task.archive_logs">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.base.Task.archive_logs">[docs]</a>
-    <span class="k">def</span> <span class="nf">archive_logs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Archive files in a log directory.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            files (str,list): File(s) to be archived</span>
-<span class="sd">            target (str): Target directory for archiving</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">target</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrk</span>
-        <span class="n">logdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="s2">&quot;logs&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-        <span class="n">deodemakedirs</span><span class="p">(</span><span class="n">logdir</span><span class="p">,</span> <span class="n">unixgroup</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">unix_group</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">logdir</span><span class="p">,</span> <span class="n">provider_id</span><span class="o">=</span><span class="s2">&quot;copy&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">logdir</span><span class="p">,</span> <span class="n">provider_id</span><span class="o">=</span><span class="s2">&quot;copy&quot;</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="Task.create_wrkdir">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.base.Task.create_wrkdir">[docs]</a>
-    <span class="k">def</span> <span class="nf">create_wrkdir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a cycle working directory.&quot;&quot;&quot;</span>
-        <span class="n">deodemakedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wrk</span><span class="p">,</span> <span class="n">unixgroup</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">unix_group</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="Task.create_wdir">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.base.Task.create_wdir">[docs]</a>
-    <span class="k">def</span> <span class="nf">create_wdir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create task working directory and check for unix group and set permissions.&quot;&quot;&quot;</span>
-        <span class="n">deodemakedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wdir</span><span class="p">,</span> <span class="n">unixgroup</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">unix_group</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="Task.change_to_wdir">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.base.Task.change_to_wdir">[docs]</a>
-    <span class="k">def</span> <span class="nf">change_to_wdir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Change to task working dir.&quot;&quot;&quot;</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wdir</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="Task.remove_wdir">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.base.Task.remove_wdir">[docs]</a>
-    <span class="k">def</span> <span class="nf">remove_wdir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove working directory.&quot;&quot;&quot;</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wrk</span><span class="p">)</span>
-        <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wdir</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Remove </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wdir</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="Task.rename_wdir">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.base.Task.rename_wdir">[docs]</a>
-    <span class="k">def</span> <span class="nf">rename_wdir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;Failed_task_&quot;</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Rename failed working directory.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wdir</span><span class="p">):</span>
-            <span class="n">fdir</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">wrk</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">prefix</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">fdir</span><span class="p">):</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> exists. Remove it&quot;</span><span class="p">,</span> <span class="n">fdir</span><span class="p">)</span>
-                <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">fdir</span><span class="p">)</span>
-            <span class="n">pid</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wdir</span><span class="p">)</span>
-            <span class="n">fdir</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fdir</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">pid</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wdir</span><span class="p">,</span> <span class="n">fdir</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Renamed </span><span class="si">{}</span><span class="s2"> to </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wdir</span><span class="p">,</span> <span class="n">fdir</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="Task.get_binary">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.base.Task.get_binary">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_binary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">binary_name</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine binary path from task or system config section.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            binary_name (str): Name of binary</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">end_of_month</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return True if the next cycle is in a different month.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            bindir (str): full path to binary</span>
-
+<span class="sd">            bool: True if the next cycle is in a different month</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">binary</span> <span class="o">=</span> <span class="n">binary_name</span>
-        <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">KeyError</span><span class="p">):</span>
-            <span class="n">binary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;submission.task_exceptions.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.binary&quot;</span><span class="p">]</span>
-
+        <span class="n">_end_of_month</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">bindir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;submission.task_exceptions.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.bindir&quot;</span><span class="p">]</span>
-        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">binaries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span>
-                    <span class="sa">f</span><span class="s2">&quot;submission.task_exceptions.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.binaries.</span><span class="si">{</span><span class="n">binary_name</span><span class="si">}</span><span class="s2">&quot;</span>
-                <span class="p">]</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;binaries:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">binaries</span><span class="p">)</span>
+            <span class="n">current_cycle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_cycle</span>
+            <span class="n">next_cycle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_cycle</span>
+            <span class="k">if</span> <span class="n">as_datetime</span><span class="p">(</span><span class="n">current_cycle</span><span class="o">.</span><span class="n">day</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%m&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="n">as_datetime</span><span class="p">(</span>
+                <span class="n">next_cycle</span><span class="o">.</span><span class="n">day</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%m&quot;</span><span class="p">):</span>
+                <span class="n">_end_of_month</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;It is last cycle&quot;</span><span class="p">)</span>
 
-                <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">KeyError</span><span class="p">):</span>
-                    <span class="n">binary</span> <span class="o">=</span> <span class="n">binaries</span><span class="p">[</span><span class="s2">&quot;binary&quot;</span><span class="p">]</span>
-                <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">KeyError</span><span class="p">):</span>
-                    <span class="n">bindir</span> <span class="o">=</span> <span class="n">binaries</span><span class="p">[</span><span class="s2">&quot;bindir&quot;</span><span class="p">]</span>
-            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="n">bindir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;submission.bindir&quot;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">_end_of_month</span>
 
-        <span class="n">bindir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">bindir</span><span class="p">)</span>
-
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;binary:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">binary</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;bindir:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">bindir</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">bindir</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">binary</span><span class="si">}</span><span class="s2">&quot;</span></div>
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">Cycle</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return an iterator over the cycles.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_current_index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cycles</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cycles</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_index</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_current_index</span> <span class="o">+=</span> <span class="mi">1</span></div>
 
 
-<div class="viewcode-block" id="Task.execute">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.base.Task.execute">[docs]</a>
-    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Do nothing for base execute task.&quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Using empty base class execute&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="batch_times_generator">
+<a class="viewcode-back" href="../../../deode.suites.html#deode.suites.suite_utils.batch_times_generator">[docs]</a>
+<span class="k">def</span> <span class="nf">batch_times_generator</span><span class="p">(</span>
+    <span class="n">basetime</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+    <span class="n">endtime</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+    <span class="n">step</span><span class="p">:</span> <span class="n">timedelta</span><span class="p">,</span>
+    <span class="n">tasks_per_batch</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;start&quot;</span><span class="p">,</span>
+    <span class="n">do_prep</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">datetime</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate batch times.</span>
+
+<span class="sd">    The times are divided into batches of tasks_per_batch tasks.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        basetime: The base time.</span>
+<span class="sd">        endtime: The end time.</span>
+<span class="sd">        step: The step size.</span>
+<span class="sd">        tasks_per_batch: The number of tasks per batch.</span>
+<span class="sd">        mode: The mode of the workflow.</span>
+<span class="sd">        do_prep: Whether to do prep.</span>
+
+<span class="sd">    Yields:</span>
+<span class="sd">        Union[int, datetime]: The batch number or the next time in the batch.</span>
+<span class="sd">            First yield returns batch number, then the next `tasks_per_batch`</span>
+<span class="sd">            yields return the batch times of the batch. Repeat.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;restart&quot;</span> <span class="ow">or</span> <span class="p">(</span><span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;start&quot;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">do_prep</span><span class="p">):</span>
+        <span class="n">basetime</span> <span class="o">+=</span> <span class="n">step</span>
+
+    <span class="k">def</span> <span class="nf">subgenerator</span><span class="p">(</span><span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">datetime</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+        <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">start_time</span> <span class="o">&lt;=</span> <span class="n">endtime</span> <span class="ow">and</span> <span class="n">counter</span> <span class="o">&lt;</span> <span class="n">tasks_per_batch</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">start_time</span>
+            <span class="n">start_time</span> <span class="o">+=</span> <span class="n">step</span>
+            <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">start_time</span>
+
+    <span class="n">batch_nr</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="k">while</span> <span class="n">basetime</span> <span class="o">&lt;=</span> <span class="n">endtime</span><span class="p">:</span>
+        <span class="n">subgenerator_</span> <span class="o">=</span> <span class="n">subgenerator</span><span class="p">(</span><span class="n">basetime</span><span class="p">)</span>
+        <span class="c1"># First yield the batch number</span>
+        <span class="k">yield</span> <span class="n">batch_nr</span>
+        <span class="c1"># Then yield the next time in the batch</span>
+        <span class="n">basetime</span> <span class="o">=</span> <span class="k">yield from</span> <span class="n">subgenerator_</span>
+        <span class="n">batch_nr</span> <span class="o">+=</span> <span class="mi">1</span></div>
 
 
-<div class="viewcode-block" id="Task.prep">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.base.Task.prep">[docs]</a>
-    <span class="k">def</span> <span class="nf">prep</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Do default preparation before execution.</span>
 
-<span class="sd">        E.g. clean</span>
+<div class="viewcode-block" id="bd_generator">
+<a class="viewcode-back" href="../../../deode.suites.html#deode.suites.suite_utils.bd_generator">[docs]</a>
+<span class="k">def</span> <span class="nf">bd_generator</span><span class="p">(</span>
+    <span class="n">bdint</span><span class="p">:</span> <span class="n">timedelta</span><span class="p">,</span>
+    <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;start&quot;</span><span class="p">,</span>
+    <span class="n">do_prep</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate batch numbers.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Base class prep&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">create_wdir</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">change_to_wdir</span><span class="p">()</span>
+<span class="sd">    Args:</span>
+<span class="sd">        bdint: The batch interval.</span>
+<span class="sd">        mode: The mode of the workflow.</span>
+<span class="sd">        do_prep: Whether to do prep.</span>
 
-        <span class="n">atexit</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rename_wdir</span><span class="p">)</span></div>
+<span class="sd">    Yields:</span>
+<span class="sd">        Tuple[int, int, int, int]:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">inthourbdint</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">bdint</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span> <span class="o">//</span> <span class="mi">3600</span><span class="p">)</span>
+    <span class="n">intminbdint</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">bdint</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span> <span class="o">%</span> <span class="mi">3600</span> <span class="o">//</span> <span class="mi">60</span><span class="p">)</span>
+    <span class="n">intsecbdint</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">bdint</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span> <span class="o">%</span> <span class="mi">60</span><span class="p">)</span>
 
+    <span class="c1"># we don&#39;t need LBC000 if this is not first cycle or mode != cold_start</span>
+    <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;restart&quot;</span> <span class="ow">or</span> <span class="p">(</span><span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;start&quot;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">do_prep</span><span class="p">):</span>
+        <span class="n">bdnr</span> <span class="o">=</span> <span class="n">inthourbdint</span>
+        <span class="n">bd_nr</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">subbdnr</span> <span class="o">=</span> <span class="n">intminbdint</span> <span class="k">if</span> <span class="p">(</span><span class="n">intminbdint</span> <span class="ow">or</span> <span class="n">intsecbdint</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">subminbdnr</span> <span class="o">=</span> <span class="n">intsecbdint</span> <span class="k">if</span> <span class="n">intsecbdint</span> <span class="k">else</span> <span class="kc">None</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">bdnr</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">bd_nr</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">subbdnr</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="p">(</span><span class="n">intminbdint</span> <span class="ow">or</span> <span class="n">intsecbdint</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">subminbdnr</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">intsecbdint</span> <span class="k">else</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="Task.post">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.base.Task.post">[docs]</a>
-    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Do default postfix.</span>
-
-<span class="sd">        E.g. clean</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Base class post&quot;</span><span class="p">)</span>
-        <span class="c1"># Clean workdir</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.keep_workdirs&quot;</span><span class="p">]:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">rename_wdir</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;Finished_task_&quot;</span><span class="p">)</span>
-
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">remove_wdir</span><span class="p">()</span></div>
-
-
-<div class="viewcode-block" id="Task.run">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.base.Task.run">[docs]</a>
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run task.</span>
-
-<span class="sd">        Define run sequence.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">prep</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">post</span><span class="p">()</span></div>
-
-
-<div class="viewcode-block" id="Task.get_task_setting">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.base.Task.get_task_setting">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_task_setting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">setting</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get task setting.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            setting (str): Setting to find in task.{self.name}</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            value : Found setting</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">task_subsection_name_in_config</span> <span class="o">=</span> <span class="n">_get_name</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span>
-            <span class="n">Task</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span>
-            <span class="n">attrname</span><span class="o">=</span><span class="s2">&quot;__type_name__&quot;</span><span class="p">,</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">yield</span> <span class="p">(</span>
+            <span class="n">bdnr</span><span class="p">,</span>
+            <span class="n">subbdnr</span><span class="p">,</span>
+            <span class="n">subminbdnr</span><span class="p">,</span>
+            <span class="n">bd_nr</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">setting_to_be_retrieved</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;task.</span><span class="si">{</span><span class="n">task_subsection_name_in_config</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">setting</span><span class="si">}</span><span class="s2">&quot;</span>
 
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="n">setting_to_be_retrieved</span><span class="p">]</span>
-        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
-                <span class="s2">&quot;Task setting &#39;</span><span class="si">{}</span><span class="s2">&#39; not found in config.&quot;</span><span class="p">,</span> <span class="n">setting_to_be_retrieved</span>
-            <span class="p">)</span>
-            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">subbdnr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">subbdnr</span> <span class="o">+=</span> <span class="n">intminbdint</span>
+            <span class="k">if</span> <span class="n">subminbdnr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">subminbdnr</span> <span class="o">+=</span> <span class="n">intsecbdint</span>
+                <span class="k">if</span> <span class="n">subminbdnr</span> <span class="o">&gt;=</span> <span class="mi">60</span><span class="p">:</span>
+                    <span class="n">subbdnr</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="n">subminbdnr</span> <span class="o">-=</span> <span class="mi">60</span>
+            <span class="k">if</span> <span class="n">subbdnr</span> <span class="o">&gt;=</span> <span class="mi">60</span><span class="p">:</span>
+                <span class="n">bdnr</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">subbdnr</span> <span class="o">-=</span> <span class="mi">60</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Setting = </span><span class="si">{}</span><span class="s2"> value =</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">setting_to_be_retrieved</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">value</span></div>
-</div>
-
-
-
-<div class="viewcode-block" id="UnitTest">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.base.UnitTest">[docs]</a>
-<span class="k">class</span> <span class="nc">UnitTest</span><span class="p">(</span><span class="n">Task</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base Task class.&quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct test task.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            config (deode.ParsedConfig): Configuration</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">Task</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span></div>
+        <span class="n">bdnr</span> <span class="o">+=</span> <span class="n">inthourbdint</span>
+        <span class="n">bd_nr</span> <span class="o">+=</span> <span class="mi">1</span></div>
 
 </pre></div>
 
