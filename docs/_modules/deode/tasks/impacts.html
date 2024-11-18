@@ -1028,6 +1028,7 @@
 
 <span class="kn">import</span> <span class="nn">tomlkit</span>
 <span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">from</span> <span class="nn">dicttoxml</span> <span class="kn">import</span> <span class="n">dicttoxml</span> <span class="k">as</span> <span class="n">dtx</span>
 
 <span class="kn">from</span> <span class="nn">..config_parser</span> <span class="kn">import</span> <span class="n">BasicConfig</span>
 <span class="kn">from</span> <span class="nn">..logs</span> <span class="kn">import</span> <span class="n">logger</span>
@@ -1077,6 +1078,9 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.toml&quot;</span><span class="p">):</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_h</span><span class="p">:</span>
                 <span class="n">f_h</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">tomlkit</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">to_dump</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">((</span><span class="s2">&quot;.xml&quot;</span><span class="p">)):</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_h</span><span class="p">:</span>
+                <span class="n">f_h</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">dtx</span><span class="p">(</span><span class="n">to_dump</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">attr_type</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">((</span><span class="s2">&quot;.yml&quot;</span><span class="p">,</span> <span class="s2">&quot;.yaml&quot;</span><span class="p">)):</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_h</span><span class="p">:</span>
                 <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">to_dump</span><span class="p">,</span> <span class="n">f_h</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="n">default_flow_style</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -1196,7 +1200,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-11-14T16:53:32Z.
+      <span class="lastupdated">Last updated on 2024-11-18T14:32:02Z.
       </span></p>
   </div>
 
