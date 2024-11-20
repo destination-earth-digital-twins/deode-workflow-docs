@@ -682,7 +682,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-bdint">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">bdint</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-bdshift">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">bdshift</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-bdtasks-per-batch">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">bdtasks_per_batch</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-max-interpolation-tasks">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">max_interpolation_tasks</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-bdmodel">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">bdmodel</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-humi-gp">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">humi_gp</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-ifs-selection">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">ifs.selection</span></code></a></li>
@@ -1128,54 +1128,42 @@
 
 
 
-<div class="viewcode-block" id="batch_times_generator">
-<a class="viewcode-back" href="../../../deode.suites.html#deode.suites.suite_utils.batch_times_generator">[docs]</a>
-<span class="k">def</span> <span class="nf">batch_times_generator</span><span class="p">(</span>
+<div class="viewcode-block" id="lbc_times_generator">
+<a class="viewcode-back" href="../../../deode.suites.html#deode.suites.suite_utils.lbc_times_generator">[docs]</a>
+<span class="k">def</span> <span class="nf">lbc_times_generator</span><span class="p">(</span>
     <span class="n">basetime</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
     <span class="n">endtime</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
     <span class="n">step</span><span class="p">:</span> <span class="n">timedelta</span><span class="p">,</span>
-    <span class="n">tasks_per_batch</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;start&quot;</span><span class="p">,</span>
     <span class="n">do_prep</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">datetime</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate batch times.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate lbc times.</span>
 
-<span class="sd">    The times are divided into batches of tasks_per_batch tasks.</span>
+<span class="sd">    For each of them there will be LBC[NN] family.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        basetime: The base time.</span>
 <span class="sd">        endtime: The end time.</span>
 <span class="sd">        step: The step size.</span>
-<span class="sd">        tasks_per_batch: The number of tasks per batch.</span>
 <span class="sd">        mode: The mode of the workflow.</span>
 <span class="sd">        do_prep: Whether to do prep.</span>
 
 <span class="sd">    Yields:</span>
-<span class="sd">        Union[int, datetime]: The batch number or the next time in the batch.</span>
-<span class="sd">            First yield returns batch number, then the next `tasks_per_batch`</span>
-<span class="sd">            yields return the batch times of the batch. Repeat.</span>
+<span class="sd">            datetime: The time period for which the next LBC will be computed.</span>
 
+<span class="sd">    Returns:</span>
+<span class="sd">            datetime: The time period for which the last LBC will be computed.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;restart&quot;</span> <span class="ow">or</span> <span class="p">(</span><span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;start&quot;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">do_prep</span><span class="p">):</span>
         <span class="n">basetime</span> <span class="o">+=</span> <span class="n">step</span>
 
-    <span class="k">def</span> <span class="nf">subgenerator</span><span class="p">(</span><span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">datetime</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-        <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">while</span> <span class="n">start_time</span> <span class="o">&lt;=</span> <span class="n">endtime</span> <span class="ow">and</span> <span class="n">counter</span> <span class="o">&lt;</span> <span class="n">tasks_per_batch</span><span class="p">:</span>
-            <span class="k">yield</span> <span class="n">start_time</span>
-            <span class="n">start_time</span> <span class="o">+=</span> <span class="n">step</span>
-            <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">return</span> <span class="n">start_time</span>
-
-    <span class="n">batch_nr</span> <span class="o">=</span> <span class="mi">1</span>
-
     <span class="k">while</span> <span class="n">basetime</span> <span class="o">&lt;=</span> <span class="n">endtime</span><span class="p">:</span>
-        <span class="n">subgenerator_</span> <span class="o">=</span> <span class="n">subgenerator</span><span class="p">(</span><span class="n">basetime</span><span class="p">)</span>
-        <span class="c1"># First yield the batch number</span>
-        <span class="k">yield</span> <span class="n">batch_nr</span>
-        <span class="c1"># Then yield the next time in the batch</span>
-        <span class="n">basetime</span> <span class="o">=</span> <span class="k">yield from</span> <span class="n">subgenerator_</span>
-        <span class="n">batch_nr</span> <span class="o">+=</span> <span class="mi">1</span></div>
+        <span class="c1"># Yield the updated basetime</span>
+        <span class="k">yield</span> <span class="n">basetime</span>
+        <span class="n">basetime</span> <span class="o">+=</span> <span class="n">step</span>
+
+    <span class="c1"># Return the last basetime</span>
+    <span class="k">return</span> <span class="n">basetime</span></div>
 
 
 
@@ -1244,7 +1232,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-11-20T08:19:55Z.
+      <span class="lastupdated">Last updated on 2024-11-20T08:31:18Z.
       </span></p>
   </div>
 

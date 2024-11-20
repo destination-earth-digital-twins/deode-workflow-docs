@@ -682,7 +682,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-bdint">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">bdint</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-bdshift">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">bdshift</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-bdtasks-per-batch">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">bdtasks_per_batch</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-max-interpolation-tasks">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">max_interpolation_tasks</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-bdmodel">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">bdmodel</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-humi-gp">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">humi_gp</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-ifs-selection">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">ifs.selection</span></code></a></li>
@@ -1020,10 +1020,10 @@
   <h1>Source code for deode.suites.deode_suite_components</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Module to create the different parts of the DEODE ecFlow suite.&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">itertools</span>
-<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">copy</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Generator</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">from</span> <span class="nn">deode.suites.suite_utils</span> <span class="kn">import</span> <span class="n">Cycle</span><span class="p">,</span> <span class="n">Cycles</span><span class="p">,</span> <span class="n">bd_generator</span><span class="p">,</span> <span class="n">lbc_times_generator</span>
 
 <span class="kn">from</span> <span class="nn">..datetime_utils</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">as_datetime</span><span class="p">,</span>
@@ -1037,11 +1037,11 @@
 <span class="kn">from</span> <span class="nn">..tasks.impacts</span> <span class="kn">import</span> <span class="n">ImpactModels</span>
 <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">EcflowSuiteFamily</span><span class="p">,</span>
+    <span class="n">EcflowSuiteLimit</span><span class="p">,</span>
     <span class="n">EcflowSuiteTask</span><span class="p">,</span>
     <span class="n">EcflowSuiteTrigger</span><span class="p">,</span>
     <span class="n">EcflowSuiteTriggers</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.suite_utils</span> <span class="kn">import</span> <span class="n">Cycle</span><span class="p">,</span> <span class="n">Cycles</span><span class="p">,</span> <span class="n">batch_times_generator</span><span class="p">,</span> <span class="n">bd_generator</span>
 
 
 <div class="viewcode-block" id="PgdInputFamily">
@@ -1424,10 +1424,10 @@
 
 
 
-<div class="viewcode-block" id="LBCFamilyGenerator">
-<a class="viewcode-back" href="../../../deode.suites.html#deode.suites.deode_suite_components.LBCFamilyGenerator">[docs]</a>
-<span class="k">class</span> <span class="nc">LBCFamilyGenerator</span><span class="p">(</span><span class="n">EcflowSuiteFamily</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for creating the ecFlow LBCFamilyGenerator.</span>
+<div class="viewcode-block" id="LBCSubFamilyGenerator">
+<a class="viewcode-back" href="../../../deode.suites.html#deode.suites.deode_suite_components.LBCSubFamilyGenerator">[docs]</a>
+<span class="k">class</span> <span class="nc">LBCSubFamilyGenerator</span><span class="p">(</span><span class="n">EcflowSuiteFamily</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for creating the ecFlow LBCSubFamilyGenerator.</span>
 
 <span class="sd">    When iterating over this class, it will create a new LBC family for each</span>
 <span class="sd">    time in the lbc_time_generator.</span>
@@ -1445,6 +1445,7 @@
         <span class="n">trigger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">do_prep</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">limit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">EcflowSuiteLimit</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Class initialization.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span>
@@ -1455,6 +1456,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">trigger</span> <span class="o">=</span> <span class="n">trigger</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span> <span class="o">=</span> <span class="n">ecf_files_remotely</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">do_prep</span> <span class="o">=</span> <span class="n">do_prep</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">limit</span> <span class="o">=</span> <span class="n">limit</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bdint</span> <span class="o">=</span> <span class="n">bdint</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lbc_time_generator</span> <span class="o">=</span> <span class="n">lbc_time_generator</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bd_generator_instance</span> <span class="o">=</span> <span class="n">bd_generator</span><span class="p">(</span>
@@ -1473,10 +1475,10 @@
             <span class="n">variables</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;ARGS&quot;</span><span class="p">:</span> <span class="n">args</span><span class="p">}</span>
 
             <span class="n">lbc_family_name</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;LBC</span><span class="si">{</span><span class="n">bdnr</span><span class="o">*</span><span class="n">inthourbdintx</span><span class="si">:</span><span class="s2">02</span><span class="si">}{</span><span class="n">subbdnr</span><span class="si">:</span><span class="s2">02</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;LBC</span><span class="si">{</span><span class="n">bd_nr</span><span class="o">*</span><span class="n">inthourbdintx</span><span class="si">:</span><span class="s2">02</span><span class="si">}{</span><span class="n">subbdnr</span><span class="si">:</span><span class="s2">02</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="o">+</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">subminbdnr</span><span class="si">:</span><span class="s2">02</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">subminbdnr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">subbdnr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-                <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;LBC</span><span class="si">{</span><span class="n">bdnr</span><span class="o">*</span><span class="n">inthourbdintx</span><span class="si">:</span><span class="s2">02</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;LBC</span><span class="si">{</span><span class="n">bd_nr</span><span class="o">*</span><span class="n">inthourbdintx</span><span class="si">:</span><span class="s2">02</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
 
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
@@ -1486,6 +1488,7 @@
                 <span class="n">trigger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">trigger</span><span class="p">,</span>
                 <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                 <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+                <span class="n">limit</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="p">,</span>
             <span class="p">)</span>
 
             <span class="n">split_mars_task</span> <span class="o">=</span> <span class="kc">None</span>
@@ -1521,14 +1524,10 @@
 
 
 
-<div class="viewcode-block" id="BatchFamilyGenerator">
-<a class="viewcode-back" href="../../../deode.suites.html#deode.suites.deode_suite_components.BatchFamilyGenerator">[docs]</a>
-<span class="k">class</span> <span class="nc">BatchFamilyGenerator</span><span class="p">(</span><span class="n">EcflowSuiteFamily</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for creating the ecFlow BatchFamilyGenerator.</span>
-
-<span class="sd">    When iterating over this class, it will create a new batch family for each</span>
-<span class="sd">    batch in the batch_times_generator.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="LBCFamily">
+<a class="viewcode-back" href="../../../deode.suites.html#deode.suites.deode_suite_components.LBCFamily">[docs]</a>
+<span class="k">class</span> <span class="nc">LBCFamily</span><span class="p">(</span><span class="n">EcflowSuiteFamily</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for creating the ecFlow LBCFamily.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -1542,64 +1541,51 @@
         <span class="n">lbc_family_trigger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">do_prep</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">dry_run</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Class initialization.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">task_settings</span> <span class="o">=</span> <span class="n">task_settings</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">input_template</span> <span class="o">=</span> <span class="n">input_template</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span> <span class="o">=</span> <span class="n">ecf_files</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cycle</span> <span class="o">=</span> <span class="n">cycle</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">trigger</span> <span class="o">=</span> <span class="n">trigger</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lbc_family_trigger</span> <span class="o">=</span> <span class="n">lbc_family_trigger</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span> <span class="o">=</span> <span class="n">ecf_files_remotely</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">do_prep</span> <span class="o">=</span> <span class="n">do_prep</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="s2">&quot;LBCs&quot;</span><span class="p">,</span>
+            <span class="n">parent</span><span class="p">,</span>
+            <span class="n">ecf_files</span><span class="p">,</span>
+            <span class="n">trigger</span><span class="o">=</span><span class="n">trigger</span><span class="p">,</span>
+            <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+        <span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">basetime</span> <span class="o">=</span> <span class="n">as_datetime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cycle</span><span class="o">.</span><span class="n">basetime</span><span class="p">)</span>
-        <span class="n">forecast_range</span> <span class="o">=</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.times.forecast_range&quot;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">dry_run</span><span class="p">:</span>
+            <span class="n">bdmax</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;boundaries.max_interpolation_tasks&quot;</span><span class="p">]</span>
+            <span class="n">lbc_limit</span> <span class="o">=</span> <span class="n">EcflowSuiteLimit</span><span class="p">(</span><span class="s2">&quot;lbc_limit&quot;</span><span class="p">,</span> <span class="n">bdmax</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ecf_node</span><span class="o">.</span><span class="n">add_limit</span><span class="p">(</span><span class="n">lbc_limit</span><span class="o">.</span><span class="n">limit_name</span><span class="p">,</span> <span class="n">lbc_limit</span><span class="o">.</span><span class="n">max_jobs</span><span class="p">)</span>
+
+        <span class="n">basetime</span> <span class="o">=</span> <span class="n">as_datetime</span><span class="p">(</span><span class="n">cycle</span><span class="o">.</span><span class="n">basetime</span><span class="p">)</span>
+        <span class="n">forecast_range</span> <span class="o">=</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.times.forecast_range&quot;</span><span class="p">])</span>
         <span class="n">endtime</span> <span class="o">=</span> <span class="n">basetime</span> <span class="o">+</span> <span class="n">forecast_range</span>
-        <span class="n">bdint</span> <span class="o">=</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;boundaries.bdint&quot;</span><span class="p">])</span>
-        <span class="n">bdtasks_per_batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;boundaries.bdtasks_per_batch&quot;</span><span class="p">]</span>
-        <span class="n">batch_times_generator_instance</span> <span class="o">=</span> <span class="n">batch_times_generator</span><span class="p">(</span>
+        <span class="n">bdint</span> <span class="o">=</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;boundaries.bdint&quot;</span><span class="p">])</span>
+        <span class="n">lbc_times_generator_instance</span> <span class="o">=</span> <span class="n">lbc_times_generator</span><span class="p">(</span>
             <span class="n">basetime</span><span class="p">,</span>
             <span class="n">endtime</span><span class="p">,</span>
             <span class="n">bdint</span><span class="p">,</span>
-            <span class="n">bdtasks_per_batch</span><span class="p">,</span>
-            <span class="n">mode</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.mode&quot;</span><span class="p">],</span>
-            <span class="n">do_prep</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">do_prep</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.mode&quot;</span><span class="p">],</span>
+            <span class="n">do_prep</span><span class="o">=</span><span class="n">do_prep</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">lbc_family_generator_instance</span> <span class="o">=</span> <span class="n">LBCFamilyGenerator</span><span class="p">(</span>
+        <span class="n">lbc_family_generator_instance</span> <span class="o">=</span> <span class="n">LBCSubFamilyGenerator</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">task_settings</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">input_template</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
+            <span class="n">config</span><span class="p">,</span>
+            <span class="n">task_settings</span><span class="p">,</span>
+            <span class="n">input_template</span><span class="p">,</span>
+            <span class="n">ecf_files</span><span class="p">,</span>
             <span class="n">bdint</span><span class="p">,</span>
-            <span class="n">batch_times_generator_instance</span><span class="p">,</span>
-            <span class="n">trigger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lbc_family_trigger</span><span class="p">,</span>
-            <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
-            <span class="n">do_prep</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">do_prep</span><span class="p">,</span>
+            <span class="n">lbc_times_generator_instance</span><span class="p">,</span>
+            <span class="n">trigger</span><span class="o">=</span><span class="n">lbc_family_trigger</span><span class="p">,</span>
+            <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+            <span class="n">do_prep</span><span class="o">=</span><span class="n">do_prep</span><span class="p">,</span>
+            <span class="n">limit</span><span class="o">=</span><span class="n">lbc_limit</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">dry_run</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">batch_trigger</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trigger</span>
-        <span class="k">for</span> <span class="n">batch_nr</span> <span class="ow">in</span> <span class="n">batch_times_generator_instance</span><span class="p">:</span>
-            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Batch</span><span class="si">{</span><span class="n">batch_nr</span><span class="si">:</span><span class="s2">02</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
-                <span class="n">trigger</span><span class="o">=</span><span class="n">batch_trigger</span><span class="p">,</span>
-                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
-            <span class="p">)</span>
 
-            <span class="c1"># Iterate through the LBC family generator to create the next</span>
-            <span class="c1"># bdtasks_per_batch LBC families</span>
-            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">islice</span><span class="p">(</span><span class="n">lbc_family_generator_instance</span><span class="p">,</span> <span class="n">bdtasks_per_batch</span><span class="p">):</span>
-                <span class="k">pass</span>
-
-            <span class="k">yield</span> <span class="bp">self</span>
-
-            <span class="c1"># Update trigger to make next batch dependent on current</span>
-            <span class="n">batch_trigger</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+        <span class="c1"># Iterate through the LBC family generator to create the next</span>
+        <span class="c1"># LBC families</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">lbc_family_generator_instance</span><span class="p">:</span>
+            <span class="k">pass</span></div>
 
 
 
@@ -1619,6 +1605,7 @@
         <span class="n">trigger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">do_prep</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">dry_run</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Class initialization.&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
@@ -1660,7 +1647,7 @@
         <span class="k">if</span> <span class="n">csc</span> <span class="o">==</span> <span class="s2">&quot;ALARO&quot;</span> <span class="ow">and</span> <span class="n">cycles</span><span class="o">.</span><span class="n">end_of_month</span><span class="p">:</span>
             <span class="n">do_prep</span> <span class="o">=</span> <span class="kc">True</span>
 
-        <span class="n">batch_family_generator_instance</span> <span class="o">=</span> <span class="n">BatchFamilyGenerator</span><span class="p">(</span>
+        <span class="n">LBCFamily</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">config</span><span class="p">,</span>
             <span class="n">task_settings</span><span class="p">,</span>
@@ -1670,10 +1657,8 @@
             <span class="n">lbc_family_trigger</span><span class="o">=</span><span class="n">e923_update_task</span><span class="p">,</span>
             <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
             <span class="n">do_prep</span><span class="o">=</span><span class="n">do_prep</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="c1"># Iterate over the batch times to create the batch families</span>
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">batch_family_generator_instance</span><span class="p">:</span>
-            <span class="k">pass</span></div>
+            <span class="n">dry_run</span><span class="o">=</span><span class="n">dry_run</span><span class="p">,</span>
+        <span class="p">)</span></div>
 
 
 
@@ -2012,6 +1997,7 @@
         <span class="n">trigger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">do_prep</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">dry_run</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Class initialization.&quot;&quot;&quot;</span>
         <span class="n">cycles</span> <span class="o">=</span> <span class="n">Cycles</span><span class="p">(</span>
@@ -2070,6 +2056,7 @@
                     <span class="n">trigger</span><span class="o">=</span><span class="n">inputdata</span><span class="p">,</span>
                     <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
                     <span class="n">do_prep</span><span class="o">=</span><span class="n">do_prep</span><span class="p">,</span>
+                    <span class="n">dry_run</span><span class="o">=</span><span class="n">dry_run</span><span class="p">,</span>
                 <span class="p">)</span>
 
                 <span class="n">ready_for_cycle</span> <span class="o">=</span> <span class="n">prev_interpolation_trigger</span> <span class="o">=</span> <span class="p">[</span><span class="n">int_family</span><span class="p">]</span>
@@ -2117,7 +2104,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-11-20T08:19:55Z.
+      <span class="lastupdated">Last updated on 2024-11-20T08:31:18Z.
       </span></p>
   </div>
 

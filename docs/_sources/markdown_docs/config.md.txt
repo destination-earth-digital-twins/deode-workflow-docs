@@ -1,5 +1,5 @@
 The following section was automatically generated running
-        `deode doc config` on 2024-11-20T08:19:53.
+        `deode doc config` on 2024-11-20T08:31:16.
 
 # Config
 
@@ -1458,16 +1458,16 @@ Must be one of:
 
 **Description:** Settings for control of boundary treatment.
 
-| Property                                           | Type             | Required | Default | Title/Description                                                             |
-| -------------------------------------------------- | ---------------- | -------- | ------- | ----------------------------------------------------------------------------- |
-| [bdint](#boundaries_bdint)                         | string           | No       | -       | Boundary interval                                                             |
-| [bdshift](#boundaries_bdshift)                     | string           | No       | -       | Shift of boundary initial time. E.g. 'PT3H' would mean use 3H old boundaries  |
-| [bdtasks_per_batch](#boundaries_bdtasks_per_batch) | number           | No       | -       | Max number of parallel boundary interpolation tasks                           |
-| [bdmodel](#boundaries_bdmodel)                     | enum (of string) | No       | -       | Coupling model                                                                |
-| [humi_gp](#boundaries_humi_gp)                     | boolean          | No       | -       | Value of TFP_Q%LLGP in domain namelist for c903. True for gridpoint humidity. |
-| [ifs.selection](#boundaries_ifsselection)          | enum (of string) | No       | -       | Selection                                                                     |
-| [ifs.bdmember](#boundaries_ifsbdmember)            | string           | No       | -       | The number of members in ensemble if selection is IFSENS, else empty string.  |
-| [bd_has_surfex](#boundaries_bd_has_surfex)         | boolean          | No       | -       | Set to true if the host model runs with surfex                                |
+| Property                                                       | Type             | Required | Default | Title/Description                                                             |
+| -------------------------------------------------------------- | ---------------- | -------- | ------- | ----------------------------------------------------------------------------- |
+| [bdint](#boundaries_bdint)                                     | string           | No       | -       | Boundary interval                                                             |
+| [bdshift](#boundaries_bdshift)                                 | string           | No       | -       | Shift of boundary initial time. E.g. 'PT3H' would mean use 3H old boundaries  |
+| [max_interpolation_tasks](#boundaries_max_interpolation_tasks) | number           | No       | -       | Number of interpolate tasks run in parallel                                   |
+| [bdmodel](#boundaries_bdmodel)                                 | enum (of string) | No       | -       | Coupling model                                                                |
+| [humi_gp](#boundaries_humi_gp)                                 | boolean          | No       | -       | Value of TFP_Q%LLGP in domain namelist for c903. True for gridpoint humidity. |
+| [ifs.selection](#boundaries_ifsselection)                      | enum (of string) | No       | -       | Selection                                                                     |
+| [ifs.bdmember](#boundaries_ifsbdmember)                        | string           | No       | -       | The number of members in ensemble if selection is IFSENS, else empty string.  |
+| [bd_has_surfex](#boundaries_bd_has_surfex)                     | boolean          | No       | -       | Set to true if the host model runs with surfex                                |
 
 <a name="boundaries_bdint"></a>
 ### Property `Config > boundaries > bdint`
@@ -1497,15 +1497,15 @@ Must be one of:
 | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Must match regular expression** | ```^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$``` [Test](https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24) |
 
-<a name="boundaries_bdtasks_per_batch"></a>
-### Property `Config > boundaries > bdtasks_per_batch`
+<a name="boundaries_max_interpolation_tasks"></a>
+### Property `Config > boundaries > max_interpolation_tasks`
 
 |              |          |
 | ------------ | -------- |
 | **Type**     | `number` |
 | **Required** | No       |
 
-**Description:** Max number of parallel boundary interpolation tasks
+**Description:** Number of interpolate tasks run in parallel
 
 <a name="boundaries_bdmodel"></a>
 ### Property `Config > boundaries > bdmodel`

@@ -682,7 +682,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-bdint">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">bdint</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-bdshift">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">bdshift</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-bdtasks-per-batch">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">bdtasks_per_batch</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-max-interpolation-tasks">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">max_interpolation_tasks</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-bdmodel">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">bdmodel</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-humi-gp">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">humi_gp</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-ifs-selection">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">ifs.selection</span></code></a></li>
@@ -1233,6 +1233,7 @@
         <span class="n">def_status</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">cron</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct the EcflowNode.</span>
 
@@ -1247,7 +1248,7 @@
 <span class="sd">            def_status (str, ecflow.Defstatus): Def status. Defaults to None</span>
 <span class="sd">            ecf_files_remotely(str, optional): Remote file prefix</span>
 <span class="sd">            cron (EcflowSuiteCron): Cron. Defauts to None</span>
-
+<span class="sd">            limit (EcflowSuiteLimit): Limit. Defaults to None</span>
 <span class="sd">        Raises:</span>
 <span class="sd">            NotImplementedError: Node type not implemented</span>
 <span class="sd">            TypeError: &quot;Triggers must be an EcflowSuiteTriggers object&quot;</span>
@@ -1342,6 +1343,16 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">ecf_node</span><span class="o">.</span><span class="n">add_cron</span><span class="p">(</span><span class="n">cron</span><span class="o">.</span><span class="n">cron</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Cron must be an EcflowSuiteCron object&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">limit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">limit</span><span class="p">,</span> <span class="n">EcflowSuiteLimit</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_type</span> <span class="o">==</span> <span class="s2">&quot;family&quot;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">ecf_node</span><span class="o">.</span><span class="n">add_inlimit</span><span class="p">(</span><span class="n">limit</span><span class="o">.</span><span class="n">limit_name</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                        <span class="s2">&quot;Limit is implemented only for Suite and Family!&quot;</span>
+                    <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Limit should be an EcflowSuitenLimit object&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">def_status</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_node</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">def_status</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -1371,6 +1382,7 @@
         <span class="n">def_status</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">cron</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct EcflowNodeContainer.</span>
 
@@ -1384,7 +1396,7 @@
 <span class="sd">            def_status (str, ecflow.Defstatus): Def status. Defaults to None</span>
 <span class="sd">            ecf_files_remotely(str, optional): ECF_FILES on ecflow server</span>
 <span class="sd">            cron (EcflowSuiteCron): Cron. Defauts to None</span>
-
+<span class="sd">            limit (EcflowSuiteLimit): Limit. Default None</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">EcflowNode</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
@@ -1398,6 +1410,7 @@
             <span class="n">def_status</span><span class="o">=</span><span class="n">def_status</span><span class="p">,</span>
             <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
             <span class="n">cron</span><span class="o">=</span><span class="n">cron</span><span class="p">,</span>
+            <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 
@@ -1473,6 +1486,7 @@
         <span class="n">def_status</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">cron</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct the family.</span>
 
@@ -1485,6 +1499,7 @@
 <span class="sd">                    def_status (str, ecflow.Defstatus): Def status. Defaults to None</span>
 <span class="sd">                    ecf_files_remotely(str, optional): ECF_FILES on ecflow server</span>
 <span class="sd">                    cron (EcflowSuiteCron): Cron. Defaut None</span>
+<span class="sd">                    limit (EcflowSuiteLimit): Limit. Default None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">EcflowNodeContainer</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
@@ -1497,6 +1512,7 @@
             <span class="n">def_status</span><span class="o">=</span><span class="n">def_status</span><span class="p">,</span>
             <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
             <span class="n">cron</span><span class="o">=</span><span class="n">cron</span><span class="p">,</span>
+            <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_remote_container_path</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_node</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -1695,7 +1711,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;EcFlow Cron in a suite.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">days_of_week</span><span class="p">,</span> <span class="n">time</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a EcFlow cron oject.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a EcFlow cron object.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            days_of_week (list of int):  0-6, Sunday-Saturday</span>
@@ -1705,6 +1721,23 @@
         <span class="n">days_of_week</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">days_of_week</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;days: </span><span class="si">{}</span><span class="s2">, time: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">days_of_week</span><span class="p">,</span> <span class="n">time_str</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cron</span> <span class="o">=</span> <span class="n">ecflow</span><span class="o">.</span><span class="n">Cron</span><span class="p">(</span><span class="n">time_str</span><span class="p">,</span> <span class="n">days_of_week</span><span class="o">=</span><span class="n">days_of_week</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="EcflowSuiteLimit">
+<a class="viewcode-back" href="../../../deode.suites.html#deode.suites.base.EcflowSuiteLimit">[docs]</a>
+<span class="k">class</span> <span class="nc">EcflowSuiteLimit</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Ecflow limit for active jobs in family.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">limit_name</span><span class="p">,</span> <span class="n">max_jobs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a EcFlow limit object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            limit_name (str): Name of the limit</span>
+<span class="sd">            max_jobs (int): number of maximal active jobs</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">limit_name</span> <span class="o">=</span> <span class="n">limit_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_jobs</span> <span class="o">=</span> <span class="n">max_jobs</span></div>
 
 </pre></div>
 
@@ -1716,7 +1749,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-11-20T08:19:55Z.
+      <span class="lastupdated">Last updated on 2024-11-20T08:31:18Z.
       </span></p>
   </div>
 
