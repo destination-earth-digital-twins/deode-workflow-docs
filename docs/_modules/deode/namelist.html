@@ -1438,15 +1438,17 @@
 
 <div class="viewcode-block" id="NamelistGenerator.fn_steplist">
 <a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistGenerator.fn_steplist">[docs]</a>
-    <span class="k">def</span> <span class="nf">fn_steplist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">fn_steplist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_intervals</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Resolve namelist function steplist.&quot;&quot;&quot;</span>
         <span class="n">forecast_range</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.times.forecast_range&quot;</span><span class="p">]</span>
         <span class="n">tstep</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain.tstep&quot;</span><span class="p">])</span>
         <span class="c1"># default value:</span>
         <span class="n">output_timesteps</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="c1"># decode string into list</span>
+        <span class="n">time_intervals</span> <span class="o">=</span> <span class="n">find_value</span><span class="p">(</span><span class="n">time_intervals</span><span class="p">)</span>
 
-        <span class="n">dtlist</span> <span class="o">=</span> <span class="n">oi2dt_list</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">forecast_range</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;steplist: </span><span class="si">{}</span><span class="s2"> // </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">arg</span><span class="p">,</span> <span class="n">forecast_range</span><span class="p">)</span>
+        <span class="n">dtlist</span> <span class="o">=</span> <span class="n">oi2dt_list</span><span class="p">(</span><span class="n">time_intervals</span><span class="p">,</span> <span class="n">forecast_range</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;steplist: </span><span class="si">{}</span><span class="s2"> // </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">time_intervals</span><span class="p">,</span> <span class="n">forecast_range</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;dtlist: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">dtlist</span><span class="p">)</span>
         <span class="n">output_timesteps</span> <span class="o">=</span> <span class="p">[</span>
             <span class="nb">int</span><span class="p">((</span><span class="n">dt</span><span class="o">.</span><span class="n">days</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">3600</span> <span class="o">+</span> <span class="n">dt</span><span class="o">.</span><span class="n">seconds</span><span class="p">)</span> <span class="o">/</span> <span class="n">tstep</span><span class="p">)</span> <span class="k">for</span> <span class="n">dt</span> <span class="ow">in</span> <span class="n">dtlist</span>
@@ -2081,7 +2083,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-11-20T11:12:40Z.
+      <span class="lastupdated">Last updated on 2024-11-20T11:59:01Z.
       </span></p>
   </div>
 
