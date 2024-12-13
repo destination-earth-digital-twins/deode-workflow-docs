@@ -1030,7 +1030,9 @@
            <div itemprop="articleBody">
              
   <h1>Source code for deode.tasks.gribmodify</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;AddTotalPrec.&quot;&quot;&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot;AddCalculatedFields.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">math</span>
 
 <span class="kn">from</span> <span class="nn">..datetime_utils</span> <span class="kn">import</span> <span class="n">as_datetime</span>
 <span class="kn">from</span> <span class="nn">..logs</span> <span class="kn">import</span> <span class="n">logger</span>
@@ -1044,9 +1046,9 @@
     <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;eccodes python API could not be imported. Usually OK.&quot;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="AddTotalPrec">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.gribmodify.AddTotalPrec">[docs]</a>
-<span class="k">class</span> <span class="nc">AddTotalPrec</span><span class="p">(</span><span class="n">Task</span><span class="p">):</span>
+<div class="viewcode-block" id="AddCalculatedFields">
+<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.gribmodify.AddCalculatedFields">[docs]</a>
+<span class="k">class</span> <span class="nc">AddCalculatedFields</span><span class="p">(</span><span class="n">Task</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create grib files.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
@@ -1065,8 +1067,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">output_settings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.output_settings&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">file_templates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;file_templates&quot;</span><span class="p">]</span>
 
-<div class="viewcode-block" id="AddTotalPrec.add_field_to_grib">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.gribmodify.AddTotalPrec.add_field_to_grib">[docs]</a>
+<div class="viewcode-block" id="AddCalculatedFields.add_field_to_grib">
+<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.gribmodify.AddCalculatedFields.add_field_to_grib">[docs]</a>
     <span class="k">def</span> <span class="nf">add_field_to_grib</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">operation</span><span class="p">,</span> <span class="n">short_name</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add sum of two fields to the same grib.</span>
 
@@ -1079,45 +1081,56 @@
 <span class="sd">        Raises:</span>
 <span class="sd">            NotImplementedError: Operation not implemented yet&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">gid1</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">gid2</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">gids</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">))]</span>
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">params</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Parameters are not define&quot;</span><span class="p">)</span>
 
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_in</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s2">&quot;ab&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_out</span><span class="p">:</span>
-            <span class="k">while</span> <span class="n">gid1</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">gid2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">while</span> <span class="kc">None</span> <span class="ow">in</span> <span class="n">gids</span><span class="p">:</span>
                 <span class="n">gid</span> <span class="o">=</span> <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_grib_new_from_file</span><span class="p">(</span><span class="n">f_in</span><span class="p">)</span>
                 <span class="n">par_nam</span> <span class="o">=</span> <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_get</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="s2">&quot;shortName&quot;</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">par_nam</span> <span class="o">==</span> <span class="n">params</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-                    <span class="n">gid1</span> <span class="o">=</span> <span class="n">gid</span>
-                <span class="k">elif</span> <span class="n">par_nam</span> <span class="o">==</span> <span class="n">params</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-                    <span class="n">gid2</span> <span class="o">=</span> <span class="n">gid</span>
+                <span class="k">if</span> <span class="n">par_nam</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+                    <span class="n">gids</span><span class="p">[</span><span class="n">params</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">par_nam</span><span class="p">)]</span> <span class="o">=</span> <span class="n">gid</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_release</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
 
-            <span class="n">values1</span> <span class="o">=</span> <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_get_values</span><span class="p">(</span><span class="n">gid1</span><span class="p">)</span>
-            <span class="n">values2</span> <span class="o">=</span> <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_get_values</span><span class="p">(</span><span class="n">gid2</span><span class="p">)</span>
+            <span class="n">values_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">eccodes</span><span class="o">.</span><span class="n">codes_get_values</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span> <span class="k">for</span> <span class="n">gid</span> <span class="ow">in</span> <span class="n">gids</span><span class="p">]</span>
+
             <span class="k">if</span> <span class="n">operation</span> <span class="o">==</span> <span class="s2">&quot;add&quot;</span><span class="p">:</span>
-                <span class="n">values_sum</span> <span class="o">=</span> <span class="p">[</span><span class="n">v1</span> <span class="o">+</span> <span class="n">v2</span> <span class="k">for</span> <span class="n">v1</span><span class="p">,</span> <span class="n">v2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">values1</span><span class="p">,</span> <span class="n">values2</span><span class="p">)]</span>
+                <span class="n">result_values</span> <span class="o">=</span> <span class="p">[</span><span class="nb">sum</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="k">for</span> <span class="n">values</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">values_list</span><span class="p">)]</span>
+            <span class="k">elif</span> <span class="n">operation</span> <span class="o">==</span> <span class="s2">&quot;vectorLength&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Vector must has 2 components!&quot;</span><span class="p">)</span>
+                <span class="n">result_values</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">values</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">values</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="k">for</span> <span class="n">values</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">values_list</span><span class="p">)</span>
+                <span class="p">]</span>
+            <span class="k">elif</span> <span class="n">operation</span> <span class="o">==</span> <span class="s2">&quot;vectorDirection&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Vector must has 2 components!&quot;</span><span class="p">)</span>
+                <span class="n">result_values</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">values</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">%</span> <span class="mi">360</span>
+                    <span class="k">for</span> <span class="n">values</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">values_list</span><span class="p">)</span>
+                <span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Operation </span><span class="si">{}</span><span class="s2"> not implemented yet.&quot;</span><span class="p">,</span> <span class="n">operation</span><span class="p">)</span>
 
-            <span class="n">gid_sum</span> <span class="o">=</span> <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_clone</span><span class="p">(</span><span class="n">gid1</span><span class="p">)</span>
+            <span class="n">gid_res</span> <span class="o">=</span> <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_clone</span><span class="p">(</span><span class="n">gids</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
-            <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_set_values</span><span class="p">(</span><span class="n">gid_sum</span><span class="p">,</span> <span class="n">values_sum</span><span class="p">)</span>
-            <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_set</span><span class="p">(</span><span class="n">gid_sum</span><span class="p">,</span> <span class="s2">&quot;shortNameECMF&quot;</span><span class="p">,</span> <span class="n">short_name</span><span class="p">)</span>
-            <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_set</span><span class="p">(</span><span class="n">gid_sum</span><span class="p">,</span> <span class="s2">&quot;shortName&quot;</span><span class="p">,</span> <span class="n">short_name</span><span class="p">)</span>
+            <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_set_values</span><span class="p">(</span><span class="n">gid_res</span><span class="p">,</span> <span class="n">result_values</span><span class="p">)</span>
+            <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_set</span><span class="p">(</span><span class="n">gid_res</span><span class="p">,</span> <span class="s2">&quot;shortNameECMF&quot;</span><span class="p">,</span> <span class="n">short_name</span><span class="p">)</span>
+            <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_set</span><span class="p">(</span><span class="n">gid_res</span><span class="p">,</span> <span class="s2">&quot;shortName&quot;</span><span class="p">,</span> <span class="n">short_name</span><span class="p">)</span>
 
-            <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_write</span><span class="p">(</span><span class="n">gid_sum</span><span class="p">,</span> <span class="n">f_out</span><span class="p">)</span>
-            <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_release</span><span class="p">(</span><span class="n">gid1</span><span class="p">)</span>
-            <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_release</span><span class="p">(</span><span class="n">gid2</span><span class="p">)</span>
-            <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_release</span><span class="p">(</span><span class="n">gid_sum</span><span class="p">)</span>
+            <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_write</span><span class="p">(</span><span class="n">gid_res</span><span class="p">,</span> <span class="n">f_out</span><span class="p">)</span>
+            <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_release</span><span class="p">(</span><span class="n">gid_res</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">gid</span> <span class="ow">in</span> <span class="n">gids</span><span class="p">:</span>
+                <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_release</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
             <span class="n">f_in</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="n">f_out</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="AddTotalPrec.find_par">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.gribmodify.AddTotalPrec.find_par">[docs]</a>
+<div class="viewcode-block" id="AddCalculatedFields.find_par">
+<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.gribmodify.AddCalculatedFields.find_par">[docs]</a>
     <span class="k">def</span> <span class="nf">find_par</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">short_name</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if field with shortName already exists in grib.</span>
 
@@ -1141,8 +1154,8 @@
         <span class="k">return</span> <span class="n">found</span></div>
 
 
-<div class="viewcode-block" id="AddTotalPrec.execute">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.gribmodify.AddTotalPrec.execute">[docs]</a>
+<div class="viewcode-block" id="AddCalculatedFields.execute">
+<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.gribmodify.AddCalculatedFields.execute">[docs]</a>
     <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute add_total_precip.&quot;&quot;&quot;</span>
         <span class="n">file_handle</span> <span class="o">=</span> <span class="n">FileManager</span><span class="o">.</span><span class="n">create_list</span><span class="p">(</span>
@@ -1188,7 +1201,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-12-11T09:38:27Z.
+      <span class="lastupdated">Last updated on 2024-12-13T11:19:05Z.
       </span></p>
   </div>
 
