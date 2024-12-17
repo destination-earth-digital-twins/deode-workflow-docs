@@ -1272,22 +1272,21 @@
 <span class="k">def</span> <span class="nf">get_decadal_list</span><span class="p">(</span><span class="n">dt_start</span><span class="p">,</span> <span class="n">dt_end</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a list of dates for which decadal pgd files have to be created.&quot;&quot;&quot;</span>
     <span class="c1"># check decade of start and end of period</span>
-    <span class="n">start_decade</span> <span class="o">=</span> <span class="n">get_decade</span><span class="p">(</span><span class="n">dt_start</span><span class="p">)</span>
-    <span class="n">end_decade</span> <span class="o">=</span> <span class="n">get_decade</span><span class="p">(</span><span class="n">dt_end</span><span class="p">)</span>
+    <span class="n">dt_start0</span> <span class="o">=</span> <span class="n">dt_start</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">hour</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">minute</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">second</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">dt_end0</span> <span class="o">=</span> <span class="n">dt_end</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">hour</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">minute</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">second</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">start_decade</span> <span class="o">=</span> <span class="n">get_decade</span><span class="p">(</span><span class="n">dt_start0</span><span class="p">)</span>
+    <span class="n">end_decade</span> <span class="o">=</span> <span class="n">get_decade</span><span class="p">(</span><span class="n">dt_end0</span><span class="p">)</span>
 
+    <span class="n">decades</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">decades</span><span class="p">[</span><span class="n">start_decade</span><span class="p">]</span> <span class="o">=</span> <span class="n">dt_start0</span>
     <span class="k">if</span> <span class="n">start_decade</span> <span class="o">!=</span> <span class="n">end_decade</span><span class="p">:</span>
         <span class="c1"># More than one decade is covered by period.</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">dt_end</span> <span class="o">-</span> <span class="n">dt_start</span><span class="p">)</span><span class="o">.</span><span class="n">days</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">dt_end</span> <span class="o">-</span> <span class="n">dt_start</span><span class="p">)</span><span class="o">.</span><span class="n">days</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">list_of_decades</span> <span class="o">=</span> <span class="p">[</span><span class="n">dt_start</span><span class="p">]</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">list_of_decades</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dt_start</span> <span class="o">+</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;P</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">D&quot;</span><span class="p">))</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">list_of_decades</span> <span class="o">=</span> <span class="p">[</span><span class="n">dt_start</span><span class="p">,</span> <span class="n">dt_end</span><span class="p">]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">list_of_decades</span> <span class="o">=</span> <span class="p">[</span><span class="n">dt_start</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">list_of_decades</span></div>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">dt_end0</span> <span class="o">-</span> <span class="n">dt_start0</span><span class="p">)</span><span class="o">.</span><span class="n">days</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">date</span> <span class="o">=</span> <span class="n">dt_start0</span> <span class="o">+</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;P</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">D&quot;</span><span class="p">)</span>
+            <span class="n">decade</span> <span class="o">=</span> <span class="n">get_decade</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">decade</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">decades</span><span class="p">:</span>
+                <span class="n">decades</span><span class="p">[</span><span class="n">decade</span><span class="p">]</span> <span class="o">=</span> <span class="n">date</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">decades</span><span class="o">.</span><span class="n">values</span><span class="p">())</span></div>
 
 
 
@@ -1314,7 +1313,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-12-16T15:01:31Z.
+      <span class="lastupdated">Last updated on 2024-12-17T10:39:51Z.
       </span></p>
   </div>
 
