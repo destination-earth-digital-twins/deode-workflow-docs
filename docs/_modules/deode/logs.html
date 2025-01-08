@@ -1048,27 +1048,27 @@
   <h1>Source code for deode.logs</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python3</span>
 <span class="sd">&quot;&quot;&quot;Logging-related classes, functions and definitions.&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">inspect</span>
-<span class="kn">import</span> <span class="nn">logging</span> <span class="k">as</span> <span class="nn">builtin_logging</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">pprint</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Sequence</span>
-<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">builtin_logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pprint</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">wraps</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 
-<span class="kn">import</span> <span class="nn">humanize</span>
-<span class="kn">from</span> <span class="nn">loguru</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">humanize</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">loguru</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">GeneralConstants</span>
-<span class="kn">from</span> <span class="nn">.aux_types</span> <span class="kn">import</span> <span class="n">QuasiConstant</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">GeneralConstants</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.aux_types</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuasiConstant</span>
 
 
 <div class="viewcode-block" id="LogDefaults">
 <a class="viewcode-back" href="../../deode.html#deode.logs.LogDefaults">[docs]</a>
-<span class="k">class</span> <span class="nc">LogDefaults</span><span class="p">(</span><span class="n">QuasiConstant</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">LogDefaults</span><span class="p">(</span><span class="n">QuasiConstant</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Defaults used for the logging system.&quot;&quot;&quot;</span>
 
     <span class="n">LEVEL</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;DEODE_LOGLEVEL&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;LOGURU_LEVEL&quot;</span><span class="p">,</span> <span class="s2">&quot;INFO&quot;</span><span class="p">))</span>
@@ -1083,7 +1083,7 @@
 <div class="viewcode-block" id="LogFormatter">
 <a class="viewcode-back" href="../../deode.html#deode.logs.LogFormatter">[docs]</a>
 <span class="nd">@dataclass</span>
-<span class="k">class</span> <span class="nc">LogFormatter</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">LogFormatter</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper class to setup logging without poluting the module&#39;s main scope.&quot;&quot;&quot;</span>
 
     <span class="n">datetime</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&lt;green&gt;{time:YYYY-MM-DD HH:mm:ss}&lt;/green&gt;&quot;</span>
@@ -1096,7 +1096,7 @@
 
 <div class="viewcode-block" id="LogFormatter.format_string">
 <a class="viewcode-back" href="../../deode.html#deode.logs.LogFormatter.format_string">[docs]</a>
-    <span class="k">def</span> <span class="nf">format_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loglevel</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">format_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loglevel</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the appropriate fmt string according to log level and fmt opts.&quot;&quot;&quot;</span>
         <span class="n">rtn</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">datetime</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">level</span><span class="si">}</span><span class="s2"> | &quot;</span>
 
@@ -1112,10 +1112,10 @@
 
 <div class="viewcode-block" id="LoggerHandlers">
 <a class="viewcode-back" href="../../deode.html#deode.logs.LoggerHandlers">[docs]</a>
-<span class="k">class</span> <span class="nc">LoggerHandlers</span><span class="p">(</span><span class="n">Sequence</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">LoggerHandlers</span><span class="p">(</span><span class="n">Sequence</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper class to configure logger handlers when using `loguru.logger.configure`.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default_level</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">LogDefaults</span><span class="o">.</span><span class="n">LEVEL</span><span class="p">,</span> <span class="o">**</span><span class="n">sinks</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default_level</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">LogDefaults</span><span class="o">.</span><span class="n">LEVEL</span><span class="p">,</span> <span class="o">**</span><span class="n">sinks</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialise instance with default loglevel and sinks.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">default_level</span> <span class="o">=</span> <span class="n">default_level</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span> <span class="o">=</span> <span class="p">{}</span>
@@ -1124,7 +1124,7 @@
 
 <div class="viewcode-block" id="LoggerHandlers.add">
 <a class="viewcode-back" href="../../deode.html#deode.logs.LoggerHandlers.add">[docs]</a>
-    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">sink</span><span class="p">,</span> <span class="o">**</span><span class="n">configs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">sink</span><span class="p">,</span> <span class="o">**</span><span class="n">configs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add handler to instance.&quot;&quot;&quot;</span>
         <span class="n">configs</span><span class="p">[</span><span class="s2">&quot;level&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">configs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;level&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_level</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
         <span class="n">configs</span><span class="p">[</span><span class="s2">&quot;format&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">configs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span>
@@ -1140,24 +1140,24 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">configs</span></div>
 
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">pprint</span><span class="o">.</span><span class="n">pformat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">)</span>
 
     <span class="c1"># Implement abstract methods</span>
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="n">item</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="log_elapsed_time">
 <a class="viewcode-back" href="../../deode.html#deode.logs.log_elapsed_time">[docs]</a>
-<span class="k">def</span> <span class="nf">log_elapsed_time</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">log_elapsed_time</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a decorator that logs beginning, exit and elapsed time of function.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">log_elapsed_time_decorator</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">log_elapsed_time_decorator</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrap `function` and log beginning, exit and elapsed time.&quot;&quot;&quot;</span>
         <span class="n">name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="n">function</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">function</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;main&quot;</span><span class="p">:</span>
@@ -1166,7 +1166,7 @@
             <span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1"> --&gt; &quot;</span><span class="si">{</span><span class="n">cmd</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
 
         <span class="nd">@wraps</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
-        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">opt</span><span class="p">(</span><span class="n">colors</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;&lt;blue&gt;Start </span><span class="si">{}</span><span class="s2">&lt;/blue&gt;&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
 
             <span class="n">t_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
@@ -1195,7 +1195,7 @@
 
 <div class="viewcode-block" id="InterceptHandler">
 <a class="viewcode-back" href="../../deode.html#deode.logs.InterceptHandler">[docs]</a>
-<span class="k">class</span> <span class="nc">InterceptHandler</span><span class="p">(</span><span class="n">builtin_logging</span><span class="o">.</span><span class="n">Handler</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">InterceptHandler</span><span class="p">(</span><span class="n">builtin_logging</span><span class="o">.</span><span class="n">Handler</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Add logging handler to augment python stdlib logging.</span>
 
 <span class="sd">    Logs which would otherwise go to stdlib logging are redirected through</span>
@@ -1204,7 +1204,7 @@
 
 <div class="viewcode-block" id="InterceptHandler.emit">
 <a class="viewcode-back" href="../../deode.html#deode.logs.InterceptHandler.emit">[docs]</a>
-    <span class="k">def</span> <span class="nf">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">:</span> <span class="n">builtin_logging</span><span class="o">.</span><span class="n">LogRecord</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">:</span> <span class="n">builtin_logging</span><span class="o">.</span><span class="n">LogRecord</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Emit a record.</span>
 
 <span class="sd">        Parameters:</span>
@@ -1245,7 +1245,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-12-20T13:29:44Z.
+      <span class="lastupdated">Last updated on 2025-01-08T10:33:06Z.
       </span></p>
   </div>
 

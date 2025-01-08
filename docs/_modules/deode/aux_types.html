@@ -1048,18 +1048,18 @@
   <h1>Source code for deode.aux_types</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python3</span>
 <span class="sd">&quot;&quot;&quot;Aux types used in the package.&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">MutableMapping</span><span class="p">,</span> <span class="n">MutableSequence</span><span class="p">,</span> <span class="n">MutableSet</span>
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span>
-<span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">getitem</span>
-<span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">MappingProxyType</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">MutableMapping</span><span class="p">,</span> <span class="n">MutableSequence</span><span class="p">,</span> <span class="n">MutableSet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">reduce</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">operator</span><span class="w"> </span><span class="kn">import</span> <span class="n">getitem</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">types</span><span class="w"> </span><span class="kn">import</span> <span class="n">MappingProxyType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Union</span>
 
-<span class="kn">import</span> <span class="nn">tomlkit</span>
-<span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tomlkit</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
 
-<span class="kn">from</span> <span class="nn">.general_utils</span> <span class="kn">import</span> <span class="n">get_empty_nested_defaultdict</span><span class="p">,</span> <span class="n">modify_mappings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.general_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_empty_nested_defaultdict</span><span class="p">,</span> <span class="n">modify_mappings</span>
 
 <span class="c1"># To use in type hints for functions with generic input/output types</span>
 <span class="n">GenericType</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;GenericType&quot;</span><span class="p">)</span>
@@ -1067,10 +1067,10 @@
 
 <div class="viewcode-block" id="QuasiConstantMetaclass">
 <a class="viewcode-back" href="../../deode.html#deode.aux_types.QuasiConstantMetaclass">[docs]</a>
-<span class="k">class</span> <span class="nc">QuasiConstantMetaclass</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">QuasiConstantMetaclass</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Metaclass to help making a class behave as if it had quasi-constant attributes.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialise and perform type conversions on attributes.&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">cls</span><span class="p">:</span>
@@ -1079,7 +1079,7 @@
                     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">conversion_function</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">type_conversions</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">type_conversions</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Type conversions to be performed on the attributes.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span>
             <span class="n">MutableMapping</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">modify_mappings</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">MappingProxyType</span><span class="p">),</span>
@@ -1089,7 +1089,7 @@
 
 <div class="viewcode-block" id="QuasiConstantMetaclass.dict">
 <a class="viewcode-back" href="../../deode.html#deode.aux_types.QuasiConstantMetaclass.dict">[docs]</a>
-    <span class="k">def</span> <span class="nf">dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a `dict` form of the instance, with nested instances also converted.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span>
             <span class="n">attr</span><span class="p">:</span> <span class="n">value</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="bp">cls</span><span class="p">))</span> <span class="k">else</span> <span class="n">value</span>
@@ -1097,15 +1097,15 @@
         <span class="p">}</span></div>
 
 
-    <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">_attr</span><span class="p">,</span> <span class="n">_value</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">_attr</span><span class="p">,</span> <span class="n">_value</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot assign attribute of </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> object.&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">attr</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">):</span>
                 <span class="k">yield</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
         <span class="n">str_dict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">dict</span><span class="p">(),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="n">str_dict</span><span class="si">}</span><span class="s2">)&quot;</span></div>
 
@@ -1113,10 +1113,10 @@
 
 <div class="viewcode-block" id="QuasiConstant">
 <a class="viewcode-back" href="../../deode.html#deode.aux_types.QuasiConstant">[docs]</a>
-<span class="k">class</span> <span class="nc">QuasiConstant</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">QuasiConstantMetaclass</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">QuasiConstant</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">QuasiConstantMetaclass</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Inheriting from this will make the class&#39; attributes (almost) immutable.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">_args</span><span class="p">,</span> <span class="o">**</span><span class="n">_kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">_args</span><span class="p">,</span> <span class="o">**</span><span class="n">_kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Prevent instanciation. The class will be used for its class variables.&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot instanciate </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span></div>
 
@@ -1124,20 +1124,20 @@
 
 <div class="viewcode-block" id="BaseMapping">
 <a class="viewcode-back" href="../../deode.html#deode.aux_types.BaseMapping">[docs]</a>
-<span class="k">class</span> <span class="nc">BaseMapping</span><span class="p">(</span><span class="n">Mapping</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BaseMapping</span><span class="p">(</span><span class="n">Mapping</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Immutable mapping that will serve as basis for all config-related classes.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialise an instance the same way a `dict` is initialised.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the underlying data stored by the instance.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_data&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
     <span class="nd">@data</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">,</span> <span class="n">nested_maps_type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">,</span> <span class="n">nested_maps_type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the value of the `data` property.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">nested_maps_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">nested_maps_type</span> <span class="o">=</span> <span class="n">BaseMapping</span>
@@ -1151,14 +1151,14 @@
 
 <div class="viewcode-block" id="BaseMapping.dict">
 <a class="viewcode-back" href="../../deode.html#deode.aux_types.BaseMapping.dict">[docs]</a>
-    <span class="k">def</span> <span class="nf">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a `dict` representation, converting also nested `Mapping`-type items.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">modify_mappings</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="BaseMapping.copy">
 <a class="viewcode-back" href="../../deode.html#deode.aux_types.BaseMapping.copy">[docs]</a>
-    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">update</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Mapping</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Mapping</span><span class="p">],</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">update</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Mapping</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Mapping</span><span class="p">],</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a copy of the instance, optionally updated according to `update`.&quot;&quot;&quot;</span>
         <span class="n">new</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">update</span><span class="p">:</span>
@@ -1168,7 +1168,7 @@
 
 <div class="viewcode-block" id="BaseMapping.dumps">
 <a class="viewcode-back" href="../../deode.html#deode.aux_types.BaseMapping.dumps">[docs]</a>
-    <span class="k">def</span> <span class="nf">dumps</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dumps</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">section</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
         <span class="n">style</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;toml&quot;</span><span class="p">,</span> <span class="s2">&quot;json&quot;</span><span class="p">,</span> <span class="s2">&quot;yaml&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;toml&quot;</span><span class="p">,</span>
@@ -1196,11 +1196,11 @@
         <span class="k">return</span> <span class="n">rtn</span></div>
 
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s1">&#39;json&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span>
 
     <span class="c1"># Implement the abstract methods __getitem__, __iter__ and __len__ from from Mapping</span>
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get items from container.</span>
 
 <span class="sd">        The behaviour is similar to a `dict`, except for the fact that</span>
@@ -1219,10 +1219,10 @@
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">reduce</span><span class="p">(</span><span class="n">getitem</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span></div>
 
 </pre></div>
@@ -1235,7 +1235,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-12-20T13:29:44Z.
+      <span class="lastupdated">Last updated on 2025-01-08T10:33:06Z.
       </span></p>
   </div>
 

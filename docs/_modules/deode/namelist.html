@@ -1048,27 +1048,27 @@
   <h1>Source code for deode.namelist</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python3</span>
 <span class="sd">&quot;&quot;&quot;Namelist handling for MASTERODB w/SURFEX.&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">ast</span>
-<span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">import</span> <span class="nn">subprocess</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ast</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 
-<span class="kn">import</span> <span class="nn">f90nml</span>
-<span class="kn">import</span> <span class="nn">yaml</span>
-<span class="kn">from</span> <span class="nn">omegaconf</span> <span class="kn">import</span> <span class="n">OmegaConf</span>
-<span class="kn">from</span> <span class="nn">omegaconf.listconfig</span> <span class="kn">import</span> <span class="n">ListConfig</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">f90nml</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">omegaconf</span><span class="w"> </span><span class="kn">import</span> <span class="n">OmegaConf</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">omegaconf.listconfig</span><span class="w"> </span><span class="kn">import</span> <span class="n">ListConfig</span>
 
-<span class="kn">from</span> <span class="nn">.datetime_utils</span> <span class="kn">import</span> <span class="n">as_timedelta</span><span class="p">,</span> <span class="n">oi2dt_list</span>
-<span class="kn">from</span> <span class="nn">.logs</span> <span class="kn">import</span> <span class="n">logger</span>
-<span class="kn">from</span> <span class="nn">.toolbox</span> <span class="kn">import</span> <span class="n">Platform</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.datetime_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">as_timedelta</span><span class="p">,</span> <span class="n">oi2dt_list</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.toolbox</span><span class="w"> </span><span class="kn">import</span> <span class="n">Platform</span>
 
 
 <div class="viewcode-block" id="flatten_cn">
 <a class="viewcode-back" href="../../deode.html#deode.namelist.flatten_cn">[docs]</a>
-<span class="k">def</span> <span class="nf">flatten_cn</span><span class="p">(</span><span class="n">li</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">flatten_cn</span><span class="p">(</span><span class="n">li</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Recursively flatten a list of lists (of lists).&quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">li</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">ListConfig</span><span class="p">)):</span>
@@ -1080,7 +1080,7 @@
 
 <div class="viewcode-block" id="to_dict">
 <a class="viewcode-back" href="../../deode.html#deode.namelist.to_dict">[docs]</a>
-<span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Recursively modify OrderedDict etc. to normal dict (required for OmegaConf).&quot;&quot;&quot;</span>
     <span class="c1"># Namelist and OrderedDict both inherit from dict</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
@@ -1093,7 +1093,7 @@
 
 <div class="viewcode-block" id="find_value">
 <a class="viewcode-back" href="../../deode.html#deode.namelist.find_value">[docs]</a>
-<span class="k">def</span> <span class="nf">find_value</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">find_value</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Purpose: un-quote (list of) numbers and booleans.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">find_value</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">s</span><span class="p">]</span>
@@ -1133,7 +1133,7 @@
 
 <div class="viewcode-block" id="list_set_at_index">
 <a class="viewcode-back" href="../../deode.html#deode.namelist.list_set_at_index">[docs]</a>
-<span class="k">def</span> <span class="nf">list_set_at_index</span><span class="p">(</span><span class="n">li</span><span class="p">,</span> <span class="n">ix</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">list_set_at_index</span><span class="p">(</span><span class="n">li</span><span class="p">,</span> <span class="n">ix</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Handle &#39;sparse&#39; lists (that may contain null values).&quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">li</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
@@ -1146,7 +1146,7 @@
 
 <div class="viewcode-block" id="represent_ordereddict">
 <a class="viewcode-back" href="../../deode.html#deode.namelist.represent_ordereddict">[docs]</a>
-<span class="k">def</span> <span class="nf">represent_ordereddict</span><span class="p">(</span><span class="n">dumper</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">represent_ordereddict</span><span class="p">(</span><span class="n">dumper</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;YAML representer, simplifies working with namelists read by f90nml.&quot;&quot;&quot;</span>
     <span class="n">my_od</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -1161,7 +1161,7 @@
 
 <div class="viewcode-block" id="write_namelist">
 <a class="viewcode-back" href="../../deode.html#deode.namelist.write_namelist">[docs]</a>
-<span class="k">def</span> <span class="nf">write_namelist</span><span class="p">(</span><span class="n">nml</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">write_namelist</span><span class="p">(</span><span class="n">nml</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Write namelist using f90nml.</span>
 
 <span class="sd">    Args:</span>
@@ -1184,24 +1184,24 @@
 
 <div class="viewcode-block" id="InvalidNamelistKindError">
 <a class="viewcode-back" href="../../deode.html#deode.namelist.InvalidNamelistKindError">[docs]</a>
-<span class="k">class</span> <span class="nc">InvalidNamelistKindError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">InvalidNamelistKindError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom exception.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="InvalidNamelistTargetError">
 <a class="viewcode-back" href="../../deode.html#deode.namelist.InvalidNamelistTargetError">[docs]</a>
-<span class="k">class</span> <span class="nc">InvalidNamelistTargetError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">InvalidNamelistTargetError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom exception.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="NamelistComparator">
 <a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistComparator">[docs]</a>
-<span class="k">class</span> <span class="nc">NamelistComparator</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">NamelistComparator</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper class for namelist generation and integration.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct the comparator.</span>
 
 <span class="sd">        Args:</span>
@@ -1216,7 +1216,7 @@
 
 <div class="viewcode-block" id="NamelistComparator.compare_dicts">
 <a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistComparator.compare_dicts">[docs]</a>
-    <span class="k">def</span> <span class="nf">compare_dicts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbase</span><span class="p">,</span> <span class="n">dcomp</span><span class="p">,</span> <span class="n">action</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compare_dicts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbase</span><span class="p">,</span> <span class="n">dcomp</span><span class="p">,</span> <span class="n">action</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compare two dictionaries, recursively if needed.</span>
 
 <span class="sd">        The dict must only consist of dict, list, str, float, int, bool</span>
@@ -1305,7 +1305,7 @@
 
 <div class="viewcode-block" id="NamelistComparator.compare_lists">
 <a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistComparator.compare_lists">[docs]</a>
-    <span class="k">def</span> <span class="nf">compare_lists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">libase</span><span class="p">,</span> <span class="n">licomp</span><span class="p">,</span> <span class="n">sib</span><span class="p">,</span> <span class="n">sic</span><span class="p">,</span> <span class="n">sio</span><span class="p">,</span> <span class="n">action</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compare_lists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">libase</span><span class="p">,</span> <span class="n">licomp</span><span class="p">,</span> <span class="n">sib</span><span class="p">,</span> <span class="n">sic</span><span class="p">,</span> <span class="n">sio</span><span class="p">,</span> <span class="n">action</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compare two lists, recursively if needed.</span>
 
 <span class="sd">        The list must only consist of dict, list, str, float, int, bool</span>
@@ -1377,10 +1377,10 @@
 
 <div class="viewcode-block" id="NamelistGenerator">
 <a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistGenerator">[docs]</a>
-<span class="k">class</span> <span class="nc">NamelistGenerator</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">NamelistGenerator</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Fortran namelist generator based on hierarchical merging of (yaml) dicts.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">kind</span><span class="p">,</span> <span class="n">substitute</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">kind</span><span class="p">,</span> <span class="n">substitute</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct the generator.</span>
 
 <span class="sd">        Args:</span>
@@ -1420,7 +1420,7 @@
 
 <div class="viewcode-block" id="NamelistGenerator.load_user_namelist">
 <a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistGenerator.load_user_namelist">[docs]</a>
-    <span class="k">def</span> <span class="nf">load_user_namelist</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_user_namelist</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read user provided namelist.</span>
 
 <span class="sd">        Returns:</span>
@@ -1456,7 +1456,7 @@
 
 <div class="viewcode-block" id="NamelistGenerator.fn_stepfreq">
 <a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistGenerator.fn_stepfreq">[docs]</a>
-    <span class="k">def</span> <span class="nf">fn_stepfreq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fn_stepfreq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Resolve namelist function stepfreq.&quot;&quot;&quot;</span>
         <span class="n">tstep</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain.tstep&quot;</span><span class="p">])</span>
         <span class="n">freq</span> <span class="o">=</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
@@ -1466,7 +1466,7 @@
 
 <div class="viewcode-block" id="NamelistGenerator.fn_steplist">
 <a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistGenerator.fn_steplist">[docs]</a>
-    <span class="k">def</span> <span class="nf">fn_steplist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_intervals</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fn_steplist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_intervals</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Resolve namelist function steplist.&quot;&quot;&quot;</span>
         <span class="n">forecast_range</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.times.forecast_range&quot;</span><span class="p">]</span>
         <span class="n">tstep</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain.tstep&quot;</span><span class="p">])</span>
@@ -1490,7 +1490,7 @@
 
 <div class="viewcode-block" id="NamelistGenerator.fn_config">
 <a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistGenerator.fn_config">[docs]</a>
-    <span class="k">def</span> <span class="nf">fn_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fn_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Resolve namelist function cfg.&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="n">arg</span><span class="p">]</span>
@@ -1507,7 +1507,7 @@
 
 <div class="viewcode-block" id="NamelistGenerator.resolve_macros">
 <a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistGenerator.resolve_macros">[docs]</a>
-    <span class="k">def</span> <span class="nf">resolve_macros</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cn</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">resolve_macros</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cn</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Resolve all macros in a nested dict (both keys and values!).&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cn</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="n">result</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">cn</span><span class="p">]</span>
@@ -1522,7 +1522,7 @@
 
 <div class="viewcode-block" id="NamelistGenerator.load">
 <a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistGenerator.load">[docs]</a>
-    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate the namelists for &#39;target&#39;.</span>
 
 <span class="sd">        Args:</span>
@@ -1590,7 +1590,7 @@
 
 <div class="viewcode-block" id="NamelistGenerator.assemble_namelist">
 <a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistGenerator.assemble_namelist">[docs]</a>
-    <span class="k">def</span> <span class="nf">assemble_namelist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">assemble_namelist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate the namelists for &#39;target&#39;.</span>
 
 <span class="sd">        Args:</span>
@@ -1629,7 +1629,7 @@
 
 <div class="viewcode-block" id="NamelistGenerator.write_namelist">
 <a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistGenerator.write_namelist">[docs]</a>
-    <span class="k">def</span> <span class="nf">write_namelist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nml</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_namelist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nml</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Write namelist using f90nml.</span>
 
 <span class="sd">        Args:</span>
@@ -1643,7 +1643,7 @@
     <span class="c1"># NOTE: should also work with OmegaConf objects</span>
 <div class="viewcode-block" id="NamelistGenerator.update_from_config">
 <a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistGenerator.update_from_config">[docs]</a>
-    <span class="k">def</span> <span class="nf">update_from_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_from_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Update with additional namelist dict from config.</span>
 
 <span class="sd">        Args:</span>
@@ -1674,7 +1674,7 @@
     <span class="c1"># NOTE: should also work with OmegaConf objects</span>
 <div class="viewcode-block" id="NamelistGenerator.update">
 <a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistGenerator.update">[docs]</a>
-    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nldict</span><span class="p">,</span> <span class="n">cndict_tag</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nldict</span><span class="p">,</span> <span class="n">cndict_tag</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Update with additional namelist dict.</span>
 
 <span class="sd">        Args:</span>
@@ -1688,7 +1688,7 @@
 
 <div class="viewcode-block" id="NamelistGenerator.generate_namelist">
 <a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistGenerator.generate_namelist">[docs]</a>
-    <span class="k">def</span> <span class="nf">generate_namelist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">generate_namelist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate the namelists for &#39;target&#39;.</span>
 
 <span class="sd">        Args:</span>
@@ -1706,14 +1706,14 @@
 
 <div class="viewcode-block" id="NamelistIntegrator">
 <a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistIntegrator">[docs]</a>
-<span class="k">class</span> <span class="nc">NamelistIntegrator</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">NamelistIntegrator</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper class to read fortran namelists and store as yaml, in a more compact form.</span>
 
 <span class="sd">    Reduces duplication if several namelists have similar settings.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct the integrator.</span>
 
 <span class="sd">        Args:</span>
@@ -1729,7 +1729,7 @@
 
 <div class="viewcode-block" id="NamelistIntegrator.ftn2dict">
 <a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistIntegrator.ftn2dict">[docs]</a>
-    <span class="k">def</span> <span class="nf">ftn2dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ftnfile</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ftn2dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ftnfile</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read fortran namelist file with f90nml and return as plain dict.&quot;&quot;&quot;</span>
         <span class="n">fnml</span> <span class="o">=</span> <span class="n">f90nml</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">ftnfile</span><span class="p">)</span>
         <span class="c1"># The internal representation used in f90nml is not easy to work with, thus</span>
@@ -1769,7 +1769,7 @@
 <div class="viewcode-block" id="NamelistIntegrator.yml2dict">
 <a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistIntegrator.yml2dict">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">yml2dict</span><span class="p">(</span><span class="n">ymlfile</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">yml2dict</span><span class="p">(</span><span class="n">ymlfile</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read yaml namelist file and return as dict.&quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">ymlfile</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;rt&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
             <span class="n">ynml</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
@@ -1779,7 +1779,7 @@
 <div class="viewcode-block" id="NamelistIntegrator.dict2yml">
 <a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistIntegrator.dict2yml">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">dict2yml</span><span class="p">(</span><span class="n">nmldict</span><span class="p">,</span> <span class="n">ymlfile</span><span class="p">,</span> <span class="n">ordered_sections</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dict2yml</span><span class="p">(</span><span class="n">nmldict</span><span class="p">,</span> <span class="n">ymlfile</span><span class="p">,</span> <span class="n">ordered_sections</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Write dict as yaml file.&quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">ymlfile</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">ordered_sections</span><span class="p">:</span>
@@ -1798,13 +1798,13 @@
 
 <div class="viewcode-block" id="NamelistConverter">
 <a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistConverter">[docs]</a>
-<span class="k">class</span> <span class="nc">NamelistConverter</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">NamelistConverter</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper class to convert namelists between cycles, based on thenamelisttool.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="NamelistConverter.get_known_cycles">
 <a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistConverter.get_known_cycles">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">get_known_cycles</span><span class="p">():</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_known_cycles</span><span class="p">():</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the cycles handled by the converter.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;CY48t2&quot;</span><span class="p">,</span> <span class="s2">&quot;CY48t3&quot;</span><span class="p">,</span> <span class="s2">&quot;CY49&quot;</span><span class="p">,</span> <span class="s2">&quot;CY49t1&quot;</span><span class="p">,</span> <span class="s2">&quot;CY49t2&quot;</span><span class="p">]</span></div>
 
@@ -1812,7 +1812,7 @@
 <div class="viewcode-block" id="NamelistConverter.get_to_next_version_tnt_filenames">
 <a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistConverter.get_to_next_version_tnt_filenames">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">get_to_next_version_tnt_filenames</span><span class="p">():</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_to_next_version_tnt_filenames</span><span class="p">():</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the tnt file names between get_known_cycles().&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span>
             <span class="kc">None</span><span class="p">,</span>  <span class="c1"># CY48t2 to CY48t3</span>
@@ -1825,7 +1825,7 @@
 <div class="viewcode-block" id="NamelistConverter.get_tnt_files_list">
 <a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistConverter.get_tnt_files_list">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">get_tnt_files_list</span><span class="p">(</span><span class="n">from_cycle</span><span class="p">,</span> <span class="n">to_cycle</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_tnt_files_list</span><span class="p">(</span><span class="n">from_cycle</span><span class="p">,</span> <span class="n">to_cycle</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the list of tnt directive files required for the conversion.&quot;&quot;&quot;</span>
         <span class="c1"># definitions of the conversion to apply between cycles</span>
         <span class="n">tnt_directives_folder</span> <span class="o">=</span> <span class="p">(</span>
@@ -1843,12 +1843,12 @@
             <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;ERROR: from-cycle </span><span class="si">{</span><span class="n">from_cycle</span><span class="si">}</span><span class="s2"> unknown&quot;</span>
-                <span class="p">)</span> <span class="kn">from</span> <span class="nn">ValueError</span>
+                <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">ValueError</span>
 
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">target_index</span> <span class="o">=</span> <span class="n">known_cycles</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">to_cycle</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ERROR: to-cycle </span><span class="si">{</span><span class="n">to_cycle</span><span class="si">}</span><span class="s2"> unknown&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">ValueError</span>
+                <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ERROR: to-cycle </span><span class="si">{</span><span class="n">to_cycle</span><span class="si">}</span><span class="s2"> unknown&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">ValueError</span>
 
             <span class="c1"># Verify that to_cycle is older than from_cycle</span>
             <span class="k">if</span> <span class="n">start_index</span> <span class="o">&gt;</span> <span class="n">target_index</span><span class="p">:</span>
@@ -1876,7 +1876,7 @@
 <div class="viewcode-block" id="NamelistConverter.convert_yml">
 <a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistConverter.convert_yml">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">convert_yml</span><span class="p">(</span><span class="n">input_yml</span><span class="p">,</span> <span class="n">output_yml</span><span class="p">,</span> <span class="n">from_cycle</span><span class="p">,</span> <span class="n">to_cycle</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">convert_yml</span><span class="p">(</span><span class="n">input_yml</span><span class="p">,</span> <span class="n">output_yml</span><span class="p">,</span> <span class="n">from_cycle</span><span class="p">,</span> <span class="n">to_cycle</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert a namelist in yml file between two cycles.</span>
 
 <span class="sd">        Args:</span>
@@ -1919,7 +1919,7 @@
 <div class="viewcode-block" id="NamelistConverter.convert_ftn">
 <a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistConverter.convert_ftn">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">convert_ftn</span><span class="p">(</span><span class="n">input_ftn</span><span class="p">,</span> <span class="n">output_ftn</span><span class="p">,</span> <span class="n">from_cycle</span><span class="p">,</span> <span class="n">to_cycle</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">convert_ftn</span><span class="p">(</span><span class="n">input_ftn</span><span class="p">,</span> <span class="n">output_ftn</span><span class="p">,</span> <span class="n">from_cycle</span><span class="p">,</span> <span class="n">to_cycle</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert a namelist in fortran file between two cycles.</span>
 
 <span class="sd">        Args:</span>
@@ -1949,7 +1949,7 @@
 <div class="viewcode-block" id="NamelistConverter.apply_tnt_directives_to_namelist_dict">
 <a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistConverter.apply_tnt_directives_to_namelist_dict">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">apply_tnt_directives_to_namelist_dict</span><span class="p">(</span><span class="n">tnt_directive_filename</span><span class="p">,</span> <span class="n">namelist_dict</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">apply_tnt_directives_to_namelist_dict</span><span class="p">(</span><span class="n">tnt_directive_filename</span><span class="p">,</span> <span class="n">namelist_dict</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply the tnt directives to a namelist as dictionary.</span>
 
 <span class="sd">        Args:</span>
@@ -2074,7 +2074,7 @@
 <div class="viewcode-block" id="NamelistConverter.apply_tnt_directives_to_ftn_namelist">
 <a class="viewcode-back" href="../../deode.html#deode.namelist.NamelistConverter.apply_tnt_directives_to_ftn_namelist">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">apply_tnt_directives_to_ftn_namelist</span><span class="p">(</span><span class="n">tnt_directive_filename</span><span class="p">,</span> <span class="n">input_ftn</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">apply_tnt_directives_to_ftn_namelist</span><span class="p">(</span><span class="n">tnt_directive_filename</span><span class="p">,</span> <span class="n">input_ftn</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply the tnt directives to a fotran namelist using tnt.</span>
 
 <span class="sd">        Args:</span>
@@ -2098,7 +2098,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>  <span class="c1"># noqa S603</span>
         <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">exception</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;tnt failed with </span><span class="si">{</span><span class="n">exception</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">exception</span></div>
+            <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;tnt failed with </span><span class="si">{</span><span class="n">exception</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exception</span></div>
 </div>
 
 </pre></div>
@@ -2111,7 +2111,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-12-20T13:29:44Z.
+      <span class="lastupdated">Last updated on 2025-01-08T10:33:06Z.
       </span></p>
   </div>
 

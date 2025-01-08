@@ -1049,29 +1049,29 @@
 <span></span><span class="ch">#!/usr/bin/env python3</span>
 <span class="sd">&quot;&quot;&quot;Handle host detection.&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">socket</span>
 
-<span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
 
-<span class="kn">from</span> <span class="nn">.config_parser</span> <span class="kn">import</span> <span class="n">ConfigParserDefaults</span><span class="p">,</span> <span class="n">GeneralConstants</span>
-<span class="kn">from</span> <span class="nn">.logs</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.config_parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigParserDefaults</span><span class="p">,</span> <span class="n">GeneralConstants</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
 
 
 <div class="viewcode-block" id="DeodeHost">
 <a class="viewcode-back" href="../../deode.html#deode.host_actions.DeodeHost">[docs]</a>
-<span class="k">class</span> <span class="nc">DeodeHost</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">DeodeHost</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;DeodeHost object.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">known_hosts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">known_hosts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructs the DeodeHost object.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">known_hosts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_known_hosts</span><span class="p">(</span><span class="n">known_hosts</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">available_hosts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">known_hosts</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">default_host</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">available_hosts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">deode_host</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;DEODE_HOST&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_load_known_hosts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">known_hosts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_load_known_hosts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">known_hosts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Loads the known_hosts config.</span>
 
 <span class="sd">        Args:</span>
@@ -1098,7 +1098,7 @@
 
         <span class="k">return</span> <span class="n">known_hosts</span>
 
-    <span class="k">def</span> <span class="nf">_detect_by_hostname</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hostname_pattern</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_detect_by_hostname</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hostname_pattern</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Detect deode host by hostname regex.</span>
 
 <span class="sd">        Args:</span>
@@ -1118,7 +1118,7 @@
 
         <span class="k">return</span> <span class="kc">False</span>
 
-    <span class="k">def</span> <span class="nf">_detect_by_env</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env_variable</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_detect_by_env</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env_variable</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Detect deode host by environment variable regex.</span>
 
 <span class="sd">        Args:</span>
@@ -1142,7 +1142,7 @@
 
 <div class="viewcode-block" id="DeodeHost.detect_deode_host">
 <a class="viewcode-back" href="../../deode.html#deode.host_actions.DeodeHost.detect_deode_host">[docs]</a>
-    <span class="k">def</span> <span class="nf">detect_deode_host</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">detect_deode_host</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Detect deode host by matching various properties.</span>
 
 <span class="sd">        First check self.deode_host as set by os.getenv(&quot;DEODE_HOST&quot;),</span>
@@ -1184,7 +1184,7 @@
 
 <div class="viewcode-block" id="set_deode_home">
 <a class="viewcode-back" href="../../deode.html#deode.host_actions.set_deode_home">[docs]</a>
-<span class="k">def</span> <span class="nf">set_deode_home</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">deode_home</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">set_deode_home</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">deode_home</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set deode_home in various ways.</span>
 
 <span class="sd">    Args:</span>
@@ -1216,7 +1216,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-12-20T13:29:44Z.
+      <span class="lastupdated">Last updated on 2025-01-08T10:33:06Z.
       </span></p>
   </div>
 

@@ -1048,29 +1048,29 @@
   <h1>Source code for deode.experiment</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Experiment tools.&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">collections</span>
-<span class="kn">import</span> <span class="nn">contextlib</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">subprocess</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">collections</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">contextlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span>
 
-<span class="kn">import</span> <span class="nn">tomlkit</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tomlkit</span>
 
-<span class="kn">from</span> <span class="nn">.config_parser</span> <span class="kn">import</span> <span class="n">ConfigParserDefaults</span><span class="p">,</span> <span class="n">ParsedConfig</span>
-<span class="kn">from</span> <span class="nn">.derived_variables</span> <span class="kn">import</span> <span class="n">set_times</span>
-<span class="kn">from</span> <span class="nn">.host_actions</span> <span class="kn">import</span> <span class="n">set_deode_home</span>
-<span class="kn">from</span> <span class="nn">.logs</span> <span class="kn">import</span> <span class="n">logger</span>
-<span class="kn">from</span> <span class="nn">.os_utils</span> <span class="kn">import</span> <span class="n">resolve_path_relative_to_package</span>
-<span class="kn">from</span> <span class="nn">.toolbox</span> <span class="kn">import</span> <span class="n">Platform</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.config_parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigParserDefaults</span><span class="p">,</span> <span class="n">ParsedConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.derived_variables</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_times</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.host_actions</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_deode_home</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.os_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">resolve_path_relative_to_package</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.toolbox</span><span class="w"> </span><span class="kn">import</span> <span class="n">Platform</span>
 
 
 <div class="viewcode-block" id="Exp">
 <a class="viewcode-back" href="../../deode.html#deode.experiment.Exp">[docs]</a>
-<span class="k">class</span> <span class="nc">Exp</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Exp</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Experiment class.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">config</span><span class="p">,</span>
         <span class="n">merged_config</span><span class="p">,</span>
@@ -1091,10 +1091,10 @@
 
 <div class="viewcode-block" id="ExpFromFiles">
 <a class="viewcode-back" href="../../deode.html#deode.experiment.ExpFromFiles">[docs]</a>
-<span class="k">class</span> <span class="nc">ExpFromFiles</span><span class="p">(</span><span class="n">Exp</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExpFromFiles</span><span class="p">(</span><span class="n">Exp</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate Exp object from existing files. Use config files from a setup.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">config</span><span class="p">,</span>
         <span class="n">exp_dependencies</span><span class="p">,</span>
@@ -1166,7 +1166,7 @@
                 <span class="k">except</span> <span class="n">tomlkit</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ParseError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Expected a toml file but got </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">mod</span><span class="p">)</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Did mean to write ?</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">mod</span><span class="p">)</span>
-                    <span class="k">raise</span> <span class="ne">RuntimeError</span> <span class="kn">from</span> <span class="nn">exc</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
 
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Merging modifications from </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">mod</span><span class="p">)</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;-&gt; </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">lmod</span><span class="p">)</span>
@@ -1193,7 +1193,7 @@
 <div class="viewcode-block" id="ExpFromFiles.toml_load">
 <a class="viewcode-back" href="../../deode.html#deode.experiment.ExpFromFiles.toml_load">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">toml_load</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">toml_load</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Load from toml file.</span>
 
 <span class="sd">        Using tomlkit to preserve stucture</span>
@@ -1213,7 +1213,7 @@
 <div class="viewcode-block" id="ExpFromFiles.toml_dump">
 <a class="viewcode-back" href="../../deode.html#deode.experiment.ExpFromFiles.toml_dump">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">toml_dump</span><span class="p">(</span><span class="n">to_dump</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">toml_dump</span><span class="p">(</span><span class="n">to_dump</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Dump toml to file.</span>
 
 <span class="sd">        Using tomlkit to preserve stucture</span>
@@ -1230,7 +1230,7 @@
 <div class="viewcode-block" id="ExpFromFiles.deep_update">
 <a class="viewcode-back" href="../../deode.html#deode.experiment.ExpFromFiles.deep_update">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">deep_update</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">overrides</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">deep_update</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">overrides</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Update a nested dictionary or similar mapping.</span>
 
 <span class="sd">        Modify ``source`` in place.</span>
@@ -1258,7 +1258,7 @@
 <div class="viewcode-block" id="ExpFromFiles.setup_files">
 <a class="viewcode-back" href="../../deode.html#deode.experiment.ExpFromFiles.setup_files">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">setup_files</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setup_files</span><span class="p">(</span>
         <span class="n">output_file</span><span class="p">,</span>
         <span class="n">case</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">config_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1293,7 +1293,7 @@
 
 <div class="viewcode-block" id="case_setup">
 <a class="viewcode-back" href="../../deode.html#deode.experiment.case_setup">[docs]</a>
-<span class="k">def</span> <span class="nf">case_setup</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">case_setup</span><span class="p">(</span>
     <span class="n">config</span><span class="p">,</span>
     <span class="n">output_file</span><span class="p">,</span>
     <span class="n">mod_files</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">],</span>
@@ -1346,7 +1346,7 @@
 
 <div class="viewcode-block" id="get_git_info">
 <a class="viewcode-back" href="../../deode.html#deode.experiment.get_git_info">[docs]</a>
-<span class="k">def</span> <span class="nf">get_git_info</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_git_info</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get git information.&quot;&quot;&quot;</span>
     <span class="n">gitcmds</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;branch&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;git&quot;</span><span class="p">,</span> <span class="s2">&quot;rev-parse&quot;</span><span class="p">,</span> <span class="s2">&quot;--abbrev-ref&quot;</span><span class="p">,</span> <span class="s2">&quot;HEAD&quot;</span><span class="p">],</span>
@@ -1383,7 +1383,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-12-20T13:29:44Z.
+      <span class="lastupdated">Last updated on 2025-01-08T10:33:06Z.
       </span></p>
   </div>
 

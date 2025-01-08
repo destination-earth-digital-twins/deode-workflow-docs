@@ -1047,28 +1047,28 @@
              
   <h1>Source code for deode.tasks.marsprep</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Marsprep.&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">ast</span>
-<span class="kn">import</span> <span class="nn">contextlib</span>
-<span class="kn">import</span> <span class="nn">glob</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ast</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">contextlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">glob</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
 
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
-<span class="kn">from</span> <span class="nn">..datetime_utils</span> <span class="kn">import</span> <span class="n">as_datetime</span><span class="p">,</span> <span class="n">as_timedelta</span><span class="p">,</span> <span class="n">cycle_offset</span>
-<span class="kn">from</span> <span class="nn">..geo_utils</span> <span class="kn">import</span> <span class="n">Projection</span><span class="p">,</span> <span class="n">Projstring</span>
-<span class="kn">from</span> <span class="nn">..logs</span> <span class="kn">import</span> <span class="n">logger</span>
-<span class="kn">from</span> <span class="nn">..os_utils</span> <span class="kn">import</span> <span class="n">deodemakedirs</span>
-<span class="kn">from</span> <span class="nn">..tasks.batch</span> <span class="kn">import</span> <span class="n">BatchJob</span>
-<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">Task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..datetime_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">as_datetime</span><span class="p">,</span> <span class="n">as_timedelta</span><span class="p">,</span> <span class="n">cycle_offset</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..geo_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">Projection</span><span class="p">,</span> <span class="n">Projstring</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..os_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">deodemakedirs</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..tasks.batch</span><span class="w"> </span><span class="kn">import</span> <span class="n">BatchJob</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">Task</span>
 
 
 <div class="viewcode-block" id="Marsprep">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.marsprep.Marsprep">[docs]</a>
-<span class="k">class</span> <span class="nc">Marsprep</span><span class="p">(</span><span class="n">Task</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Marsprep</span><span class="p">(</span><span class="n">Task</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Marsprep task.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct forecast object.</span>
 
 <span class="sd">        Args:</span>
@@ -1157,7 +1157,7 @@
 
 <div class="viewcode-block" id="Marsprep.mars_selection">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.marsprep.Marsprep.mars_selection">[docs]</a>
-    <span class="k">def</span> <span class="nf">mars_selection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selection</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mars_selection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selection</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Copy default settings if requested.</span>
 
 <span class="sd">        Args:</span>
@@ -1188,7 +1188,7 @@
 <div class="viewcode-block" id="Marsprep.get_domain_data">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.marsprep.Marsprep.get_domain_data">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">get_domain_data</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_domain_data</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read and return domain data.</span>
 
 <span class="sd">        Args:</span>
@@ -1228,7 +1228,7 @@
 
 <div class="viewcode-block" id="Marsprep.list_files_join">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.marsprep.Marsprep.list_files_join">[docs]</a>
-    <span class="k">def</span> <span class="nf">list_files_join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">marsfolder</span><span class="p">,</span> <span class="n">f_pattern</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">list_files_join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">marsfolder</span><span class="p">,</span> <span class="n">f_pattern</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read and return file names based on given pattern.</span>
 
 <span class="sd">        Args:</span>
@@ -1246,7 +1246,7 @@
 
 <div class="viewcode-block" id="Marsprep.check_value">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.marsprep.Marsprep.check_value">[docs]</a>
-    <span class="k">def</span> <span class="nf">check_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">check_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check value according to key.</span>
 
 <span class="sd">        - If a string returnts the value itself</span>
@@ -1281,7 +1281,7 @@
 
 <div class="viewcode-block" id="Marsprep.split_date">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.marsprep.Marsprep.split_date">[docs]</a>
-    <span class="k">def</span> <span class="nf">split_date</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">interval</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">split_date</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">interval</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Manipulate the dates for Mars request.</span>
 
 <span class="sd">        Args:</span>
@@ -1322,7 +1322,7 @@
     <span class="c1"># Create MARS request based on pre-defined parameters</span>
 <div class="viewcode-block" id="Marsprep.update_data_request">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.marsprep.Marsprep.update_data_request">[docs]</a>
-    <span class="k">def</span> <span class="nf">update_data_request</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_data_request</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">param</span><span class="p">,</span>
         <span class="n">data_type</span><span class="p">,</span>
@@ -1468,7 +1468,7 @@
 <div class="viewcode-block" id="Marsprep.write_mars_req">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.marsprep.Marsprep.write_mars_req">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">write_mars_req</span><span class="p">(</span><span class="n">nam</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">method</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_mars_req</span><span class="p">(</span><span class="n">nam</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">method</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Write a request for MARS.</span>
 
 <span class="sd">        Args:</span>
@@ -1499,7 +1499,7 @@
 
 <div class="viewcode-block" id="Marsprep.create_executable">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.marsprep.Marsprep.create_executable">[docs]</a>
-    <span class="k">def</span> <span class="nf">create_executable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">marsfile</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_executable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">marsfile</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create task for binary.</span>
 
 <span class="sd">        Args:</span>
@@ -1514,7 +1514,7 @@
 
 <div class="viewcode-block" id="Marsprep.check_file_exists">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.marsprep.Marsprep.check_file_exists">[docs]</a>
-    <span class="k">def</span> <span class="nf">check_file_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">steps</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">check_file_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">steps</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if which mars file already exist.&quot;&quot;&quot;</span>
         <span class="n">base_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">steps</span><span class="p">:</span>
@@ -1531,7 +1531,7 @@
 
 <div class="viewcode-block" id="Marsprep.fetch_info">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.marsprep.Marsprep.fetch_info">[docs]</a>
-    <span class="k">def</span> <span class="nf">fetch_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">steps</span><span class="p">,</span> <span class="n">tag</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fetch_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">steps</span><span class="p">,</span> <span class="n">tag</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Print what we are actually fetching.</span>
 
 <span class="sd">        Args:</span>
@@ -1544,7 +1544,7 @@
 
 <div class="viewcode-block" id="Marsprep.execute">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.marsprep.Marsprep.execute">[docs]</a>
-    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Run task.</span>
 
 <span class="sd">        Define run sequence.</span>
@@ -1557,7 +1557,7 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prepdir</span><span class="p">):</span>
                 <span class="n">deodemakedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prepdir</span><span class="p">,</span> <span class="n">unixgroup</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">unix_group</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error while preparing the mars folder: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error while preparing the mars folder: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
 
         <span class="c1"># Get the time information based on bdshift and forecast length</span>
         <span class="c1"># Need to check the forecast range</span>
@@ -1954,7 +1954,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-12-20T13:29:44Z.
+      <span class="lastupdated">Last updated on 2025-01-08T10:33:06Z.
       </span></p>
   </div>
 

@@ -1048,20 +1048,20 @@
   <h1>Source code for deode.tasks.gmtedsoil</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;GMTED and SOILGRID.&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">shutil</span>
-<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 
-<span class="kn">from</span> <span class="nn">..geo_utils</span> <span class="kn">import</span> <span class="n">Projection</span><span class="p">,</span> <span class="n">Projstring</span>
-<span class="kn">from</span> <span class="nn">..logs</span> <span class="kn">import</span> <span class="n">logger</span>
-<span class="kn">from</span> <span class="nn">..os_utils</span> <span class="kn">import</span> <span class="n">Search</span><span class="p">,</span> <span class="n">deodemakedirs</span>
-<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">Task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..geo_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">Projection</span><span class="p">,</span> <span class="n">Projstring</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..os_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">Search</span><span class="p">,</span> <span class="n">deodemakedirs</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">Task</span>
 
 
-<span class="k">def</span> <span class="nf">_import_gdal</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_import_gdal</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return imported gdal from osgeo. Utility func useful for debugging and testing.&quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">osgeo</span> <span class="kn">import</span> <span class="n">gdal</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">osgeo</span><span class="w"> </span><span class="kn">import</span> <span class="n">gdal</span>
 
         <span class="k">return</span> <span class="n">gdal</span>
     <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
@@ -1071,15 +1071,15 @@
         <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot; &#39;pip install pygdal==</span><span class="se">\&quot;</span><span class="s2">`gdal-config --version`.*</span><span class="se">\&quot;</span><span class="s2">&#39; &quot;</span>
         <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot;or, if you use conda,&quot;</span>
         <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot; &#39;conda install -c conda-forge gdal&#39;.&quot;</span>
-        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">error</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">error</span>
 
 
 <div class="viewcode-block" id="Gmted">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.gmtedsoil.Gmted">[docs]</a>
-<span class="k">class</span> <span class="nc">Gmted</span><span class="p">(</span><span class="n">Task</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Gmted</span><span class="p">(</span><span class="n">Task</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;GMTED.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Init Gmted.</span>
 
 <span class="sd">        Args:</span>
@@ -1095,7 +1095,7 @@
 
 <div class="viewcode-block" id="Gmted.get_domain_properties">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.gmtedsoil.Gmted.get_domain_properties">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_domain_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_domain_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get domain properties.</span>
 
 <span class="sd">        Args:</span>
@@ -1119,7 +1119,7 @@
 
 <div class="viewcode-block" id="Gmted.gmted_header_coordinates">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.gmtedsoil.Gmted.gmted_header_coordinates">[docs]</a>
-    <span class="k">def</span> <span class="nf">gmted_header_coordinates</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">gmted_header_coordinates</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">east</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">west</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">south</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">north</span><span class="p">:</span> <span class="nb">float</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get GMTED header coordinates.</span>
@@ -1182,7 +1182,7 @@
 
 <div class="viewcode-block" id="Gmted.define_gmted_input">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.gmtedsoil.Gmted.define_gmted_input">[docs]</a>
-    <span class="k">def</span> <span class="nf">define_gmted_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domain_properties</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">define_gmted_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domain_properties</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Define GMTED input files.</span>
 
 <span class="sd">        Args:</span>
@@ -1223,7 +1223,7 @@
 <div class="viewcode-block" id="Gmted.tif2bin">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.gmtedsoil.Gmted.tif2bin">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">tif2bin</span><span class="p">(</span><span class="n">gd</span><span class="p">,</span> <span class="n">bin_file</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">tif2bin</span><span class="p">(</span><span class="n">gd</span><span class="p">,</span> <span class="n">bin_file</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert tif file to binary file used by surfex.</span>
 
 <span class="sd">        Args:</span>
@@ -1243,7 +1243,7 @@
 <div class="viewcode-block" id="Gmted.write_gmted_header_file">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.gmtedsoil.Gmted.write_gmted_header_file">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">write_gmted_header_file</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_gmted_header_file</span><span class="p">(</span>
         <span class="n">header_file</span><span class="p">,</span> <span class="n">hdr_north</span><span class="p">,</span> <span class="n">hdr_south</span><span class="p">,</span> <span class="n">hdr_west</span><span class="p">,</span> <span class="n">hdr_east</span><span class="p">,</span> <span class="n">hdr_rows</span><span class="p">,</span> <span class="n">hdr_cols</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Write header file.</span>
@@ -1271,7 +1271,7 @@
 
 <div class="viewcode-block" id="Gmted.execute">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.gmtedsoil.Gmted.execute">[docs]</a>
-    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Run task.</span>
 
 <span class="sd">        Define run sequence.</span>
@@ -1320,10 +1320,10 @@
 
 <div class="viewcode-block" id="Soil">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.gmtedsoil.Soil">[docs]</a>
-<span class="k">class</span> <span class="nc">Soil</span><span class="p">(</span><span class="n">Task</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Soil</span><span class="p">(</span><span class="n">Task</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Prepare soil data task for PGD.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct soil data object.</span>
 
 <span class="sd">        Args:</span>
@@ -1337,7 +1337,7 @@
 
 <div class="viewcode-block" id="Soil.get_domain_properties">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.gmtedsoil.Soil.get_domain_properties">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_domain_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_domain_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get domain properties.</span>
 
 <span class="sd">        Args:</span>
@@ -1362,7 +1362,7 @@
 <div class="viewcode-block" id="Soil.check_domain_validity">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.gmtedsoil.Soil.check_domain_validity">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">check_domain_validity</span><span class="p">(</span><span class="n">domain_properties</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">check_domain_validity</span><span class="p">(</span><span class="n">domain_properties</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if domain is valid.</span>
 
 <span class="sd">        Args:</span>
@@ -1395,7 +1395,7 @@
 <div class="viewcode-block" id="Soil.coordinates_for_cutting_dataset">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.gmtedsoil.Soil.coordinates_for_cutting_dataset">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">coordinates_for_cutting_dataset</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">coordinates_for_cutting_dataset</span><span class="p">(</span>
         <span class="n">domain_properties</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">halo</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">5.0</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get coordinates for cutting dataset.</span>
@@ -1418,7 +1418,7 @@
 <div class="viewcode-block" id="Soil.write_soil_header_file">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.gmtedsoil.Soil.write_soil_header_file">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">write_soil_header_file</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_soil_header_file</span><span class="p">(</span>
         <span class="n">header_file</span><span class="p">,</span>
         <span class="n">soiltype</span><span class="p">,</span>
         <span class="n">hdr_north</span><span class="p">,</span>
@@ -1465,7 +1465,7 @@
 
 <div class="viewcode-block" id="Soil.execute">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.gmtedsoil.Soil.execute">[docs]</a>
-    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Run task.</span>
 
 <span class="sd">        Define run sequence.</span>
@@ -1635,7 +1635,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-12-20T13:29:44Z.
+      <span class="lastupdated">Last updated on 2025-01-08T10:33:06Z.
       </span></p>
   </div>
 

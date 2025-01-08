@@ -1048,41 +1048,41 @@
   <h1>Source code for deode.toolbox</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Toolbox handling e.g. input/output.&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">ast</span>
-<span class="kn">import</span> <span class="nn">contextlib</span>
-<span class="kn">import</span> <span class="nn">inspect</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ast</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">contextlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span>
 
-<span class="kn">from</span> <span class="nn">troika.connections.ssh</span> <span class="kn">import</span> <span class="n">SSHConnection</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">troika.connections.ssh</span><span class="w"> </span><span class="kn">import</span> <span class="n">SSHConnection</span>
 
-<span class="kn">from</span> <span class="nn">.datetime_utils</span> <span class="kn">import</span> <span class="n">as_datetime</span><span class="p">,</span> <span class="n">get_decade</span><span class="p">,</span> <span class="n">oi2dt_list</span>
-<span class="kn">from</span> <span class="nn">.logs</span> <span class="kn">import</span> <span class="n">logger</span>
-<span class="kn">from</span> <span class="nn">.os_utils</span> <span class="kn">import</span> <span class="n">deodemakedirs</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.datetime_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">as_datetime</span><span class="p">,</span> <span class="n">get_decade</span><span class="p">,</span> <span class="n">oi2dt_list</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.os_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">deodemakedirs</span>
 
 
 <div class="viewcode-block" id="ArchiveError">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.ArchiveError">[docs]</a>
-<span class="k">class</span> <span class="nc">ArchiveError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ArchiveError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Error raised when there are problems archiving data.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="ProviderError">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.ProviderError">[docs]</a>
-<span class="k">class</span> <span class="nc">ProviderError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ProviderError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Error raised when there are provider-related problems.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="Provider">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.Provider">[docs]</a>
-<span class="k">class</span> <span class="nc">Provider</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Provider</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base provider class.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">identifier</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">identifier</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct the object.</span>
 
 <span class="sd">        Args:</span>
@@ -1102,7 +1102,7 @@
 
 <div class="viewcode-block" id="Provider.create_missing_dir">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.Provider.create_missing_dir">[docs]</a>
-    <span class="k">def</span> <span class="nf">create_missing_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_missing_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a directory if missing.</span>
 
 <span class="sd">        Args:</span>
@@ -1115,7 +1115,7 @@
 
 <div class="viewcode-block" id="Provider.create_resource">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.Provider.create_resource">[docs]</a>
-    <span class="k">def</span> <span class="nf">create_resource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_resource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the resource.</span>
 
 <span class="sd">        Args:</span>
@@ -1131,10 +1131,10 @@
 
 <div class="viewcode-block" id="Platform">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.Platform">[docs]</a>
-<span class="k">class</span> <span class="nc">Platform</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Platform</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Platform.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct object.</span>
 
 <span class="sd">        Args:</span>
@@ -1146,7 +1146,7 @@
 
 <div class="viewcode-block" id="Platform.get_system_value">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.Platform.get_system_value">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_system_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">role</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_system_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">role</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the system value.</span>
 
 <span class="sd">        Args:</span>
@@ -1166,7 +1166,7 @@
 
 <div class="viewcode-block" id="Platform.get_value">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.Platform.get_value">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">setting</span><span class="p">,</span> <span class="n">alt</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">setting</span><span class="p">,</span> <span class="n">alt</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the config value with substition.</span>
 
 <span class="sd">        Args:</span>
@@ -1186,7 +1186,7 @@
 
 <div class="viewcode-block" id="Platform.get_platform_value">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.Platform.get_platform_value">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_platform_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">role</span><span class="p">,</span> <span class="n">alt</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_platform_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">role</span><span class="p">,</span> <span class="n">alt</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the path.</span>
 
 <span class="sd">        Args:</span>
@@ -1207,7 +1207,7 @@
 
 <div class="viewcode-block" id="Platform.get_platform">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.Platform.get_platform">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_platform</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_platform</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the platform.</span>
 
 <span class="sd">        Returns:</span>
@@ -1219,7 +1219,7 @@
 
 <div class="viewcode-block" id="Platform.fill_each_macro">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.Platform.fill_each_macro">[docs]</a>
-    <span class="k">def</span> <span class="nf">fill_each_macro</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">macro_config</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fill_each_macro</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">macro_config</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Fill each of the macros.&quot;&quot;&quot;</span>
         <span class="n">group_macros</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">macro_config</span><span class="si">}</span><span class="s2">.group_macros&quot;</span>
         <span class="k">for</span> <span class="n">source</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">group_macros</span><span class="p">,</span> <span class="p">[]):</span>
@@ -1238,7 +1238,7 @@
 
 <div class="viewcode-block" id="Platform.fill_macros">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.Platform.fill_macros">[docs]</a>
-    <span class="k">def</span> <span class="nf">fill_macros</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fill_macros</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Fill the macros.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">macros</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fill_each_macro</span><span class="p">(</span><span class="s2">&quot;macros&quot;</span><span class="p">)</span>
@@ -1247,7 +1247,7 @@
 
 <div class="viewcode-block" id="Platform.get_system_macros">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.Platform.get_system_macros">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_system_macros</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_system_macros</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the macros.</span>
 
 <span class="sd">        Returns:</span>
@@ -1259,7 +1259,7 @@
 
 <div class="viewcode-block" id="Platform.get_os_macros">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.Platform.get_os_macros">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_os_macros</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_os_macros</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the environment macros.</span>
 
 <span class="sd">        Returns:</span>
@@ -1271,7 +1271,7 @@
 
 <div class="viewcode-block" id="Platform.get_gen_macros">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.Platform.get_gen_macros">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_gen_macros</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_gen_macros</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the environment macros.</span>
 
 <span class="sd">        Returns:</span>
@@ -1283,7 +1283,7 @@
 
 <div class="viewcode-block" id="Platform.store_macro">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.Platform.store_macro">[docs]</a>
-    <span class="k">def</span> <span class="nf">store_macro</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">store_macro</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check and store a macro.</span>
 
 <span class="sd">        Args:</span>
@@ -1304,7 +1304,7 @@
 
 <div class="viewcode-block" id="Platform.expand_macros">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.Platform.expand_macros">[docs]</a>
-    <span class="k">def</span> <span class="nf">expand_macros</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">macros</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">expand_macros</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">macros</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check and expand macros.</span>
 
 <span class="sd">        Args:</span>
@@ -1334,7 +1334,7 @@
 
 <div class="viewcode-block" id="Platform.resolve_macros">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.Platform.resolve_macros">[docs]</a>
-    <span class="k">def</span> <span class="nf">resolve_macros</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_dict</span><span class="p">,</span> <span class="n">keyval</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">resolve_macros</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_dict</span><span class="p">,</span> <span class="n">keyval</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Resolve all macros in a nested dict (both keys and values!).&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">config_dict</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="n">result</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">keyval</span><span class="o">=</span><span class="n">keyval</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">config_dict</span><span class="p">]</span>
@@ -1350,7 +1350,7 @@
 
 <div class="viewcode-block" id="Platform.get_provider">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.Platform.get_provider">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_provider</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">provider_id</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_provider</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">provider_id</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the needed provider.</span>
 
 <span class="sd">        Args:</span>
@@ -1389,7 +1389,7 @@
 
 <div class="viewcode-block" id="Platform.sub_value">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.Platform.sub_value">[docs]</a>
-    <span class="k">def</span> <span class="nf">sub_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">micro</span><span class="o">=</span><span class="s2">&quot;@&quot;</span><span class="p">,</span> <span class="n">ci</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sub_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">micro</span><span class="o">=</span><span class="s2">&quot;@&quot;</span><span class="p">,</span> <span class="n">ci</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Substitute the value case-insensitively.</span>
 
 <span class="sd">        Args:</span>
@@ -1427,7 +1427,7 @@
 
 <div class="viewcode-block" id="Platform.sub_str_dict">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.Platform.sub_str_dict">[docs]</a>
-    <span class="k">def</span> <span class="nf">sub_str_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_dict</span><span class="p">,</span> <span class="n">basetime</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">validtime</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sub_str_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_dict</span><span class="p">,</span> <span class="n">basetime</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">validtime</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Substitute strings in dictionary.</span>
 
 <span class="sd">        Args:</span>
@@ -1453,7 +1453,7 @@
 
 <div class="viewcode-block" id="Platform.substitute_datetime">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.Platform.substitute_datetime">[docs]</a>
-    <span class="k">def</span> <span class="nf">substitute_datetime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">substitute_datetime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Substitute datetime related properties.</span>
 
 <span class="sd">        Args:</span>
@@ -1486,7 +1486,7 @@
 
 <div class="viewcode-block" id="Platform.substitute">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.Platform.substitute">[docs]</a>
-    <span class="k">def</span> <span class="nf">substitute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">basetime</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">validtime</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keyval</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">substitute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">basetime</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">validtime</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keyval</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Substitute pattern.</span>
 
 <span class="sd">        Args:</span>
@@ -1518,7 +1518,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">sub_patterns</span> <span class="o">=</span> <span class="p">[</span><span class="n">pattern</span><span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:</span> <span class="n">i</span><span class="p">[</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="mi">2</span><span class="p">)]</span>
         <span class="k">except</span> <span class="ne">IndexError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not separate pattern:</span><span class="si">{</span><span class="n">pattern</span><span class="si">}</span><span class="s2"> by &#39;@&#39;&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">error</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not separate pattern:</span><span class="si">{</span><span class="n">pattern</span><span class="si">}</span><span class="s2"> by &#39;@&#39;&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">error</span>
 
         <span class="k">for</span> <span class="n">sub_pattern</span> <span class="ow">in</span> <span class="n">sub_patterns</span><span class="p">:</span>
             <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">KeyError</span><span class="p">):</span>
@@ -1599,7 +1599,7 @@
 
 <div class="viewcode-block" id="Platform.evaluate">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.Platform.evaluate">[docs]</a>
-    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command_string</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">object_</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">object</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command_string</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">object_</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">object</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluate command string, by applying corresponding command of object.</span>
 
 <span class="sd">        Args:</span>
@@ -1654,7 +1654,7 @@
 
 <div class="viewcode-block" id="FileManager">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.FileManager">[docs]</a>
-<span class="k">class</span> <span class="nc">FileManager</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FileManager</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;FileManager class.</span>
 
 <span class="sd">    Default DEDODE provider.</span>
@@ -1663,7 +1663,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct the object.</span>
 
 <span class="sd">        Args:</span>
@@ -1676,7 +1676,7 @@
 
 <div class="viewcode-block" id="FileManager.get_input">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.FileManager.get_input">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_input</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_input</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">target</span><span class="p">,</span>
         <span class="n">destination</span><span class="p">,</span>
@@ -1749,7 +1749,7 @@
 
 <div class="viewcode-block" id="FileManager.input_data_iterator">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.FileManager.input_data_iterator">[docs]</a>
-    <span class="k">def</span> <span class="nf">input_data_iterator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data_definition</span><span class="p">,</span> <span class="n">provider_id</span><span class="o">=</span><span class="s2">&quot;symlink&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">input_data_iterator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data_definition</span><span class="p">,</span> <span class="n">provider_id</span><span class="o">=</span><span class="s2">&quot;symlink&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle input data spec dict.</span>
 
 <span class="sd">        Loop through the defined data types and fetch them.</span>
@@ -1780,7 +1780,7 @@
 
 <div class="viewcode-block" id="FileManager.input">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.FileManager.input">[docs]</a>
-    <span class="k">def</span> <span class="nf">input</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">input</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">target</span><span class="p">,</span>
         <span class="n">destination</span><span class="p">,</span>
@@ -1812,7 +1812,7 @@
 
 <div class="viewcode-block" id="FileManager.get_output">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.FileManager.get_output">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_output</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_output</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">target</span><span class="p">,</span>
         <span class="n">destination</span><span class="p">,</span>
@@ -1894,7 +1894,7 @@
 
 <div class="viewcode-block" id="FileManager.output">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.FileManager.output">[docs]</a>
-    <span class="k">def</span> <span class="nf">output</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">output</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">target</span><span class="p">,</span>
         <span class="n">destination</span><span class="p">,</span>
@@ -1926,7 +1926,7 @@
 
 <div class="viewcode-block" id="FileManager.set_resources_from_dict">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.FileManager.set_resources_from_dict">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_resources_from_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res_dict</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_resources_from_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res_dict</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set resources from dict.</span>
 
 <span class="sd">        Args:</span>
@@ -1963,7 +1963,7 @@
 
 <div class="viewcode-block" id="FileManager.create_list">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.FileManager.create_list">[docs]</a>
-    <span class="k">def</span> <span class="nf">create_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">basetime</span><span class="p">,</span> <span class="n">forecast_range</span><span class="p">,</span> <span class="n">input_template</span><span class="p">,</span> <span class="n">output_settings</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">basetime</span><span class="p">,</span> <span class="n">forecast_range</span><span class="p">,</span> <span class="n">input_template</span><span class="p">,</span> <span class="n">output_settings</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create list of files to process.</span>
 
 <span class="sd">        Args:</span>
@@ -1990,10 +1990,10 @@
 
 <div class="viewcode-block" id="LocalFileSystemSymlink">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.LocalFileSystemSymlink">[docs]</a>
-<span class="k">class</span> <span class="nc">LocalFileSystemSymlink</span><span class="p">(</span><span class="n">Provider</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">LocalFileSystemSymlink</span><span class="p">(</span><span class="n">Provider</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Local file system.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct the object.</span>
 
 <span class="sd">        Args:</span>
@@ -2006,7 +2006,7 @@
 
 <div class="viewcode-block" id="LocalFileSystemSymlink.create_resource">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.LocalFileSystemSymlink.create_resource">[docs]</a>
-    <span class="k">def</span> <span class="nf">create_resource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_resource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Symlink the resource.</span>
 
 <span class="sd">        Args:</span>
@@ -2038,10 +2038,10 @@
 
 <div class="viewcode-block" id="LocalFileSystemCopy">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.LocalFileSystemCopy">[docs]</a>
-<span class="k">class</span> <span class="nc">LocalFileSystemCopy</span><span class="p">(</span><span class="n">Provider</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">LocalFileSystemCopy</span><span class="p">(</span><span class="n">Provider</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Local file system copy.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct the object.</span>
 
 <span class="sd">        Args:</span>
@@ -2054,7 +2054,7 @@
 
 <div class="viewcode-block" id="LocalFileSystemCopy.create_resource">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.LocalFileSystemCopy.create_resource">[docs]</a>
-    <span class="k">def</span> <span class="nf">create_resource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_resource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the resource.</span>
 
 <span class="sd">        Args:</span>
@@ -2088,10 +2088,10 @@
 
 <div class="viewcode-block" id="LocalFileSystemMove">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.LocalFileSystemMove">[docs]</a>
-<span class="k">class</span> <span class="nc">LocalFileSystemMove</span><span class="p">(</span><span class="n">Provider</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">LocalFileSystemMove</span><span class="p">(</span><span class="n">Provider</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Local file system move.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct the object.</span>
 
 <span class="sd">        Args:</span>
@@ -2104,7 +2104,7 @@
 
 <div class="viewcode-block" id="LocalFileSystemMove.create_resource">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.LocalFileSystemMove.create_resource">[docs]</a>
-    <span class="k">def</span> <span class="nf">create_resource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_resource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the resource.</span>
 
 <span class="sd">        Args:</span>
@@ -2138,10 +2138,10 @@
 
 <div class="viewcode-block" id="ArchiveProvider">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.ArchiveProvider">[docs]</a>
-<span class="k">class</span> <span class="nc">ArchiveProvider</span><span class="p">(</span><span class="n">Provider</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ArchiveProvider</span><span class="p">(</span><span class="n">Provider</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Data from ECFS.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct the object.</span>
 
 <span class="sd">        Args:</span>
@@ -2154,7 +2154,7 @@
 
 <div class="viewcode-block" id="ArchiveProvider.create_resource">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.ArchiveProvider.create_resource">[docs]</a>
-    <span class="k">def</span> <span class="nf">create_resource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_resource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the resource.</span>
 
 <span class="sd">        Args:</span>
@@ -2171,10 +2171,10 @@
 
 <div class="viewcode-block" id="ECFS">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.ECFS">[docs]</a>
-<span class="k">class</span> <span class="nc">ECFS</span><span class="p">(</span><span class="n">ArchiveProvider</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ECFS</span><span class="p">(</span><span class="n">ArchiveProvider</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Data from ECFS.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct ECFS provider.</span>
 
 <span class="sd">        Args:</span>
@@ -2186,7 +2186,7 @@
 
 <div class="viewcode-block" id="ECFS.create_resource">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.ECFS.create_resource">[docs]</a>
-    <span class="k">def</span> <span class="nf">create_resource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_resource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the resource.</span>
 
 <span class="sd">        Args:</span>
@@ -2214,10 +2214,10 @@
 
 <div class="viewcode-block" id="SCP">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.SCP">[docs]</a>
-<span class="k">class</span> <span class="nc">SCP</span><span class="p">(</span><span class="n">ArchiveProvider</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SCP</span><span class="p">(</span><span class="n">ArchiveProvider</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Transfer data with SCP.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct SCP provider.</span>
 
 <span class="sd">        Args:</span>
@@ -2229,7 +2229,7 @@
 
 <div class="viewcode-block" id="SCP.create_resource">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.SCP.create_resource">[docs]</a>
-    <span class="k">def</span> <span class="nf">create_resource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_resource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the resource.</span>
 
 <span class="sd">        Args:</span>
@@ -2275,10 +2275,10 @@
 
 <div class="viewcode-block" id="FDB">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.FDB">[docs]</a>
-<span class="k">class</span> <span class="nc">FDB</span><span class="p">(</span><span class="n">ArchiveProvider</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FDB</span><span class="p">(</span><span class="n">ArchiveProvider</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Dummy FDB class.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct FDB provider.</span>
 
 <span class="sd">        Args:</span>
@@ -2286,14 +2286,14 @@
 <span class="sd">            pattern (str): Filepattern</span>
 <span class="sd">            fetch (bool, optional): Fetch the data. Defaults to True.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">import</span> <span class="nn">pyfdb</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">pyfdb</span>
 
         <span class="n">ArchiveProvider</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="n">fetch</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fdb</span> <span class="o">=</span> <span class="n">pyfdb</span><span class="o">.</span><span class="n">FDB</span><span class="p">()</span>
 
 <div class="viewcode-block" id="FDB.create_resource">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.FDB.create_resource">[docs]</a>
-    <span class="k">def</span> <span class="nf">create_resource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_resource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the resource.</span>
 
 <span class="sd">        Args:</span>
@@ -2341,7 +2341,7 @@
         <span class="k">return</span> <span class="kc">True</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_write_rules_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">rules</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_write_rules_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">rules</span><span class="p">):</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">outfile</span><span class="p">:</span>
             <span class="n">outfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;set edition = 2;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">rules</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -2357,10 +2357,10 @@
 
 <div class="viewcode-block" id="Resource">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.Resource">[docs]</a>
-<span class="k">class</span> <span class="nc">Resource</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Resource</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Resource container.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_config</span><span class="p">,</span> <span class="n">identifier</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_config</span><span class="p">,</span> <span class="n">identifier</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct resource.</span>
 
 <span class="sd">        Args:</span>
@@ -2375,10 +2375,10 @@
 
 <div class="viewcode-block" id="LocalFileOnDisk">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.LocalFileOnDisk">[docs]</a>
-<span class="k">class</span> <span class="nc">LocalFileOnDisk</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">LocalFileOnDisk</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Local file on disk.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">basetime</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">validtime</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">basetime</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">validtime</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct local file on disk.</span>
 
 <span class="sd">        Args:</span>
@@ -2402,7 +2402,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-12-20T13:29:44Z.
+      <span class="lastupdated">Last updated on 2025-01-08T10:33:06Z.
       </span></p>
   </div>
 

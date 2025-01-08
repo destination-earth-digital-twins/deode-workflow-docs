@@ -1048,21 +1048,21 @@
   <h1>Source code for deode.cleaning</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Clean deode file systems.&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 
-<span class="kn">from</span> <span class="nn">.datetime_utils</span> <span class="kn">import</span> <span class="n">as_datetime</span><span class="p">,</span> <span class="n">as_timedelta</span>
-<span class="kn">from</span> <span class="nn">.logs</span> <span class="kn">import</span> <span class="n">logger</span>
-<span class="kn">from</span> <span class="nn">.os_utils</span> <span class="kn">import</span> <span class="n">Search</span><span class="p">,</span> <span class="n">remove_empty_dirs</span>
-<span class="kn">from</span> <span class="nn">.toolbox</span> <span class="kn">import</span> <span class="n">Platform</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.datetime_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">as_datetime</span><span class="p">,</span> <span class="n">as_timedelta</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.os_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">Search</span><span class="p">,</span> <span class="n">remove_empty_dirs</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.toolbox</span><span class="w"> </span><span class="kn">import</span> <span class="n">Platform</span>
 
 
 <div class="viewcode-block" id="CleanDeode">
 <a class="viewcode-back" href="../../deode.html#deode.cleaning.CleanDeode">[docs]</a>
-<span class="k">class</span> <span class="nc">CleanDeode</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CleanDeode</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Clean data.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">defaults</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">basetime</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">defaults</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">basetime</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct object.</span>
 
 <span class="sd">        Args:</span>
@@ -1090,7 +1090,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">platform</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_check_choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">defaults</span><span class="p">,</span> <span class="s2">&quot;defaults&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_set_defaults</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">choice</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_defaults</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">choice</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Copy default settings.</span>
 
 <span class="sd">        Args:</span>
@@ -1115,7 +1115,7 @@
 
         <span class="k">return</span> <span class="n">x</span>
 
-    <span class="k">def</span> <span class="nf">_check_choice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">choice</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_check_choice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">choice</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check choices.</span>
 
 <span class="sd">        Args:</span>
@@ -1143,7 +1143,7 @@
 
 <div class="viewcode-block" id="CleanDeode.prep_cleaning">
 <a class="viewcode-back" href="../../deode.html#deode.cleaning.CleanDeode.prep_cleaning">[docs]</a>
-    <span class="k">def</span> <span class="nf">prep_cleaning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">choices</span><span class="p">,</span> <span class="n">basetime</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prep_cleaning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">choices</span><span class="p">,</span> <span class="n">basetime</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Prepare tasks for cleaning.</span>
 
 <span class="sd">        Args:</span>
@@ -1186,7 +1186,7 @@
 
 <div class="viewcode-block" id="CleanDeode.clean">
 <a class="viewcode-back" href="../../deode.html#deode.cleaning.CleanDeode.clean">[docs]</a>
-    <span class="k">def</span> <span class="nf">clean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform the cleaning.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">choice</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">clean_tasks</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Cleaning </span><span class="si">{}</span><span class="s2">:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">choice</span><span class="p">)</span>
@@ -1236,7 +1236,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-12-20T13:29:44Z.
+      <span class="lastupdated">Last updated on 2025-01-08T10:33:06Z.
       </span></p>
   </div>
 

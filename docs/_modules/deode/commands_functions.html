@@ -1048,38 +1048,38 @@
   <h1>Source code for deode.commands_functions</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python3</span>
 <span class="sd">&quot;&quot;&quot;Implement the package&#39;s commands.&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">datetime</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">subprocess</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 
-<span class="kn">import</span> <span class="nn">yaml</span>
-<span class="kn">from</span> <span class="nn">toml_formatter.formatter</span> <span class="kn">import</span> <span class="n">FormattedToml</span>
-<span class="kn">from</span> <span class="nn">troika.connections.ssh</span> <span class="kn">import</span> <span class="n">SSHConnection</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">toml_formatter.formatter</span><span class="w"> </span><span class="kn">import</span> <span class="n">FormattedToml</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">troika.connections.ssh</span><span class="w"> </span><span class="kn">import</span> <span class="n">SSHConnection</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">GeneralConstants</span>
-<span class="kn">from</span> <span class="nn">.config_parser</span> <span class="kn">import</span> <span class="n">BasicConfig</span><span class="p">,</span> <span class="n">ConfigParserDefaults</span><span class="p">,</span> <span class="n">ParsedConfig</span>
-<span class="kn">from</span> <span class="nn">.derived_variables</span> <span class="kn">import</span> <span class="n">check_fullpos_namelist</span><span class="p">,</span> <span class="n">derived_variables</span><span class="p">,</span> <span class="n">set_times</span>
-<span class="kn">from</span> <span class="nn">.experiment</span> <span class="kn">import</span> <span class="n">case_setup</span>
-<span class="kn">from</span> <span class="nn">.host_actions</span> <span class="kn">import</span> <span class="n">DeodeHost</span><span class="p">,</span> <span class="n">set_deode_home</span>
-<span class="kn">from</span> <span class="nn">.logs</span> <span class="kn">import</span> <span class="n">logger</span>
-<span class="kn">from</span> <span class="nn">.namelist</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">GeneralConstants</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.config_parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">BasicConfig</span><span class="p">,</span> <span class="n">ConfigParserDefaults</span><span class="p">,</span> <span class="n">ParsedConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.derived_variables</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_fullpos_namelist</span><span class="p">,</span> <span class="n">derived_variables</span><span class="p">,</span> <span class="n">set_times</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.experiment</span><span class="w"> </span><span class="kn">import</span> <span class="n">case_setup</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.host_actions</span><span class="w"> </span><span class="kn">import</span> <span class="n">DeodeHost</span><span class="p">,</span> <span class="n">set_deode_home</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.namelist</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">NamelistComparator</span><span class="p">,</span>
     <span class="n">NamelistConverter</span><span class="p">,</span>
     <span class="n">NamelistGenerator</span><span class="p">,</span>
     <span class="n">NamelistIntegrator</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.scheduler</span> <span class="kn">import</span> <span class="n">EcflowServer</span>
-<span class="kn">from</span> <span class="nn">.submission</span> <span class="kn">import</span> <span class="n">NoSchedulerSubmission</span><span class="p">,</span> <span class="n">TaskSettings</span>
-<span class="kn">from</span> <span class="nn">.suites.discover_suite</span> <span class="kn">import</span> <span class="n">get_suite</span>
-<span class="kn">from</span> <span class="nn">.toolbox</span> <span class="kn">import</span> <span class="n">Platform</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.scheduler</span><span class="w"> </span><span class="kn">import</span> <span class="n">EcflowServer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.submission</span><span class="w"> </span><span class="kn">import</span> <span class="n">NoSchedulerSubmission</span><span class="p">,</span> <span class="n">TaskSettings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.suites.discover_suite</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_suite</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.toolbox</span><span class="w"> </span><span class="kn">import</span> <span class="n">Platform</span>
 
 
 <div class="viewcode-block" id="ssh_cmd">
 <a class="viewcode-back" href="../../deode.html#deode.commands_functions.ssh_cmd">[docs]</a>
-<span class="k">def</span> <span class="nf">ssh_cmd</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">cmd</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ssh_cmd</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">cmd</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;SSH to remote server and execute basic commands.</span>
 
 <span class="sd">    Args:</span>
@@ -1106,7 +1106,7 @@
 
 <div class="viewcode-block" id="run_task">
 <a class="viewcode-back" href="../../deode.html#deode.commands_functions.run_task">[docs]</a>
-<span class="k">def</span> <span class="nf">run_task</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">run_task</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Implement the &#39;run&#39; command.</span>
 
 <span class="sd">    Args:</span>
@@ -1142,7 +1142,7 @@
 
 <div class="viewcode-block" id="create_exp">
 <a class="viewcode-back" href="../../deode.html#deode.commands_functions.create_exp">[docs]</a>
-<span class="k">def</span> <span class="nf">create_exp</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_exp</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Implement the &#39;case&#39; command.</span>
 
 <span class="sd">    Args:</span>
@@ -1185,7 +1185,7 @@
 
 <div class="viewcode-block" id="start_suite">
 <a class="viewcode-back" href="../../deode.html#deode.commands_functions.start_suite">[docs]</a>
-<span class="k">def</span> <span class="nf">start_suite</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">start_suite</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Implement the &#39;start suite&#39; command.</span>
 
 <span class="sd">    Args:</span>
@@ -1312,7 +1312,7 @@
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Files transferred successfully.&quot;</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error occurred: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="s2">&quot;Copying ecf files to ecflow server FAILED.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+            <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="s2">&quot;Copying ecf files to ecflow server FAILED.&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
 
         <span class="c1"># Read and parse the troika config file</span>
         <span class="n">cfg</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;host&quot;</span><span class="p">:</span> <span class="n">ecf_host</span><span class="p">}</span>
@@ -1331,7 +1331,7 @@
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Troika file transferred successfully.&quot;</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error occurred transferring Troika: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="s2">&quot;Copying </span><span class="si">{temp_troika_config_file}</span><span class="s2"> FAILED.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+            <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="s2">&quot;Copying </span><span class="si">{temp_troika_config_file}</span><span class="s2"> FAILED.&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;--- File copying to Ecflow server DONE ---&quot;</span><span class="p">)</span>
 
     <span class="n">server</span><span class="o">.</span><span class="n">start_suite</span><span class="p">(</span><span class="n">suite_name</span><span class="p">,</span> <span class="n">def_file</span><span class="p">)</span>
@@ -1347,7 +1347,7 @@
 <span class="c1">#########################################</span>
 <div class="viewcode-block" id="doc_config">
 <a class="viewcode-back" href="../../deode.html#deode.commands_functions.doc_config">[docs]</a>
-<span class="k">def</span> <span class="nf">doc_config</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">ParsedConfig</span><span class="p">):</span>  <span class="c1"># noqa ARG001</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">doc_config</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">ParsedConfig</span><span class="p">):</span>  <span class="c1"># noqa ARG001</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Implement the &#39;doc_config&#39; command.</span>
 
 <span class="sd">    Args:</span>
@@ -1366,7 +1366,7 @@
 
 <div class="viewcode-block" id="show_config">
 <a class="viewcode-back" href="../../deode.html#deode.commands_functions.show_config">[docs]</a>
-<span class="k">def</span> <span class="nf">show_config</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">show_config</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Implement the &#39;show_config&#39; command.</span>
 
 <span class="sd">    Args:</span>
@@ -1400,7 +1400,7 @@
 
 <div class="viewcode-block" id="show_config_schema">
 <a class="viewcode-back" href="../../deode.html#deode.commands_functions.show_config_schema">[docs]</a>
-<span class="k">def</span> <span class="nf">show_config_schema</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>  <span class="c1"># noqa ARG001</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">show_config_schema</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>  <span class="c1"># noqa ARG001</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Implement the `show config-schema` command.</span>
 
 <span class="sd">    Args:</span>
@@ -1415,7 +1415,7 @@
 
 <div class="viewcode-block" id="show_host">
 <a class="viewcode-back" href="../../deode.html#deode.commands_functions.show_host">[docs]</a>
-<span class="k">def</span> <span class="nf">show_host</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>  <span class="c1"># noqa ARG001</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">show_host</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>  <span class="c1"># noqa ARG001</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Implement the `show host` command.</span>
 
 <span class="sd">    Args:</span>
@@ -1433,7 +1433,7 @@
 
 <div class="viewcode-block" id="show_namelist">
 <a class="viewcode-back" href="../../deode.html#deode.commands_functions.show_namelist">[docs]</a>
-<span class="k">def</span> <span class="nf">show_namelist</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">show_namelist</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Implement the &#39;show_namelist&#39; command.</span>
 
 <span class="sd">    Args:</span>
@@ -1463,7 +1463,7 @@
 
 <div class="viewcode-block" id="namelist_integrate">
 <a class="viewcode-back" href="../../deode.html#deode.commands_functions.namelist_integrate">[docs]</a>
-<span class="k">def</span> <span class="nf">namelist_integrate</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">namelist_integrate</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Implement the &#39;namelist integrate&#39; command.</span>
 
 <span class="sd">    Args:</span>
@@ -1531,7 +1531,7 @@
 
 <div class="viewcode-block" id="namelist_convert">
 <a class="viewcode-back" href="../../deode.html#deode.commands_functions.namelist_convert">[docs]</a>
-<span class="k">def</span> <span class="nf">namelist_convert</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">ParsedConfig</span><span class="p">):</span>  <span class="c1"># noqa ARG001</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">namelist_convert</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">ParsedConfig</span><span class="p">):</span>  <span class="c1"># noqa ARG001</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Implement the &#39;namelist convert&#39; command.</span>
 
 <span class="sd">    Args:</span>
@@ -1566,7 +1566,7 @@
 
 <div class="viewcode-block" id="namelist_format">
 <a class="viewcode-back" href="../../deode.html#deode.commands_functions.namelist_format">[docs]</a>
-<span class="k">def</span> <span class="nf">namelist_format</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">ParsedConfig</span><span class="p">):</span>  <span class="c1"># noqa ARG001</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">namelist_format</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">ParsedConfig</span><span class="p">):</span>  <span class="c1"># noqa ARG001</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Implement the &#39;namelist format&#39; command.</span>
 
 <span class="sd">    Args:</span>
@@ -1602,7 +1602,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-12-20T13:29:44Z.
+      <span class="lastupdated">Last updated on 2025-01-08T10:33:06Z.
       </span></p>
   </div>
 

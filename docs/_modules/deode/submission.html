@@ -1048,25 +1048,25 @@
   <h1>Source code for deode.submission</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Module to handle submissions.&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">collections.abc</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">subprocess</span>
-<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">collections.abc</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 
-<span class="kn">from</span> <span class="nn">.derived_variables</span> <span class="kn">import</span> <span class="n">derived_variables</span>
-<span class="kn">from</span> <span class="nn">.logs</span> <span class="kn">import</span> <span class="n">logger</span>
-<span class="kn">from</span> <span class="nn">.os_utils</span> <span class="kn">import</span> <span class="n">deodemakedirs</span>
-<span class="kn">from</span> <span class="nn">.plugin</span> <span class="kn">import</span> <span class="n">DeodePluginRegistryFromConfig</span>
-<span class="kn">from</span> <span class="nn">.tasks.discover_task</span> <span class="kn">import</span> <span class="n">available_tasks</span>
-<span class="kn">from</span> <span class="nn">.toolbox</span> <span class="kn">import</span> <span class="n">FileManager</span><span class="p">,</span> <span class="n">Platform</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.derived_variables</span><span class="w"> </span><span class="kn">import</span> <span class="n">derived_variables</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.os_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">deodemakedirs</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.plugin</span><span class="w"> </span><span class="kn">import</span> <span class="n">DeodePluginRegistryFromConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.tasks.discover_task</span><span class="w"> </span><span class="kn">import</span> <span class="n">available_tasks</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.toolbox</span><span class="w"> </span><span class="kn">import</span> <span class="n">FileManager</span><span class="p">,</span> <span class="n">Platform</span>
 
 
 <div class="viewcode-block" id="ProcessorLayout">
 <a class="viewcode-back" href="../../deode.html#deode.submission.ProcessorLayout">[docs]</a>
-<span class="k">class</span> <span class="nc">ProcessorLayout</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ProcessorLayout</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set processor information.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct object.</span>
 
 <span class="sd">           Use integers internally.</span>
@@ -1099,7 +1099,7 @@
 
 <div class="viewcode-block" id="ProcessorLayout.get_proc_dict">
 <a class="viewcode-back" href="../../deode.html#deode.submission.ProcessorLayout.get_proc_dict">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_proc_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_proc_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a processor dict.&quot;&quot;&quot;</span>
         <span class="n">procs</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">nproc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nproc</span>
@@ -1114,7 +1114,7 @@
 
 <div class="viewcode-block" id="ProcessorLayout.get_wrapper">
 <a class="viewcode-back" href="../../deode.html#deode.submission.ProcessorLayout.get_wrapper">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get and potentially parse the wrapper.&quot;&quot;&quot;</span>
         <span class="n">wrapper</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span>
         <span class="k">if</span> <span class="n">wrapper</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">nproc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -1129,10 +1129,10 @@
 
 <div class="viewcode-block" id="TaskSettings">
 <a class="viewcode-back" href="../../deode.html#deode.submission.TaskSettings">[docs]</a>
-<span class="k">class</span> <span class="nc">TaskSettings</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">TaskSettings</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the task specific setttings.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct the task specific settings.</span>
 
 <span class="sd">        Args:</span>
@@ -1151,7 +1151,7 @@
 <div class="viewcode-block" id="TaskSettings.update_task_setting">
 <a class="viewcode-back" href="../../deode.html#deode.submission.TaskSettings.update_task_setting">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">update_task_setting</span><span class="p">(</span><span class="n">dic</span><span class="p">,</span> <span class="n">upd</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_task_setting</span><span class="p">(</span><span class="n">dic</span><span class="p">,</span> <span class="n">upd</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Update task settings dictionary.</span>
 
 <span class="sd">        Args:</span>
@@ -1172,7 +1172,7 @@
 
 <div class="viewcode-block" id="TaskSettings.parse_submission_defs">
 <a class="viewcode-back" href="../../deode.html#deode.submission.TaskSettings.parse_submission_defs">[docs]</a>
-    <span class="k">def</span> <span class="nf">parse_submission_defs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse_submission_defs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse the submssion definitions.</span>
 
 <span class="sd">        Args:</span>
@@ -1229,7 +1229,7 @@
 
 <div class="viewcode-block" id="TaskSettings.get_task_settings">
 <a class="viewcode-back" href="../../deode.html#deode.submission.TaskSettings.get_task_settings">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_task_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ecf_micro</span><span class="o">=</span><span class="s2">&quot;%&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_task_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ecf_micro</span><span class="o">=</span><span class="s2">&quot;%&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get task settings.</span>
 
 <span class="sd">        Args:</span>
@@ -1272,7 +1272,7 @@
 
 <div class="viewcode-block" id="TaskSettings.recursive_items">
 <a class="viewcode-back" href="../../deode.html#deode.submission.TaskSettings.recursive_items">[docs]</a>
-    <span class="k">def</span> <span class="nf">recursive_items</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">recursive_items</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Recursive loop of dict.</span>
 
 <span class="sd">        Args:</span>
@@ -1291,7 +1291,7 @@
 
 <div class="viewcode-block" id="TaskSettings.get_settings">
 <a class="viewcode-back" href="../../deode.html#deode.submission.TaskSettings.get_settings">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the settings.</span>
 
 <span class="sd">        Args:</span>
@@ -1318,7 +1318,7 @@
 
 <div class="viewcode-block" id="TaskSettings.parse_job">
 <a class="viewcode-back" href="../../deode.html#deode.submission.TaskSettings.parse_job">[docs]</a>
-    <span class="k">def</span> <span class="nf">parse_job</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse_job</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">task</span><span class="p">,</span>
         <span class="n">config</span><span class="p">,</span>
@@ -1449,10 +1449,10 @@
 
 <div class="viewcode-block" id="NoSchedulerSubmission">
 <a class="viewcode-back" href="../../deode.html#deode.submission.NoSchedulerSubmission">[docs]</a>
-<span class="k">class</span> <span class="nc">NoSchedulerSubmission</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">NoSchedulerSubmission</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create and submit job without a scheduler.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_settings</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_settings</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct the task specific settings.</span>
 
 <span class="sd">        Args:</span>
@@ -1462,7 +1462,7 @@
 
 <div class="viewcode-block" id="NoSchedulerSubmission.submit">
 <a class="viewcode-back" href="../../deode.html#deode.submission.NoSchedulerSubmission.submit">[docs]</a>
-    <span class="k">def</span> <span class="nf">submit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">template_job</span><span class="p">,</span> <span class="n">task_job</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">troika</span><span class="o">=</span><span class="s2">&quot;troika&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">submit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">template_job</span><span class="p">,</span> <span class="n">task_job</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">troika</span><span class="o">=</span><span class="s2">&quot;troika&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Submit task.</span>
 
 <span class="sd">        Args:</span>
@@ -1504,7 +1504,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">cmd</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>  <span class="c1"># noqa S603</span>
         <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Submission failed with </span><span class="si">{</span><span class="n">exc</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">exc</span></div>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Submission failed with </span><span class="si">{</span><span class="n">exc</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span></div>
 </div>
 
 </pre></div>
@@ -1517,7 +1517,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-12-20T13:29:44Z.
+      <span class="lastupdated">Last updated on 2025-01-08T10:33:06Z.
       </span></p>
   </div>
 

@@ -1048,18 +1048,18 @@
   <h1>Source code for deode.suites.suite_utils</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Module for utility functions used in the suite definition scripts.&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
-<span class="kn">from</span> <span class="nn">..datetime_utils</span> <span class="kn">import</span> <span class="n">as_datetime</span><span class="p">,</span> <span class="n">as_timedelta</span>
-<span class="kn">from</span> <span class="nn">..logs</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..datetime_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">as_datetime</span><span class="p">,</span> <span class="n">as_timedelta</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
 
 
 <div class="viewcode-block" id="Cycle">
 <a class="viewcode-back" href="../../../deode.suites.html#deode.suites.suite_utils.Cycle">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">Cycle</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Cycle</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for representing a cycle.&quot;&quot;&quot;</span>
 
     <span class="n">day</span><span class="p">:</span> <span class="nb">str</span>
@@ -1072,7 +1072,7 @@
 <div class="viewcode-block" id="Cycles">
 <a class="viewcode-back" href="../../../deode.suites.html#deode.suites.suite_utils.Cycles">[docs]</a>
 <span class="nd">@dataclass</span>
-<span class="k">class</span> <span class="nc">Cycles</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Cycles</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for generating and iterating over Cycle objects.&quot;&quot;&quot;</span>
 
     <span class="n">first_cycle</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># Format parseable by as_datetime</span>
@@ -1081,11 +1081,11 @@
     <span class="n">_current_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">_cycles</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Cycle</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Generate cycles.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_generate_cycles</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_generate_cycles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_generate_cycles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate cycles.&quot;&quot;&quot;</span>
         <span class="c1"># Convert attributes to datetime objects.</span>
         <span class="n">cycle_time</span> <span class="o">=</span> <span class="n">as_datetime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">first_cycle</span><span class="p">)</span>
@@ -1106,17 +1106,17 @@
             <span class="n">cycle_time</span> <span class="o">+=</span> <span class="n">cycle_length_timedelta</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">current_index</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">current_index</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the current cycle index.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_index</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">current_cycle</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Cycle</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">current_cycle</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Cycle</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the current Cycle object.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cycles</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_index</span><span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">next_cycle</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Cycle</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">next_cycle</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Cycle</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the next Cycle object.</span>
 
 <span class="sd">        Raises:</span>
@@ -1128,7 +1128,7 @@
         <span class="k">raise</span> <span class="ne">StopIteration</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">end_of_month</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">end_of_month</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return True if the next cycle is in a different month.</span>
 
 <span class="sd">        Returns:</span>
@@ -1147,7 +1147,7 @@
 
         <span class="k">return</span> <span class="n">_end_of_month</span>
 
-    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">Cycle</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">Cycle</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return an iterator over the cycles.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_current_index</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cycles</span><span class="p">):</span>
@@ -1158,7 +1158,7 @@
 
 <div class="viewcode-block" id="lbc_times_generator">
 <a class="viewcode-back" href="../../../deode.suites.html#deode.suites.suite_utils.lbc_times_generator">[docs]</a>
-<span class="k">def</span> <span class="nf">lbc_times_generator</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">lbc_times_generator</span><span class="p">(</span>
     <span class="n">basetime</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
     <span class="n">endtime</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
     <span class="n">step</span><span class="p">:</span> <span class="n">timedelta</span><span class="p">,</span>
@@ -1197,7 +1197,7 @@
 
 <div class="viewcode-block" id="bd_generator">
 <a class="viewcode-back" href="../../../deode.suites.html#deode.suites.suite_utils.bd_generator">[docs]</a>
-<span class="k">def</span> <span class="nf">bd_generator</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">bd_generator</span><span class="p">(</span>
     <span class="n">bdint</span><span class="p">:</span> <span class="n">timedelta</span><span class="p">,</span>
     <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;start&quot;</span><span class="p">,</span>
     <span class="n">do_prep</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -1260,7 +1260,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-12-20T13:29:44Z.
+      <span class="lastupdated">Last updated on 2025-01-08T10:33:06Z.
       </span></p>
   </div>
 

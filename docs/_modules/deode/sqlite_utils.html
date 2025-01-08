@@ -1048,28 +1048,28 @@
   <h1>Source code for deode.sqlite_utils</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;ExtractSQLite.&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
-<span class="kn">from</span> <span class="nn">.logs</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
 
 <span class="c1"># For now (on ATOS), only tasks with prgenv/gnu can import eccodes in python</span>
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">eccodes</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">eccodes</span>
 <span class="k">except</span> <span class="p">(</span><span class="ne">ImportError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">,</span> <span class="ne">RuntimeError</span><span class="p">):</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;eccodes python API could not be imported. Usually OK.&quot;</span><span class="p">)</span>
 
-<span class="kn">import</span> <span class="nn">datetime</span>
-<span class="kn">import</span> <span class="nn">sqlite3</span>
-<span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">closing</span>
-<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sqlite3</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">contextlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">closing</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">deepcopy</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pyproj</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyproj</span>
 
 
 <div class="viewcode-block" id="get_date_info">
 <a class="viewcode-back" href="../../deode.html#deode.sqlite_utils.get_date_info">[docs]</a>
-<span class="k">def</span> <span class="nf">get_date_info</span><span class="p">(</span><span class="n">gid</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_date_info</span><span class="p">(</span><span class="n">gid</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Forecast time, lead time, accumulation time etc. from GRIB record.</span>
 
 <span class="sd">    Args:</span>
@@ -1098,7 +1098,7 @@
 
 <div class="viewcode-block" id="date_from_gribinfo">
 <a class="viewcode-back" href="../../deode.html#deode.sqlite_utils.date_from_gribinfo">[docs]</a>
-<span class="k">def</span> <span class="nf">date_from_gribinfo</span><span class="p">(</span><span class="n">info</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">date_from_gribinfo</span><span class="p">(</span><span class="n">info</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Interprete list of date information as given by eccodes.</span>
 
 <span class="sd">    Args:</span>
@@ -1141,7 +1141,7 @@
 
 <div class="viewcode-block" id="get_proj4">
 <a class="viewcode-back" href="../../deode.html#deode.sqlite_utils.get_proj4">[docs]</a>
-<span class="k">def</span> <span class="nf">get_proj4</span><span class="p">(</span><span class="n">gid</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_proj4</span><span class="p">(</span><span class="n">gid</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Read all projection details and return proj4 string.</span>
 
 <span class="sd">    Args:</span>
@@ -1198,7 +1198,7 @@
 
 <div class="viewcode-block" id="get_gridinfo">
 <a class="viewcode-back" href="../../deode.html#deode.sqlite_utils.get_gridinfo">[docs]</a>
-<span class="k">def</span> <span class="nf">get_gridinfo</span><span class="p">(</span><span class="n">gid</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_gridinfo</span><span class="p">(</span><span class="n">gid</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Read all grid details and return all necessary data.</span>
 
 <span class="sd">    Args:</span>
@@ -1240,7 +1240,7 @@
 
 <div class="viewcode-block" id="get_grid_limits">
 <a class="viewcode-back" href="../../deode.html#deode.sqlite_utils.get_grid_limits">[docs]</a>
-<span class="k">def</span> <span class="nf">get_grid_limits</span><span class="p">(</span><span class="n">gid</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_grid_limits</span><span class="p">(</span><span class="n">gid</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Find bounding box (lat/lon) of a grid.&quot;&quot;&quot;</span>
     <span class="n">lons</span><span class="p">,</span> <span class="n">lats</span> <span class="o">=</span> <span class="n">get_gridpoints</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
 
@@ -1260,7 +1260,7 @@
 
 <div class="viewcode-block" id="proj4_to_string">
 <a class="viewcode-back" href="../../deode.html#deode.sqlite_utils.proj4_to_string">[docs]</a>
-<span class="k">def</span> <span class="nf">proj4_to_string</span><span class="p">(</span><span class="n">proj4</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">proj4_to_string</span><span class="p">(</span><span class="n">proj4</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Transfrom a proj4 from dictionary to string.</span>
 
 <span class="sd">    Args:</span>
@@ -1276,7 +1276,7 @@
 
 <div class="viewcode-block" id="get_keylist">
 <a class="viewcode-back" href="../../deode.html#deode.sqlite_utils.get_keylist">[docs]</a>
-<span class="k">def</span> <span class="nf">get_keylist</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="n">keylist</span><span class="p">,</span> <span class="n">ktype</span><span class="o">=</span><span class="s2">&quot;string&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_keylist</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="n">keylist</span><span class="p">,</span> <span class="n">ktype</span><span class="o">=</span><span class="s2">&quot;string&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get list of grib keys. Return &quot;&quot; or None for keys that are not found.</span>
 
 <span class="sd">    Args:</span>
@@ -1311,7 +1311,7 @@
 
 <div class="viewcode-block" id="param_match">
 <a class="viewcode-back" href="../../deode.html#deode.sqlite_utils.param_match">[docs]</a>
-<span class="k">def</span> <span class="nf">param_match</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="n">parameter_list</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">param_match</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="n">parameter_list</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Check whether a grib record is in the list of required parameters.</span>
 
 <span class="sd">    TODO: can we re-organise the code to avoid getting the same key multiple times?</span>
@@ -1369,7 +1369,7 @@
 
 <div class="viewcode-block" id="sqlite_name">
 <a class="viewcode-back" href="../../deode.html#deode.sqlite_utils.sqlite_name">[docs]</a>
-<span class="k">def</span> <span class="nf">sqlite_name</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">fcdate</span><span class="p">,</span> <span class="n">model_name</span><span class="p">,</span> <span class="n">sqlite_template</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">sqlite_name</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">fcdate</span><span class="p">,</span> <span class="n">model_name</span><span class="p">,</span> <span class="n">sqlite_template</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create the full name of the SQLite file from template and date.</span>
 
 <span class="sd">    Args:</span>
@@ -1394,7 +1394,7 @@
 
 <div class="viewcode-block" id="points_restrict">
 <a class="viewcode-back" href="../../deode.html#deode.sqlite_utils.points_restrict">[docs]</a>
-<span class="k">def</span> <span class="nf">points_restrict</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="n">plist</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">points_restrict</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="n">plist</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Restrict the station list to points inside the current domain.</span>
 
 <span class="sd">    NOTE: * eccodes returns distances in kilometer</span>
@@ -1439,7 +1439,7 @@
 
 <div class="viewcode-block" id="get_gridpoints">
 <a class="viewcode-back" href="../../deode.html#deode.sqlite_utils.get_gridpoints">[docs]</a>
-<span class="k">def</span> <span class="nf">get_gridpoints</span><span class="p">(</span><span class="n">gid</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_gridpoints</span><span class="p">(</span><span class="n">gid</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get all lat/lon co-ordinates of the grid points.</span>
 
 <span class="sd">    Args:</span>
@@ -1472,7 +1472,7 @@
 
 <div class="viewcode-block" id="get_gridindex">
 <a class="viewcode-back" href="../../deode.html#deode.sqlite_utils.get_gridindex">[docs]</a>
-<span class="k">def</span> <span class="nf">get_gridindex</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">gid</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_gridindex</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">gid</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert lat/lon values to (zero-offset) grid indices.</span>
 
 <span class="sd">    The SW corner has index (0,0). Points are projected on the grid</span>
@@ -1502,7 +1502,7 @@
 
 <div class="viewcode-block" id="train_weights">
 <a class="viewcode-back" href="../../deode.html#deode.sqlite_utils.train_weights">[docs]</a>
-<span class="k">def</span> <span class="nf">train_weights</span><span class="p">(</span><span class="n">station_list</span><span class="p">,</span> <span class="n">gid</span><span class="p">,</span> <span class="n">lsm</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">train_weights</span><span class="p">(</span><span class="n">station_list</span><span class="p">,</span> <span class="n">gid</span><span class="p">,</span> <span class="n">lsm</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Train weights for bilinear and nearest neighbour interpolation.</span>
 
 <span class="sd">    We train two kinds of interpolation at once.</span>
@@ -1563,7 +1563,7 @@
 
 <div class="viewcode-block" id="interp_from_weights">
 <a class="viewcode-back" href="../../deode.html#deode.sqlite_utils.interp_from_weights">[docs]</a>
-<span class="k">def</span> <span class="nf">interp_from_weights</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">method</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">interp_from_weights</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">method</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Interpolate a GRIB field to points using the given weights.</span>
 
 <span class="sd">    Args:</span>
@@ -1584,7 +1584,7 @@
 
 <div class="viewcode-block" id="get_grid_values">
 <a class="viewcode-back" href="../../deode.html#deode.sqlite_utils.get_grid_values">[docs]</a>
-<span class="k">def</span> <span class="nf">get_grid_values</span><span class="p">(</span><span class="n">gid</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_grid_values</span><span class="p">(</span><span class="n">gid</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Decode a GRIB2 field.</span>
 
 <span class="sd">    Args:</span>
@@ -1621,7 +1621,7 @@
 
 <div class="viewcode-block" id="combine_fields">
 <a class="viewcode-back" href="../../deode.html#deode.sqlite_utils.combine_fields">[docs]</a>
-<span class="k">def</span> <span class="nf">combine_fields</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">station_list</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">combine_fields</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">station_list</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Combine multiple decoded fields into one parameter.</span>
 
 <span class="sd">    We need lat/lon and proj4 values when calculating wind speed &amp; direction.</span>
@@ -1699,7 +1699,7 @@
 
 <div class="viewcode-block" id="rotate_wind">
 <a class="viewcode-back" href="../../deode.html#deode.sqlite_utils.rotate_wind">[docs]</a>
-<span class="k">def</span> <span class="nf">rotate_wind</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">p4</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">rotate_wind</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">p4</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Rotate wind from projection grid to geographical axes for correct wind direction.</span>
 
 <span class="sd">    Args:</span>
@@ -1732,7 +1732,7 @@
 
 <div class="viewcode-block" id="parse_parameter_list">
 <a class="viewcode-back" href="../../deode.html#deode.sqlite_utils.parse_parameter_list">[docs]</a>
-<span class="k">def</span> <span class="nf">parse_parameter_list</span><span class="p">(</span><span class="n">param_list</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_parameter_list</span><span class="p">(</span><span class="n">param_list</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse a (json) structure of required parameters.</span>
 
 <span class="sd">    Handle single vs combined fields, model levels etc.</span>
@@ -1808,7 +1808,7 @@
 
 <div class="viewcode-block" id="match_keys">
 <a class="viewcode-back" href="../../deode.html#deode.sqlite_utils.match_keys">[docs]</a>
-<span class="k">def</span> <span class="nf">match_keys</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">match_keys</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Match two sets of grib key values.</span>
 
 <span class="sd">    Note that a key missing in p1 may be None in p2.</span>
@@ -1835,7 +1835,7 @@
 
 <div class="viewcode-block" id="cache_field">
 <a class="viewcode-back" href="../../deode.html#deode.sqlite_utils.cache_field">[docs]</a>
-<span class="k">def</span> <span class="nf">cache_field</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">param_cmb_list</span><span class="p">,</span> <span class="n">gid</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cache_field</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">param_cmb_list</span><span class="p">,</span> <span class="n">gid</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if a decoded field needs to be cached for later parameters.</span>
 
 <span class="sd">    Args:</span>
@@ -1872,7 +1872,7 @@
 
 <div class="viewcode-block" id="parse_grib_file">
 <a class="viewcode-back" href="../../deode.html#deode.sqlite_utils.parse_grib_file">[docs]</a>
-<span class="k">def</span> <span class="nf">parse_grib_file</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_grib_file</span><span class="p">(</span>
     <span class="n">infile</span><span class="p">,</span>
     <span class="n">param_list</span><span class="p">,</span>
     <span class="n">station_list</span><span class="p">,</span>
@@ -2025,7 +2025,7 @@
 
 <div class="viewcode-block" id="create_table">
 <a class="viewcode-back" href="../../deode.html#deode.sqlite_utils.create_table">[docs]</a>
-<span class="k">def</span> <span class="nf">create_table</span><span class="p">(</span><span class="n">data_vector</span><span class="p">,</span> <span class="n">station_list</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">fcdate</span><span class="p">,</span> <span class="n">leadtime</span><span class="p">,</span> <span class="n">model_name</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_table</span><span class="p">(</span><span class="n">data_vector</span><span class="p">,</span> <span class="n">station_list</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">fcdate</span><span class="p">,</span> <span class="n">leadtime</span><span class="p">,</span> <span class="n">model_name</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Put a data vector (interpolated field) to pandas table.</span>
 
 <span class="sd">    Args:</span>
@@ -2084,7 +2084,7 @@
 
 <div class="viewcode-block" id="write_to_sqlite">
 <a class="viewcode-back" href="../../deode.html#deode.sqlite_utils.write_to_sqlite">[docs]</a>
-<span class="k">def</span> <span class="nf">write_to_sqlite</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">sqlite_file</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">model_name</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">write_to_sqlite</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">sqlite_file</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">model_name</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Write a data table to SQLite.</span>
 
 <span class="sd">    Args:</span>
@@ -2139,7 +2139,7 @@
 
 <div class="viewcode-block" id="db_cleanup">
 <a class="viewcode-back" href="../../deode.html#deode.sqlite_utils.db_cleanup">[docs]</a>
-<span class="k">def</span> <span class="nf">db_cleanup</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">fcd</span><span class="p">,</span> <span class="n">leadtime</span><span class="p">,</span> <span class="n">con</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">db_cleanup</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">fcd</span><span class="p">,</span> <span class="n">leadtime</span><span class="p">,</span> <span class="n">con</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Delete any prior version of the date (it&#39;s a primary key).</span>
 
 <span class="sd">    Args:</span>
@@ -2184,7 +2184,7 @@
 
 <div class="viewcode-block" id="db_create">
 <a class="viewcode-back" href="../../deode.html#deode.sqlite_utils.db_create">[docs]</a>
-<span class="k">def</span> <span class="nf">db_create</span><span class="p">(</span><span class="n">sqlite_file</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">model_name</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">db_create</span><span class="p">(</span><span class="n">sqlite_file</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">model_name</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create new SQLite file with FC table.</span>
 
 <span class="sd">    The table is designed to be compatible with harp, so uses the same</span>
@@ -2223,7 +2223,7 @@
 
 <div class="viewcode-block" id="fctable_definition">
 <a class="viewcode-back" href="../../deode.html#deode.sqlite_utils.fctable_definition">[docs]</a>
-<span class="k">def</span> <span class="nf">fctable_definition</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">model_name</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">fctable_definition</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">model_name</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create the SQL command for FCtable definition.</span>
 
 <span class="sd">    Args:</span>
@@ -2265,7 +2265,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-12-20T13:29:44Z.
+      <span class="lastupdated">Last updated on 2025-01-08T10:33:06Z.
       </span></p>
   </div>
 

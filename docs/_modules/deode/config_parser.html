@@ -1048,39 +1048,39 @@
   <h1>Source code for deode.config_parser</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python3</span>
 <span class="sd">&quot;&quot;&quot;Registration and validation of options passed in the config file.&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">contextlib</span>
-<span class="kn">import</span> <span class="nn">glob</span>
-<span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">tempfile</span>
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">contextlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">glob</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">reduce</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 
-<span class="kn">import</span> <span class="nn">fastjsonschema</span>
-<span class="kn">import</span> <span class="nn">jsonref</span>
-<span class="kn">import</span> <span class="nn">tomli</span>
-<span class="kn">import</span> <span class="nn">tomlkit</span>
-<span class="kn">import</span> <span class="nn">yaml</span>
-<span class="kn">from</span> <span class="nn">fastjsonschema</span> <span class="kn">import</span> <span class="n">JsonSchemaValueException</span>
-<span class="kn">from</span> <span class="nn">json_schema_for_humans.generate</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">fastjsonschema</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jsonref</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tomli</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tomlkit</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fastjsonschema</span><span class="w"> </span><span class="kn">import</span> <span class="n">JsonSchemaValueException</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">json_schema_for_humans.generate</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">GenerationConfiguration</span><span class="p">,</span>
     <span class="n">generate_from_file_object</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">toml_formatter.formatter</span> <span class="kn">import</span> <span class="n">FormattedToml</span>
-<span class="kn">from</span> <span class="nn">toml_formatter.formatter_options</span> <span class="kn">import</span> <span class="n">FormatterOptions</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">toml_formatter.formatter</span><span class="w"> </span><span class="kn">import</span> <span class="n">FormattedToml</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">toml_formatter.formatter_options</span><span class="w"> </span><span class="kn">import</span> <span class="n">FormatterOptions</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">GeneralConstants</span>
-<span class="kn">from</span> <span class="nn">.aux_types</span> <span class="kn">import</span> <span class="n">BaseMapping</span><span class="p">,</span> <span class="n">QuasiConstant</span>
-<span class="kn">from</span> <span class="nn">.datetime_utils</span> <span class="kn">import</span> <span class="n">DatetimeConstants</span>
-<span class="kn">from</span> <span class="nn">.general_utils</span> <span class="kn">import</span> <span class="n">modify_mappings</span>
-<span class="kn">from</span> <span class="nn">.logs</span> <span class="kn">import</span> <span class="n">logger</span>
-<span class="kn">from</span> <span class="nn">.os_utils</span> <span class="kn">import</span> <span class="n">resolve_path_relative_to_package</span>
-<span class="kn">from</span> <span class="nn">.toolbox</span> <span class="kn">import</span> <span class="n">Platform</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">GeneralConstants</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.aux_types</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseMapping</span><span class="p">,</span> <span class="n">QuasiConstant</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.datetime_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">DatetimeConstants</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.general_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">modify_mappings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.os_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">resolve_path_relative_to_package</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.toolbox</span><span class="w"> </span><span class="kn">import</span> <span class="n">Platform</span>
 
 
 <div class="viewcode-block" id="ConfigParserDefaults">
 <a class="viewcode-back" href="../../deode.html#deode.config_parser.ConfigParserDefaults">[docs]</a>
-<span class="k">class</span> <span class="nc">ConfigParserDefaults</span><span class="p">(</span><span class="n">QuasiConstant</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ConfigParserDefaults</span><span class="p">(</span><span class="n">QuasiConstant</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Defaults related to the parsing of config files.&quot;&quot;&quot;</span>
 
     <span class="n">DATA_DIRECTORY</span> <span class="o">=</span> <span class="n">GeneralConstants</span><span class="o">.</span><span class="n">PACKAGE_DIRECTORY</span> <span class="o">/</span> <span class="s2">&quot;data&quot;</span>
@@ -1103,24 +1103,24 @@
 
 <div class="viewcode-block" id="ConfigFileValidationError">
 <a class="viewcode-back" href="../../deode.html#deode.config_parser.ConfigFileValidationError">[docs]</a>
-<span class="k">class</span> <span class="nc">ConfigFileValidationError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ConfigFileValidationError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Error to be raised when parsing the input config file fails.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="ConflictingValidationSchemasError">
 <a class="viewcode-back" href="../../deode.html#deode.config_parser.ConflictingValidationSchemasError">[docs]</a>
-<span class="k">class</span> <span class="nc">ConflictingValidationSchemasError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ConflictingValidationSchemasError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Error to be raised when more than one schema is defined for a config section.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="BasicConfig">
 <a class="viewcode-back" href="../../deode.html#deode.config_parser.BasicConfig">[docs]</a>
-<span class="k">class</span> <span class="nc">BasicConfig</span><span class="p">(</span><span class="n">BaseMapping</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BasicConfig</span><span class="p">(</span><span class="n">BaseMapping</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for configs. Arbitrary entries allowed: no validation is performed.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">_metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">_metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialise an instance in a `dict`-like fashion.&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="n">_metadata</span>
@@ -1128,7 +1128,7 @@
 <div class="viewcode-block" id="BasicConfig.from_file">
 <a class="viewcode-back" href="../../deode.html#deode.config_parser.BasicConfig.from_file">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve configs from a file in miscellaneous formats.</span>
 
 <span class="sd">        Args:</span>
@@ -1146,7 +1146,7 @@
 
 <div class="viewcode-block" id="BasicConfig.save_as">
 <a class="viewcode-back" href="../../deode.html#deode.config_parser.BasicConfig.save_as">[docs]</a>
-    <span class="k">def</span> <span class="nf">save_as</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_file</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_as</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_file</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Save config file.</span>
 
 <span class="sd">        Args:</span>
@@ -1163,7 +1163,7 @@
 
 
     <span class="nd">@BaseMapping</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the underlying data stored by the instance.&quot;&quot;&quot;</span>
         <span class="n">input_sanitation_ops</span> <span class="o">=</span> <span class="p">[</span>
             <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">},</span>
@@ -1173,12 +1173,12 @@
         <span class="n">BaseMapping</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">,</span> <span class="n">nested_maps_type</span><span class="o">=</span><span class="n">BasicConfig</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the metadata associated with the instance.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_metadata&quot;</span><span class="p">,</span> <span class="p">{})</span>
 
     <span class="nd">@metadata</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the metadata associated with the instance.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">new</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span> <span class="o">=</span> <span class="n">modify_mappings</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="n">new</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span></div>
@@ -1187,28 +1187,28 @@
 
 <div class="viewcode-block" id="JsonSchema">
 <a class="viewcode-back" href="../../deode.html#deode.config_parser.JsonSchema">[docs]</a>
-<span class="k">class</span> <span class="nc">JsonSchema</span><span class="p">(</span><span class="n">BaseMapping</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">JsonSchema</span><span class="p">(</span><span class="n">BaseMapping</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to use for JSON schemas. Provides a `validate` method to validate data.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialise instance.&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">jsonref</span><span class="o">.</span><span class="n">replace_refs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">_validation_function</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_validation_function</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">_get_json_validation_function</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
 <div class="viewcode-block" id="JsonSchema.validate">
 <a class="viewcode-back" href="../../deode.html#deode.config_parser.JsonSchema.validate">[docs]</a>
-    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a copy of `data` validated against the stored JSON schema.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validation_function</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="JsonSchema.get_markdown_doc">
 <a class="viewcode-back" href="../../deode.html#deode.config_parser.JsonSchema.get_markdown_doc">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_markdown_doc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_markdown_doc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return human-readable doc for the schema in markdown format.&quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">tmpdir</span><span class="p">:</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;schema.json&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">schema_file</span><span class="p">:</span>
@@ -1245,10 +1245,10 @@
 
 <div class="viewcode-block" id="ParsedConfig">
 <a class="viewcode-back" href="../../deode.html#deode.config_parser.ParsedConfig">[docs]</a>
-<span class="k">class</span> <span class="nc">ParsedConfig</span><span class="p">(</span><span class="n">BasicConfig</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ParsedConfig</span><span class="p">(</span><span class="n">BasicConfig</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Object that holds parsed configs validated against a `json_schema`.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="n">json_schema</span><span class="p">,</span>
@@ -1261,7 +1261,7 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="nd">@BasicConfig</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the underlying data stored by the instance.&quot;&quot;&quot;</span>
         <span class="n">new</span><span class="p">,</span> <span class="n">json_schema</span> <span class="o">=</span> <span class="n">_expand_config_include_section</span><span class="p">(</span>
             <span class="n">raw_config</span><span class="o">=</span><span class="n">new</span><span class="p">,</span>
@@ -1285,22 +1285,22 @@
         <span class="n">BasicConfig</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">json_schema</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">new</span><span class="p">))</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">include_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">include_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the search dir used sections in the raw config&#39;s `include` section.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_include_dir</span>
 
     <span class="nd">@include_dir</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">include_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">include_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the search dir for `include` config sections.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_include_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">json_schema</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">json_schema</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the instance&#39;s JSON schema.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_json_schema</span>
 
     <span class="nd">@json_schema</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">json_schema</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">,</span> <span class="n">_validate_data</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">json_schema</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">,</span> <span class="n">_validate_data</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_json_schema</span> <span class="o">=</span> <span class="n">JsonSchema</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">_validate_data</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
@@ -1308,21 +1308,21 @@
 <div class="viewcode-block" id="ParsedConfig.from_file">
 <a class="viewcode-back" href="../../deode.html#deode.config_parser.ParsedConfig.from_file">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">include_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">include_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Do as in `BasicConfig`. If `None`, `include_dir` will become `path.parent`.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">include_dir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">include_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">include_dir</span><span class="o">=</span><span class="n">include_dir</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">rtn</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;)&quot;</span><span class="p">)</span>
         <span class="n">rtn</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;, json_schema=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">json_schema</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s1">&#39;json&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span>
         <span class="k">return</span> <span class="n">rtn</span>
 
 <div class="viewcode-block" id="ParsedConfig.expand_macros">
 <a class="viewcode-back" href="../../deode.html#deode.config_parser.ParsedConfig.expand_macros">[docs]</a>
-    <span class="k">def</span> <span class="nf">expand_macros</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">expand_macros</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Expand macros in config recursively.&quot;&quot;&quot;</span>
         <span class="n">_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">update</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;macros&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;macros.case&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;macros&quot;</span><span class="p">])})</span>
         <span class="n">macro_platform</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">_config</span><span class="p">)</span>
@@ -1334,7 +1334,7 @@
 
 
 
-<span class="k">def</span> <span class="nf">_read_raw_config_file</span><span class="p">(</span><span class="n">config_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_read_raw_config_file</span><span class="p">(</span><span class="n">config_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Read raw configs from files in miscellaneous formats.</span>
 
 <span class="sd">    Args:</span>
@@ -1363,7 +1363,7 @@
     <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unsupported config file format &quot;</span><span class="si">{</span><span class="n">config_path</span><span class="o">.</span><span class="n">suffix</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_get_config_include_definitions</span><span class="p">(</span><span class="n">raw_config</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_config_include_definitions</span><span class="p">(</span><span class="n">raw_config</span><span class="p">):</span>
     <span class="n">config_includes</span> <span class="o">=</span> <span class="n">raw_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;include&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="n">overlapping_sections</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">config_includes</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">raw_config</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">overlapping_sections</span><span class="p">:</span>
@@ -1373,7 +1373,7 @@
     <span class="k">return</span> <span class="n">config_includes</span>
 
 
-<span class="k">def</span> <span class="nf">_get_all_json_schemas</span><span class="p">(</span><span class="n">json_schema</span><span class="p">,</span> <span class="n">schemas_path</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_all_json_schemas</span><span class="p">(</span><span class="n">json_schema</span><span class="p">,</span> <span class="n">schemas_path</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Load and add all json schema files in the schemas_path directory.</span>
 
 <span class="sd">    Args:</span>
@@ -1396,7 +1396,7 @@
     <span class="k">return</span> <span class="n">json_schema</span>
 
 
-<span class="k">def</span> <span class="nf">_expand_config_include_section</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_expand_config_include_section</span><span class="p">(</span>
     <span class="n">raw_config</span><span class="p">,</span>
     <span class="n">json_schema</span><span class="p">,</span>
     <span class="n">config_include_search_dir</span><span class="o">=</span><span class="n">ConfigParserDefaults</span><span class="o">.</span><span class="n">CONFIG_DIRECTORY</span><span class="p">,</span>
@@ -1459,14 +1459,14 @@
     <span class="k">return</span> <span class="n">raw_config</span><span class="p">,</span> <span class="n">json_schema</span>
 
 
-<span class="k">def</span> <span class="nf">_get_json_validation_function</span><span class="p">(</span><span class="n">json_schema</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_json_validation_function</span><span class="p">(</span><span class="n">json_schema</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a validation function compiled with schema `json_schema`.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">json_schema</span><span class="p">:</span>
         <span class="c1"># Validation will just convert everything to dict in this case</span>
         <span class="k">return</span> <span class="k">lambda</span> <span class="n">obj</span><span class="p">:</span> <span class="n">modify_mappings</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="n">obj</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
     <span class="n">validation_func</span> <span class="o">=</span> <span class="n">fastjsonschema</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">json_schema</span><span class="o">.</span><span class="n">dict</span><span class="p">())</span>
 
-    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">validation_func</span><span class="p">(</span><span class="n">modify_mappings</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="n">obj</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="nb">dict</span><span class="p">))</span>
         <span class="k">except</span> <span class="n">JsonSchemaValueException</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
@@ -1486,7 +1486,7 @@
             <span class="k">raise</span> <span class="n">ConfigFileValidationError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">error_path</span><span class="si">}</span><span class="s1">&quot; </span><span class="si">{</span><span class="n">human_readable_msg</span><span class="si">}</span><span class="s1">. &#39;</span>
                 <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;Received type &quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">err</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&quot; with value &quot;</span><span class="si">{</span><span class="n">err</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s1">&quot;.&#39;</span>
-            <span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span>
 
     <span class="k">return</span> <span class="n">validate</span>
 </pre></div>
@@ -1499,7 +1499,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-12-20T13:29:44Z.
+      <span class="lastupdated">Last updated on 2025-01-08T10:33:06Z.
       </span></p>
   </div>
 

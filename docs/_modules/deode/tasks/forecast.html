@@ -1047,28 +1047,28 @@
              
   <h1>Source code for deode.tasks.forecast</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Forecast.&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">glob</span>
-<span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">glob</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">time</span><span class="w"> </span><span class="kn">import</span> <span class="n">sleep</span>
 
-<span class="kn">from</span> <span class="nn">..datetime_utils</span> <span class="kn">import</span> <span class="n">as_datetime</span><span class="p">,</span> <span class="n">as_timedelta</span><span class="p">,</span> <span class="n">oi2dt_list</span>
-<span class="kn">from</span> <span class="nn">..derived_variables</span> <span class="kn">import</span> <span class="n">check_fullpos_namelist</span>
-<span class="kn">from</span> <span class="nn">..initial_conditions</span> <span class="kn">import</span> <span class="n">InitialConditions</span>
-<span class="kn">from</span> <span class="nn">..logs</span> <span class="kn">import</span> <span class="n">logger</span>
-<span class="kn">from</span> <span class="nn">..namelist</span> <span class="kn">import</span> <span class="n">NamelistGenerator</span>
-<span class="kn">from</span> <span class="nn">..os_utils</span> <span class="kn">import</span> <span class="n">deodemakedirs</span>
-<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">Task</span>
-<span class="kn">from</span> <span class="nn">.batch</span> <span class="kn">import</span> <span class="n">BatchJob</span>
-<span class="kn">from</span> <span class="nn">.sfx</span> <span class="kn">import</span> <span class="n">InputDataFromNamelist</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..datetime_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">as_datetime</span><span class="p">,</span> <span class="n">as_timedelta</span><span class="p">,</span> <span class="n">oi2dt_list</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..derived_variables</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_fullpos_namelist</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..initial_conditions</span><span class="w"> </span><span class="kn">import</span> <span class="n">InitialConditions</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..namelist</span><span class="w"> </span><span class="kn">import</span> <span class="n">NamelistGenerator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..os_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">deodemakedirs</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">Task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.batch</span><span class="w"> </span><span class="kn">import</span> <span class="n">BatchJob</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.sfx</span><span class="w"> </span><span class="kn">import</span> <span class="n">InputDataFromNamelist</span>
 
 
 <div class="viewcode-block" id="Forecast">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.forecast.Forecast">[docs]</a>
-<span class="k">class</span> <span class="nc">Forecast</span><span class="p">(</span><span class="n">Task</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Forecast</span><span class="p">(</span><span class="n">Task</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Forecast task.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct forecast object.</span>
 
 <span class="sd">        Args:</span>
@@ -1107,7 +1107,7 @@
 
 <div class="viewcode-block" id="Forecast.archive_output">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.forecast.Forecast.archive_output">[docs]</a>
-    <span class="k">def</span> <span class="nf">archive_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filetype</span><span class="p">,</span> <span class="n">periods</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">archive_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filetype</span><span class="p">,</span> <span class="n">periods</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Archive forecast model output.</span>
 
 <span class="sd">        Args:</span>
@@ -1129,7 +1129,7 @@
 
 <div class="viewcode-block" id="Forecast.wfp_input">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.forecast.Forecast.wfp_input">[docs]</a>
-    <span class="k">def</span> <span class="nf">wfp_input</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wfp_input</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add wind turbine files to forecast directory.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wfp_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_platform_value</span><span class="p">(</span><span class="s2">&quot;windfarm_path&quot;</span><span class="p">)</span>
 
@@ -1147,7 +1147,7 @@
 
 <div class="viewcode-block" id="Forecast.accelerator_device_input">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.forecast.Forecast.accelerator_device_input">[docs]</a>
-    <span class="k">def</span> <span class="nf">accelerator_device_input</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">accelerator_device_input</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Copy the input files for GPU execution.</span>
 
 <span class="sd">        - parallel_method: input file with parallelisation technique for each algorithm</span>
@@ -1164,7 +1164,7 @@
 
 <div class="viewcode-block" id="Forecast.merge_output">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.forecast.Forecast.merge_output">[docs]</a>
-    <span class="k">def</span> <span class="nf">merge_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filetype</span><span class="p">,</span> <span class="n">periods</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">merge_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filetype</span><span class="p">,</span> <span class="n">periods</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge distributed forecast model output.</span>
 
 <span class="sd">        Args:</span>
@@ -1208,7 +1208,7 @@
 
 <div class="viewcode-block" id="Forecast.execute">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.forecast.Forecast.execute">[docs]</a>
-    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute forecast.&quot;&quot;&quot;</span>
         <span class="c1"># Fetch forecast model static input data</span>
         <span class="n">input_definition</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_system_value</span><span class="p">(</span><span class="s2">&quot;forecast_input_definition&quot;</span><span class="p">)</span>
@@ -1321,10 +1321,10 @@
 
 <div class="viewcode-block" id="PrepareCycle">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.forecast.PrepareCycle">[docs]</a>
-<span class="k">class</span> <span class="nc">PrepareCycle</span><span class="p">(</span><span class="n">Task</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PrepareCycle</span><span class="p">(</span><span class="n">Task</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Task.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct object.</span>
 
 <span class="sd">        Args:</span>
@@ -1342,10 +1342,10 @@
 
 <div class="viewcode-block" id="FirstGuess">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.forecast.FirstGuess">[docs]</a>
-<span class="k">class</span> <span class="nc">FirstGuess</span><span class="p">(</span><span class="n">Task</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FirstGuess</span><span class="p">(</span><span class="n">Task</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;FirstGuess.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct FirstGuess object.</span>
 
 <span class="sd">        Args:</span>
@@ -1356,7 +1356,7 @@
 
 <div class="viewcode-block" id="FirstGuess.execute">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.forecast.FirstGuess.execute">[docs]</a>
-    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Find initial file.&quot;&quot;&quot;</span>
         <span class="n">initfile</span><span class="p">,</span> <span class="n">initfile_sfx</span> <span class="o">=</span> <span class="n">InitialConditions</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span><span class="o">.</span><span class="n">find_initial_files</span><span class="p">()</span></div>
 </div>
@@ -1371,7 +1371,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-12-20T13:29:44Z.
+      <span class="lastupdated">Last updated on 2025-01-08T10:33:06Z.
       </span></p>
   </div>
 

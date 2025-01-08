@@ -1048,33 +1048,33 @@
   <h1>Source code for deode.os_utils</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Utilities for simple tasks on OS level.&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">contextlib</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">pathlib</span>
-<span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">import</span> <span class="nn">shutil</span>
-<span class="kn">import</span> <span class="nn">subprocess</span>
-<span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">contextlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pathlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">GeneralConstants</span>
-<span class="kn">from</span> <span class="nn">.logs</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">GeneralConstants</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
 
 
 <div class="viewcode-block" id="Search">
 <a class="viewcode-back" href="../../deode.html#deode.os_utils.Search">[docs]</a>
-<span class="k">class</span> <span class="nc">Search</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Search</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Search class.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct search class.&quot;&quot;&quot;</span>
         <span class="k">return</span>
 
 <div class="viewcode-block" id="Search.find_files">
 <a class="viewcode-back" href="../../deode.html#deode.os_utils.Search.find_files">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">find_files</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_files</span><span class="p">(</span>
         <span class="n">directory</span><span class="p">,</span>
         <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
         <span class="n">postfix</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
@@ -1167,7 +1167,7 @@
 
 <div class="viewcode-block" id="filepath_iterator">
 <a class="viewcode-back" href="../../deode.html#deode.os_utils.filepath_iterator">[docs]</a>
-<span class="k">def</span> <span class="nf">filepath_iterator</span><span class="p">(</span><span class="n">paths</span><span class="p">,</span> <span class="n">filename_pattern</span><span class="o">=</span><span class="s2">&quot;*&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">filepath_iterator</span><span class="p">(</span><span class="n">paths</span><span class="p">,</span> <span class="n">filename_pattern</span><span class="o">=</span><span class="s2">&quot;*&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return iterator of paths to files given a list of file or directory paths.</span>
 
 <span class="sd">    Given a path or list of paths, yield Path objects corresponding to them.</span>
@@ -1200,7 +1200,7 @@
 
 <div class="viewcode-block" id="deodemakedirs">
 <a class="viewcode-back" href="../../deode.html#deode.os_utils.deodemakedirs">[docs]</a>
-<span class="k">def</span> <span class="nf">deodemakedirs</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">unixgroup</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">def_dir_mode</span><span class="o">=</span><span class="mo">0o755</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">deodemakedirs</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">unixgroup</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">def_dir_mode</span><span class="o">=</span><span class="mo">0o755</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create directories and change unix group as required.</span>
 
 <span class="sd">    For a given path the top directory that does not yet exist is searched for, created</span>
@@ -1232,7 +1232,7 @@
                 <span class="c1"># TODO: Check if we really need this permissive mask</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">dir_mode</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot create </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> properly&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span>
+            <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot create </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> properly&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># check directory tree for top dir that has to be created</span>
         <span class="k">try</span><span class="p">:</span>
@@ -1248,13 +1248,13 @@
                 <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="mo">0o2750</span><span class="p">)</span>  <span class="c1"># noqa S103</span>
             <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot create </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> properly&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span></div>
+            <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot create </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> properly&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span></div>
 
 
 
 <div class="viewcode-block" id="remove_empty_dirs">
 <a class="viewcode-back" href="../../deode.html#deode.os_utils.remove_empty_dirs">[docs]</a>
-<span class="k">def</span> <span class="nf">remove_empty_dirs</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dry_run</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">remove_empty_dirs</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dry_run</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove directories.</span>
 
 <span class="sd">    Recursively and permanently removes the specified directory,</span>
@@ -1292,7 +1292,7 @@
 
 <div class="viewcode-block" id="ping">
 <a class="viewcode-back" href="../../deode.html#deode.os_utils.ping">[docs]</a>
-<span class="k">def</span> <span class="nf">ping</span><span class="p">(</span><span class="n">host</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ping</span><span class="p">(</span><span class="n">host</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Ping host.</span>
 
 <span class="sd">    Args:</span>
@@ -1313,7 +1313,7 @@
 
 <div class="viewcode-block" id="strip_off_mount_path">
 <a class="viewcode-back" href="../../deode.html#deode.os_utils.strip_off_mount_path">[docs]</a>
-<span class="k">def</span> <span class="nf">strip_off_mount_path</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">strip_off_mount_path</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Strip off the mount path from a given path.</span>
 
 <span class="sd">    Assumptions:</span>
@@ -1362,7 +1362,7 @@
 
 <div class="viewcode-block" id="resolve_path_relative_to_package">
 <a class="viewcode-back" href="../../deode.html#deode.os_utils.resolve_path_relative_to_package">[docs]</a>
-<span class="k">def</span> <span class="nf">resolve_path_relative_to_package</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">ignore_errors</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">resolve_path_relative_to_package</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">ignore_errors</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Resolve path relative to package directory.</span>
 
 <span class="sd">    If the path exists as is, return it. If not, check if it exists in the</span>
@@ -1423,7 +1423,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-12-20T13:29:44Z.
+      <span class="lastupdated">Last updated on 2025-01-08T10:33:06Z.
       </span></p>
   </div>
 

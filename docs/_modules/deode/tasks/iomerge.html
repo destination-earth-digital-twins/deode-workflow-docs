@@ -1047,23 +1047,23 @@
              
   <h1>Source code for deode.tasks.iomerge</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;IO merge task.&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">datetime</span>
-<span class="kn">import</span> <span class="nn">glob</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span><span class="p">,</span> <span class="n">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">glob</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">time</span><span class="w"> </span><span class="kn">import</span> <span class="n">sleep</span><span class="p">,</span> <span class="n">time</span>
 
-<span class="kn">from</span> <span class="nn">..datetime_utils</span> <span class="kn">import</span> <span class="n">as_datetime</span><span class="p">,</span> <span class="n">as_timedelta</span><span class="p">,</span> <span class="n">oi2dt_list</span>
-<span class="kn">from</span> <span class="nn">..logs</span> <span class="kn">import</span> <span class="n">logger</span>
-<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">Task</span>
-<span class="kn">from</span> <span class="nn">.batch</span> <span class="kn">import</span> <span class="n">BatchJob</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..datetime_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">as_datetime</span><span class="p">,</span> <span class="n">as_timedelta</span><span class="p">,</span> <span class="n">oi2dt_list</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">Task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.batch</span><span class="w"> </span><span class="kn">import</span> <span class="n">BatchJob</span>
 
 
 <div class="viewcode-block" id="IOmerge">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.iomerge.IOmerge">[docs]</a>
-<span class="k">class</span> <span class="nc">IOmerge</span><span class="p">(</span><span class="n">Task</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">IOmerge</span><span class="p">(</span><span class="n">Task</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;IO merge task.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct IOmerge object.</span>
 
 <span class="sd">        Args:</span>
@@ -1094,7 +1094,7 @@
 <div class="viewcode-block" id="IOmerge.wait_for_file">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.iomerge.IOmerge.wait_for_file">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">wait_for_file</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">age_limit</span><span class="o">=</span><span class="mi">15</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wait_for_file</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">age_limit</span><span class="o">=</span><span class="mi">15</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Wait until a file is at least N seconds old.</span>
 
 <span class="sd">        Args:</span>
@@ -1111,7 +1111,7 @@
 
 <div class="viewcode-block" id="IOmerge.wait_for_io">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.iomerge.IOmerge.wait_for_io">[docs]</a>
-    <span class="k">def</span> <span class="nf">wait_for_io</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filetype</span><span class="p">,</span> <span class="n">lt</span><span class="p">,</span> <span class="n">fc_path</span><span class="o">=</span><span class="s2">&quot;../Forecast&quot;</span><span class="p">,</span> <span class="n">maxtries</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wait_for_io</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filetype</span><span class="p">,</span> <span class="n">lt</span><span class="p">,</span> <span class="n">fc_path</span><span class="o">=</span><span class="s2">&quot;../Forecast&quot;</span><span class="p">,</span> <span class="n">maxtries</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Wait for all io_server output to be stable.</span>
 
 <span class="sd">        Args:</span>
@@ -1183,7 +1183,7 @@
 
 <div class="viewcode-block" id="IOmerge.merge_output">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.iomerge.IOmerge.merge_output">[docs]</a>
-    <span class="k">def</span> <span class="nf">merge_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lt</span><span class="p">,</span> <span class="n">fc_path</span><span class="o">=</span><span class="s2">&quot;../Forecast&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">merge_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lt</span><span class="p">,</span> <span class="n">fc_path</span><span class="o">=</span><span class="s2">&quot;../Forecast&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge distributed forecast model output.</span>
 
 <span class="sd">        Args:</span>
@@ -1241,7 +1241,7 @@
 
 <div class="viewcode-block" id="IOmerge.execute">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.iomerge.IOmerge.execute">[docs]</a>
-    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute IO merge.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nproc_io</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="c1"># Normally, this shouldn&#39;t happen, but maybe outside of ecFlow.</span>
@@ -1328,7 +1328,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2024-12-20T13:29:44Z.
+      <span class="lastupdated">Last updated on 2025-01-08T10:33:06Z.
       </span></p>
   </div>
 
