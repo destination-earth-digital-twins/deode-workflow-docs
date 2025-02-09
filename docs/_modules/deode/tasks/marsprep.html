@@ -1366,7 +1366,8 @@
                     <span class="s2">&quot;NUMBER&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;boundaries.ifs.bdmember&quot;</span><span class="p">]],</span>
                 <span class="p">}</span>
             <span class="p">)</span>
-
+        <span class="k">if</span> <span class="n">levtype</span> <span class="o">==</span> <span class="s2">&quot;SOL&quot;</span><span class="p">:</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;LEVELIST&quot;</span><span class="p">:</span> <span class="s2">&quot;1/2/3/4/5&quot;</span><span class="p">})</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;class&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;D1&quot;</span><span class="p">:</span>
             <span class="n">d</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
                 <span class="p">{</span>
@@ -1597,6 +1598,27 @@
                 <span class="k">if</span> <span class="n">file_check</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;There is no data in fdb for </span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
+                <span class="n">exist_snow</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">KeyError</span><span class="p">):</span>
+                    <span class="n">param3</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;GG_snow&quot;</span><span class="p">],</span> <span class="n">date_str</span><span class="p">)</span>
+                    <span class="n">exist_snow</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">if</span> <span class="n">exist_snow</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">update_data_request</span><span class="p">(</span>
+                        <span class="n">data_type</span><span class="o">=</span><span class="s2">&quot;forecast&quot;</span><span class="p">,</span>
+                        <span class="n">date</span><span class="o">=</span><span class="n">date_str</span><span class="p">,</span>
+                        <span class="n">time</span><span class="o">=</span><span class="n">hour_str</span><span class="p">,</span>
+                        <span class="n">steps</span><span class="o">=</span><span class="n">base</span><span class="p">,</span>
+                        <span class="n">prefetch</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                        <span class="n">levtype</span><span class="o">=</span><span class="s2">&quot;SOL&quot;</span><span class="p">,</span>
+                        <span class="n">param</span><span class="o">=</span><span class="n">param3</span><span class="p">,</span>
+                        <span class="n">specify_domain</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                        <span class="n">target</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s1">+[STEP].snow&quot;&#39;</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">write_mars_req</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datarequest</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s2">.snow.req&quot;</span><span class="p">,</span> <span class="s2">&quot;retrieve&quot;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">create_executable</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s2">.snow.req&quot;</span><span class="p">)</span>
+                    <span class="n">batch</span> <span class="o">=</span> <span class="n">BatchJob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">,</span> <span class="n">wrapper</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="p">)</span>
+                    <span class="n">batch</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">executable</span><span class="p">)</span>
+
                 <span class="n">exist_soil</span> <span class="o">=</span> <span class="kc">False</span>
                 <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">KeyError</span><span class="p">):</span>
                     <span class="n">param1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;GG_soil&quot;</span><span class="p">],</span> <span class="n">date_str</span><span class="p">)</span>
@@ -1722,8 +1744,12 @@
                     <span class="n">i</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
                     <span class="n">i_fstring</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">&quot;</span>
                     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s2">+</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">):</span>
+                        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s2">+</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">.snow&quot;</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">gp</span><span class="p">:</span>
+                            <span class="n">snow</span> <span class="o">=</span> <span class="n">gp</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+                        <span class="n">gp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
                         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s2">+</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;ab&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
                             <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+                            <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">snow</span><span class="p">)</span>
                         <span class="n">fp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
                         <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span>
                             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s2">+</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
@@ -1924,7 +1950,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-02-07T05:50:08Z.
+      <span class="lastupdated">Last updated on 2025-02-09T18:36:32Z.
       </span></p>
   </div>
 
