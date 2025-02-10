@@ -702,6 +702,8 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-domain">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">domain</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-domain-gridtype">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">domain</span> <span class="pre">&gt;</span> <span class="pre">gridtype</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-domain-gridtype-oro">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">domain</span> <span class="pre">&gt;</span> <span class="pre">gridtype_oro</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-domain-orographic-smoothing-method">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">domain</span> <span class="pre">&gt;</span> <span class="pre">orographic_smoothing_method</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-domain-name">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">domain</span> <span class="pre">&gt;</span> <span class="pre">name</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-domain-number">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">domain</span> <span class="pre">&gt;</span> <span class="pre">number</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-domain-nimax">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">domain</span> <span class="pre">&gt;</span> <span class="pre">nimax</span></code></a></li>
@@ -718,6 +720,8 @@
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-domain-xlon0">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">domain</span> <span class="pre">&gt;</span> <span class="pre">xlon0</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-domain-xlat0">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">domain</span> <span class="pre">&gt;</span> <span class="pre">xlat0</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-domain-xbeta">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">domain</span> <span class="pre">&gt;</span> <span class="pre">xbeta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-domain-spectral-smoothing-by-gridtype">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">domain</span> <span class="pre">&gt;</span> <span class="pre">spectral_smoothing_by_gridtype</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-domain-truncation-by-gridtype">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">domain</span> <span class="pre">&gt;</span> <span class="pre">truncation_by_gridtype</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-extractsqlite">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">extractsqlite</span></code></a><ul>
@@ -1129,6 +1133,9 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        update (dict) : Derived config update</span>
 
+<span class="sd">    Raises:</span>
+<span class="sd">        NotImplementedError: For configurations checking</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Geometry</span>
     <span class="n">nbzonl</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain.nbzonl&quot;</span><span class="p">])</span>
@@ -1147,19 +1154,48 @@
         <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain.njmax&quot;</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mi">250</span><span class="p">:</span>
             <span class="n">nbzong</span> <span class="o">=</span> <span class="mi">8</span>
 
-    <span class="n">truncation</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;linear&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;quadratic&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;cubic&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;custom&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
-    <span class="n">lspsmoro</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;linear&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;quadratic&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;cubic&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;custom&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
-
     <span class="n">ndguxg</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain.nimax&quot;</span><span class="p">])</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain.ilone&quot;</span><span class="p">])</span>
     <span class="n">ndglg</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain.njmax&quot;</span><span class="p">])</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain.ilate&quot;</span><span class="p">])</span>
 
+    <span class="c1"># Calculate spectral truncation</span>
+    <span class="n">truncation_map</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;linear&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;quadratic&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;cubic&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;custom&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
     <span class="n">gridtype</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain.gridtype&quot;</span><span class="p">]</span>
 
     <span class="k">if</span> <span class="n">gridtype</span> <span class="o">==</span> <span class="s2">&quot;custom&quot;</span><span class="p">:</span>
-        <span class="n">truncation</span><span class="p">[</span><span class="n">gridtype</span><span class="p">]</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain.custom_truncation&quot;</span><span class="p">]</span>
+        <span class="n">truncation_map</span><span class="p">[</span><span class="n">gridtype</span><span class="p">]</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain.custom_truncation&quot;</span><span class="p">]</span>
 
-    <span class="n">nsmax</span> <span class="o">=</span> <span class="n">floor</span><span class="p">((</span><span class="n">ndglg</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">truncation</span><span class="p">[</span><span class="n">gridtype</span><span class="p">])</span>
-    <span class="n">nmsmax</span> <span class="o">=</span> <span class="n">floor</span><span class="p">((</span><span class="n">ndguxg</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">truncation</span><span class="p">[</span><span class="n">gridtype</span><span class="p">])</span>
+    <span class="n">truncation</span> <span class="o">=</span> <span class="n">truncation_map</span><span class="p">[</span><span class="n">gridtype</span><span class="p">]</span>
+    <span class="n">nsmax</span> <span class="o">=</span> <span class="n">floor</span><span class="p">((</span><span class="n">ndglg</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">truncation</span><span class="p">)</span>
+    <span class="n">nmsmax</span> <span class="o">=</span> <span class="n">floor</span><span class="p">((</span><span class="n">ndguxg</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">truncation</span><span class="p">)</span>
+
+    <span class="n">orographic_smoothing_method</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain.orographic_smoothing_method&quot;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">orographic_smoothing_method</span> <span class="o">==</span> <span class="s2">&quot;spectral&quot;</span><span class="p">:</span>
+        <span class="n">gridtype_oro</span> <span class="o">=</span> <span class="n">gridtype</span>
+        <span class="n">lspsmoro_map</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain.spectral_smoothing_by_gridtype&quot;</span><span class="p">]</span>
+        <span class="n">lspsmoro</span> <span class="o">=</span> <span class="n">lspsmoro_map</span><span class="p">[</span><span class="n">gridtype</span><span class="p">]</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;lspsmoro:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">lspsmoro</span><span class="p">)</span>
+        <span class="n">nsmax_oro</span> <span class="o">=</span> <span class="n">nsmax</span>
+        <span class="n">nmsmax_oro</span> <span class="o">=</span> <span class="n">nmsmax</span>
+    <span class="k">elif</span> <span class="n">orographic_smoothing_method</span> <span class="o">==</span> <span class="s2">&quot;truncation&quot;</span><span class="p">:</span>
+        <span class="n">lspsmoro</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">gridtype_oro</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain.gridtype_oro&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">gridtype_oro</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="n">gridtype_oro_map</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain.truncation_by_gridtype&quot;</span><span class="p">]</span>
+            <span class="n">gridtype_oro</span> <span class="o">=</span> <span class="n">gridtype_oro_map</span><span class="p">[</span><span class="n">gridtype</span><span class="p">]</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;gridtype_oro set to </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">gridtype_oro</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">gridtype_oro</span> <span class="o">==</span> <span class="s2">&quot;custom&quot;</span><span class="p">:</span>
+            <span class="n">truncation_map</span><span class="p">[</span><span class="n">gridtype</span><span class="p">]</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain.custom_truncation_oro&quot;</span><span class="p">]</span>
+
+        <span class="n">nsmax_oro</span> <span class="o">=</span> <span class="n">floor</span><span class="p">((</span><span class="n">ndglg</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">truncation_map</span><span class="p">[</span><span class="n">gridtype_oro</span><span class="p">])</span>
+        <span class="n">nmsmax_oro</span> <span class="o">=</span> <span class="n">floor</span><span class="p">((</span><span class="n">ndguxg</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">truncation_map</span><span class="p">[</span><span class="n">gridtype_oro</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;Orographic smoothing method: &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">orographic_smoothing_method</span><span class="si">}</span><span class="s2"> is not implemented&quot;</span>
+        <span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
     <span class="n">xlat0</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;domain.xlat0&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
     <span class="n">xlon0</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;domain.xlon0&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
@@ -1208,6 +1244,7 @@
     <span class="c1"># Update config and namelist settings</span>
     <span class="n">update</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;domain&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;gridtype_oro&quot;</span><span class="p">:</span> <span class="n">gridtype_oro</span><span class="p">,</span>
             <span class="s2">&quot;nbzong&quot;</span><span class="p">:</span> <span class="n">nbzong</span><span class="p">,</span>
             <span class="s2">&quot;nbzonl&quot;</span><span class="p">:</span> <span class="n">nbzonl</span><span class="p">,</span>
             <span class="s2">&quot;ndguxg&quot;</span><span class="p">:</span> <span class="n">ndguxg</span><span class="p">,</span>
@@ -1215,10 +1252,12 @@
             <span class="s2">&quot;xrpk&quot;</span><span class="p">:</span> <span class="n">xrpk</span><span class="p">,</span>
             <span class="s2">&quot;xlat0&quot;</span><span class="p">:</span> <span class="n">xlat0</span><span class="p">,</span>
             <span class="s2">&quot;xlon0&quot;</span><span class="p">:</span> <span class="n">xlon0</span><span class="p">,</span>
-            <span class="s2">&quot;xtrunc&quot;</span><span class="p">:</span> <span class="n">truncation</span><span class="p">[</span><span class="n">gridtype</span><span class="p">],</span>
+            <span class="s2">&quot;xtrunc&quot;</span><span class="p">:</span> <span class="n">truncation</span><span class="p">,</span>
             <span class="s2">&quot;nsmax&quot;</span><span class="p">:</span> <span class="n">nsmax</span><span class="p">,</span>
             <span class="s2">&quot;nmsmax&quot;</span><span class="p">:</span> <span class="n">nmsmax</span><span class="p">,</span>
-            <span class="s2">&quot;lspsmoro&quot;</span><span class="p">:</span> <span class="n">lspsmoro</span><span class="p">[</span><span class="n">gridtype</span><span class="p">],</span>
+            <span class="s2">&quot;nsmax_oro&quot;</span><span class="p">:</span> <span class="n">nsmax_oro</span><span class="p">,</span>
+            <span class="s2">&quot;nmsmax_oro&quot;</span><span class="p">:</span> <span class="n">nmsmax_oro</span><span class="p">,</span>
+            <span class="s2">&quot;lspsmoro&quot;</span><span class="p">:</span> <span class="n">lspsmoro</span><span class="p">,</span>
         <span class="p">},</span>
         <span class="s2">&quot;macros&quot;</span><span class="p">:</span> <span class="p">{</span>
             <span class="s2">&quot;gen_macros&quot;</span><span class="p">:</span> <span class="n">gen_macros</span><span class="p">,</span>
@@ -1261,7 +1300,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-02-09T18:36:32Z.
+      <span class="lastupdated">Last updated on 2025-02-10T14:33:44Z.
       </span></p>
   </div>
 
