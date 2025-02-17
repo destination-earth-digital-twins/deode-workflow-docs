@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Plug-ins &mdash; Deode Workflow Docs  documentation</title>
+  <title>DEODE environment variables &mdash; Deode Workflow Docs  documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
@@ -1057,7 +1057,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Plug-ins</li>
+      <li class="breadcrumb-item active">DEODE environment variables</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -1066,32 +1066,19 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="plug-ins">
-<h1>Plug-ins<a class="headerlink" href="#plug-ins" title="Link to this heading"></a></h1>
-<p>Deode has the capability to add plug-ins. Internally deode itself is also treated as a plug-in, which is always enabled.</p>
-<section id="plugin-capablilities">
-<h2>Plugin capablilities<a class="headerlink" href="#plugin-capablilities" title="Link to this heading"></a></h2>
-<p>In Deode suites and tasks are handled as plugins. The namespaces suites and tasks are searched for possible suites and tasks.</p>
-</section>
-<section id="running-your-own-suite">
-<h2>Running your own suite<a class="headerlink" href="#running-your-own-suite" title="Link to this heading"></a></h2>
-<p>The configuration setting below allows you to use an alternative suite defintion.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">general</span><span class="o">.</span><span class="n">suite_control</span><span class="p">]</span>
-<span class="n">suite_definition</span> <span class="o">=</span> <span class="s2">&quot;MySuite&quot;</span>
-</pre></div>
-</div>
-<p>This should pick up the suite definition MySuite if it’s implementing the SuiteDefinition class from Deode.</p>
-</section>
-<section id="enable-your-own-plug-in">
-<h2>Enable your own plug-in<a class="headerlink" href="#enable-your-own-plug-in" title="Link to this heading"></a></h2>
-<p>The config file has a plugin_registry key inside the general part. The loaded plug-ins are defined inside the <code class="docutils literal notranslate"><span class="pre">plugins</span></code> key in the registry. The loaded plugins are stored as a dictionary, which uses namespaces as keys and paths as values.</p>
-<p>An example could be to add the plugin with namespace “example” in location /tmp would be to add:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">general</span><span class="o">.</span><span class="n">plugin_registry</span><span class="o">.</span><span class="n">plugins</span><span class="p">]</span>
-<span class="s2">&quot;example&quot;</span><span class="p">:</span> <span class="s2">&quot;/tmp&quot;</span>
-</pre></div>
-</div>
-<p>In this case it is expected that the namespace “example” is located in <code class="docutils literal notranslate"><span class="pre">/tmp/example</span></code>. Suites in <code class="docutils literal notranslate"><span class="pre">/tmp/example/suites</span></code> and tasks in <code class="docutils literal notranslate"><span class="pre">/tmp/example/</span></code>tasks will be picked up.</p>
-</section>
+  <p><a class="reference external" href="https://github.com/destination-earth-digital-twins/Deode-Workflow"><img alt="GitHub" src="https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&amp;logo=github&amp;logoColor=white" /></a>
+<a class="reference external" href="https://destination-earth-digital-twins.github.io/deode-workflow-docs/"><img alt="Github Pages" src="https://img.shields.io/badge/github%20pages-121013?style=for-the-badge&amp;logo=github&amp;logoColor=white" /></a></p>
+<p><a class="reference external" href="https://github.com/destination-earth-digital-twins/Deode-Workflow/actions/workflows/linting.yaml"><img alt="Linting" src="https://github.com/destination-earth-digital-twins/Deode-Workflow/actions/workflows/linting.yaml/badge.svg" /></a>
+<a class="reference external" href="https://github.com/destination-earth-digital-twins/Deode-Workflow/actions/workflows/tests.yaml"><img alt="Tests" src="https://github.com/destination-earth-digital-twins/Deode-Workflow/actions/workflows/tests.yaml/badge.svg" /></a>
+<a class="reference external" href="https://codecov.io/github/destination-earth-digital-twins/Deode-Workflow"><img alt="codecov" src="https://codecov.io/github/destination-earth-digital-twins/Deode-Workflow/branch/develop/graph/badge.svg?token=4PRUK8DMZF" /></a></p>
+<section id="deode-environment-variables">
+<h1>DEODE environment variables<a class="headerlink" href="#deode-environment-variables" title="Link to this heading"></a></h1>
+<p>The following environment variables can be used to control various behaviour.</p>
+<ul class="simple">
+<li><p>DEODE_LOGLEVEL sets the logger log level. Select e.g. between info and debug. For more options see the <a class="reference external" href="https://loguru.readthedocs.io/">loguru</a> documentation.</p></li>
+<li><p>DEODE_HOST allows to override the automatic detection of host. The host is used to pick up specific configuration settings. See e.g. <code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">show</span> <span class="pre">host</span></code></p></li>
+<li><p>DEODE_CONFIG_DATA_DIR sets additional search paths for config files. This is useful when using DEODE as a package. To see paths in use run <code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">show</span> <span class="pre">paths</span></code>.</p></li>
+</ul>
 </section>
 
 
