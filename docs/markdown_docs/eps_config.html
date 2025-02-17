@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Namelist handling in deode &mdash; Deode Workflow Docs  documentation</title>
+  <title>EPS setup &mdash; Deode Workflow Docs  documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
@@ -1086,7 +1086,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Namelist handling in deode</li>
+      <li class="breadcrumb-item active">EPS setup</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -1095,61 +1095,203 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="namelist-handling-in-deode">
-<h1>Namelist handling in deode<a class="headerlink" href="#namelist-handling-in-deode" title="Link to this heading"></a></h1>
-<p>Describes the namelist handling in the Deode-Workflow.</p>
-<section id="internal-usage">
-<h2>Internal usage<a class="headerlink" href="#internal-usage" title="Link to this heading"></a></h2>
-<p>The deode namelists are stored as yml files in <code class="docutils literal notranslate"><span class="pre">deode/data/namelist_generation_input/CYCLE</span></code> and assembled following a set of rules. The upper air and surfex namelists are stored in <code class="docutils literal notranslate"><span class="pre">master_namelists.yml</span></code> and <code class="docutils literal notranslate"><span class="pre">surfex_namelists.yml</span></code> respectively. In these config files the namelists are grouped depending on function and application. E.g. the namelist for generation of climate files (configuration E923) are separated in a base block, <code class="docutils literal notranslate"><span class="pre">e923_base</span></code> and one additional block for each step, e.g. <code class="docutils literal notranslate"><span class="pre">e923_0</span></code>. In <code class="docutils literal notranslate"><span class="pre">assemble_master.yml</span></code> the rules for how these blocks are combinged is defined. For the initial part, <code class="docutils literal notranslate"><span class="pre">e923_part_0</span></code> is defined as</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">e923_part_0</span><span class="p">:</span>
-  <span class="o">-</span> <span class="n">common_e923</span>
-  <span class="o">-</span> <span class="n">e923_0</span>
+  <section id="eps-setup">
+<h1>EPS setup<a class="headerlink" href="#eps-setup" title="Link to this heading"></a></h1>
+<section id="enabling-eps">
+<h2>Enabling EPS<a class="headerlink" href="#enabling-eps" title="Link to this heading"></a></h2>
+<p>To enable EPS, one has to include an EPS include file in the configuration or
+on the commandline. A default EPS include file is provided in the
+<code class="docutils literal notranslate"><span class="pre">deode/data/config_files/include/eps/eps_members.toml</span></code> file.
+Thus, to run the default EPS setup, one can do</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>deode<span class="w"> </span><span class="k">case</span><span class="w"> </span>--config-file<span class="w"> </span>deode/data/config_files/config.toml<span class="w"> </span>deode/data/config_files/include/eps/eps_members.toml
 </pre></div>
 </div>
-<p>where <code class="docutils literal notranslate"><span class="pre">common_e923</span></code> is another group in the assemble rules and <code class="docutils literal notranslate"><span class="pre">e923_0</span></code> is a group in the namelist file. This will be expanded to the three namelist groups</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="o">-</span> <span class="n">empty</span>
-  <span class="o">-</span> <span class="n">e923_base</span>
-  <span class="o">-</span> <span class="n">e923_0</span>
+<p>or include the following in the configuration file</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">--</span><span class="n">config</span><span class="o">-</span><span class="n">file</span>
+<span class="n">deode</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">config_files</span><span class="o">/</span><span class="n">config</span><span class="o">.</span><span class="n">toml</span>
+<span class="n">deode</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">config_files</span><span class="o">/</span><span class="n">include</span><span class="o">/</span><span class="n">eps</span><span class="o">/</span><span class="n">eps_members</span><span class="o">.</span><span class="n">toml</span>
 </pre></div>
 </div>
-<p>In addition the defined macros (see <code class="docutils literal notranslate"><span class="pre">deode/data/config_files/include/macros.toml</span></code>) are use in the namelist for config driven selections. For e.g. the forecast the settings are dependent on the CSC used as well as the forcing model and the config keys <code class="docutils literal notranslate"><span class="pre">general.csc</span></code> and <code class="docutils literal notranslate"><span class="pre">boundaries.bdmodel</span></code> are used accordingly like:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">forecast</span><span class="p">:</span>
-  <span class="o">-</span> <span class="n">master_common</span>
-  <span class="o">-</span> <span class="n">f4_</span><span class="nd">@CSC</span><span class="o">@</span>
-  <span class="o">-</span> <span class="n">namgfl_</span><span class="nd">@BDMODEL</span><span class="o">@</span>
+<p>and do</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>deode<span class="w"> </span><span class="k">case</span><span class="w"> </span>--config-file<span class="w"> </span>&lt;path_to_config_file&gt;
 </pre></div>
 </div>
-<p>where e.g. <code class="docutils literal notranslate"><span class="pre">&#64;BDMODEL&#64;</span></code> is substituted runtime to e.g. <code class="docutils literal notranslate"><span class="pre">AROME</span></code> or <code class="docutils literal notranslate"><span class="pre">IFS</span></code> which allows to pick of the corresponding section in <code class="docutils literal notranslate"><span class="pre">master_namelists.yml</span></code>.</p>
+<p>The default EPS include file contains the following settings:</p>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[eps.general]</span>
+<span class="w">  </span><span class="n">control_member</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">  </span><span class="n">members</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;0:3&quot;</span>
+<span class="w">  </span><span class="n">run_continously</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span>
+
+<span class="k">[eps.member_settings.boundaries.ifs]</span>
+<span class="w">  </span><span class="n">selection</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="s2">&quot;1:3&quot;</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;IFSENS&quot;</span><span class="p">}</span>
+
+<span class="k">[eps.member_settings.general]</span>
+<span class="w">  </span><span class="n">realization</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;-1&quot;</span>
+</pre></div>
+</div>
+<p>Translated into words, including this file in the main config file will make the
+<code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">case</span></code> command produce a config file with three members, where the first
+member is the control member. The three members will use the lateral boundary data
+from corresponding IFSENS member.</p>
+<p><em>Resulting config file:</em></p>
+<blockquote>
+<div><p><strong><em>NOTE:</em></strong>:</p>
+<ul class="simple">
+<li><p>Only deviating settings relative to the above <code class="docutils literal notranslate"><span class="pre">[eps.member_settings]</span></code> section
+are saved.</p></li>
+<li><p>No validation of the [eps.member_settings.*] sections is done at this point.</p></li>
+<li><p>The original <code class="docutils literal notranslate"><span class="pre">[eps.member_settings]</span></code> section is included in the resulting config file for reference.</p></li>
+</ul>
+</div></blockquote>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[eps.general]</span>
+<span class="w">  </span><span class="n">control_member</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">  </span><span class="n">members</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">]</span>
+<span class="w">  </span><span class="n">run_continously</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span>
+
+<span class="k">[eps.member_settings.boundaries.ifs]</span>
+<span class="w">  </span><span class="n">selection</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;IFSENS&quot;</span>
+
+<span class="k">[eps.member_settings.general]</span>
+<span class="w">  </span><span class="n">realization</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;-1&quot;</span>
+
+<span class="k">[eps.members.0.general]</span>
+<span class="w">  </span><span class="n">realization</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+
+<span class="k">[eps.members.1.general]</span>
+<span class="w">  </span><span class="n">realization</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">  </span><span class="n">selection</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;IFSENS&quot;</span>
+
+<span class="k">[eps.members.2.general]</span>
+<span class="w">  </span><span class="n">realization</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span>
+<span class="w">  </span><span class="n">selection</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;IFSENS&quot;</span>
+</pre></div>
+</div>
 </section>
-<section id="get-a-specific-namelist-from-command-line">
-<h2>Get a specific namelist from command line<a class="headerlink" href="#get-a-specific-namelist-from-command-line" title="Link to this heading"></a></h2>
-<p>For a given configuration file any namelist generated by the system can be extracted from command line using e.g. for the forecast</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">deode</span> <span class="n">show</span> <span class="n">namelist</span> <span class="o">-</span><span class="n">t</span> <span class="n">master</span> <span class="o">-</span><span class="n">n</span> <span class="n">forecast</span>
+<section id="configuring-eps">
+<h2>Configuring EPS<a class="headerlink" href="#configuring-eps" title="Link to this heading"></a></h2>
+<p>In the general EPS settings section, one can set the control member as well as
+the members that should be part of the ensemble. The <code class="docutils literal notranslate"><span class="pre">members</span></code> setting can either be</p>
+<ol class="arabic simple">
+<li><p>a list of integers or</p></li>
+<li><p>a string sequence of integers or slices separated by commas</p></li>
+</ol>
+<p>E.g. <code class="docutils literal notranslate"><span class="pre">members</span> <span class="pre">=</span> <span class="pre">[1,</span> <span class="pre">3,</span> <span class="pre">5]</span></code> will include members 1, 3, and 5 in the ensemble,
+whereas <code class="docutils literal notranslate"><span class="pre">members</span> <span class="pre">=</span> <span class="pre">&quot;0,</span> <span class="pre">1,</span> <span class="pre">2,</span> <span class="pre">4:10:2&quot;</span></code> will include members 0, 1, 2, 4, 6, and 8.
+The format of the string slices follows the Python slice notation, i.e. <code class="docutils literal notranslate"><span class="pre">start:stop:step</span></code>.
+The default value for <code class="docutils literal notranslate"><span class="pre">step</span></code> is 1, so <code class="docutils literal notranslate"><span class="pre">start:stop</span></code> is equivalent to <code class="docutils literal notranslate"><span class="pre">start:stop:1</span></code>.</p>
+<p>The control member can be set to any integer. If the control member is not part of the (expanded) members list, it will be added to the ensemble automatically.</p>
+<p>To adjust the default member settings to ones needs, one can set member specific settings
+for basically any existing settings of the Deode-Workflow config file. There are various
+ways to do this, but in any case the settings shall be placed under the
+<code class="docutils literal notranslate"><span class="pre">[eps.member_settings]</span></code> section in the eps include file with the full original
+config section string appended to “<code class="docutils literal notranslate"><span class="pre">eps.member_settings</span></code>”. E.g. to adjust the
+<code class="docutils literal notranslate"><span class="pre">[general.output_settings]</span></code> section member specifically, one would add the section</p>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[eps.member_settings.general.output_settings]</span>
+<span class="n">fullpos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;...&quot;</span>
 </pre></div>
 </div>
-<p>If you are uncertain about the name of the namelist you’re searching for just type any name to get a list</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">deode</span> <span class="n">show</span> <span class="n">namelist</span> <span class="o">-</span><span class="n">t</span> <span class="n">master</span> <span class="o">-</span><span class="n">n</span> <span class="n">showme</span> 
+<p>to the eps include file. The various ways of setting member specific settings are:</p>
+<section id="single-value-all-members-get-the-same-setting">
+<h3>1. Single value -&gt; all members get the same setting<a class="headerlink" href="#single-value-all-members-get-the-same-setting" title="Link to this heading"></a></h3>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[eps.member_settings]</span>
+<span class="n">parameter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;value&quot;</span>
 </pre></div>
 </div>
-<p>If you’d like have the namelist without the substituted values from the config file add a <code class="docutils literal notranslate"><span class="pre">-b</span></code> to the command. For more information about namelist extraction use the help command.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">deode</span> <span class="n">show</span> <span class="n">namelist</span> <span class="o">-</span><span class="n">h</span>
+<p><em>Result:</em></p>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[eps.members.0]</span>
+<span class="w">  </span><span class="n">parameter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;value&quot;</span>
+<span class="k">[eps.members.1]</span>
+<span class="w">  </span><span class="n">parameter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;value&quot;</span>
+<span class="p">...</span>
 </pre></div>
 </div>
 </section>
-<section id="add-your-own-namelist">
-<h2>Add your own namelist<a class="headerlink" href="#add-your-own-namelist" title="Link to this heading"></a></h2>
-<p>The simplest and recommended way to change a namelist is to extract it as described above using the <code class="docutils literal notranslate"><span class="pre">-b</span></code> option, make your modifications and add the namelist to the directory specified by <code class="docutils literal notranslate"><span class="pre">system.namelists</span></code> in the config file. The name of the namelist should be the same as when extracted above. Before the system will pick up your namelist you have to set <code class="docutils literal notranslate"><span class="pre">general.accept_static_namelists</span> <span class="pre">=</span> <span class="pre">true</span></code> in the config file. Note that for the main forecast namelist any existing fullpos select files following the name convention “xxt*” will be picked up as well if they exists. If not they will be generated.</p>
-</section>
-<section id="modify-a-namelist-from-config">
-<h2>Modify a namelist from config<a class="headerlink" href="#modify-a-namelist-from-config" title="Link to this heading"></a></h2>
-<p>There are several ways to modify namelists. We can either use the <code class="docutils literal notranslate"><span class="pre">${}</span></code> syntax in the yaml files to substitute values. See e.g. how it’s done for <code class="docutils literal notranslate"><span class="pre">nproma</span></code> or lfftw defined in the <code class="docutils literal notranslate"><span class="pre">submission</span></code> sections. Another way is to introduce a <code class="docutils literal notranslate"><span class="pre">namelist_update</span></code> section like</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="p">[</span><span class="n">namelist_update</span><span class="o">.</span><span class="n">master</span><span class="o">.</span><span class="n">all_targets</span><span class="p">]</span>
-    <span class="n">namdim</span> <span class="o">=</span> <span class="p">{</span> <span class="n">nproma</span> <span class="o">=</span> <span class="o">-</span><span class="mi">99</span> <span class="p">}</span>
-  <span class="p">[</span><span class="n">namelist_update</span><span class="o">.</span><span class="n">master</span><span class="o">.</span><span class="n">forecast</span><span class="p">]</span>
-    <span class="n">namrip</span> <span class="o">=</span>  <span class="p">{</span>  <span class="n">ravgtime</span> <span class="o">=</span> <span class="mf">99.0</span> <span class="p">}</span>
+<section id="list-of-values-first-member-gets-first-item-second-member-gets-second-item-etc-with-circular-boundary-condition">
+<h3>2. List of values -&gt; first member gets first item, second member gets second item, etc. (with “circular boundary condition”)<a class="headerlink" href="#list-of-values-first-member-gets-first-item-second-member-gets-second-item-etc-with-circular-boundary-condition" title="Link to this heading"></a></h3>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[eps.member_settings]</span>
+<span class="n">parameter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;value1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;value2&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;value3&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">]</span>
 </pre></div>
 </div>
-<p>where the first section updates all used namelists and the latter updates the forecast namelist only. This allows us to introduce namelist changes for a specific configuration without having to edit the yaml files or a static namelist.</p>
+<p><em>Result:</em></p>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[eps.members.0]</span>
+<span class="w">  </span><span class="n">parameter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;value1&quot;</span>
+<span class="k">[eps.members.1]</span>
+<span class="w">  </span><span class="n">parameter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;value2&quot;</span>
+<span class="p">...</span>
+<span class="k">[eps.members.N]</span>
+<span class="w">  </span><span class="n">parameter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;valueN&quot;</span>
+<span class="k">[eps.members.N</span><span class="err">+</span><span class="k">1]</span>
+<span class="w">  </span><span class="n">parameter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;value1&quot;</span>
+<span class="p">...</span>
+</pre></div>
+</div>
+</section>
+<section id="dict-of-mbr-value-pairs-a-given-member-get-the-value-of-the-mbr-key">
+<h3>3. Dict of mbr/value pairs -&gt; a given member get the value of the mbr key<a class="headerlink" href="#dict-of-mbr-value-pairs-a-given-member-get-the-value-of-the-mbr-key" title="Link to this heading"></a></h3>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[eps.member_settings]</span>
+<span class="n">parameter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="n">0</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;value1&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">1</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;value2&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;2:5:2&quot;</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;value3&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">...}</span>
+</pre></div>
+</div>
+<p><em>Result:</em></p>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[eps.members.0]</span>
+<span class="w">  </span><span class="n">parameter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;value1&quot;</span>
+<span class="k">[eps.members.1]</span>
+<span class="w">  </span><span class="n">parameter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;value2&quot;</span>
+<span class="k">[eps.members.2]</span>
+<span class="w">  </span><span class="n">parameter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;value3&quot;</span>
+<span class="k">[eps.members.4]</span>
+<span class="w">  </span><span class="n">parameter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;value3&quot;</span>
+</pre></div>
+</div>
+<blockquote>
+<div><p><strong><em>NOTE:</em></strong></p>
+<ul>
+<li><p>“m:n:s” keys are interpreted as slices like for the general members setting, that is <code class="docutils literal notranslate"><span class="pre">{&quot;2:10:2&quot;</span> <span class="pre">=</span> <span class="pre">&quot;value3&quot;}</span></code> assigns <code class="docutils literal notranslate"><span class="pre">&quot;value3&quot;</span></code> to members 2, 4, 6, and 8.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">[eps.general.members]</span></code> setting limits parameter slices. E.g. if <code class="docutils literal notranslate"><span class="pre">[eps.general.members]</span> <span class="pre">=</span> <span class="pre">&quot;0:10&quot;</span></code>,</p>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="k">[eps.member_settings]</span>
+<span class="w">  </span><span class="n">parameter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="s2">&quot;6:16&quot;</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;value1&quot;</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>will set <code class="docutils literal notranslate"><span class="pre">parameter</span> <span class="pre">=</span> <span class="pre">&quot;value1&quot;</span></code> only for members 6, 7, 8, and 9.</p>
+</li>
+<li><p>For members with no mbr/value pair, the default is used. I.e. in the above example, members 0-5 will get the default value.</p></li>
+<li><p>In cases, where a mbr key is duplicated in the dictionary (including string slices), the last value is used. E.g. in</p></li>
+</ul>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="k">[eps.member_settings]</span>
+<span class="w">  </span><span class="n">parameter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="s2">&quot;2:4&quot;</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;value1&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">3</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;value2&quot;</span><span class="p">}</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">parameter</span></code> will be set to <code class="docutils literal notranslate"><span class="pre">&quot;value2&quot;</span></code> for member 3.</p>
+</div></blockquote>
+</section>
+<section id="python-subclass-of-deode-eps-custom-generators-basegenerator-generates-member-settings-based-on-list-of-members">
+<h3>4. Python subclass of <code class="docutils literal notranslate"><span class="pre">deode.eps.custom_generators.BaseGenerator</span></code>. Generates member settings based on list of members.<a class="headerlink" href="#python-subclass-of-deode-eps-custom-generators-basegenerator-generates-member-settings-based-on-list-of-members" title="Link to this heading"></a></h3>
+<p>E.g. to generate random boolean values for each member, one could define a generator class like</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@pydantic_dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BoolGenerator</span><span class="p">(</span><span class="n">BaseGenerator</span><span class="p">[</span><span class="nb">bool</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Example generator class to generate random boolean values.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">])</span> 
+</pre></div>
+</div>
+<p>and set the parameter to a string that points to the given class object like</p>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[eps.member_settings]</span>
+<span class="n">parameter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;deode.eps.custom_generators.BoolGenerator&quot;</span>
+</pre></div>
+</div>
+<p><em>Result:</em></p>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[eps.members.0]</span>
+<span class="w">  </span><span class="n">parameter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
+<span class="k">[eps.members.1]</span>
+<span class="w">  </span><span class="n">parameter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span>
+<span class="k">[eps.members.2]</span>
+<span class="w">  </span><span class="n">parameter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="w">  </span>
+<span class="p">...</span>
+</pre></div>
+</div>
+</section>
 </section>
 </section>
 
