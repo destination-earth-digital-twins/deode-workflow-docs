@@ -378,10 +378,13 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.host_actions">deode.host_actions module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.host_actions.AmbigiousHostError"><code class="docutils literal notranslate"><span class="pre">AmbigiousHostError</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.host_actions.DeodeHost"><code class="docutils literal notranslate"><span class="pre">DeodeHost</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.host_actions.DeodeHost.detect_deode_host"><code class="docutils literal notranslate"><span class="pre">DeodeHost.detect_deode_host()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.host_actions.HostNotFoundError"><code class="docutils literal notranslate"><span class="pre">HostNotFoundError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.host_actions.SelectHost"><code class="docutils literal notranslate"><span class="pre">SelectHost</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.host_actions.set_deode_home"><code class="docutils literal notranslate"><span class="pre">set_deode_home()</span></code></a></li>
 </ul>
 </li>
@@ -772,6 +775,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-clean-old-data">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">clean_old_data</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-clean-old-data-ehype-data-period">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">clean_old_data</span> <span class="pre">&gt;</span> <span class="pre">ehype_data_period</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-clean-old-data-scratch-data-period">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">clean_old_data</span> <span class="pre">&gt;</span> <span class="pre">scratch_data_period</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-clean-old-data-suites-period">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">clean_old_data</span> <span class="pre">&gt;</span> <span class="pre">suites_period</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-clean-old-data-ifs-period">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">clean_old_data</span> <span class="pre">&gt;</span> <span class="pre">IFS_period</span></code></a></li>
@@ -1108,8 +1112,8 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">.host_actions</span><span class="w"> </span><span class="kn">import</span> <span class="n">SelectHost</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.os_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">ping</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.toolbox</span><span class="w"> </span><span class="kn">import</span> <span class="n">Platform</span>
 
 <span class="k">try</span><span class="p">:</span>
@@ -1219,16 +1223,17 @@
             <span class="k">raise</span> <span class="ne">ModuleNotFoundError</span><span class="p">(</span><span class="s2">&quot;Ecflow not found&quot;</span><span class="p">)</span>
 
         <span class="n">Server</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+        <span class="n">platform</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
 
         <span class="n">ecf_host</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;scheduler.ecfvars.ecf_host&quot;</span><span class="p">]</span>
-        <span class="n">ecf_host</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">config</span><span class="p">)</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">ecf_host</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ecf_host</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">config</span><span class="p">)</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">ecf_host</span><span class="p">,</span> <span class="n">object_</span><span class="o">=</span><span class="n">EcflowServer</span><span class="p">)</span>
+        <span class="n">ecf_host</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">ecf_host</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ecf_host</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">ecf_host</span><span class="p">,</span> <span class="n">object_</span><span class="o">=</span><span class="n">SelectHost</span><span class="p">)</span>
 
         <span class="n">ecf_port</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;scheduler.ecfvars.ecf_port&quot;</span><span class="p">]</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ecf_port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ecf_port</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ecf_port</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">config</span><span class="p">)</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">ecf_port</span><span class="p">,</span> <span class="n">object_</span><span class="o">=</span><span class="n">EcflowServer</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ecf_port</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">ecf_port</span><span class="p">,</span> <span class="n">object_</span><span class="o">=</span><span class="n">EcflowServer</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">start_command</span> <span class="o">=</span> <span class="n">start_command</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;self.ecf_host=</span><span class="si">{}</span><span class="s2"> self.ecf_port=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_port</span><span class="p">)</span>
@@ -1249,51 +1254,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">port</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getuid</span><span class="p">()</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">port</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">_select_host_from_list</span><span class="p">(</span><span class="n">hosts</span><span class="p">,</span> <span class="n">tries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set ecf_host from list of options.</span>
-
-<span class="sd">           Try to ping server tries times before giving up.</span>
-
-<span class="sd">        Arguments:</span>
-<span class="sd">            hosts (list): list of host options</span>
-<span class="sd">            tries (int): number of times to try to find a host</span>
-<span class="sd">            delay (int): number of seconds to wait between each try</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            host (str): Selected host</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            RuntimeError: In case no or more than one host found</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">found_hosts</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">ntry</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="k">while</span> <span class="n">ntry</span> <span class="o">&lt;=</span> <span class="n">tries</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">_host</span> <span class="ow">in</span> <span class="n">hosts</span><span class="p">:</span>
-                <span class="n">host</span> <span class="o">=</span> <span class="n">_host</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-                <span class="k">if</span> <span class="n">ping</span><span class="p">(</span><span class="n">host</span><span class="p">):</span>
-                    <span class="n">found_hosts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">host</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">found_hosts</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">ntry</span> <span class="o">==</span> <span class="n">tries</span><span class="p">:</span>
-                <span class="n">host_list</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">hosts</span><span class="p">)</span>
-                <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;No ecflow host found, tried:</span><span class="si">{</span><span class="n">host_list</span><span class="si">}</span><span class="s2">&quot;</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">found_hosts</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="k">break</span>
-
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">found_hosts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">host_list</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">found_hosts</span><span class="p">)</span>
-                <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Ambigious host selection:</span><span class="si">{</span><span class="n">host_list</span><span class="si">}</span><span class="s2">&quot;</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">delay</span><span class="p">)</span>
-            <span class="n">ntry</span> <span class="o">+=</span> <span class="mi">1</span>
-
-        <span class="k">return</span> <span class="n">found_hosts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
 <div class="viewcode-block" id="EcflowServer.start_server">
 <a class="viewcode-back" href="../../deode.html#deode.scheduler.EcflowServer.start_server">[docs]</a>
@@ -1595,7 +1555,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-02-19T11:39:54Z.
+      <span class="lastupdated">Last updated on 2025-02-21T17:11:42Z.
       </span></p>
   </div>
 

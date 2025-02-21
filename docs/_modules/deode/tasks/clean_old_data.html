@@ -378,10 +378,13 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../deode.html#module-deode.host_actions">deode.host_actions module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.host_actions.AmbigiousHostError"><code class="docutils literal notranslate"><span class="pre">AmbigiousHostError</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.host_actions.DeodeHost"><code class="docutils literal notranslate"><span class="pre">DeodeHost</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../deode.html#deode.host_actions.DeodeHost.detect_deode_host"><code class="docutils literal notranslate"><span class="pre">DeodeHost.detect_deode_host()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.host_actions.HostNotFoundError"><code class="docutils literal notranslate"><span class="pre">HostNotFoundError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.host_actions.SelectHost"><code class="docutils literal notranslate"><span class="pre">SelectHost</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.host_actions.set_deode_home"><code class="docutils literal notranslate"><span class="pre">set_deode_home()</span></code></a></li>
 </ul>
 </li>
@@ -772,6 +775,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-clean-old-data">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">clean_old_data</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-clean-old-data-ehype-data-period">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">clean_old_data</span> <span class="pre">&gt;</span> <span class="pre">ehype_data_period</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-clean-old-data-scratch-data-period">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">clean_old_data</span> <span class="pre">&gt;</span> <span class="pre">scratch_data_period</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-clean-old-data-suites-period">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">clean_old_data</span> <span class="pre">&gt;</span> <span class="pre">suites_period</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-clean-old-data-ifs-period">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">clean_old_data</span> <span class="pre">&gt;</span> <span class="pre">IFS_period</span></code></a></li>
@@ -1204,6 +1208,57 @@
 
 
 
+<div class="viewcode-block" id="CleanEhypeData">
+<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.clean_old_data.CleanEhypeData">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CleanEhypeData</span><span class="p">(</span><span class="n">CleanOldData</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Clean old data from scratch.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config (deode.ParsedConfig): Configuration</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">CleanOldData</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;CleanEhypeData&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delay</span> <span class="o">=</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;clean_old_data.ehype_data_period&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">active</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ehype_scratch</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;impact.ehype.communicate.run_root&quot;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ehype_work</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;impact.ehype.communicate.work_root&quot;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ehype_form</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;clean_old_data.ehype_format&quot;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Switch of ehype cleaning as config is incomplete&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">active</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cutoff_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">delay</span><span class="p">)</span>
+        <span class="n">ignore</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;clean_old_data.ignore&quot;</span><span class="p">])</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Ignore: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ignore</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ignore_dir</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="n">ignore</span><span class="p">]</span>
+
+<div class="viewcode-block" id="CleanEhypeData.execute">
+<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.clean_old_data.CleanEhypeData.execute">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run clean data from scratch.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">active</span><span class="p">:</span>
+            <span class="n">list_to_remove_run</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_old</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ehype_scratch</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ehype_form</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cutoff_time</span><span class="p">,</span>
+                <span class="n">ignore</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ignore_dir</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remove_list</span><span class="p">(</span><span class="n">list_to_remove_run</span><span class="p">)</span>
+
+            <span class="n">list_to_remove_work</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_old</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ehype_work</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ehype_form</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cutoff_time</span><span class="p">,</span>
+                <span class="n">ignore</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ignore_dir</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remove_list</span><span class="p">(</span><span class="n">list_to_remove_work</span><span class="p">)</span></div>
+</div>
+
+
+
 <div class="viewcode-block" id="CleanScratchData">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.clean_old_data.CleanScratchData">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">CleanScratchData</span><span class="p">(</span><span class="n">CleanOldData</span><span class="p">):</span>
@@ -1330,7 +1385,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-02-19T11:39:54Z.
+      <span class="lastupdated">Last updated on 2025-02-21T17:11:42Z.
       </span></p>
   </div>
 
