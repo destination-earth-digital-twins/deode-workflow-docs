@@ -1,5 +1,5 @@
 The following section was automatically generated running
-        `deode doc config` on 2025-02-25T19:23:05.
+        `deode doc config` on 2025-02-26T05:53:37.
 
 # Config
 
@@ -1514,10 +1514,10 @@ Must be one of:
 | [bdint](#boundaries_bdint)                                     | string           | No       | -       | Boundary interval                                                             |
 | [bdshift](#boundaries_bdshift)                                 | string           | No       | -       | Shift of boundary initial time. E.g. 'PT3H' would mean use 3H old boundaries  |
 | [max_interpolation_tasks](#boundaries_max_interpolation_tasks) | number           | No       | -       | Number of interpolate tasks run in parallel                                   |
-| [bdmodel](#boundaries_bdmodel)                                 | enum (of string) | No       | -       | Coupling model                                                                |
+| [bdmodel](#boundaries_bdmodel)                                 | enum (of string) | No       | "ifs"   | Coupling model                                                                |
 | [humi_gp](#boundaries_humi_gp)                                 | boolean          | No       | -       | Value of TFP_Q%LLGP in domain namelist for c903. True for gridpoint humidity. |
-| [ifs.selection](#boundaries_ifsselection)                      | enum (of string) | No       | -       | Selection                                                                     |
-| [ifs.bdmember](#boundaries_ifsbdmember)                        | array of integer | No       | []      | The number of members in ensemble if selection is IFSENS, else empty string.  |
+| [lam](#boundaries_lam)                                         | object           | No       | -       | LAM related boundary settings                                                 |
+| [ifs](#boundaries_ifs)                                         | object           | No       | -       | IFS related settings                                                          |
 | [bd_has_surfex](#boundaries_bd_has_surfex)                     | boolean          | No       | -       | Set to true if the host model runs with surfex                                |
 
 <a name="boundaries_bdint"></a>
@@ -1559,13 +1559,13 @@ Must be one of:
 | ------------ | ------------------ |
 | **Type**     | `enum (of string)` |
 | **Required** | No                 |
+| **Default**  | `"ifs"`            |
 
 **Description:** Coupling model
 
 Must be one of:
-* "ALARO"
-* "AROME"
-* "IFS"
+* "lam"
+* "ifs"
 
 <a name="boundaries_humi_gp"></a>
 ### Property `Config > boundaries > humi_gp`
@@ -1577,8 +1577,74 @@ Must be one of:
 
 **Description:** Value of TFP_Q%LLGP in domain namelist for c903. True for gridpoint humidity.
 
-<a name="boundaries_ifsselection"></a>
-### Property `Config > boundaries > ifs.selection`
+<a name="boundaries_lam"></a>
+### Property `Config > boundaries > lam`
+
+**Title:** LAM related boundary settings
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** LAM related boundary settings
+
+| Property                                       | Type   | Required | Default | Title/Description                   |
+| ---------------------------------------------- | ------ | -------- | ------- | ----------------------------------- |
+| [bdcycle_start](#boundaries_lam_bdcycle_start) | string | No       | "PT0H"  | lam boundary model cycle start hour |
+| [bdcycle](#boundaries_lam_bdcycle)             | string | No       | "PT24H" | lam boundary model cycle interval   |
+
+<a name="boundaries_lam_bdcycle_start"></a>
+#### Property `Config > boundaries > lam > bdcycle_start`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+| **Default**  | `"PT0H"` |
+
+**Description:** lam boundary model cycle start hour
+
+| Restrictions                      |                                                                                                                                                                                                                                                                                                         |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Must match regular expression** | ```^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$``` [Test](https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24) |
+
+<a name="boundaries_lam_bdcycle"></a>
+#### Property `Config > boundaries > lam > bdcycle`
+
+|              |           |
+| ------------ | --------- |
+| **Type**     | `string`  |
+| **Required** | No        |
+| **Default**  | `"PT24H"` |
+
+**Description:** lam boundary model cycle interval
+
+| Restrictions                      |                                                                                                                                                                                                                                                                                                         |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Must match regular expression** | ```^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$``` [Test](https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24) |
+
+<a name="boundaries_ifs"></a>
+### Property `Config > boundaries > ifs`
+
+**Title:** IFS related settings
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Model for the 'general.times' section.
+
+| Property                               | Type             | Required | Default | Title/Description                                   |
+| -------------------------------------- | ---------------- | -------- | ------- | --------------------------------------------------- |
+| [selection](#boundaries_ifs_selection) | enum (of string) | No       | -       | Selection                                           |
+| [bdmember](#boundaries_ifs_bdmember)   | array of integer | No       | []      | List of members in ensemble if selection is IFSENS. |
+
+<a name="boundaries_ifs_selection"></a>
+#### Property `Config > boundaries > ifs > selection`
 
 |              |                    |
 | ------------ | ------------------ |
@@ -1588,8 +1654,11 @@ Must be one of:
 **Description:** Selection
 
 Must be one of:
-* "HRES"
+* "atos_bologna_DT"
+* "lumi_DT"
 * "ATOS_DT"
+* "HRES"
+* "@HOST@_DT"
 * "DT12"
 * "i5qp"
 * "i7u4"
@@ -1597,8 +1666,8 @@ Must be one of:
 * "i8hy"
 * "IFSENS"
 
-<a name="boundaries_ifsbdmember"></a>
-### Property `Config > boundaries > ifs.bdmember`
+<a name="boundaries_ifs_bdmember"></a>
+#### Property `Config > boundaries > ifs > bdmember`
 
 |              |                    |
 | ------------ | ------------------ |
@@ -1606,7 +1675,7 @@ Must be one of:
 | **Required** | No                 |
 | **Default**  | `[]`               |
 
-**Description:** The number of members in ensemble if selection is IFSENS, else empty string.
+**Description:** List of members in ensemble if selection is IFSENS.
 
 |                      | Array restrictions |
 | -------------------- | ------------------ |
@@ -1616,12 +1685,12 @@ Must be one of:
 | **Additional items** | False              |
 | **Tuple validation** | See below          |
 
-| Each item of this array must be                     | Description |
-| --------------------------------------------------- | ----------- |
-| [ifs.bdmember items](#boundaries_ifsbdmember_items) | -           |
+| Each item of this array must be                  | Description |
+| ------------------------------------------------ | ----------- |
+| [bdmember items](#boundaries_ifs_bdmember_items) | -           |
 
 <a name="autogenerated_heading_19"></a>
-#### Config > boundaries > ifs.bdmember > ifs.bdmember items
+##### Config > boundaries > ifs > bdmember > bdmember items
 
 |              |           |
 | ------------ | --------- |

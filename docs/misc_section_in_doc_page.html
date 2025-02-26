@@ -859,8 +859,8 @@
 <li class="toctree-l4"><a class="reference internal" href="#property-config-boundaries-max-interpolation-tasks">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">max_interpolation_tasks</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#property-config-boundaries-bdmodel">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">bdmodel</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#property-config-boundaries-humi-gp">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">humi_gp</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#property-config-boundaries-ifs-selection">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">ifs.selection</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#property-config-boundaries-ifs-bdmember">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">ifs.bdmember</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#property-config-boundaries-lam">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">lam</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#property-config-boundaries-ifs">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">ifs</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#property-config-boundaries-bd-has-surfex">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">bd_has_surfex</span></code></a></li>
 </ul>
 </li>
@@ -2169,7 +2169,7 @@ getNewId<span class="w"> </span>-g<span class="w"> </span>d1.on-demand-extremes-
 </section>
 </section>
 <p>The following section was automatically generated running
-<code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">doc</span> <span class="pre">config</span></code> on 2025-02-25T19:23:05.</p>
+<code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">doc</span> <span class="pre">config</span></code> on 2025-02-26T05:53:37.</p>
 <section id="config">
 <h2>Config<a class="headerlink" href="#config" title="Link to this heading"></a></h2>
 <p><strong>Title:</strong> Config</p>
@@ -5942,7 +5942,7 @@ getNewId<span class="w"> </span>-g<span class="w"> </span>d1.on-demand-extremes-
 <tr class="row-odd"><td><p><a class="reference external" href="#boundaries_bdmodel">bdmodel</a></p></td>
 <td><p>enum (of string)</p></td>
 <td><p>No</p></td>
-<td><p>-</p></td>
+<td><p>“ifs”</p></td>
 <td><p>Coupling model</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference external" href="#boundaries_humi_gp">humi_gp</a></p></td>
@@ -5951,17 +5951,17 @@ getNewId<span class="w"> </span>-g<span class="w"> </span>d1.on-demand-extremes-
 <td><p>-</p></td>
 <td><p>Value of TFP_Q%LLGP in domain namelist for c903. True for gridpoint humidity.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference external" href="#boundaries_ifsselection">ifs.selection</a></p></td>
-<td><p>enum (of string)</p></td>
+<tr class="row-odd"><td><p><a class="reference external" href="#boundaries_lam">lam</a></p></td>
+<td><p>object</p></td>
 <td><p>No</p></td>
 <td><p>-</p></td>
-<td><p>Selection</p></td>
+<td><p>LAM related boundary settings</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference external" href="#boundaries_ifsbdmember">ifs.bdmember</a></p></td>
-<td><p>array of integer</p></td>
+<tr class="row-even"><td><p><a class="reference external" href="#boundaries_ifs">ifs</a></p></td>
+<td><p>object</p></td>
 <td><p>No</p></td>
-<td><p>[]</p></td>
-<td><p>The number of members in ensemble if selection is IFSENS, else empty string.</p></td>
+<td><p>-</p></td>
+<td><p>IFS related settings</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference external" href="#boundaries_bd_has_surfex">bd_has_surfex</a></p></td>
 <td><p>boolean</p></td>
@@ -6053,14 +6053,16 @@ getNewId<span class="w"> </span>-g<span class="w"> </span>d1.on-demand-extremes-
 <tr class="row-odd"><td><p><strong>Required</strong></p></td>
 <td><p>No</p></td>
 </tr>
+<tr class="row-even"><td><p><strong>Default</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;ifs&quot;</span></code></p></td>
+</tr>
 </tbody>
 </table>
 <p><strong>Description:</strong> Coupling model</p>
 <p>Must be one of:</p>
 <ul class="simple">
-<li><p>“ALARO”</p></li>
-<li><p>“AROME”</p></li>
-<li><p>“IFS”</p></li>
+<li><p>“lam”</p></li>
+<li><p>“ifs”</p></li>
 </ul>
 <p><a name="boundaries_humi_gp"></a></p>
 </section>
@@ -6082,10 +6084,175 @@ getNewId<span class="w"> </span>-g<span class="w"> </span>d1.on-demand-extremes-
 </tbody>
 </table>
 <p><strong>Description:</strong> Value of TFP_Q%LLGP in domain namelist for c903. True for gridpoint humidity.</p>
-<p><a name="boundaries_ifsselection"></a></p>
+<p><a name="boundaries_lam"></a></p>
 </section>
+<section id="property-config-boundaries-lam">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">lam</span></code><a class="headerlink" href="#property-config-boundaries-lam" title="Link to this heading"></a></h4>
+<p><strong>Title:</strong> LAM related boundary settings</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">object</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Additional properties</strong></p></td>
+<td><p><a class="reference external" href="#" title="Additional Properties of any type are allowed.">[Any type: allowed]</a></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> LAM related boundary settings</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Title/Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="#boundaries_lam_bdcycle_start">bdcycle_start</a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>“PT0H”</p></td>
+<td><p>lam boundary model cycle start hour</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="#boundaries_lam_bdcycle">bdcycle</a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>“PT24H”</p></td>
+<td><p>lam boundary model cycle interval</p></td>
+</tr>
+</tbody>
+</table>
+<p><a name="boundaries_lam_bdcycle_start"></a></p>
+<section id="property-config-boundaries-lam-bdcycle-start">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">lam</span> <span class="pre">&gt;</span> <span class="pre">bdcycle_start</span></code><a class="headerlink" href="#property-config-boundaries-lam-bdcycle-start" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Default</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;PT0H&quot;</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> lam boundary model cycle start hour</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Restrictions</p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Must match regular expression</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$</span></code> <a class="reference external" href="https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24">Test</a></p></td>
+</tr>
+</tbody>
+</table>
+<p><a name="boundaries_lam_bdcycle"></a></p>
+</section>
+<section id="property-config-boundaries-lam-bdcycle">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">lam</span> <span class="pre">&gt;</span> <span class="pre">bdcycle</span></code><a class="headerlink" href="#property-config-boundaries-lam-bdcycle" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Default</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;PT24H&quot;</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> lam boundary model cycle interval</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Restrictions</p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Must match regular expression</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$</span></code> <a class="reference external" href="https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%28T%28%3F%3D%5Cd%2B%5BHMS%5D%29%28%5Cd%2BH%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BS%29%3F%29%3F%24">Test</a></p></td>
+</tr>
+</tbody>
+</table>
+<p><a name="boundaries_ifs"></a></p>
+</section>
+</section>
+<section id="property-config-boundaries-ifs">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">ifs</span></code><a class="headerlink" href="#property-config-boundaries-ifs" title="Link to this heading"></a></h4>
+<p><strong>Title:</strong> IFS related settings</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">object</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Additional properties</strong></p></td>
+<td><p><a class="reference external" href="#" title="Additional Properties of any type are allowed.">[Any type: allowed]</a></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> Model for the ‘general.times’ section.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Title/Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="#boundaries_ifs_selection">selection</a></p></td>
+<td><p>enum (of string)</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>Selection</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="#boundaries_ifs_bdmember">bdmember</a></p></td>
+<td><p>array of integer</p></td>
+<td><p>No</p></td>
+<td><p>[]</p></td>
+<td><p>List of members in ensemble if selection is IFSENS.</p></td>
+</tr>
+</tbody>
+</table>
+<p><a name="boundaries_ifs_selection"></a></p>
 <section id="property-config-boundaries-ifs-selection">
-<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">ifs.selection</span></code><a class="headerlink" href="#property-config-boundaries-ifs-selection" title="Link to this heading"></a></h4>
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">ifs</span> <span class="pre">&gt;</span> <span class="pre">selection</span></code><a class="headerlink" href="#property-config-boundaries-ifs-selection" title="Link to this heading"></a></h5>
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p></p></th>
@@ -6104,8 +6271,11 @@ getNewId<span class="w"> </span>-g<span class="w"> </span>d1.on-demand-extremes-
 <p><strong>Description:</strong> Selection</p>
 <p>Must be one of:</p>
 <ul class="simple">
-<li><p>“HRES”</p></li>
+<li><p>“atos_bologna_DT”</p></li>
+<li><p>“lumi_DT”</p></li>
 <li><p>“ATOS_DT”</p></li>
+<li><p>“HRES”</p></li>
+<li><p>“&#64;HOST&#64;_DT”</p></li>
 <li><p>“DT12”</p></li>
 <li><p>“i5qp”</p></li>
 <li><p>“i7u4”</p></li>
@@ -6113,10 +6283,10 @@ getNewId<span class="w"> </span>-g<span class="w"> </span>d1.on-demand-extremes-
 <li><p>“i8hy”</p></li>
 <li><p>“IFSENS”</p></li>
 </ul>
-<p><a name="boundaries_ifsbdmember"></a></p>
+<p><a name="boundaries_ifs_bdmember"></a></p>
 </section>
 <section id="property-config-boundaries-ifs-bdmember">
-<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">ifs.bdmember</span></code><a class="headerlink" href="#property-config-boundaries-ifs-bdmember" title="Link to this heading"></a></h4>
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">ifs</span> <span class="pre">&gt;</span> <span class="pre">bdmember</span></code><a class="headerlink" href="#property-config-boundaries-ifs-bdmember" title="Link to this heading"></a></h5>
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p></p></th>
@@ -6135,7 +6305,7 @@ getNewId<span class="w"> </span>-g<span class="w"> </span>d1.on-demand-extremes-
 </tr>
 </tbody>
 </table>
-<p><strong>Description:</strong> The number of members in ensemble if selection is IFSENS, else empty string.</p>
+<p><strong>Description:</strong> List of members in ensemble if selection is IFSENS.</p>
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p></p></th>
@@ -6167,14 +6337,14 @@ getNewId<span class="w"> </span>-g<span class="w"> </span>d1.on-demand-extremes-
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><a class="reference external" href="#boundaries_ifsbdmember_items">ifs.bdmember items</a></p></td>
+<tr class="row-even"><td><p><a class="reference external" href="#boundaries_ifs_bdmember_items">bdmember items</a></p></td>
 <td><p>-</p></td>
 </tr>
 </tbody>
 </table>
 <p><a name="autogenerated_heading_19"></a></p>
-<section id="config-boundaries-ifs-bdmember-ifs-bdmember-items">
-<h5>Config &gt; boundaries &gt; ifs.bdmember &gt; ifs.bdmember items<a class="headerlink" href="#config-boundaries-ifs-bdmember-ifs-bdmember-items" title="Link to this heading"></a></h5>
+<section id="config-boundaries-ifs-bdmember-bdmember-items">
+<h6>Config &gt; boundaries &gt; ifs &gt; bdmember &gt; bdmember items<a class="headerlink" href="#config-boundaries-ifs-bdmember-bdmember-items" title="Link to this heading"></a></h6>
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p></p></th>
@@ -6191,6 +6361,7 @@ getNewId<span class="w"> </span>-g<span class="w"> </span>d1.on-demand-extremes-
 </tbody>
 </table>
 <p><a name="boundaries_bd_has_surfex"></a></p>
+</section>
 </section>
 </section>
 <section id="property-config-boundaries-bd-has-surfex">
@@ -22884,7 +23055,7 @@ If you cannot execute <code class="docutils literal notranslate"><span class="pr
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-02-25T19:23:06Z.
+      <span class="lastupdated">Last updated on 2025-02-26T05:53:39Z.
       </span></p>
   </div>
 

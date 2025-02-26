@@ -856,8 +856,8 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-max-interpolation-tasks">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">max_interpolation_tasks</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-bdmodel">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">bdmodel</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-humi-gp">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">humi_gp</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-ifs-selection">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">ifs.selection</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-ifs-bdmember">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">ifs.bdmember</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-lam">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">lam</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-ifs">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">ifs</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-bd-has-surfex">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">bd_has_surfex</span></code></a></li>
 </ul>
 </li>
@@ -1152,7 +1152,7 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..datetime_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">as_datetime</span><span class="p">,</span> <span class="n">as_timedelta</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
@@ -1295,63 +1295,6 @@
     <span class="c1"># Return the last basetime</span>
     <span class="k">return</span> <span class="n">basetime</span></div>
 
-
-
-<div class="viewcode-block" id="bd_generator">
-<a class="viewcode-back" href="../../../deode.suites.html#deode.suites.suite_utils.bd_generator">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">bd_generator</span><span class="p">(</span>
-    <span class="n">bdint</span><span class="p">:</span> <span class="n">timedelta</span><span class="p">,</span>
-    <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;start&quot;</span><span class="p">,</span>
-    <span class="n">do_prep</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate batch numbers.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        bdint: The batch interval.</span>
-<span class="sd">        mode: The mode of the workflow.</span>
-<span class="sd">        do_prep: Whether to do prep.</span>
-
-<span class="sd">    Yields:</span>
-<span class="sd">        Tuple[int, int, int, int]:</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">inthourbdint</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">bdint</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span> <span class="o">//</span> <span class="mi">3600</span><span class="p">)</span>
-    <span class="n">intminbdint</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">bdint</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span> <span class="o">%</span> <span class="mi">3600</span> <span class="o">//</span> <span class="mi">60</span><span class="p">)</span>
-    <span class="n">intsecbdint</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">bdint</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span> <span class="o">%</span> <span class="mi">60</span><span class="p">)</span>
-
-    <span class="c1"># we don&#39;t need LBC000 if this is not first cycle or mode != cold_start</span>
-    <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;restart&quot;</span> <span class="ow">or</span> <span class="p">(</span><span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;start&quot;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">do_prep</span><span class="p">):</span>
-        <span class="n">bd_step_index</span> <span class="o">=</span> <span class="n">inthourbdint</span>
-        <span class="n">bd_index</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="n">subbd_step_index</span> <span class="o">=</span> <span class="n">intminbdint</span> <span class="k">if</span> <span class="p">(</span><span class="n">intminbdint</span> <span class="ow">or</span> <span class="n">intsecbdint</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
-        <span class="n">subminbd_step_index</span> <span class="o">=</span> <span class="n">intsecbdint</span> <span class="k">if</span> <span class="n">intsecbdint</span> <span class="k">else</span> <span class="kc">None</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">bd_step_index</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">bd_index</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">subbd_step_index</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="p">(</span><span class="n">intminbdint</span> <span class="ow">or</span> <span class="n">intsecbdint</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
-        <span class="n">subminbd_step_index</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">intsecbdint</span> <span class="k">else</span> <span class="kc">None</span>
-
-    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="k">yield</span> <span class="p">(</span>
-            <span class="n">bd_step_index</span><span class="p">,</span>
-            <span class="n">subbd_step_index</span><span class="p">,</span>
-            <span class="n">subminbd_step_index</span><span class="p">,</span>
-            <span class="n">bd_index</span><span class="p">,</span>
-        <span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">subbd_step_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">subbd_step_index</span> <span class="o">+=</span> <span class="n">intminbdint</span>
-            <span class="k">if</span> <span class="n">subminbd_step_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">subminbd_step_index</span> <span class="o">+=</span> <span class="n">intsecbdint</span>
-                <span class="k">if</span> <span class="n">subminbd_step_index</span> <span class="o">&gt;=</span> <span class="mi">60</span><span class="p">:</span>
-                    <span class="n">subbd_step_index</span> <span class="o">+=</span> <span class="mi">1</span>
-                    <span class="n">subminbd_step_index</span> <span class="o">-=</span> <span class="mi">60</span>
-            <span class="k">if</span> <span class="n">subbd_step_index</span> <span class="o">&gt;=</span> <span class="mi">60</span><span class="p">:</span>
-                <span class="n">bd_step_index</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="n">subbd_step_index</span> <span class="o">-=</span> <span class="mi">60</span>
-
-        <span class="n">bd_step_index</span> <span class="o">+=</span> <span class="n">inthourbdint</span>
-        <span class="n">bd_index</span> <span class="o">+=</span> <span class="mi">1</span></div>
-
 </pre></div>
 
            </div>
@@ -1362,7 +1305,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-02-25T19:23:06Z.
+      <span class="lastupdated">Last updated on 2025-02-26T05:53:39Z.
       </span></p>
   </div>
 

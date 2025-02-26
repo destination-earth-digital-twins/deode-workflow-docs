@@ -856,8 +856,8 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-max-interpolation-tasks">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">max_interpolation_tasks</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-bdmodel">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">bdmodel</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-humi-gp">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">humi_gp</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-ifs-selection">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">ifs.selection</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-ifs-bdmember">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">ifs.bdmember</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-lam">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">lam</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-ifs">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">ifs</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-bd-has-surfex">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">bd_has_surfex</span></code></a></li>
 </ul>
 </li>
@@ -1153,7 +1153,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">Optional</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">deode.suites.suite_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">Cycle</span><span class="p">,</span> <span class="n">Cycles</span><span class="p">,</span> <span class="n">bd_generator</span><span class="p">,</span> <span class="n">lbc_times_generator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">deode.suites.suite_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">Cycle</span><span class="p">,</span> <span class="n">Cycles</span><span class="p">,</span> <span class="n">lbc_times_generator</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..datetime_utils</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">as_datetime</span><span class="p">,</span>
@@ -1589,26 +1589,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">limit</span> <span class="o">=</span> <span class="n">limit</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bdint</span> <span class="o">=</span> <span class="n">bdint</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lbc_time_generator</span> <span class="o">=</span> <span class="n">lbc_time_generator</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bd_generator_instance</span> <span class="o">=</span> <span class="n">bd_generator</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">bdint</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.mode&quot;</span><span class="p">],</span> <span class="n">do_prep</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">do_prep</span>
-        <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">lbc_time</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lbc_time_generator</span><span class="p">:</span>
-            <span class="n">bd_step_index</span><span class="p">,</span> <span class="n">subbd_step_index</span><span class="p">,</span> <span class="n">subminbd_step_index</span><span class="p">,</span> <span class="n">bd_index</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">bd_generator_instance</span>
-            <span class="p">)</span>
+        <span class="k">for</span> <span class="n">bd_index</span><span class="p">,</span> <span class="n">lbc_time</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lbc_time_generator</span><span class="p">):</span>
             <span class="n">date_string</span> <span class="o">=</span> <span class="n">lbc_time</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(</span><span class="n">sep</span><span class="o">=</span><span class="s2">&quot;T&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;+00:00&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">)</span>
-            <span class="n">args</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;bd_time=</span><span class="si">{</span><span class="n">date_string</span><span class="si">}</span><span class="s2">;bd_index=</span><span class="si">{</span><span class="n">bd_index</span><span class="si">}</span><span class="s2">;prep_step=False&quot;</span>
             <span class="n">args</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;bd_time=</span><span class="si">{</span><span class="n">date_string</span><span class="si">}</span><span class="s2">;bd_index=</span><span class="si">{</span><span class="n">bd_index</span><span class="si">}</span><span class="s2">;prep_step=False&quot;</span>
             <span class="n">variables</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;ARGS&quot;</span><span class="p">:</span> <span class="n">args</span><span class="p">}</span>
 
-            <span class="n">lbc_family_name</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;LBC</span><span class="si">{</span><span class="n">bd_step_index</span><span class="si">:</span><span class="s2">02</span><span class="si">}{</span><span class="n">subbd_step_index</span><span class="si">:</span><span class="s2">02</span><span class="si">}</span><span class="s2">&quot;</span>
-                <span class="o">+</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">subminbd_step_index</span><span class="si">:</span><span class="s2">02</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">subminbd_step_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">subbd_step_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-                <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;LBC</span><span class="si">{</span><span class="n">bd_step_index</span><span class="si">:</span><span class="s2">02</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="p">)</span>
+            <span class="n">lbc_family_name</span> <span class="o">=</span> <span class="n">date_string</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
 
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
                 <span class="n">lbc_family_name</span><span class="p">,</span>
@@ -2233,7 +2221,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-02-25T19:23:06Z.
+      <span class="lastupdated">Last updated on 2025-02-26T05:53:39Z.
       </span></p>
   </div>
 
