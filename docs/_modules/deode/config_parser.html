@@ -289,6 +289,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.config_parser.ParsedConfig.json_schema"><code class="docutils literal notranslate"><span class="pre">ParsedConfig.json_schema</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.config_parser.evaluate_dynamic_dates"><code class="docutils literal notranslate"><span class="pre">evaluate_dynamic_dates()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.custom_validators">deode.custom_validators module</a><ul>
@@ -1160,6 +1161,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">reduce</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 
@@ -1596,7 +1598,8 @@
 
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">config_file</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">config_path</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">&quot;.toml&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">tomli</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span>
+            <span class="n">config_data</span> <span class="o">=</span> <span class="n">tomli</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">evaluate_dynamic_dates</span><span class="p">(</span><span class="n">config_data</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">config_path</span><span class="o">.</span><span class="n">suffix</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;.yaml&quot;</span><span class="p">,</span> <span class="s2">&quot;.yml&quot;</span><span class="p">]:</span>
             <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span>
@@ -1750,6 +1753,21 @@
             <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span>
 
     <span class="k">return</span> <span class="n">validate</span>
+
+
+<div class="viewcode-block" id="evaluate_dynamic_dates">
+<a class="viewcode-back" href="../../deode.html#deode.config_parser.evaluate_dynamic_dates">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">evaluate_dynamic_dates</span><span class="p">(</span><span class="n">config_data</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Replace dynamic dates like &#39;yesterday&#39; with actual timestamps.&quot;&quot;&quot;</span>
+    <span class="n">times_section</span> <span class="o">=</span> <span class="n">config_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;general&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;times&quot;</span><span class="p">,</span> <span class="p">{})</span>
+
+    <span class="k">if</span> <span class="n">times_section</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;start&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;yesterday&quot;</span><span class="p">:</span>
+        <span class="n">yesterday</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="n">yesterday</span><span class="o">.</span><span class="n">year</span><span class="p">,</span> <span class="n">yesterday</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> <span class="n">yesterday</span><span class="o">.</span><span class="n">day</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">times_section</span><span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">start_time</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;Z&quot;</span>
+
+    <span class="k">return</span> <span class="n">config_data</span></div>
+
 </pre></div>
 
            </div>
@@ -1760,7 +1778,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-03-07T13:25:10Z.
+      <span class="lastupdated">Last updated on 2025-03-12T11:21:40Z.
       </span></p>
   </div>
 
