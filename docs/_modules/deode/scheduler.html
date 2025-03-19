@@ -1157,6 +1157,7 @@
   <h1>Source code for deode.scheduler</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Scheduler module.&quot;&quot;&quot;</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">platform</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">signal</span>
@@ -1287,6 +1288,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ecf_port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ecf_port</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="n">ecf_port</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">ecf_port</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ecf_port</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">ecf_port</span><span class="p">,</span> <span class="n">object_</span><span class="o">=</span><span class="n">EcflowServer</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">start_command</span> <span class="o">=</span> <span class="n">start_command</span>
@@ -1294,6 +1296,31 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ecf_client</span> <span class="o">=</span> <span class="n">ecflow</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_port</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;self.ecf_client </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_client</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">settings</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;ECF_HOST&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_host</span><span class="p">,</span> <span class="s2">&quot;ECF_PORT&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_port</span><span class="p">}</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_port_from_json</span><span class="p">(</span><span class="n">json_file</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set ecf_port from user id.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            json_file (str): Json file user to port mapping</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            port (int): Derived port number</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            KeyError: For users not mapped</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;USER&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">json_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">user_mapping</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">port</span> <span class="o">=</span> <span class="n">user_mapping</span><span class="p">[</span><span class="n">user</span><span class="p">][</span><span class="s2">&quot;ecf_port&quot;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not find user </span><span class="si">{</span><span class="n">user</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="n">json_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span>
+
+        <span class="k">return</span> <span class="n">port</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_set_port_from_user</span><span class="p">(</span><span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
@@ -1609,7 +1636,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-03-18T08:13:00Z.
+      <span class="lastupdated">Last updated on 2025-03-19T15:55:20Z.
       </span></p>
   </div>
 
