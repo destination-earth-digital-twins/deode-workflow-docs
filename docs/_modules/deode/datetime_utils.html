@@ -307,6 +307,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.datetime_utils.check_syntax"><code class="docutils literal notranslate"><span class="pre">check_syntax()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.datetime_utils.cycle_offset"><code class="docutils literal notranslate"><span class="pre">cycle_offset()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.datetime_utils.dt2str"><code class="docutils literal notranslate"><span class="pre">dt2str()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.datetime_utils.evaluate_date"><code class="docutils literal notranslate"><span class="pre">evaluate_date()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.datetime_utils.expand_output_settings"><code class="docutils literal notranslate"><span class="pre">expand_output_settings()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.datetime_utils.get_decadal_list"><code class="docutils literal notranslate"><span class="pre">get_decadal_list()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.datetime_utils.get_decade"><code class="docutils literal notranslate"><span class="pre">get_decade()</span></code></a></li>
@@ -1159,10 +1160,11 @@
   <h1>Source code for deode.datetime_utils</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python3</span>
 <span class="sd">&quot;&quot;&quot;Implement helper routines to deal with dates and times.&quot;&quot;&quot;</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">timezone</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timezone</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">dateutil.parser</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">isodate</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">dateutil.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">default_tzinfo</span>
 
@@ -1419,6 +1421,50 @@
 
     <span class="k">return</span> <span class="n">month_list</span></div>
 
+
+
+<div class="viewcode-block" id="evaluate_date">
+<a class="viewcode-back" href="../../deode.html#deode.datetime_utils.evaluate_date">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">evaluate_date</span><span class="p">(</span><span class="n">date</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parses an ISO 8601 datetime and/or duration and returns the computed datetime.</span>
+
+<span class="sd">    - If the input is a datetime (e.g., &quot;2025-03-19T00:00:00Z&quot;), it returns it as-is.</span>
+<span class="sd">    - If the input includes a duration (e.g., &quot;2025-03-19T00:00:00Z/-P1D&quot;), it applies</span>
+<span class="sd">      the duration to the datetime.</span>
+<span class="sd">    - If the input is only a duration (e.g., &quot;-P1D&quot;), it applies it to today&#39;s midnight</span>
+<span class="sd">    (UTC).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        date (str): An ISO 8601 datetime, duration, or both.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: The computed datetime in ISO format.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="s2">&quot;/&quot;</span> <span class="ow">in</span> <span class="n">date</span><span class="p">:</span>
+        <span class="n">datetime_part</span><span class="p">,</span> <span class="n">duration_part</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="p">(</span>
+                <span class="n">isodate</span><span class="o">.</span><span class="n">parse_datetime</span><span class="p">(</span><span class="n">datetime_part</span><span class="p">)</span>
+                <span class="o">+</span> <span class="n">isodate</span><span class="o">.</span><span class="n">parse_duration</span><span class="p">(</span><span class="n">duration_part</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">isoformat</span><span class="p">(</span><span class="n">timespec</span><span class="o">=</span><span class="s2">&quot;seconds&quot;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;+00:00&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">date</span><span class="o">.</span><span class="n">startswith</span><span class="p">((</span><span class="s2">&quot;P&quot;</span><span class="p">,</span> <span class="s2">&quot;-P&quot;</span><span class="p">)):</span>
+        <span class="n">today_midnight</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+            <span class="n">hour</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">minute</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">second</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">microsecond</span><span class="o">=</span><span class="mi">0</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="p">(</span><span class="n">today_midnight</span> <span class="o">+</span> <span class="n">isodate</span><span class="o">.</span><span class="n">parse_duration</span><span class="p">(</span><span class="n">date</span><span class="p">))</span>
+            <span class="o">.</span><span class="n">isoformat</span><span class="p">(</span><span class="n">timespec</span><span class="o">=</span><span class="s2">&quot;seconds&quot;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;+00:00&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">isodate</span><span class="o">.</span><span class="n">parse_datetime</span><span class="p">(</span><span class="n">date</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(</span><span class="n">timespec</span><span class="o">=</span><span class="s2">&quot;seconds&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;+00:00&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">)</span>
+    <span class="p">)</span></div>
+
 </pre></div>
 
            </div>
@@ -1429,7 +1475,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-03-24T06:55:26Z.
+      <span class="lastupdated">Last updated on 2025-03-24T14:37:16Z.
       </span></p>
   </div>
 
