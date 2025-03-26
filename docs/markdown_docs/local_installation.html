@@ -675,7 +675,13 @@
 <li class="toctree-l3"><a class="reference internal" href="../misc_section_in_doc_page.html#setup-ecflow">Setup ecflow</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../misc_section_in_doc_page.html#freja">freja</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#installing-under-mamba">Installing under mamba</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#contact">Contact</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../misc_section_in_doc_page.html#leonardo">LEONARDO</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#preparations">Preparations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#install-and-activate-micromamba">Install and activate micromamba</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#get-and-install-the-deode-workflow">Get and install the Deode-Workflow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#access-the-ecflow-server-with-port-forwarding">Access the ecflow server with port forwarding</a></li>
 </ul>
 </li>
 </ul>
@@ -1234,9 +1240,67 @@ $ mamba activate .conda/
 </div>
 <p>Note that for the time being ( until the mamba/poetry usage is better understood ) it’s recommended to make this procedure, with a new mamba name, for each new deode clone.</p>
 </section>
-<section id="contact">
-<h3>Contact<a class="headerlink" href="#contact" title="Link to this heading"></a></h3>
-<p>Have a chat with Ulf Andrae, FoU-Met</p>
+</section>
+<section id="leonardo">
+<h2>LEONARDO<a class="headerlink" href="#leonardo" title="Link to this heading"></a></h2>
+<p>LEONARDO is a EuroHPC cluster operated by CINECA. For more details see https://www.hpc.cineca.it/systems/hardware/leonardo/</p>
+<section id="preparations">
+<h3>Preparations<a class="headerlink" href="#preparations" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>As the ecflow server, see further down, will run on <code class="docutils literal notranslate"><span class="pre">login02</span></code> and can currently only be started on the node your on make sure you’re login to <code class="docutils literal notranslate"><span class="pre">login02</span></code> before proceeding.</p></li>
+<li><p>Each DE330 user on LEONARDO is assigned a port number for their ecflow server. The mapping is defined in <code class="docutils literal notranslate"><span class="pre">/leonardo_work/DestE_330_25/users/SAN/leonardo_install/leonardo_users.json</span></code>. If your user is not defined here please get in contact with Matteo Ippoliti (m.ippoliti&#64;cineca.it).</p></li>
+</ul>
+</section>
+<section id="install-and-activate-micromamba">
+<h3>Install and activate micromamba<a class="headerlink" href="#install-and-activate-micromamba" title="Link to this heading"></a></h3>
+<p>On LEONARDO we install the Deode-Workflow using micromamba. Install micromamba and create the environment for the Deode-Workflow in your actual $HOME (not your user directory within the project), if you have not done so already.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&quot;${SHELL}&quot; &lt;(curl -L micro.mamba.pm/install.sh)
+micromamba self-update
+micromamba create -y -p ${HOME}/micromamba-wf conda python=3.10.10 gdal=3.6.2 ecflow poetry
+</pre></div>
+</div>
+<p>when prompted during the installation, you can confirm all the default directories and answer yes to all entries.</p>
+<p>Activate the environment by</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>source $HOME/micromamba-wf/bin/activate
+</pre></div>
+</div>
+</section>
+<section id="get-and-install-the-deode-workflow">
+<h3>Get and install the Deode-Workflow<a class="headerlink" href="#get-and-install-the-deode-workflow" title="Link to this heading"></a></h3>
+<p>Get the code</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="nd">@github</span><span class="o">.</span><span class="n">com</span><span class="p">:</span><span class="n">destination</span><span class="o">-</span><span class="n">earth</span><span class="o">-</span><span class="n">digital</span><span class="o">-</span><span class="n">twins</span><span class="o">/</span><span class="n">Deode</span><span class="o">-</span><span class="n">Workflow</span><span class="o">.</span><span class="n">git</span> 
+<span class="n">cd</span> <span class="n">Deode</span><span class="o">-</span><span class="n">Workflow</span>
+</pre></div>
+</div>
+<p>Activate your micromamba environment as above then install deode and all it’s dependencies</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">poetry</span> <span class="n">install</span>
+<span class="n">poetry</span> <span class="bp">self</span> <span class="n">update</span> 
+</pre></div>
+</div>
+<p>Acitvate poetry by</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">poetry</span> <span class="n">env</span> <span class="n">activate</span>
+<span class="n">poetry</span> <span class="n">shell</span>
+</pre></div>
+</div>
+<p>and execute the source command given.</p>
+<p>Now we’re almost ready to go! As the ecflow server should run on <code class="docutils literal notranslate"><span class="pre">login02</span></code> and can currently only be started on the node your on make sure you’re login to <code class="docutils literal notranslate"><span class="pre">login02</span></code> before proceeding.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(deode-py3.10) (base) [uandrae0@login02 leonardo]$ deode --version
+2025-03-19 15:28:20 | INFO     | Start deode v0.13.0 --&gt; &quot;deode --version&quot;
+deode v0.13.0
+</pre></div>
+</div>
+<p>Continue and try to run an experiment with e.g.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>deode case ?deode/data/config_files/configurations/cy49t2_arome --start-suite
+</pre></div>
+</div>
+</section>
+<section id="access-the-ecflow-server-with-port-forwarding">
+<h3>Access the ecflow server with port forwarding<a class="headerlink" href="#access-the-ecflow-server-with-port-forwarding" title="Link to this heading"></a></h3>
+<p>The ecflow_ui can be executed on the login node of leonardo but it’s faster to run the gui locally. To open up tthe port for ecflow_ui do locally</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ssh</span> <span class="n">YOUR_USER</span><span class="nd">@login02</span><span class="o">-</span><span class="n">ext</span><span class="o">.</span><span class="n">leonardo</span><span class="o">.</span><span class="n">cineca</span><span class="o">.</span><span class="n">it</span> <span class="o">-</span><span class="n">C</span> <span class="o">-</span><span class="n">N</span> <span class="o">-</span><span class="n">L</span> <span class="n">PORT</span><span class="p">:</span><span class="n">login02</span><span class="p">:</span><span class="n">PORT</span>
+</pre></div>
+</div>
+<p>where YOUR_USER is your LEONARDOD user name and PORT is the assigned port number in the above mentioned file.</p>
 </section>
 </section>
 </section>
@@ -1250,7 +1314,7 @@ $ mamba activate .conda/
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-03-26T12:35:36Z.
+      <span class="lastupdated">Last updated on 2025-03-26T13:56:02Z.
       </span></p>
   </div>
 
