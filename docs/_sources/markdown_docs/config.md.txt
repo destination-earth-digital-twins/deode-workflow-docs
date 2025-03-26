@@ -1,5 +1,5 @@
 The following section was automatically generated running
-        `deode doc config` on 2025-03-26T12:10:17.
+        `deode doc config` on 2025-03-26T12:35:01.
 
 # Config
 
@@ -6530,7 +6530,9 @@ Must be one of:
 | ----------------------------------------------------------- | ----------- | -------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [ecf_tries](#scheduler_ecfvars_ecf_tries)                   | integer     | No       | 1       | Ecflow tries.                                                                                                                                            |
 | [ecf_host](#scheduler_ecfvars_ecf_host)                     | string      | No       | -       | Ecflow host. HPC dependent.                                                                                                                              |
+| [ecf_host_resolved](#scheduler_ecfvars_ecf_host_resolved)   | string      | No       | ""      | Resolved Ecflow host for downstream usage                                                                                                                |
 | [ecf_port](#scheduler_ecfvars_ecf_port)                     | Combination | No       | -       | Ecflow port, HPC or user dependet. To set depending on userid use \`_set_port_from_user(offset)\` where offset is an interger to be added to the userid  |
+| [ecf_port_resolved](#scheduler_ecfvars_ecf_port_resolved)   | Combination | No       | ""      | Parsed ecflow port for communication                                                                                                                     |
 | [ecf_jobout](#scheduler_ecfvars_ecf_jobout)                 | string      | No       | -       | Path to Ecflow job output.                                                                                                                               |
 | [ecf_files](#scheduler_ecfvars_ecf_files)                   | string      | No       | -       | Path to Ecflow operating files.                                                                                                                          |
 | [ecf_files_remotely](#scheduler_ecfvars_ecf_files_remotely) | string      | No       | -       | Path to Ecflow operating files if in remote location, different to ecf_files.                                                                            |
@@ -6559,6 +6561,17 @@ Must be one of:
 | **Required** | No       |
 
 **Description:** Ecflow host. HPC dependent.
+
+<a name="scheduler_ecfvars_ecf_host_resolved"></a>
+#### Property `Config > scheduler > ecfvars > ecf_host_resolved`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+| **Default**  | `""`     |
+
+**Description:** Resolved Ecflow host for downstream usage
 
 <a name="scheduler_ecfvars_ecf_port"></a>
 #### Property `Config > scheduler > ecfvars > ecf_port`
@@ -6607,6 +6620,38 @@ Must be one of:
 | Restrictions                      |                                                                                                                     |
 | --------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
 | **Must match regular expression** | ```_set_port_from_json\((.*),\)``` [Test](https://regex101.com/?regex=_set_port_from_json%5C%28%28.%2A%29%2C%5C%29) |
+
+<a name="scheduler_ecfvars_ecf_port_resolved"></a>
+#### Property `Config > scheduler > ecfvars > ecf_port_resolved`
+
+|              |             |
+| ------------ | ----------- |
+| **Type**     | `combining` |
+| **Required** | No          |
+| **Default**  | `""`        |
+
+**Description:** Parsed ecflow port for communication
+
+| Any of(Option)                                          |
+| ------------------------------------------------------- |
+| [item 0](#scheduler_ecfvars_ecf_port_resolved_anyOf_i0) |
+| [item 1](#scheduler_ecfvars_ecf_port_resolved_anyOf_i1) |
+
+<a name="scheduler_ecfvars_ecf_port_resolved_anyOf_i0"></a>
+##### Property `Config > scheduler > ecfvars > ecf_port_resolved > anyOf > item 0`
+
+|              |           |
+| ------------ | --------- |
+| **Type**     | `integer` |
+| **Required** | No        |
+
+<a name="scheduler_ecfvars_ecf_port_resolved_anyOf_i1"></a>
+##### Property `Config > scheduler > ecfvars > ecf_port_resolved > anyOf > item 1`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
 
 <a name="scheduler_ecfvars_ecf_jobout"></a>
 #### Property `Config > scheduler > ecfvars > ecf_jobout`
