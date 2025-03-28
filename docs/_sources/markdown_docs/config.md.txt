@@ -1,5 +1,5 @@
 The following section was automatically generated running
-        `deode doc config` on 2025-03-27T09:00:38.
+        `deode doc config` on 2025-03-28T10:26:47.
 
 # Config
 
@@ -1266,6 +1266,7 @@ Must be one of:
 
 | Property                                                       | Type   | Required | Default                               | Title/Description                                                               |
 | -------------------------------------------------------------- | ------ | -------- | ------------------------------------- | ------------------------------------------------------------------------------- |
+| [forecast_dir_link](#system_forecast_dir_link)                 | string | No       | "../Forecast"                         | Name of the softlink pointing to the Forecast task work directory               |
 | [bdfile_sfx_template](#system_bdfile_sfx_template)             | string | No       | -                                     | Name template for input initial surfex file for prep                            |
 | [bdfile_template](#system_bdfile_template)                     | string | No       | -                                     | Name template for input boundary files                                          |
 | [bddir_sfx](#system_bddir_sfx)                                 | string | No       | -                                     | Location of input intial file for surfex                                        |
@@ -1286,6 +1287,17 @@ Must be one of:
 | [sfx_input_definition](#system_sfx_input_definition)           | string | No       | "@CYCLE@/sfx.json"                    | Path to the surfex json config file                                             |
 | [forecast_input_definition](#system_forecast_input_definition) | string | No       | "@CYCLE@/forecast.json"               | Path to the forecast json config file                                           |
 | [c903_input_definition](#system_c903_input_definition)         | string | No       | "@CYCLE@/c903.json"                   | Path to the c903 json config file                                               |
+
+<a name="system_forecast_dir_link"></a>
+### Property `Config > system > forecast_dir_link`
+
+|              |                 |
+| ------------ | --------------- |
+| **Type**     | `string`        |
+| **Required** | No              |
+| **Default**  | `"../Forecast"` |
+
+**Description:** Name of the softlink pointing to the Forecast task work directory
 
 <a name="system_bdfile_sfx_template"></a>
 ### Property `Config > system > bdfile_sfx_template`
@@ -8609,11 +8621,34 @@ must respect the following conditions
 
 **Description:** Time in seconds to wait before processing files.
 
-| Property                                         | Type   | Required | Default | Title/Description |
-| ------------------------------------------------ | ------ | -------- | ------- | ----------------- |
-| [history](#submission_iomerge_age_limit_history) | number | No       | 20      | History files     |
-| [surfex](#submission_iomerge_age_limit_surfex)   | number | No       | 15      | Surfex files      |
-| [fullpos](#submission_iomerge_age_limit_fullpos) | number | No       | 15      | Fullpos files     |
+| Property                                                               | Type   | Required | Default | Title/Description                       |
+| ---------------------------------------------------------------------- | ------ | -------- | ------- | --------------------------------------- |
+| [forecast_directory](#submission_iomerge_age_limit_forecast_directory) | number | No       | 300     | Time to wait for the Forecast directory |
+| [fullpos](#submission_iomerge_age_limit_fullpos)                       | number | No       | 15      | Fullpos files                           |
+| [history](#submission_iomerge_age_limit_history)                       | number | No       | 20      | History files                           |
+| [surfex](#submission_iomerge_age_limit_surfex)                         | number | No       | 15      | Surfex files                            |
+
+<a name="submission_iomerge_age_limit_forecast_directory"></a>
+##### Property `Config > submission > iomerge > age_limit > forecast_directory`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `number` |
+| **Required** | No       |
+| **Default**  | `300`    |
+
+**Description:** Time to wait for the Forecast directory
+
+<a name="submission_iomerge_age_limit_fullpos"></a>
+##### Property `Config > submission > iomerge > age_limit > fullpos`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `number` |
+| **Required** | No       |
+| **Default**  | `15`     |
+
+**Description:** Fullpos files
 
 <a name="submission_iomerge_age_limit_history"></a>
 ##### Property `Config > submission > iomerge > age_limit > history`
@@ -8636,17 +8671,6 @@ must respect the following conditions
 | **Default**  | `15`     |
 
 **Description:** Surfex files
-
-<a name="submission_iomerge_age_limit_fullpos"></a>
-##### Property `Config > submission > iomerge > age_limit > fullpos`
-
-|              |          |
-| ------------ | -------- |
-| **Type**     | `number` |
-| **Required** | No       |
-| **Default**  | `15`     |
-
-**Description:** Fullpos files
 
 <a name="submission_iomerge_files_expected"></a>
 #### Property `Config > submission > iomerge > files_expected`
