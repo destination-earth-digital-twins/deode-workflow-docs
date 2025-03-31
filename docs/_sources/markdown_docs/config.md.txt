@@ -1,5 +1,5 @@
 The following section was automatically generated running
-        `deode doc config` on 2025-03-28T13:32:38.
+        `deode doc config` on 2025-03-31T14:22:00.
 
 # Config
 
@@ -27,6 +27,7 @@ The following section was automatically generated running
 | [gribmodify](#gribmodify)           | object | No       | -       | Section for modify grib                                         |
 | [archiving](#archiving)             | object | No       | -       | Archiving Section, defined in include/archiving.toml            |
 | [cleaning](#cleaning)               | object | No       | -       | CleaningSection                                                 |
+| [creategrib](#creategrib)           | object | No       | -       | Creategrib Section, defined in include/creategrib.toml          |
 | [domain](#domain)                   | object | No       | -       | Domain Section, defined in files under include/domains          |
 | [extractsqlite](#extractsqlite)     | object | No       | -       | Extract sqlite Section, defined in include/sqlite.toml          |
 | [file_templates](#file_templates)   | object | No       | -       | File Templates, defined in include/file_templates.toml          |
@@ -879,6 +880,7 @@ Must be one of:
 | Property                                                                    | Type             | Required | Default                | Title/Description                                                                                                                                                                                                                                                       |
 | --------------------------------------------------------------------------- | ---------------- | -------- | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [suite_definition](#suite_control_suite_definition)                         | string           | No       | "DeodeSuiteDefinition" | Suite definition to play in EcFlow                                                                                                                                                                                                                                      |
+| [do_creategrib_static](#suite_control_do_creategrib_static)                 | boolean          | No       | false                  | Activate grib conversion for static files                                                                                                                                                                                                                               |
 | [do_soil](#suite_control_do_soil)                                           | boolean          | No       | -                      | Activate preparation of SOILGRID data as input for PGD                                                                                                                                                                                                                  |
 | [do_pgd](#suite_control_do_pgd)                                             | boolean          | No       | -                      | Activate generation of a PGD file                                                                                                                                                                                                                                       |
 | [mode](#suite_control_mode)                                                 | enum (of string) | No       | -                      | Choose a strategy to achieve initial/initial_sfx files (start:  start from interpolated files and then propagate the FG between cycles, restart: start from a previous run and then propagate the FG between cycles, cold_start: always start from interpolated files). |
@@ -902,6 +904,17 @@ Must be one of:
 | **Default**  | `"DeodeSuiteDefinition"` |
 
 **Description:** Suite definition to play in EcFlow
+
+<a name="suite_control_do_creategrib_static"></a>
+### Property `Config > suite_control > do_creategrib_static`
+
+|              |           |
+| ------------ | --------- |
+| **Type**     | `boolean` |
+| **Required** | No        |
+| **Default**  | `false`   |
+
+**Description:** Activate grib conversion for static files
 
 <a name="suite_control_do_soil"></a>
 ### Property `Config > suite_control > do_soil`
@@ -2806,6 +2819,210 @@ Must be one of:
 | **Required** | No        |
 
 **Description:** test cleaning without to  delete files
+
+<a name="creategrib"></a>
+## Property `Config > creategrib`
+
+**Title:** Creategrib Section, defined in include/creategrib.toml
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Settings for grib conversions with gl
+
+| Property                                         | Type   | Required | Default | Title/Description            |
+| ------------------------------------------------ | ------ | -------- | ------- | ---------------------------- |
+| [CreateGrib](#creategrib_CreateGrib)             | object | No       | -       | CreateGrib definitions       |
+| [CreateGribStatic](#creategrib_CreateGribStatic) | object | No       | -       | CreateGribStatic definitions |
+
+<a name="creategrib_CreateGrib"></a>
+### Property `Config > creategrib > CreateGrib`
+
+**Title:** CreateGrib definitions
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Definitions for grib conversion of time dependent data
+
+| Property                                          | Type   | Required | Default | Title/Description                  |
+| ------------------------------------------------- | ------ | -------- | ------- | ---------------------------------- |
+| [conversions](#creategrib_CreateGrib_conversions) | array  | No       | []      | List of file types to be converted |
+| [surfex](#creategrib_CreateGrib_surfex)           | object | No       | -       | Rules for surfex files             |
+
+<a name="creategrib_CreateGrib_conversions"></a>
+#### Property `Config > creategrib > CreateGrib > conversions`
+
+|              |         |
+| ------------ | ------- |
+| **Type**     | `array` |
+| **Required** | No      |
+| **Default**  | `[]`    |
+
+**Description:** List of file types to be converted
+
+|                      | Array restrictions |
+| -------------------- | ------------------ |
+| **Min items**        | N/A                |
+| **Max items**        | N/A                |
+| **Items unicity**    | False              |
+| **Additional items** | False              |
+| **Tuple validation** | N/A                |
+
+<a name="creategrib_CreateGrib_surfex"></a>
+#### Property `Config > creategrib > CreateGrib > surfex`
+
+**Title:** Rules for surfex files
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+| Property                                                     | Type   | Required | Default    | Title/Description          |
+| ------------------------------------------------------------ | ------ | -------- | ---------- | -------------------------- |
+| [namelist](#creategrib_CreateGrib_surfex_namelist)           | array  | No       | []         | List of namelist arguments |
+| [output_format](#creategrib_CreateGrib_surfex_output_format) | string | No       | "FA2GRIB2" | Output format              |
+
+<a name="creategrib_CreateGrib_surfex_namelist"></a>
+##### Property `Config > creategrib > CreateGrib > surfex > namelist`
+
+|              |         |
+| ------------ | ------- |
+| **Type**     | `array` |
+| **Required** | No      |
+| **Default**  | `[]`    |
+
+**Description:** List of namelist arguments
+
+|                      | Array restrictions |
+| -------------------- | ------------------ |
+| **Min items**        | N/A                |
+| **Max items**        | N/A                |
+| **Items unicity**    | False              |
+| **Additional items** | False              |
+| **Tuple validation** | N/A                |
+
+<a name="creategrib_CreateGrib_surfex_output_format"></a>
+##### Property `Config > creategrib > CreateGrib > surfex > output_format`
+
+|              |              |
+| ------------ | ------------ |
+| **Type**     | `string`     |
+| **Required** | No           |
+| **Default**  | `"FA2GRIB2"` |
+
+**Description:** Output format
+
+<a name="creategrib_CreateGribStatic"></a>
+### Property `Config > creategrib > CreateGribStatic`
+
+**Title:** CreateGribStatic definitions
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Definitions for grib conversion of static data
+
+| Property                                | Type   | Required | Default | Title/Description   |
+| --------------------------------------- | ------ | -------- | ------- | ------------------- |
+| [pgd](#creategrib_CreateGribStatic_pgd) | object | No       | -       | Rules for pgd files |
+
+<a name="creategrib_CreateGribStatic_pgd"></a>
+#### Property `Config > creategrib > CreateGribStatic > pgd`
+
+**Title:** Rules for pgd files
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+| Property                                                        | Type   | Required | Default | Title/Description          |
+| --------------------------------------------------------------- | ------ | -------- | ------- | -------------------------- |
+| [files_in](#creategrib_CreateGribStatic_pgd_files_in)           | array  | No       | []      | List of input files        |
+| [files_out](#creategrib_CreateGribStatic_pgd_files_out)         | array  | No       | []      | List of input files        |
+| [output_format](#creategrib_CreateGribStatic_pgd_output_format) | string | No       | "GRIB"  | Output format              |
+| [namelist](#creategrib_CreateGribStatic_pgd_namelist)           | array  | No       | []      | List of namelist arguments |
+
+<a name="creategrib_CreateGribStatic_pgd_files_in"></a>
+##### Property `Config > creategrib > CreateGribStatic > pgd > files_in`
+
+|              |         |
+| ------------ | ------- |
+| **Type**     | `array` |
+| **Required** | No      |
+| **Default**  | `[]`    |
+
+**Description:** List of input files
+
+|                      | Array restrictions |
+| -------------------- | ------------------ |
+| **Min items**        | N/A                |
+| **Max items**        | N/A                |
+| **Items unicity**    | False              |
+| **Additional items** | False              |
+| **Tuple validation** | N/A                |
+
+<a name="creategrib_CreateGribStatic_pgd_files_out"></a>
+##### Property `Config > creategrib > CreateGribStatic > pgd > files_out`
+
+|              |         |
+| ------------ | ------- |
+| **Type**     | `array` |
+| **Required** | No      |
+| **Default**  | `[]`    |
+
+**Description:** List of input files
+
+|                      | Array restrictions |
+| -------------------- | ------------------ |
+| **Min items**        | N/A                |
+| **Max items**        | N/A                |
+| **Items unicity**    | False              |
+| **Additional items** | False              |
+| **Tuple validation** | N/A                |
+
+<a name="creategrib_CreateGribStatic_pgd_output_format"></a>
+##### Property `Config > creategrib > CreateGribStatic > pgd > output_format`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+| **Default**  | `"GRIB"` |
+
+**Description:** Output format
+
+<a name="creategrib_CreateGribStatic_pgd_namelist"></a>
+##### Property `Config > creategrib > CreateGribStatic > pgd > namelist`
+
+|              |         |
+| ------------ | ------- |
+| **Type**     | `array` |
+| **Required** | No      |
+| **Default**  | `[]`    |
+
+**Description:** List of namelist arguments
+
+|                      | Array restrictions |
+| -------------------- | ------------------ |
+| **Min items**        | N/A                |
+| **Max items**        | N/A                |
+| **Items unicity**    | False              |
+| **Additional items** | False              |
+| **Tuple validation** | N/A                |
 
 <a name="domain"></a>
 ## Property `Config > domain`
