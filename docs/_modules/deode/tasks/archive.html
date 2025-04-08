@@ -594,6 +594,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.toolbox.FDB"><code class="docutils literal notranslate"><span class="pre">FDB</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../deode.html#deode.toolbox.FDB.check_expver_restrictions"><code class="docutils literal notranslate"><span class="pre">FDB.check_expver_restrictions()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../deode.html#deode.toolbox.FDB.create_resource"><code class="docutils literal notranslate"><span class="pre">FDB.create_resource()</span></code></a></li>
 </ul>
 </li>
@@ -1194,7 +1195,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Archive</span><span class="p">(</span><span class="n">Task</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Archving data.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">include</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct the archive object.</span>
 
 <span class="sd">        Loop over archive types (e.g. ecfs,fdb) for the current platform</span>
@@ -1203,6 +1204,11 @@
 <span class="sd">        Args:</span>
 <span class="sd">            config (deode.ParsedConfig): Configuration</span>
 <span class="sd">            datatype (str): Indicating data type (climate, hour)</span>
+<span class="sd">            include (list): List of archiving methods supported, empty implies all</span>
+<span class="sd">            exclude (list): List of archiving methods not supported, empty implies none</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: For not allowed methods</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Task</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
 
@@ -1210,10 +1216,28 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">choices</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">archive_loc</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">include</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">include</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">exclude</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">exclude</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">datatype</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">choices_for_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;archiving.</span><span class="si">{</span><span class="n">datatype</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
             <span class="n">skipped_types</span> <span class="o">=</span> <span class="p">[]</span>
+
             <span class="k">for</span> <span class="n">archive_type</span><span class="p">,</span> <span class="n">choices</span> <span class="ow">in</span> <span class="n">choices_for_type</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">abort</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">archive_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">include</span>
+                    <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">include</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+                    <span class="ow">or</span> <span class="n">archive_type</span> <span class="ow">in</span> <span class="n">exclude</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">abort</span><span class="p">:</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Archive method </span><span class="si">{</span><span class="n">archive_type</span><span class="si">}</span><span class="s2"> is not allowed for this task</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">exclude</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;Excluded methods: </span><span class="si">{</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exclude</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">include</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;Included methods: </span><span class="si">{</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">include</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
                 <span class="n">d</span> <span class="o">=</span> <span class="p">{</span>
                     <span class="n">name</span><span class="p">:</span> <span class="n">choice</span>
                     <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">choice</span> <span class="ow">in</span> <span class="n">choices</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
@@ -1341,7 +1365,22 @@
 <span class="sd">        Args:</span>
 <span class="sd">            config (deode.ParsedConfig): Configuration</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">Archive</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="s2">&quot;hour&quot;</span><span class="p">)</span></div>
+        <span class="n">Archive</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;fdb&quot;</span><span class="p">])</span></div>
+
+
+
+<div class="viewcode-block" id="ArchiveFDB">
+<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.archive.ArchiveFDB">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ArchiveFDB</span><span class="p">(</span><span class="n">Archive</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Archving task for time dependent data dedicated for FDB.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config (deode.ParsedConfig): Configuration</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Archive</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="s2">&quot;FDB&quot;</span><span class="p">,</span> <span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;fdb&quot;</span><span class="p">])</span></div>
 
 </pre></div>
 
@@ -1353,7 +1392,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-04-02T07:03:29Z.
+      <span class="lastupdated">Last updated on 2025-04-08T06:55:01Z.
       </span></p>
   </div>
 

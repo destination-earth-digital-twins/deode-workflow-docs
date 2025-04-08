@@ -594,6 +594,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.toolbox.FDB"><code class="docutils literal notranslate"><span class="pre">FDB</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.toolbox.FDB.check_expver_restrictions"><code class="docutils literal notranslate"><span class="pre">FDB.check_expver_restrictions()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.toolbox.FDB.create_resource"><code class="docutils literal notranslate"><span class="pre">FDB.create_resource()</span></code></a></li>
 </ul>
 </li>
@@ -1281,8 +1282,7 @@
 
 <div class="viewcode-block" id="TaskSettings.update_task_setting">
 <a class="viewcode-back" href="../../deode.html#deode.submission.TaskSettings.update_task_setting">[docs]</a>
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">update_task_setting</span><span class="p">(</span><span class="n">dic</span><span class="p">,</span> <span class="n">upd</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_task_setting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dic</span><span class="p">,</span> <span class="n">upd</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Update task settings dictionary.</span>
 
 <span class="sd">        Args:</span>
@@ -1292,10 +1292,11 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            dict: updated dictionary</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">upd</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Mapping</span><span class="p">):</span>
-                <span class="n">dic</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">TaskSettings</span><span class="o">.</span><span class="n">update_task_setting</span><span class="p">(</span><span class="n">dic</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="p">{}),</span> <span class="n">val</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">_val</span> <span class="ow">in</span> <span class="n">upd</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">_val</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Mapping</span><span class="p">):</span>
+                <span class="n">dic</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_task_setting</span><span class="p">(</span><span class="n">dic</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="p">{}),</span> <span class="n">_val</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">_val</span><span class="p">)</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;key=</span><span class="si">{}</span><span class="s2"> value=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
                 <span class="n">dic</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
         <span class="k">return</span> <span class="n">dic</span></div>
@@ -1346,14 +1347,16 @@
             <span class="n">task_settings</span><span class="p">,</span> <span class="n">all_types</span><span class="p">[</span><span class="n">task_submit_type</span><span class="p">]</span>
         <span class="p">)</span>
 
-        <span class="k">if</span> <span class="p">(</span>
-            <span class="s2">&quot;BATCH&quot;</span> <span class="ow">in</span> <span class="n">task_settings</span>
-            <span class="ow">and</span> <span class="s2">&quot;NAME&quot;</span> <span class="ow">in</span> <span class="n">task_settings</span><span class="p">[</span><span class="s2">&quot;BATCH&quot;</span><span class="p">]</span>
-            <span class="ow">and</span> <span class="s2">&quot;@TASK_NAME@&quot;</span> <span class="ow">in</span> <span class="n">task_settings</span><span class="p">[</span><span class="s2">&quot;BATCH&quot;</span><span class="p">][</span><span class="s2">&quot;NAME&quot;</span><span class="p">]</span>
-        <span class="p">):</span>
-            <span class="n">task_settings</span><span class="p">[</span><span class="s2">&quot;BATCH&quot;</span><span class="p">][</span><span class="s2">&quot;NAME&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">task_settings</span><span class="p">[</span><span class="s2">&quot;BATCH&quot;</span><span class="p">][</span><span class="s2">&quot;NAME&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
-                <span class="s2">&quot;@TASK_NAME@&quot;</span><span class="p">,</span> <span class="n">task</span>
-            <span class="p">)</span>
+        <span class="k">for</span> <span class="n">task_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;@TASK_NAME@&quot;</span><span class="p">,</span> <span class="s2">&quot;@STAND_ALONE_TASK_NAME@&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="s2">&quot;BATCH&quot;</span> <span class="ow">in</span> <span class="n">task_settings</span>
+                <span class="ow">and</span> <span class="s2">&quot;NAME&quot;</span> <span class="ow">in</span> <span class="n">task_settings</span><span class="p">[</span><span class="s2">&quot;BATCH&quot;</span><span class="p">]</span>
+                <span class="ow">and</span> <span class="n">task_name</span> <span class="ow">in</span> <span class="n">task_settings</span><span class="p">[</span><span class="s2">&quot;BATCH&quot;</span><span class="p">][</span><span class="s2">&quot;NAME&quot;</span><span class="p">]</span>
+            <span class="p">):</span>
+                <span class="n">task_settings</span><span class="p">[</span><span class="s2">&quot;BATCH&quot;</span><span class="p">][</span><span class="s2">&quot;NAME&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">task_settings</span><span class="p">[</span><span class="s2">&quot;BATCH&quot;</span><span class="p">][</span><span class="s2">&quot;NAME&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+                    <span class="n">task_name</span><span class="p">,</span> <span class="n">task</span>
+                <span class="p">)</span>
+                <span class="k">break</span>
 
         <span class="k">if</span> <span class="s2">&quot;task_exceptions&quot;</span> <span class="ow">in</span> <span class="n">all_defs</span> <span class="ow">and</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">all_defs</span><span class="p">[</span><span class="s2">&quot;task_exceptions&quot;</span><span class="p">]:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Task task_exceptions for task </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">task</span><span class="p">)</span>
@@ -1570,14 +1573,14 @@
             <span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">env_settings</span><span class="p">)</span>
 
-            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">env_settings</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">_val</span> <span class="ow">in</span> <span class="n">env_settings</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">_val</span><span class="p">)</span>
                 <span class="n">file_handler</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;export </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">=&quot;</span><span class="si">{</span><span class="n">val</span><span class="si">}</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">scheduler</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">file_handler</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;export STAND_ALONE_TASK_NAME=&quot;</span><span class="si">{</span><span class="n">task</span><span class="si">}</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 
-                <span class="n">platform</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
-                <span class="n">deode_home</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">get_platform_value</span><span class="p">(</span><span class="s2">&quot;DEODE_HOME&quot;</span><span class="p">)</span>
+                <span class="n">deode_home</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_platform_value</span><span class="p">(</span><span class="s2">&quot;DEODE_HOME&quot;</span><span class="p">)</span>
 
                 <span class="n">file_handler</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;export STAND_ALONE_DEODE_HOME=&quot;</span><span class="si">{</span><span class="n">deode_home</span><span class="si">}</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="n">config_file</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;source_file_path&quot;</span><span class="p">]</span>
@@ -1661,7 +1664,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-04-02T07:03:29Z.
+      <span class="lastupdated">Last updated on 2025-04-08T06:55:01Z.
       </span></p>
   </div>
 
