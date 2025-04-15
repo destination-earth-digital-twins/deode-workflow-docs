@@ -1297,6 +1297,9 @@
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;MARS data expected in:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">prepdir</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">mars_bin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_binary</span><span class="p">(</span><span class="s2">&quot;mars&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mars_version</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;submission.task_exceptions.Marsprep.mars_version&quot;</span><span class="p">,</span> <span class="s2">&quot;6&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">batch</span> <span class="o">=</span> <span class="n">BatchJob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">,</span> <span class="n">wrapper</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">additional_data</span> <span class="o">=</span> <span class="p">{}</span>
@@ -1371,14 +1374,15 @@
 <span class="sd">            source:             Sorce for retrieve data from disk. Defaults None.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">grid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">grid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">mars_version</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
             <span class="n">request</span><span class="o">.</span><span class="n">add_grid</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
 
         <span class="c1"># Additional request parameters if EPS</span>
         <span class="k">if</span> <span class="n">members</span><span class="p">:</span>
             <span class="n">request</span><span class="o">.</span><span class="n">add_eps_members</span><span class="p">(</span><span class="n">members</span><span class="p">,</span> <span class="n">prefetch</span><span class="o">=</span><span class="n">prefetch</span><span class="p">)</span>
 
-        <span class="n">request</span><span class="o">.</span><span class="n">add_process</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mars_version</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+            <span class="n">request</span><span class="o">.</span><span class="n">add_process</span><span class="p">()</span>
         <span class="n">request</span><span class="o">.</span><span class="n">add_levelist</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;levelist&quot;</span><span class="p">])</span>
 
         <span class="c1"># Set stream</span>
@@ -1552,7 +1556,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get Lat/Lon data.&quot;&quot;&quot;</span>
         <span class="n">prefetch</span> <span class="o">=</span> <span class="kc">False</span>
 
-        <span class="n">method</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;latlon_method&quot;</span><span class="p">]</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="s2">&quot;retrieve&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mars_version</span> <span class="o">==</span> <span class="mi">6</span> <span class="k">else</span> <span class="s2">&quot;read&quot;</span>
         <span class="n">str_step</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">steps</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="n">param</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">get_value_from_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;GG&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_date_str</span><span class="p">)</span>
@@ -2004,7 +2008,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-04-15T12:31:16Z.
+      <span class="lastupdated">Last updated on 2025-04-15T15:15:25Z.
       </span></p>
   </div>
 
