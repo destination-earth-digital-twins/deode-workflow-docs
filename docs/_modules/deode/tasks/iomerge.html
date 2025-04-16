@@ -1245,6 +1245,8 @@
             <span class="s2">&quot;forecast_directory&quot;</span>
         <span class="p">]</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ionr</span><span class="si">:</span><span class="s2">02</span><span class="si">}</span><span class="s2">&quot;</span>
+
 <div class="viewcode-block" id="IOmerge.check_fc_path">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.iomerge.IOmerge.check_fc_path">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">check_fc_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1450,8 +1452,8 @@
         <span class="n">full_dt_list</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
         <span class="c1"># now subset for this worker:</span>
         <span class="n">dt_list</span> <span class="o">=</span> <span class="n">full_dt_list</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ionr</span> <span class="p">::</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_io_merge</span><span class="p">]</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;IONR = </span><span class="si">{}</span><span class="s2">, N_IO_MERGE = </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ionr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_io_merge</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;DT list </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">dt_list</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;IONR = </span><span class="si">{}</span><span class="s2">, N_IO_MERGE = </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ionr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_io_merge</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;DT list </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">dt_list</span><span class="p">)</span>
 
         <span class="c1"># We must wait for the io_server output to appear</span>
         <span class="c1"># BUT: how long should we wait before aborting?</span>
@@ -1495,7 +1497,25 @@
         <span class="c1"># signal completion of all merge tasks to the forecast task</span>
         <span class="n">BatchJob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">,</span> <span class="n">wrapper</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;touch </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">fc_path</span><span class="si">}</span><span class="s2">/io_merge_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ionr</span><span class="si">:</span><span class="s2">02</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="p">)</span></div>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">full_dt_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">full_dt_list</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Remove Forecast directory since all files have been processed&quot;</span><span class="p">)</span>
+            <span class="c1"># Wait for all io_merge tasks to finish.</span>
+            <span class="c1"># This is signaled by creating (empty) files.</span>
+            <span class="k">for</span> <span class="n">ionr</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_io_merge</span><span class="p">):</span>
+                <span class="n">io_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">fc_path</span><span class="si">}</span><span class="s2">/io_merge_</span><span class="si">{</span><span class="n">ionr</span><span class="si">:</span><span class="s2">02</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="k">while</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">io_name</span><span class="p">):</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Waiting for </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">io_name</span><span class="p">)</span>
+                    <span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+
+            <span class="c1"># Handle the Forecast task working directory</span>
+            <span class="n">fc_path_resolved</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc_path</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;fc_path_resolved:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">fc_path_resolved</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">islink</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc_path</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc_path</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">source</span><span class="o">=</span><span class="n">fc_path_resolved</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;Forecast&quot;</span><span class="p">)</span></div>
 </div>
 
 </pre></div>
@@ -1508,7 +1528,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-04-16T11:09:01Z.
+      <span class="lastupdated">Last updated on 2025-04-16T11:29:07Z.
       </span></p>
   </div>
 

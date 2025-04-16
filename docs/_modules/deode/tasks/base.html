@@ -1351,26 +1351,31 @@
 
 <div class="viewcode-block" id="Task.remove_wdir">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.base.Task.remove_wdir">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">remove_wdir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_wdir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wdir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove working directory.&quot;&quot;&quot;</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wrk</span><span class="p">)</span>
-        <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wdir</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Remove </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wdir</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="n">wdir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">wdir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wdir</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">wdir</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Remove working directory </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">wdir</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Task.rename_wdir">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.base.Task.rename_wdir">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">rename_wdir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;Failed_task_&quot;</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Rename failed working directory.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wdir</span><span class="p">):</span>
-            <span class="n">fdir</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">wrk</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">prefix</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">rename_wdir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;Failed_task_&quot;</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Rename failed/completed working directory.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">source</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wdir</span>
+        <span class="k">if</span> <span class="n">target</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+            <span class="n">fdir</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">wrk</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">prefix</span><span class="si">}{</span><span class="n">target</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">fdir</span><span class="p">):</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> exists. Remove it&quot;</span><span class="p">,</span> <span class="n">fdir</span><span class="p">)</span>
                 <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">fdir</span><span class="p">)</span>
-            <span class="n">pid</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wdir</span><span class="p">)</span>
+            <span class="n">pid</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
             <span class="n">fdir</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fdir</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">pid</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wdir</span><span class="p">,</span> <span class="n">fdir</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Renamed </span><span class="si">{}</span><span class="s2"> to </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wdir</span><span class="p">,</span> <span class="n">fdir</span><span class="p">)</span></div>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">fdir</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Renamed </span><span class="si">{}</span><span class="s2"> to </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">fdir</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Task.get_binary">
@@ -1437,7 +1442,7 @@
 
 <div class="viewcode-block" id="Task.post">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.base.Task.post">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Do default postfix.</span>
 
 <span class="sd">        E.g. clean</span>
@@ -1446,10 +1451,9 @@
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Base class post&quot;</span><span class="p">)</span>
         <span class="c1"># Clean workdir</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.keep_workdirs&quot;</span><span class="p">]:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">rename_wdir</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;Finished_task_&quot;</span><span class="p">)</span>
-
+            <span class="bp">self</span><span class="o">.</span><span class="n">rename_wdir</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;Finished_task_&quot;</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">remove_wdir</span><span class="p">()</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remove_wdir</span><span class="p">(</span><span class="n">wdir</span><span class="o">=</span><span class="n">source</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Task.run">
@@ -1523,7 +1527,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-04-16T11:09:01Z.
+      <span class="lastupdated">Last updated on 2025-04-16T11:29:07Z.
       </span></p>
   </div>
 
