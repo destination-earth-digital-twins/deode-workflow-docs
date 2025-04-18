@@ -1461,10 +1461,11 @@
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">iomerge_is_external</span><span class="p">:</span>
             <span class="n">atexit</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rename_wdir</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">io_server</span><span class="p">:</span>
+        <span class="k">else</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">filetype</span><span class="p">,</span> <span class="n">oi</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_settings</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="k">if</span> <span class="n">filetype</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_templates</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">merge_output</span><span class="p">(</span><span class="n">filetype</span><span class="p">,</span> <span class="n">oi</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">io_server</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">merge_output</span><span class="p">(</span><span class="n">filetype</span><span class="p">,</span> <span class="n">oi</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">archive_output</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_templates</span><span class="p">[</span><span class="n">filetype</span><span class="p">],</span> <span class="n">oi</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">archive_logs</span><span class="p">([</span><span class="s2">&quot;fort.4&quot;</span><span class="p">,</span> <span class="s2">&quot;EXSEG1.nam&quot;</span><span class="p">,</span> <span class="s2">&quot;NODE.001_01&quot;</span><span class="p">])</span></div>
@@ -1524,7 +1525,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-04-17T11:51:03Z.
+      <span class="lastupdated">Last updated on 2025-04-18T04:16:55Z.
       </span></p>
   </div>
 
