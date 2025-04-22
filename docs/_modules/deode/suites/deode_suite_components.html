@@ -1985,8 +1985,8 @@
             <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
         <span class="p">)</span>
 
-        <span class="n">creategrib</span> <span class="o">=</span> <span class="n">forecast_task</span>
-        <span class="n">io_merge</span> <span class="o">=</span> <span class="n">forecast_task</span>
+        <span class="n">add_calc_fields_trigger</span> <span class="o">=</span> <span class="n">forecast_task</span>
+        <span class="n">creategrib_trigger</span> <span class="o">=</span> <span class="n">forecast_task</span>
 
         <span class="k">if</span> <span class="n">n_io_merge</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">io_merge</span> <span class="o">=</span> <span class="n">MergeIOFamily</span><span class="p">(</span>
@@ -2000,16 +2000,18 @@
                 <span class="n">trigger</span><span class="o">=</span><span class="n">forecast_task</span><span class="p">,</span>
                 <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
             <span class="p">)</span>
+            <span class="n">add_calc_fields_trigger</span> <span class="o">=</span> <span class="n">io_merge</span>
+            <span class="n">creategrib_trigger</span> <span class="o">=</span> <span class="n">io_merge</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;creategrib.CreateGrib.conversions&quot;</span><span class="p">,</span> <span class="p">[]))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">creategrib</span> <span class="o">=</span> <span class="n">EcflowSuiteTask</span><span class="p">(</span>
+            <span class="n">add_calc_fields_trigger</span> <span class="o">=</span> <span class="n">EcflowSuiteTask</span><span class="p">(</span>
                 <span class="s2">&quot;CreateGrib&quot;</span><span class="p">,</span>
                 <span class="bp">self</span><span class="p">,</span>
                 <span class="n">config</span><span class="p">,</span>
                 <span class="n">task_settings</span><span class="p">,</span>
                 <span class="n">ecf_files</span><span class="p">,</span>
                 <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
-                <span class="n">trigger</span><span class="o">=</span><span class="n">io_merge</span><span class="p">,</span>
+                <span class="n">trigger</span><span class="o">=</span><span class="n">creategrib_trigger</span><span class="p">,</span>
                 <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
             <span class="p">)</span>
 
@@ -2020,7 +2022,7 @@
             <span class="n">task_settings</span><span class="p">,</span>
             <span class="n">ecf_files</span><span class="p">,</span>
             <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
-            <span class="n">trigger</span><span class="o">=</span><span class="n">creategrib</span><span class="p">,</span>
+            <span class="n">trigger</span><span class="o">=</span><span class="n">add_calc_fields_trigger</span><span class="p">,</span>
             <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
         <span class="p">)</span>
 
@@ -2312,7 +2314,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-04-22T13:18:51Z.
+      <span class="lastupdated">Last updated on 2025-04-22T15:01:44Z.
       </span></p>
   </div>
 
