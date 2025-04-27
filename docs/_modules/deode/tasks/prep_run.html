@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>deode.tasks.e923_update &mdash; Deode Workflow Docs  documentation</title>
+  <title>deode.tasks.prep_run &mdash; Deode Workflow Docs  documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
@@ -1188,7 +1188,7 @@
       <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
           <li class="breadcrumb-item"><a href="../../deode.html">deode</a></li>
-      <li class="breadcrumb-item active">deode.tasks.e923_update</li>
+      <li class="breadcrumb-item active">deode.tasks.prep_run</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -1197,25 +1197,21 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>Source code for deode.tasks.e923_update</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;E923Update.&quot;&quot;&quot;</span>
+  <h1>Source code for deode.tasks.prep_run</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Preparatory task for a deode suite.&quot;&quot;&quot;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">glob</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">..datetime_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">as_datetime</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">Task</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.batch</span><span class="w"> </span><span class="kn">import</span> <span class="n">BatchJob</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">deode.config_parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">ParsedConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">deode.logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">deode.os_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">deodemakedirs</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">deode.tasks.cleaning_tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">Cleaning</span>
 
 
-<div class="viewcode-block" id="E923Update">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.e923_update.E923Update">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">E923Update</span><span class="p">(</span><span class="n">Task</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Methods for updating climfile for ALARO.</span>
-
-<span class="sd">    For mor information see doc/markdown/e923_update.md.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="PrepRun">
+<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.prep_run.PrepRun">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PrepRun</span><span class="p">(</span><span class="n">Cleaning</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Preparatory run/cleaning task.&quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct object.</span>
@@ -1223,57 +1219,29 @@
 <span class="sd">        Args:</span>
 <span class="sd">            config (deode.ParsedConfig): Configuration</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">Task</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="n">Cleaning</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;PrepRun&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prep_clean_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">climdir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_system_value</span><span class="p">(</span><span class="s2">&quot;climdir&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fa_sfx2clim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_binary</span><span class="p">(</span><span class="s2">&quot;fa_sfx2clim&quot;</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">archive</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;system.archive&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">basetime</span> <span class="o">=</span> <span class="n">as_datetime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.times.basetime&quot;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">month</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">basetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%m&quot;</span><span class="p">)</span>
-
-<div class="viewcode-block" id="E923Update.execute">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.e923_update.E923Update.execute">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run task.</span>
-
-<span class="sd">        Define run sequence.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Old climfile</span>
-        <span class="n">climfile</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">climdir</span><span class="si">}</span><span class="s2">/Const.Clim.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">month</span><span class="si">}</span><span class="s2">&quot;</span>
-
-        <span class="c1"># PGD</span>
-        <span class="n">pgd_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;file_templates.pgd.archive&quot;</span><span class="p">],</span> <span class="n">basetime</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">basetime</span>
+        <span class="c1"># Archive the used config file</span>
+        <span class="n">archive_root</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_platform_value</span><span class="p">(</span><span class="s2">&quot;archive_root&quot;</span><span class="p">))</span>
+        <span class="n">deodemakedirs</span><span class="p">(</span>
+            <span class="n">archive_root</span><span class="p">,</span> <span class="n">unixgroup</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_platform_value</span><span class="p">(</span><span class="s2">&quot;unix_group&quot;</span><span class="p">)</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">climdir</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">pgd_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;pgd_file&quot;</span><span class="p">)</span>
-        <span class="c1"># sfx init</span>
-        <span class="n">sfx_init</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">archive</span><span class="si">}</span><span class="s2">/ICMSH@CNMEXP@INIT.sfx&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="n">sfx_init</span><span class="p">,</span> <span class="s2">&quot;input_sfx&quot;</span><span class="p">)</span>
-        <span class="c1"># Old climfile</span>
-        <span class="n">climfile</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">climdir</span><span class="si">}</span><span class="s2">/Const.Clim.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">month</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">archive_config</span> <span class="o">=</span> <span class="n">archive_root</span> <span class="o">/</span> <span class="s2">&quot;config.toml&quot;</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">save_as</span><span class="p">(</span><span class="n">archive_config</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Stored used config as: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">archive_config</span><span class="p">)</span>
 
-        <span class="c1"># namelist</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;nam&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">namelist</span><span class="p">:</span>
-            <span class="n">namelist</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
-<span class="w">                </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">&amp;NAM</span>
-<span class="sd">  L_Z0=.T.,</span>
-<span class="sd">  LZ0THER=.F.,</span>
-<span class="sd">  FACZ0=0.53,</span>
-<span class="sd">  FACZ0_VEG=1.00,</span>
-<span class="sd">  NLISSZ=3,</span>
-<span class="sd">  NLISSZ_VEG=3,</span>
-<span class="sd">/</span>
-<span class="sd">&quot;&quot;&quot;</span>
-            <span class="p">)</span>
-            <span class="n">namelist</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="n">batch</span> <span class="o">=</span> <span class="n">BatchJob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">,</span> <span class="n">wrapper</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="p">)</span>
-        <span class="n">batch</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">fa_sfx2clim</span><span class="si">}</span><span class="s2"> nam pgd_file input_sfx </span><span class="si">{</span><span class="n">climfile</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">archive_logs</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;NODE.*&quot;</span><span class="p">),</span> <span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">climdir</span><span class="p">)</span></div>
-</div>
+        <span class="c1"># Create and archive expanded config file</span>
+        <span class="n">expanded_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
+        <span class="n">expanded_config</span><span class="p">[</span><span class="s2">&quot;general&quot;</span><span class="p">][</span><span class="s2">&quot;times&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;basetime&quot;</span><span class="p">)</span>
+        <span class="n">expanded_config</span><span class="p">[</span><span class="s2">&quot;general&quot;</span><span class="p">][</span><span class="s2">&quot;times&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;validtime&quot;</span><span class="p">)</span>
+        <span class="n">expanded_config</span> <span class="o">=</span> <span class="n">ParsedConfig</span><span class="p">(</span><span class="n">expanded_config</span><span class="p">,</span> <span class="n">json_schema</span><span class="o">=</span><span class="p">{})</span><span class="o">.</span><span class="n">expand_macros</span><span class="p">(</span>
+            <span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="n">archive_expanded_config</span> <span class="o">=</span> <span class="n">archive_root</span> <span class="o">/</span> <span class="s2">&quot;expanded_config.toml&quot;</span>
+        <span class="n">expanded_config</span><span class="o">.</span><span class="n">save_as</span><span class="p">(</span><span class="n">archive_expanded_config</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Stored used expanded config as: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">archive_expanded_config</span><span class="p">)</span></div>
 
 </pre></div>
 
