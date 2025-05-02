@@ -203,6 +203,15 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../deode.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../deode.html#module-deode.archive">deode.archive module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.archive.Archive"><code class="docutils literal notranslate"><span class="pre">Archive</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../deode.html#deode.archive.Archive.archive"><code class="docutils literal notranslate"><span class="pre">Archive.archive()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../deode.html#deode.archive.Archive.execute"><code class="docutils literal notranslate"><span class="pre">Archive.execute()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../deode.html#deode.archive.Archive.trigger"><code class="docutils literal notranslate"><span class="pre">Archive.trigger()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../../deode.html#module-deode.argparse_wrapper">deode.argparse_wrapper module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.argparse_wrapper.add_keep_def_file"><code class="docutils literal notranslate"><span class="pre">add_keep_def_file()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.argparse_wrapper.add_namelist_args"><code class="docutils literal notranslate"><span class="pre">add_namelist_args()</span></code></a></li>
@@ -1204,9 +1213,10 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">tarfile</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">..logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..os_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">Search</span><span class="p">,</span> <span class="n">deodemakedirs</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">Task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">deode.archive</span><span class="w"> </span><span class="kn">import</span> <span class="n">Archive</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">deode.logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">deode.os_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">Search</span><span class="p">,</span> <span class="n">deodemakedirs</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">deode.tasks.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">Task</span>
 
 
 <div class="viewcode-block" id="CollectLogs">
@@ -1228,11 +1238,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">joboutdir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;task.args.joboutdir&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tarname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;task.args.tarname&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">task_logs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;task.args.task_logs&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config_label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;task.args.config_label&quot;</span><span class="p">]</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">joboutdir</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">joboutdir</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tarfile</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">wrk</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tarname</span><span class="si">}</span><span class="s2">.tar.gz&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">do_archiving</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.do_archiving&quot;</span><span class="p">]</span>
 
 <div class="viewcode-block" id="CollectLogs.scan_logs">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.collectlogs.CollectLogs.scan_logs">[docs]</a>
@@ -1289,7 +1303,9 @@
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;task logs directory </span><span class="si">{}</span><span class="s2"> not found&quot;</span><span class="p">,</span> <span class="n">task_logs</span><span class="p">)</span>
 
         <span class="n">tarlog</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tarfile</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">logs</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tarfile</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">logs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_archiving</span><span class="p">:</span>
+            <span class="n">Archive</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config_label</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;FDB&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span></div>
 </div>
 
 </pre></div>
@@ -1302,7 +1318,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-04-27T18:29:15Z.
+      <span class="lastupdated">Last updated on 2025-05-02T05:53:14Z.
       </span></p>
   </div>
 

@@ -203,6 +203,15 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../deode.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../deode.html#module-deode.archive">deode.archive module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.archive.Archive"><code class="docutils literal notranslate"><span class="pre">Archive</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../deode.html#deode.archive.Archive.archive"><code class="docutils literal notranslate"><span class="pre">Archive.archive()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../deode.html#deode.archive.Archive.execute"><code class="docutils literal notranslate"><span class="pre">Archive.execute()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../deode.html#deode.archive.Archive.trigger"><code class="docutils literal notranslate"><span class="pre">Archive.trigger()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../../deode.html#module-deode.argparse_wrapper">deode.argparse_wrapper module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.argparse_wrapper.add_keep_def_file"><code class="docutils literal notranslate"><span class="pre">add_keep_def_file()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.argparse_wrapper.add_namelist_args"><code class="docutils literal notranslate"><span class="pre">add_namelist_args()</span></code></a></li>
@@ -1200,167 +1209,33 @@
   <h1>Source code for deode.tasks.archive</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;ARCHIVEHOUR // ARCHIVESTATIC.&quot;&quot;&quot;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">glob</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pathlib</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">..logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">Task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">deode.archive</span><span class="w"> </span><span class="kn">import</span> <span class="n">Archive</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">deode.tasks.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">Task</span>
 
 
-<div class="viewcode-block" id="Archive">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.archive.Archive">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">Archive</span><span class="p">(</span><span class="n">Task</span><span class="p">):</span>
+<div class="viewcode-block" id="ArchiveTask">
+<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.archive.ArchiveTask">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ArchiveTask</span><span class="p">(</span><span class="n">Task</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Archving data.&quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">include</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct the archive object.</span>
-
-<span class="sd">        Loop over archive types (e.g. ecfs,fdb) for the current platform</span>
-<span class="sd">        and store the active selections from config.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            config (deode.ParsedConfig): Configuration</span>
-<span class="sd">            datatype (str): Indicating data type (climate, hour)</span>
-<span class="sd">            include (list): List of archiving methods supported, empty implies all</span>
-<span class="sd">            exclude (list): List of archiving methods not supported, empty implies none</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            RuntimeError: For not allowed methods</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct the archive object.&quot;&quot;&quot;</span>
         <span class="n">Task</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">da</span> <span class="o">=</span> <span class="n">Archive</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">datatype</span><span class="p">,</span> <span class="n">include</span><span class="o">=</span><span class="n">include</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="n">exclude</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">archive_types</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;platform.archive_types&quot;</span><span class="p">,</span> <span class="p">[])</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">choices</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">archive_loc</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">if</span> <span class="n">include</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">include</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="n">exclude</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">exclude</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="n">datatype</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">choices_for_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;archiving.</span><span class="si">{</span><span class="n">datatype</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
-            <span class="n">skipped_types</span> <span class="o">=</span> <span class="p">[]</span>
-
-            <span class="k">for</span> <span class="n">archive_type</span><span class="p">,</span> <span class="n">choices</span> <span class="ow">in</span> <span class="n">choices_for_type</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="n">abort</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="n">archive_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">include</span>
-                    <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">include</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
-                    <span class="ow">or</span> <span class="n">archive_type</span> <span class="ow">in</span> <span class="n">exclude</span>
-                <span class="p">)</span>
-                <span class="k">if</span> <span class="n">abort</span><span class="p">:</span>
-                    <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Archive method </span><span class="si">{</span><span class="n">archive_type</span><span class="si">}</span><span class="s2"> is not allowed for this task</span><span class="se">\n</span><span class="s2">&quot;</span>
-                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">exclude</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                        <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;Excluded methods: </span><span class="si">{</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exclude</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">include</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                        <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;Included methods: </span><span class="si">{</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">include</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-
-                <span class="n">d</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="n">name</span><span class="p">:</span> <span class="n">choice</span>
-                    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">choice</span> <span class="ow">in</span> <span class="n">choices</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">trigger</span><span class="p">(</span><span class="n">choice</span><span class="p">[</span><span class="s2">&quot;active&quot;</span><span class="p">])</span>
-                <span class="p">}</span>
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">archive_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">archive_types</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="n">archive_type</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">archive_loc</span><span class="p">[</span><span class="n">archive_type</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span>
-                            <span class="sa">f</span><span class="s2">&quot;archiving.prefix.</span><span class="si">{</span><span class="n">archive_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span>
-                        <span class="p">)</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">skipped_types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">archive_type</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">skipped_types</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="s2">&quot;Skipped archive types not defined for this host: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">skipped_types</span>
-                <span class="p">)</span>
-
-<div class="viewcode-block" id="Archive.trigger">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.archive.Archive.trigger">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">trigger</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trigger</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return trigger.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">trigger</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">trigger</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="n">trigger</span><span class="p">]</span></div>
-
-
-<div class="viewcode-block" id="Archive.execute">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.archive.Archive.execute">[docs]</a>
+<div class="viewcode-block" id="ArchiveTask.execute">
+<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.archive.ArchiveTask.execute">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Loops over archive choices.&quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">archive_type</span><span class="p">,</span> <span class="n">choices</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">choices</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Archiving type: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">archive_type</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">choice</span> <span class="ow">in</span> <span class="n">choices</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="n">choice</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;active&quot;</span><span class="p">)</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Archiving </span><span class="si">{}</span><span class="s2"> with: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">choice</span><span class="p">)</span>
-                <span class="n">outpath</span> <span class="o">=</span> <span class="n">choice</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;outpath&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-                <span class="n">newname</span> <span class="o">=</span> <span class="n">choice</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;newname&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">archive</span><span class="p">(</span>
-                    <span class="n">choice</span><span class="p">[</span><span class="s2">&quot;pattern&quot;</span><span class="p">],</span>
-                    <span class="n">choice</span><span class="p">[</span><span class="s2">&quot;inpath&quot;</span><span class="p">],</span>
-                    <span class="n">outpath</span><span class="p">,</span>
-                    <span class="n">archive_type</span><span class="p">,</span>
-                    <span class="n">newname</span><span class="p">,</span>
-                <span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="Archive.archive">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.archive.Archive.archive">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">archive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">inpath</span><span class="p">,</span> <span class="n">outpath</span><span class="p">,</span> <span class="n">archive_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">newname</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send files to the file manager.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            pattern (str,list): string of list of patterns to search for</span>
-<span class="sd">            inpath (str): Full path on the input archive</span>
-<span class="sd">            outpath (str): relative path on the output archive</span>
-<span class="sd">            archive_type (str, optional): Archive type. Defaults to None.</span>
-<span class="sd">            newname (str, optional): Forces a rename of an identified file.</span>
-<span class="sd">                                     Defaults to None.</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            FileNotFoundError: If file not found</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">outpath</span><span class="p">)</span>
-        <span class="n">inp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">inpath</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">newname</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">ptrn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">ptrn</span><span class="p">,</span> <span class="n">newname</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">FileNotFoundError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Could not find </span><span class="si">{</span><span class="n">ptrn</span><span class="si">}</span><span class="s2">, incorrect pattern&quot;</span>
-                <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">error</span>
-
-            <span class="n">_pattern</span> <span class="o">=</span> <span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">PurePath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">newname</span><span class="p">)]</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Copy </span><span class="si">{}</span><span class="s2"> to </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ptrn</span><span class="p">,</span> <span class="n">newname</span><span class="p">)</span>
-
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">_pattern</span> <span class="o">=</span> <span class="p">[</span><span class="n">pattern</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">_pattern</span> <span class="o">=</span> <span class="n">pattern</span>
-
-        <span class="k">for</span> <span class="n">ptrn</span> <span class="ow">in</span> <span class="n">_pattern</span><span class="p">:</span>
-            <span class="n">search</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">PurePath</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">ptrn</span><span class="p">)))</span>
-            <span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">search</span><span class="p">)</span> <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span>
-
-            <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">files</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">output</span><span class="p">(</span>
-                    <span class="n">filename</span><span class="p">,</span>
-                    <span class="n">pathlib</span><span class="o">.</span><span class="n">PurePath</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">archive_loc</span><span class="p">[</span><span class="n">archive_type</span><span class="p">],</span> <span class="n">out</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-                    <span class="p">),</span>
-                    <span class="n">provider_id</span><span class="o">=</span><span class="n">archive_type</span><span class="p">,</span>
-                <span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">da</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span></div>
 </div>
 
 
 
 <div class="viewcode-block" id="ArchiveStatic">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.archive.ArchiveStatic">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">ArchiveStatic</span><span class="p">(</span><span class="n">Archive</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ArchiveStatic</span><span class="p">(</span><span class="n">ArchiveTask</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Archving task for static data.&quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
@@ -1369,13 +1244,13 @@
 <span class="sd">        Args:</span>
 <span class="sd">            config (deode.ParsedConfig): Configuration</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">Archive</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="s2">&quot;static&quot;</span><span class="p">)</span></div>
+        <span class="n">ArchiveTask</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="s2">&quot;static&quot;</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="ArchiveHour">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.archive.ArchiveHour">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">ArchiveHour</span><span class="p">(</span><span class="n">Archive</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ArchiveHour</span><span class="p">(</span><span class="n">ArchiveTask</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Archving task for time dependent data.&quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
@@ -1384,13 +1259,13 @@
 <span class="sd">        Args:</span>
 <span class="sd">            config (deode.ParsedConfig): Configuration</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">Archive</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;fdb&quot;</span><span class="p">])</span></div>
+        <span class="n">ArchiveTask</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="s2">&quot;hour&quot;</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;fdb&quot;</span><span class="p">])</span></div>
 
 
 
 <div class="viewcode-block" id="ArchiveFDB">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.archive.ArchiveFDB">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">ArchiveFDB</span><span class="p">(</span><span class="n">Archive</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ArchiveFDB</span><span class="p">(</span><span class="n">ArchiveTask</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Archving task for time dependent data dedicated for FDB.&quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
@@ -1399,7 +1274,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            config (deode.ParsedConfig): Configuration</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">Archive</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="s2">&quot;FDB&quot;</span><span class="p">,</span> <span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;fdb&quot;</span><span class="p">])</span></div>
+        <span class="n">ArchiveTask</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="s2">&quot;FDB&quot;</span><span class="p">,</span> <span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;fdb&quot;</span><span class="p">])</span></div>
 
 </pre></div>
 
@@ -1411,7 +1286,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-04-27T18:29:15Z.
+      <span class="lastupdated">Last updated on 2025-05-02T05:53:14Z.
       </span></p>
   </div>
 
