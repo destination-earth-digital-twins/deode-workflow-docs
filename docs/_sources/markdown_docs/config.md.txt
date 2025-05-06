@@ -1,5 +1,5 @@
 The following section was automatically generated running
-        `deode doc config` on 2025-05-05T19:57:54.
+        `deode doc config` on 2025-05-06T12:08:01.
 
 # Config
 
@@ -29,6 +29,7 @@ The following section was automatically generated running
 | [cleaning](#cleaning)               | object | No       | -       | CleaningSection                                                 |
 | [creategrib](#creategrib)           | object | No       | -       | Creategrib Section, defined in include/creategrib.toml          |
 | [domain](#domain)                   | object | No       | -       | Domain Section, defined in files under include/domains          |
+| [eps](#eps)                         | object | No       | -       | EPS Members Configuration                                       |
 | [extractsqlite](#extractsqlite)     | object | No       | -       | Extract sqlite Section, defined in include/sqlite.toml          |
 | [file_templates](#file_templates)   | object | No       | -       | File Templates, defined in include/file_templates.toml          |
 | [impact](#impact)                   | object | No       | -       | Impact model settings                                           |
@@ -57,7 +58,8 @@ The following section was automatically generated running
 | [times](#general_times)                                     | Combination      | Yes      | -            | Time-Related Entries                                                                                                                                                                                                                                                                                                                         |
 | [accept_static_namelists](#general_accept_static_namelists) | boolean          | No       | -            | Allow usage of static namelists as input for the tasks. The namelist should be located in the directory specified by platform.namelists and named with the convention namelist_{kind}_{task} where kind could be surfex or master and task forecast/pgd or similar. For the extraction of namelist see [namelists.md](../docs/namelists.md). |
 | [case](#general_case)                                       | string           | No       | "deode_case" | Experiment name                                                                                                                                                                                                                                                                                                                              |
-| [realization](#general_realization)                         | Combination      | No       | ""           | Placeholder for future ensemble or similar need                                                                                                                                                                                                                                                                                              |
+| [member_str](#general_member_str)                           | string           | No       | "mbr000"     | String identifier of a member in the ensemble                                                                                                                                                                                                                                                                                                |
+| [member](#general_member)                                   | integer          | No       | 0            | Member number of a member in the ensemble                                                                                                                                                                                                                                                                                                    |
 | [cnmexp](#general_cnmexp)                                   | string           | No       | "DEOD"       | Experiment short name                                                                                                                                                                                                                                                                                                                        |
 | [loglevel](#general_loglevel)                               | enum (of string) | No       | -            | Logger output level                                                                                                                                                                                                                                                                                                                          |
 | [surfex](#general_surfex)                                   | boolean          | No       | -            | SURFEX switch                                                                                                                                                                                                                                                                                                                                |
@@ -379,46 +381,31 @@ The following section was automatically generated running
 
 **Description:** Experiment name
 
-<a name="general_realization"></a>
-### Property `Config > general > realization`
+<a name="general_member_str"></a>
+### Property `Config > general > member_str`
 
-|                           |                                                                           |
-| ------------------------- | ------------------------------------------------------------------------- |
-| **Type**                  | `combining`                                                               |
-| **Required**              | No                                                                        |
-| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
-| **Default**               | `""`                                                                      |
+|              |            |
+| ------------ | ---------- |
+| **Type**     | `string`   |
+| **Required** | No         |
+| **Default**  | `"mbr000"` |
 
-**Description:** Placeholder for future ensemble or similar need
+**Description:** String identifier of a member in the ensemble
 
-| One of(Option)                          |
-| --------------------------------------- |
-| [item 0](#general_realization_oneOf_i0) |
-| [item 1](#general_realization_oneOf_i1) |
+| Restrictions                      |                                                                           |
+| --------------------------------- | ------------------------------------------------------------------------- |
+| **Must match regular expression** | ```^mbr\d{3}$``` [Test](https://regex101.com/?regex=%5Embr%5Cd%7B3%7D%24) |
 
-<a name="general_realization_oneOf_i0"></a>
-#### Property `Config > general > realization > oneOf > item 0`
+<a name="general_member"></a>
+### Property `Config > general > member`
 
-|              |          |
-| ------------ | -------- |
-| **Type**     | `string` |
-| **Required** | No       |
+|              |           |
+| ------------ | --------- |
+| **Type**     | `integer` |
+| **Required** | No        |
+| **Default**  | `0`       |
 
-| Restrictions   |   |
-| -------------- | - |
-| **Max length** | 0 |
-
-<a name="general_realization_oneOf_i1"></a>
-#### Property `Config > general > realization > oneOf > item 1`
-
-|              |          |
-| ------------ | -------- |
-| **Type**     | `number` |
-| **Required** | No       |
-
-| Restrictions |        |
-| ------------ | ------ |
-| **Minimum**  | &ge; 0 |
+**Description:** Member number of a member in the ensemble
 
 <a name="general_cnmexp"></a>
 ### Property `Config > general > cnmexp`
@@ -892,6 +879,8 @@ Must be one of:
 | [split_mars](#suite_control_split_mars)                                     | boolean          | No       | false                  | Do marsprep only for one step before c903                                                                                                                                                                                                                               |
 | [do_cleaning](#suite_control_do_cleaning)                                   | boolean          | No       | false                  | Do file cleaning                                                                                                                                                                                                                                                        |
 | [n_io_merge](#suite_control_n_io_merge)                                     | integer          | No       | 1                      | Number of IOmerge tasks                                                                                                                                                                                                                                                 |
+| [member_specific_static_data](#suite_control_member_specific_static_data)   | boolean          | No       | false                  | Whether to create member specific static data (true) or not                                                                                                                                                                                                             |
+| [member_specific_mars_prep](#suite_control_member_specific_mars_prep)       | boolean          | No       | false                  | Whether to do member specific marsprep (true) or common marsprep                                                                                                                                                                                                        |
 | [max_static_data_tasks](#suite_control_max_static_data_tasks)               | integer          | No       | 10                     | Limit for max number of monthly tasks, run at same time                                                                                                                                                                                                                 |
 | [DeodeCleaningSuiteDefinition](#suite_control_DeodeCleaningSuiteDefinition) | object           | No       | -                      | -                                                                                                                                                                                                                                                                       |
 
@@ -1034,6 +1023,28 @@ Must be one of:
 | **Default**  | `1`       |
 
 **Description:** Number of IOmerge tasks
+
+<a name="suite_control_member_specific_static_data"></a>
+### Property `Config > suite_control > member_specific_static_data`
+
+|              |           |
+| ------------ | --------- |
+| **Type**     | `boolean` |
+| **Required** | No        |
+| **Default**  | `false`   |
+
+**Description:** Whether to create member specific static data (true) or not
+
+<a name="suite_control_member_specific_mars_prep"></a>
+### Property `Config > suite_control > member_specific_mars_prep`
+
+|              |           |
+| ------------ | --------- |
+| **Type**     | `boolean` |
+| **Required** | No        |
+| **Default**  | `false`   |
+
+**Description:** Whether to do member specific marsprep (true) or common marsprep
 
 <a name="suite_control_max_static_data_tasks"></a>
 ### Property `Config > suite_control > max_static_data_tasks`
@@ -1289,29 +1300,29 @@ Must be one of:
 
 **Description:** DEODE system specific path settings
 
-| Property                                                       | Type   | Required | Default                               | Title/Description                                                               |
-| -------------------------------------------------------------- | ------ | -------- | ------------------------------------- | ------------------------------------------------------------------------------- |
-| [forecast_dir_link](#system_forecast_dir_link)                 | string | No       | "../Forecast"                         | Name of the softlink pointing to the Forecast task work directory               |
-| [bdfile_sfx_template](#system_bdfile_sfx_template)             | string | No       | -                                     | Name template for input initial surfex file for prep                            |
-| [bdfile_template](#system_bdfile_template)                     | string | No       | -                                     | Name template for input boundary files                                          |
-| [bddir_sfx](#system_bddir_sfx)                                 | string | No       | -                                     | Location of input intial file for surfex                                        |
-| [bddir](#system_bddir)                                         | string | No       | -                                     | Location of input boundaries                                                    |
-| [intp_bddir](#system_intp_bddir)                               | string | No       | "@WRK@"                               | Location of boundaries on the current domain, i.e. the output directory of e927 |
-| [climdir](#system_climdir)                                     | string | No       | -                                     | Location of generated/used climate files (PGD/monthly files)                    |
-| [bindir](#system_bindir)                                       | string | No       | -                                     | Location of binaries                                                            |
-| [bdclimdir](#system_bdclimdir)                                 | string | No       | -                                     | Location of host model climate files used for e927/c903                         |
-| [wrk](#system_wrk)                                             | string | No       | "@CASEDIR@/@YYYY@@MM@@DD@_@HH@@mm@/"  | Location of date specific working directory                                     |
-| [fullpos_config_file](#system_fullpos_config_file)             | string | No       | -                                     | Path to the fullpos yml config file                                             |
-| [archive_timestamp](#system_archive_timestamp)                 | string | No       | "@YYYY@/@MM@/@DD@/@HH@/"              | Relative path of date specific archive                                          |
-| [archive](#system_archive)                                     | string | No       | "@ARCHIVE_ROOT@/@ARCHIVE_TIMESTAMP@"  | Absolute path of date specific archive                                          |
-| [logs](#system_logs)                                           | string | No       | -                                     | Location of collected logfiles                                                  |
-| [namelists](#system_namelists)                                 | string | No       | "@DEODE_HOME@/data/namelists/@CYCLE@" | Path to static namelists                                                        |
-| [marsdir](#system_marsdir)                                     | string | No       | -                                     | Location input files extracted from MARS by Marsprep                            |
-| [global_sfcdir](#system_global_sfcdir)                         | string | No       | -                                     | Path to SFC files needed for c903, which are not in MARS                        |
-| [prev_case](#system_prev_case)                                 | string | No       | "@CASE@"                              | Name of the previous experiment                                                 |
-| [sfx_input_definition](#system_sfx_input_definition)           | string | No       | "@CYCLE@/sfx.json"                    | Path to the surfex json config file                                             |
-| [forecast_input_definition](#system_forecast_input_definition) | string | No       | "@CYCLE@/forecast.json"               | Path to the forecast json config file                                           |
-| [c903_input_definition](#system_c903_input_definition)         | string | No       | "@CYCLE@/c903.json"                   | Path to the c903 json config file                                               |
+| Property                                                       | Type   | Required | Default                                           | Title/Description                                                               |
+| -------------------------------------------------------------- | ------ | -------- | ------------------------------------------------- | ------------------------------------------------------------------------------- |
+| [forecast_dir_link](#system_forecast_dir_link)                 | string | No       | "../Forecast"                                     | Name of the softlink pointing to the Forecast task work directory               |
+| [bdfile_sfx_template](#system_bdfile_sfx_template)             | string | No       | -                                                 | Name template for input initial surfex file for prep                            |
+| [bdfile_template](#system_bdfile_template)                     | string | No       | -                                                 | Name template for input boundary files                                          |
+| [bddir_sfx](#system_bddir_sfx)                                 | string | No       | -                                                 | Location of input intial file for surfex                                        |
+| [bddir](#system_bddir)                                         | string | No       | -                                                 | Location of input boundaries                                                    |
+| [intp_bddir](#system_intp_bddir)                               | string | No       | "@WRK@"                                           | Location of boundaries on the current domain, i.e. the output directory of e927 |
+| [climdir](#system_climdir)                                     | string | No       | -                                                 | Location of generated/used climate files (PGD/monthly files)                    |
+| [bindir](#system_bindir)                                       | string | No       | -                                                 | Location of binaries                                                            |
+| [bdclimdir](#system_bdclimdir)                                 | string | No       | -                                                 | Location of host model climate files used for e927/c903                         |
+| [wrk](#system_wrk)                                             | string | No       | "@CASEDIR@/@YYYY@@MM@@DD@_@HH@@mm@"               | Location of date specific working directory                                     |
+| [fullpos_config_file](#system_fullpos_config_file)             | string | No       | -                                                 | Path to the fullpos yml config file                                             |
+| [archive_timestamp](#system_archive_timestamp)                 | string | No       | "@YYYY@/@MM@/@DD@/@HH@/"                          | Relative path of date specific archive                                          |
+| [archive](#system_archive)                                     | string | No       | "@ARCHIVE_ROOT@/@ARCHIVE_TIMESTAMP@/@MEMBER_STR@" | Absolute path of date specific archive                                          |
+| [logs](#system_logs)                                           | string | No       | -                                                 | Location of collected logfiles                                                  |
+| [namelists](#system_namelists)                                 | string | No       | "@DEODE_HOME@/data/namelists/@CYCLE@"             | Path to static namelists                                                        |
+| [marsdir](#system_marsdir)                                     | string | No       | -                                                 | Location input files extracted from MARS by Marsprep                            |
+| [global_sfcdir](#system_global_sfcdir)                         | string | No       | -                                                 | Path to SFC files needed for c903, which are not in MARS                        |
+| [prev_case](#system_prev_case)                                 | string | No       | "@CASE@"                                          | Name of the previous experiment                                                 |
+| [sfx_input_definition](#system_sfx_input_definition)           | string | No       | "@CYCLE@/sfx.json"                                | Path to the surfex json config file                                             |
+| [forecast_input_definition](#system_forecast_input_definition) | string | No       | "@CYCLE@/forecast.json"                           | Path to the forecast json config file                                           |
+| [c903_input_definition](#system_c903_input_definition)         | string | No       | "@CYCLE@/c903.json"                               | Path to the c903 json config file                                               |
 
 <a name="system_forecast_dir_link"></a>
 ### Property `Config > system > forecast_dir_link`
@@ -1408,11 +1419,11 @@ Must be one of:
 <a name="system_wrk"></a>
 ### Property `Config > system > wrk`
 
-|              |                                        |
-| ------------ | -------------------------------------- |
-| **Type**     | `string`                               |
-| **Required** | No                                     |
-| **Default**  | `"@CASEDIR@/@YYYY@@MM@@DD@_@HH@@mm@/"` |
+|              |                                       |
+| ------------ | ------------------------------------- |
+| **Type**     | `string`                              |
+| **Required** | No                                    |
+| **Default**  | `"@CASEDIR@/@YYYY@@MM@@DD@_@HH@@mm@"` |
 
 **Description:** Location of date specific working directory
 
@@ -1440,11 +1451,11 @@ Must be one of:
 <a name="system_archive"></a>
 ### Property `Config > system > archive`
 
-|              |                                        |
-| ------------ | -------------------------------------- |
-| **Type**     | `string`                               |
-| **Required** | No                                     |
-| **Default**  | `"@ARCHIVE_ROOT@/@ARCHIVE_TIMESTAMP@"` |
+|              |                                                     |
+| ------------ | --------------------------------------------------- |
+| **Type**     | `string`                                            |
+| **Required** | No                                                  |
+| **Default**  | `"@ARCHIVE_ROOT@/@ARCHIVE_TIMESTAMP@/@MEMBER_STR@"` |
 
 **Description:** Absolute path of date specific archive
 
@@ -1675,10 +1686,11 @@ Must be one of:
 
 **Description:** Model for the 'general.times' section.
 
-| Property                               | Type             | Required | Default | Title/Description                                   |
-| -------------------------------------- | ---------------- | -------- | ------- | --------------------------------------------------- |
-| [selection](#boundaries_ifs_selection) | enum (of string) | No       | -       | Selection                                           |
-| [bdmember](#boundaries_ifs_bdmember)   | array of integer | No       | []      | List of members in ensemble if selection is IFSENS. |
+| Property                               | Type             | Required | Default | Title/Description                                                            |
+| -------------------------------------- | ---------------- | -------- | ------- | ---------------------------------------------------------------------------- |
+| [selection](#boundaries_ifs_selection) | enum (of string) | No       | -       | Selection                                                                    |
+| [bdmembers](#boundaries_ifs_bdmembers) | Combination      | No       | []      | List of members in ensemble if selection is IFS.                             |
+| [bdmember](#boundaries_ifs_bdmember)   | Combination      | No       | 0       | Boundary member number a given ensemble member shall use if selection is IFS |
 
 <a name="boundaries_ifs_selection"></a>
 #### Property `Config > boundaries > ifs > selection`
@@ -1702,17 +1714,33 @@ Must be one of:
 * "i7ye"
 * "i8hy"
 * "IFSENS"
+* "iit7"
+* "ilv7"
 
-<a name="boundaries_ifs_bdmember"></a>
-#### Property `Config > boundaries > ifs > bdmember`
+<a name="boundaries_ifs_bdmembers"></a>
+#### Property `Config > boundaries > ifs > bdmembers`
 
-|              |                    |
-| ------------ | ------------------ |
-| **Type**     | `array of integer` |
-| **Required** | No                 |
-| **Default**  | `[]`               |
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `combining`                                                               |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+| **Default**               | `[]`                                                                      |
 
-**Description:** List of members in ensemble if selection is IFSENS.
+**Description:** List of members in ensemble if selection is IFS.
+
+| Any of(Option)                               |
+| -------------------------------------------- |
+| [item 0](#boundaries_ifs_bdmembers_anyOf_i0) |
+| [item 1](#boundaries_ifs_bdmembers_anyOf_i1) |
+
+<a name="boundaries_ifs_bdmembers_anyOf_i0"></a>
+##### Property `Config > boundaries > ifs > bdmembers > anyOf > item 0`
+
+|              |                   |
+| ------------ | ----------------- |
+| **Type**     | `array of string` |
+| **Required** | No                |
 
 |                      | Array restrictions |
 | -------------------- | ------------------ |
@@ -1722,17 +1750,78 @@ Must be one of:
 | **Additional items** | False              |
 | **Tuple validation** | See below          |
 
-| Each item of this array must be                  | Description |
-| ------------------------------------------------ | ----------- |
-| [bdmember items](#boundaries_ifs_bdmember_items) | -           |
+| Each item of this array must be                          | Description |
+| -------------------------------------------------------- | ----------- |
+| [item 0 items](#boundaries_ifs_bdmembers_anyOf_i0_items) | -           |
 
 <a name="autogenerated_heading_19"></a>
-##### Config > boundaries > ifs > bdmember > bdmember items
+##### Config > boundaries > ifs > bdmembers > anyOf > item 0 > item 0 items
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+<a name="boundaries_ifs_bdmembers_anyOf_i1"></a>
+##### Property `Config > boundaries > ifs > bdmembers > anyOf > item 1`
+
+|              |                    |
+| ------------ | ------------------ |
+| **Type**     | `array of integer` |
+| **Required** | No                 |
+
+|                      | Array restrictions |
+| -------------------- | ------------------ |
+| **Min items**        | N/A                |
+| **Max items**        | N/A                |
+| **Items unicity**    | False              |
+| **Additional items** | False              |
+| **Tuple validation** | See below          |
+
+| Each item of this array must be                          | Description |
+| -------------------------------------------------------- | ----------- |
+| [item 1 items](#boundaries_ifs_bdmembers_anyOf_i1_items) | -           |
+
+<a name="autogenerated_heading_20"></a>
+##### Config > boundaries > ifs > bdmembers > anyOf > item 1 > item 1 items
 
 |              |           |
 | ------------ | --------- |
 | **Type**     | `integer` |
 | **Required** | No        |
+
+<a name="boundaries_ifs_bdmember"></a>
+#### Property `Config > boundaries > ifs > bdmember`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `combining`                                                               |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+| **Default**               | `0`                                                                       |
+
+**Description:** Boundary member number a given ensemble member shall use if selection is IFS
+
+| Any of(Option)                              |
+| ------------------------------------------- |
+| [item 0](#boundaries_ifs_bdmember_anyOf_i0) |
+| [item 1](#boundaries_ifs_bdmember_anyOf_i1) |
+
+<a name="boundaries_ifs_bdmember_anyOf_i0"></a>
+##### Property `Config > boundaries > ifs > bdmember > anyOf > item 0`
+
+|              |           |
+| ------------ | --------- |
+| **Type**     | `integer` |
+| **Required** | No        |
+
+<a name="boundaries_ifs_bdmember_anyOf_i1"></a>
+##### Property `Config > boundaries > ifs > bdmember > anyOf > item 1`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
 
 <a name="boundaries_bd_has_surfex"></a>
 ### Property `Config > boundaries > bd_has_surfex`
@@ -1850,7 +1939,7 @@ Must be one of:
 | --------------------------------- | ----------- |
 | [main items](#fullpos_main_items) | -           |
 
-<a name="autogenerated_heading_20"></a>
+<a name="autogenerated_heading_21"></a>
 #### Config > fullpos > main > main items
 
 |              |          |
@@ -1889,7 +1978,7 @@ Must be one of:
 | --------------------------------------------------------------------------- | ----------- |
 | [additionalProperties items](#fullpos_selection_additionalProperties_items) | -           |
 
-<a name="autogenerated_heading_21"></a>
+<a name="autogenerated_heading_22"></a>
 ##### Config > fullpos > selection > additionalProperties > additionalProperties items
 
 |              |          |
@@ -2069,7 +2158,7 @@ Must be one of:
 | ------------------------------------------------------------- | ----------- |
 | [csc_specific items](#gribmodify_fullpos1_csc_specific_items) | -           |
 
-<a name="autogenerated_heading_22"></a>
+<a name="autogenerated_heading_23"></a>
 ##### Config > gribmodify > fullpos.1 > csc_specific > csc_specific items
 
 |              |          |
@@ -2146,7 +2235,7 @@ Must be one of:
 | ------------------------------------------------------------- | ----------- |
 | [csc_specific items](#gribmodify_fullpos2_csc_specific_items) | -           |
 
-<a name="autogenerated_heading_23"></a>
+<a name="autogenerated_heading_24"></a>
 ##### Config > gribmodify > fullpos.2 > csc_specific > csc_specific items
 
 |              |          |
@@ -2223,7 +2312,7 @@ Must be one of:
 | ------------------------------------------------------------- | ----------- |
 | [csc_specific items](#gribmodify_fullpos3_csc_specific_items) | -           |
 
-<a name="autogenerated_heading_24"></a>
+<a name="autogenerated_heading_25"></a>
 ##### Config > gribmodify > fullpos.3 > csc_specific > csc_specific items
 
 |              |          |
@@ -2300,7 +2389,7 @@ Must be one of:
 | ------------------------------------------------------------- | ----------- |
 | [csc_specific items](#gribmodify_fullpos4_csc_specific_items) | -           |
 
-<a name="autogenerated_heading_25"></a>
+<a name="autogenerated_heading_26"></a>
 ##### Config > gribmodify > fullpos.4 > csc_specific > csc_specific items
 
 |              |          |
@@ -2377,7 +2466,7 @@ Must be one of:
 | ------------------------------------------------------------- | ----------- |
 | [csc_specific items](#gribmodify_fullpos5_csc_specific_items) | -           |
 
-<a name="autogenerated_heading_26"></a>
+<a name="autogenerated_heading_27"></a>
 ##### Config > gribmodify > fullpos.5 > csc_specific > csc_specific items
 
 |              |          |
@@ -2454,7 +2543,7 @@ Must be one of:
 | ------------------------------------------------------------- | ----------- |
 | [csc_specific items](#gribmodify_fullpos6_csc_specific_items) | -           |
 
-<a name="autogenerated_heading_27"></a>
+<a name="autogenerated_heading_28"></a>
 ##### Config > gribmodify > fullpos.6 > csc_specific > csc_specific items
 
 |              |          |
@@ -2531,7 +2620,7 @@ Must be one of:
 | ------------------------------------------------------------ | ----------- |
 | [csc_specific items](#gribmodify_surfex1_csc_specific_items) | -           |
 
-<a name="autogenerated_heading_28"></a>
+<a name="autogenerated_heading_29"></a>
 ##### Config > gribmodify > surfex.1 > csc_specific > csc_specific items
 
 |              |          |
@@ -2608,7 +2697,7 @@ Must be one of:
 | ------------------------------------------------------------ | ----------- |
 | [csc_specific items](#gribmodify_surfex2_csc_specific_items) | -           |
 
-<a name="autogenerated_heading_29"></a>
+<a name="autogenerated_heading_30"></a>
 ##### Config > gribmodify > surfex.2 > csc_specific > csc_specific items
 
 |              |          |
@@ -2685,7 +2774,7 @@ Must be one of:
 | ------------------------------------------------------------ | ----------- |
 | [csc_specific items](#gribmodify_surfex3_csc_specific_items) | -           |
 
-<a name="autogenerated_heading_30"></a>
+<a name="autogenerated_heading_31"></a>
 ##### Config > gribmodify > surfex.3 > csc_specific > csc_specific items
 
 |              |          |
@@ -2762,7 +2851,7 @@ Must be one of:
 | ------------------------------------------------------------ | ----------- |
 | [csc_specific items](#gribmodify_surfex4_csc_specific_items) | -           |
 
-<a name="autogenerated_heading_31"></a>
+<a name="autogenerated_heading_32"></a>
 ##### Config > gribmodify > surfex.4 > csc_specific > csc_specific items
 
 |              |          |
@@ -2839,7 +2928,7 @@ Must be one of:
 | ------------------------------------------------------------ | ----------- |
 | [csc_specific items](#gribmodify_surfex5_csc_specific_items) | -           |
 
-<a name="autogenerated_heading_32"></a>
+<a name="autogenerated_heading_33"></a>
 ##### Config > gribmodify > surfex.5 > csc_specific > csc_specific items
 
 |              |          |
@@ -2916,7 +3005,7 @@ Must be one of:
 | ------------------------------------------------------------ | ----------- |
 | [csc_specific items](#gribmodify_surfex6_csc_specific_items) | -           |
 
-<a name="autogenerated_heading_33"></a>
+<a name="autogenerated_heading_34"></a>
 ##### Config > gribmodify > surfex.6 > csc_specific > csc_specific items
 
 |              |          |
@@ -2993,7 +3082,7 @@ Must be one of:
 | ------------------------------------------------------------ | ----------- |
 | [csc_specific items](#gribmodify_surfex7_csc_specific_items) | -           |
 
-<a name="autogenerated_heading_34"></a>
+<a name="autogenerated_heading_35"></a>
 ##### Config > gribmodify > surfex.7 > csc_specific > csc_specific items
 
 |              |          |
@@ -3070,7 +3159,7 @@ Must be one of:
 | ------------------------------------------------------------ | ----------- |
 | [csc_specific items](#gribmodify_surfex8_csc_specific_items) | -           |
 
-<a name="autogenerated_heading_35"></a>
+<a name="autogenerated_heading_36"></a>
 ##### Config > gribmodify > surfex.8 > csc_specific > csc_specific items
 
 |              |          |
@@ -3199,7 +3288,7 @@ Must be one of:
 | **Required**              | No                                                                        |
 | **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
 
-<a name="autogenerated_heading_36"></a>
+<a name="autogenerated_heading_37"></a>
 ##### The following properties are required
 * include
 * ncycles_delay
@@ -3214,7 +3303,7 @@ Must be one of:
 | **Required**              | No                                                                        |
 | **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
 
-<a name="autogenerated_heading_37"></a>
+<a name="autogenerated_heading_38"></a>
 ##### The following properties are required
 * include
 * cleaning_delay
@@ -4128,6 +4217,97 @@ Must be one of:
 
 **Description:** Defines default gridtype_oro mapping when truncation smoothing is applied.
 
+<a name="eps"></a>
+## Property `Config > eps`
+
+**Title:** EPS Members Configuration
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+| Property                | Type   | Required | Default | Title/Description |
+| ----------------------- | ------ | -------- | ------- | ----------------- |
+| [general](#eps_general) | object | No       | {}      | -                 |
+
+<a name="eps_general"></a>
+### Property `Config > eps > general`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+| **Default**               | `{}`                                                                      |
+
+| Property                        | Type        | Required | Default | Title/Description           |
+| ------------------------------- | ----------- | -------- | ------- | --------------------------- |
+| [members](#eps_general_members) | Combination | No       | [0]     | The members of the ensemble |
+
+<a name="eps_general_members"></a>
+#### Property `Config > eps > general > members`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `combining`                                                               |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+| **Default**               | `[0]`                                                                     |
+
+**Description:** The members of the ensemble
+
+| One of(Option)                          |
+| --------------------------------------- |
+| [item 0](#eps_general_members_oneOf_i0) |
+| [item 1](#eps_general_members_oneOf_i1) |
+| [item 2](#eps_general_members_oneOf_i2) |
+
+<a name="eps_general_members_oneOf_i0"></a>
+##### Property `Config > eps > general > members > oneOf > item 0`
+
+|              |           |
+| ------------ | --------- |
+| **Type**     | `integer` |
+| **Required** | No        |
+
+<a name="eps_general_members_oneOf_i1"></a>
+##### Property `Config > eps > general > members > oneOf > item 1`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+<a name="eps_general_members_oneOf_i2"></a>
+##### Property `Config > eps > general > members > oneOf > item 2`
+
+|              |                    |
+| ------------ | ------------------ |
+| **Type**     | `array of integer` |
+| **Required** | No                 |
+
+|                      | Array restrictions |
+| -------------------- | ------------------ |
+| **Min items**        | N/A                |
+| **Max items**        | N/A                |
+| **Items unicity**    | False              |
+| **Additional items** | False              |
+| **Tuple validation** | See below          |
+
+| Each item of this array must be                     | Description |
+| --------------------------------------------------- | ----------- |
+| [item 2 items](#eps_general_members_oneOf_i2_items) | -           |
+
+<a name="autogenerated_heading_39"></a>
+##### Config > eps > general > members > oneOf > item 2 > item 2 items
+
+|              |           |
+| ------------ | --------- |
+| **Type**     | `integer` |
+| **Required** | No        |
+
 <a name="extractsqlite"></a>
 ## Property `Config > extractsqlite`
 
@@ -4645,7 +4825,7 @@ Must be one of:
 | ----------------------------------------------------------- | ----------- |
 | [gen_macros items](#macros_select_default_gen_macros_items) | -           |
 
-<a name="autogenerated_heading_38"></a>
+<a name="autogenerated_heading_40"></a>
 ##### Config > macros > select > default > gen_macros > gen_macros items
 
 |                           |                                                                           |
@@ -4698,7 +4878,7 @@ Must be one of:
 | --------------------------------------------------------------- | ----------- |
 | [group_macros items](#macros_select_default_group_macros_items) | -           |
 
-<a name="autogenerated_heading_39"></a>
+<a name="autogenerated_heading_41"></a>
 ##### Config > macros > select > default > group_macros > group_macros items
 
 |              |          |
@@ -4728,7 +4908,7 @@ Must be one of:
 | --------------------------------------------------------- | ----------- |
 | [os_macros items](#macros_select_default_os_macros_items) | -           |
 
-<a name="autogenerated_heading_40"></a>
+<a name="autogenerated_heading_42"></a>
 ##### Config > macros > select > default > os_macros > os_macros items
 
 |              |          |
@@ -7191,7 +7371,7 @@ Must be one of:
 | ---------------------------------------------------- | ----------- |
 | [archive_types items](#platform_archive_types_items) | -           |
 
-<a name="autogenerated_heading_41"></a>
+<a name="autogenerated_heading_43"></a>
 #### Config > platform > archive_types > archive_types items
 
 |              |                    |
@@ -7934,7 +8114,7 @@ Must be one of:
 | --------------------------------------------------- | ----------- |
 | [tasks items](#submission_types_serial_tasks_items) | -           |
 
-<a name="autogenerated_heading_42"></a>
+<a name="autogenerated_heading_44"></a>
 ##### Config > submission > types > serial > tasks > tasks items
 
 |              |          |
@@ -8048,7 +8228,7 @@ must respect the following conditions
 | --------------------------------------------------------------- | ----------- |
 | [^(.*)$ items](#submission_types_serial_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_43"></a>
+<a name="autogenerated_heading_45"></a>
 ##### Config > submission > types > serial > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -8102,7 +8282,7 @@ must respect the following conditions
 | ----------------------------------------------------- | ----------- |
 | [tasks items](#submission_types_parallel_tasks_items) | -           |
 
-<a name="autogenerated_heading_44"></a>
+<a name="autogenerated_heading_46"></a>
 ##### Config > submission > types > parallel > tasks > tasks items
 
 |              |          |
@@ -8216,7 +8396,7 @@ must respect the following conditions
 | ----------------------------------------------------------------- | ----------- |
 | [^(.*)$ items](#submission_types_parallel_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_45"></a>
+<a name="autogenerated_heading_47"></a>
 ##### Config > submission > types > parallel > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -8270,7 +8450,7 @@ must respect the following conditions
 | ---------------------------------------------------------- | ----------- |
 | [tasks items](#submission_types_background_vm_tasks_items) | -           |
 
-<a name="autogenerated_heading_46"></a>
+<a name="autogenerated_heading_48"></a>
 ##### Config > submission > types > background_vm > tasks > tasks items
 
 |              |          |
@@ -8384,7 +8564,7 @@ must respect the following conditions
 | ---------------------------------------------------------------------- | ----------- |
 | [^(.*)$ items](#submission_types_background_vm_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_47"></a>
+<a name="autogenerated_heading_49"></a>
 ##### Config > submission > types > background_vm > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -8438,7 +8618,7 @@ must respect the following conditions
 | ----------------------------------------------------------- | ----------- |
 | [tasks items](#submission_types_background_hpc_tasks_items) | -           |
 
-<a name="autogenerated_heading_48"></a>
+<a name="autogenerated_heading_50"></a>
 ##### Config > submission > types > background_hpc > tasks > tasks items
 
 |              |          |
@@ -8552,7 +8732,7 @@ must respect the following conditions
 | ----------------------------------------------------------------------- | ----------- |
 | [^(.*)$ items](#submission_types_background_hpc_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_49"></a>
+<a name="autogenerated_heading_51"></a>
 ##### Config > submission > types > background_hpc > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -8606,7 +8786,7 @@ must respect the following conditions
 | ------------------------------------------------ | ----------- |
 | [tasks items](#submission_types_gnu_tasks_items) | -           |
 
-<a name="autogenerated_heading_50"></a>
+<a name="autogenerated_heading_52"></a>
 ##### Config > submission > types > gnu > tasks > tasks items
 
 |              |          |
@@ -8720,7 +8900,7 @@ must respect the following conditions
 | ------------------------------------------------------------ | ----------- |
 | [^(.*)$ items](#submission_types_gnu_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_51"></a>
+<a name="autogenerated_heading_53"></a>
 ##### Config > submission > types > gnu > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -8774,7 +8954,7 @@ must respect the following conditions
 | --------------------------------------------------- | ----------- |
 | [tasks items](#submission_types_sqlite_tasks_items) | -           |
 
-<a name="autogenerated_heading_52"></a>
+<a name="autogenerated_heading_54"></a>
 ##### Config > submission > types > sqlite > tasks > tasks items
 
 |              |          |
@@ -8888,7 +9068,7 @@ must respect the following conditions
 | --------------------------------------------------------------- | ----------- |
 | [^(.*)$ items](#submission_types_sqlite_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_53"></a>
+<a name="autogenerated_heading_55"></a>
 ##### Config > submission > types > sqlite > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -8942,7 +9122,7 @@ must respect the following conditions
 | --------------------------------------------------------- | ----------- |
 | [tasks items](#submission_types_Forecast_cpu_tasks_items) | -           |
 
-<a name="autogenerated_heading_54"></a>
+<a name="autogenerated_heading_56"></a>
 ##### Config > submission > types > Forecast_cpu > tasks > tasks items
 
 |              |          |
@@ -9056,7 +9236,7 @@ must respect the following conditions
 | --------------------------------------------------------------------- | ----------- |
 | [^(.*)$ items](#submission_types_Forecast_cpu_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_55"></a>
+<a name="autogenerated_heading_57"></a>
 ##### Config > submission > types > Forecast_cpu > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -9110,7 +9290,7 @@ must respect the following conditions
 | --------------------------------------------------------- | ----------- |
 | [tasks items](#submission_types_Forecast_gpu_tasks_items) | -           |
 
-<a name="autogenerated_heading_56"></a>
+<a name="autogenerated_heading_58"></a>
 ##### Config > submission > types > Forecast_gpu > tasks > tasks items
 
 |              |          |
@@ -9224,7 +9404,7 @@ must respect the following conditions
 | --------------------------------------------------------------------- | ----------- |
 | [^(.*)$ items](#submission_types_Forecast_gpu_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_57"></a>
+<a name="autogenerated_heading_59"></a>
 ##### Config > submission > types > Forecast_gpu > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -9413,7 +9593,7 @@ must respect the following conditions
 | **Additional items** | False              |
 | **Tuple validation** | See below          |
 
-<a name="autogenerated_heading_58"></a>
+<a name="autogenerated_heading_60"></a>
 #### At least one of the items must be
 
 |              |          |
@@ -9439,7 +9619,7 @@ must respect the following conditions
 | **Additional items** | False              |
 | **Tuple validation** | See below          |
 
-<a name="autogenerated_heading_59"></a>
+<a name="autogenerated_heading_61"></a>
 #### At least one of the items must be
 
 |              |          |
