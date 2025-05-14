@@ -1329,6 +1329,18 @@
         <span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;bd_basetime: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bd_basetime</span><span class="p">)</span>
 
+        <span class="n">exist_snow</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">KeyError</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">param_snow</span> <span class="o">=</span> <span class="n">get_value_from_dict</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;GG_snow&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_date_str</span>
+            <span class="p">)</span>
+            <span class="n">exist_snow</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="n">start_snow_date</span> <span class="o">=</span> <span class="n">as_datetime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;start_date&quot;</span><span class="p">])</span>
+        <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">KeyError</span><span class="p">):</span>
+            <span class="n">start_snow_date</span> <span class="o">=</span> <span class="n">as_datetime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;start_snow_date&quot;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">exist_snow</span> <span class="o">=</span> <span class="n">exist_snow</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">bd_basetime</span> <span class="o">&gt;=</span> <span class="n">start_snow_date</span>
         <span class="c1"># Split mars by bdint</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">split_mars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.split_mars&quot;</span><span class="p">]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">split_mars</span><span class="p">:</span>
@@ -1498,13 +1510,9 @@
 
                 <span class="n">additional_data</span><span class="p">[</span><span class="s2">&quot;common_data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_and_remove_data</span><span class="p">(</span><span class="s2">&quot;sfcdata&quot;</span><span class="p">)</span>
 
-            <span class="n">exist_snow</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">KeyError</span><span class="p">):</span>
-                <span class="n">param_snow</span> <span class="o">=</span> <span class="n">get_value_from_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;GG_snow&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_date_str</span><span class="p">)</span>
-                <span class="n">exist_snow</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="k">if</span> <span class="n">exist_snow</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">exist_snow</span><span class="p">:</span>
                 <span class="n">additional_data</span> <span class="o">|=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_gg_snow_data</span><span class="p">(</span>
-                    <span class="n">tag</span><span class="p">,</span> <span class="n">steps</span><span class="p">,</span> <span class="n">members_dict</span><span class="p">,</span> <span class="n">param_snow</span>
+                    <span class="n">tag</span><span class="p">,</span> <span class="n">steps</span><span class="p">,</span> <span class="n">members_dict</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_snow</span>
                 <span class="p">)</span>
 
                 <span class="n">add_additional_file_specific_data</span><span class="p">(</span><span class="n">additional_data</span><span class="o">=</span><span class="n">additional_data</span><span class="p">)</span>
@@ -1919,7 +1927,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-05-09T12:38:38Z.
+      <span class="lastupdated">Last updated on 2025-05-14T08:59:42Z.
       </span></p>
   </div>
 
