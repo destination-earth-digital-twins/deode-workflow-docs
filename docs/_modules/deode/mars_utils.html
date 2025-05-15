@@ -450,9 +450,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.mars_utils.BaseRequest"><code class="docutils literal notranslate"><span class="pre">BaseRequest</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.mars_utils.BaseRequest.add_database_options"><code class="docutils literal notranslate"><span class="pre">BaseRequest.add_database_options()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.mars_utils.BaseRequest.add_eps_members"><code class="docutils literal notranslate"><span class="pre">BaseRequest.add_eps_members()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.mars_utils.BaseRequest.add_grid"><code class="docutils literal notranslate"><span class="pre">BaseRequest.add_grid()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.mars_utils.BaseRequest.add_levelist"><code class="docutils literal notranslate"><span class="pre">BaseRequest.add_levelist()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.mars_utils.BaseRequest.add_process"><code class="docutils literal notranslate"><span class="pre">BaseRequest.add_process()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.mars_utils.BaseRequest.class_"><code class="docutils literal notranslate"><span class="pre">BaseRequest.class_</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.mars_utils.BaseRequest.data_type"><code class="docutils literal notranslate"><span class="pre">BaseRequest.data_type</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.mars_utils.BaseRequest.date"><code class="docutils literal notranslate"><span class="pre">BaseRequest.date</span></code></a></li>
@@ -464,8 +462,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.mars_utils.BaseRequest.steps"><code class="docutils literal notranslate"><span class="pre">BaseRequest.steps</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.mars_utils.BaseRequest.target"><code class="docutils literal notranslate"><span class="pre">BaseRequest.target</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.mars_utils.BaseRequest.time"><code class="docutils literal notranslate"><span class="pre">BaseRequest.time</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.mars_utils.BaseRequest.to_dataframe"><code class="docutils literal notranslate"><span class="pre">BaseRequest.to_dataframe()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.mars_utils.BaseRequest.update_based_on_target"><code class="docutils literal notranslate"><span class="pre">BaseRequest.update_based_on_target()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.mars_utils.BaseRequest.update_request"><code class="docutils literal notranslate"><span class="pre">BaseRequest.update_request()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.mars_utils.add_additional_data_to_all"><code class="docutils literal notranslate"><span class="pre">add_additional_data_to_all()</span></code></a></li>
@@ -474,6 +471,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.mars_utils.get_and_remove_data"><code class="docutils literal notranslate"><span class="pre">get_and_remove_data()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.mars_utils.get_date_time_info"><code class="docutils literal notranslate"><span class="pre">get_date_time_info()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.mars_utils.get_domain_data"><code class="docutils literal notranslate"><span class="pre">get_domain_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.mars_utils.get_mars_keys"><code class="docutils literal notranslate"><span class="pre">get_mars_keys()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.mars_utils.get_steps_and_members_to_retrieve"><code class="docutils literal notranslate"><span class="pre">get_steps_and_members_to_retrieve()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.mars_utils.get_value_from_dict"><code class="docutils literal notranslate"><span class="pre">get_value_from_dict()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.mars_utils.move_files"><code class="docutils literal notranslate"><span class="pre">move_files()</span></code></a></li>
@@ -1243,6 +1241,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">replace</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">subprocess</span><span class="w"> </span><span class="kn">import</span> <span class="n">run</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
@@ -1266,20 +1265,55 @@
     <span class="n">sep1</span> <span class="o">=</span> <span class="s2">&quot; = &quot;</span>
     <span class="n">sep2</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span>
 
-    <span class="n">df_req</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="n">to_dataframe</span><span class="p">()</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">req</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">method</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span> <span class="o">+</span> <span class="s2">&quot;,</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df_req</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df_req</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
-                <span class="c1"># do not use the comma in the last line</span>
-                <span class="k">if</span> <span class="n">col</span> <span class="o">==</span> <span class="n">df_req</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
-                    <span class="n">row_str</span> <span class="o">=</span> <span class="n">sep0</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">col</span><span class="p">)</span> <span class="o">+</span> <span class="n">sep1</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">col</span><span class="p">])</span>
-
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">row_str</span> <span class="o">=</span> <span class="n">sep0</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">col</span><span class="p">)</span> <span class="o">+</span> <span class="n">sep1</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">col</span><span class="p">])</span> <span class="o">+</span> <span class="n">sep2</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+            <span class="n">row_str</span> <span class="o">=</span> <span class="n">sep0</span> <span class="o">+</span> <span class="n">key</span> <span class="o">+</span> <span class="n">sep1</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">req</span><span class="o">.</span><span class="n">request</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="o">!=</span> <span class="n">keys</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="n">row_str</span> <span class="o">+=</span> <span class="n">sep2</span>
 
             <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">row_str</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_mars_keys">
+<a class="viewcode-back" href="../../deode.html#deode.mars_utils.get_mars_keys">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_mars_keys</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">key_filter</span><span class="o">=</span><span class="s2">&quot;-w shortName:s=z&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the basic MARS settings from a static file, to correct a request.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">source</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\&quot;</span><span class="s2">&#39;&quot;</span><span class="p">)):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Missing file: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">source</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Reading MARS config settings from </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">source</span><span class="p">)</span>
+    <span class="n">grib_command</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;grib_get </span><span class="si">{</span><span class="n">key_filter</span><span class="si">}</span><span class="s2"> &quot;</span>
+    <span class="n">param_list</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;CLASS&quot;</span><span class="p">:</span> <span class="s2">&quot;marsClass&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;STREAM&quot;</span><span class="p">:</span> <span class="s2">&quot;marsStream&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;TYPE&quot;</span><span class="p">:</span> <span class="s2">&quot;marsType&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;EXPVER&quot;</span><span class="p">:</span> <span class="s2">&quot;experimentVersionNumber&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;DATE&quot;</span><span class="p">:</span> <span class="s2">&quot;dataDate&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;TIME&quot;</span><span class="p">:</span> <span class="s2">&quot;dataTime&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;STEP&quot;</span><span class="p">:</span> <span class="s2">&quot;stepRange&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;LEVTYPE&quot;</span><span class="p">:</span> <span class="s2">&quot;levelType&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;LEVEL&quot;</span><span class="p">:</span> <span class="s2">&quot;level&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">prm</span> <span class="ow">in</span> <span class="n">param_list</span><span class="p">:</span>
+        <span class="c1"># TODO: could be faster with only 1 call for all keys</span>
+        <span class="c1"># All output is then space-separated, so just use .split()</span>
+        <span class="n">result</span><span class="p">[</span><span class="n">prm</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">run</span><span class="p">(</span>
+                <span class="n">grib_command</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;-p </span><span class="si">{</span><span class="n">param_list</span><span class="p">[</span><span class="n">prm</span><span class="p">]</span><span class="si">}</span><span class="s2">:s </span><span class="si">{</span><span class="n">source</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># noqa</span>
+                <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Mars config - </span><span class="si">{}</span><span class="s2"> = </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">prm</span><span class="p">,</span> <span class="n">result</span><span class="p">[</span><span class="n">prm</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">result</span></div>
 
 
 
@@ -1677,26 +1711,26 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">request</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;CLASS&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">class_</span><span class="p">],</span>
-            <span class="s2">&quot;TYPE&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data_type</span><span class="p">],</span>
-            <span class="s2">&quot;EXPVER&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">expver</span><span class="p">],</span>
-            <span class="s2">&quot;LEVTYPE&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">levtype</span><span class="p">],</span>
-            <span class="s2">&quot;DATE&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="p">],</span>
-            <span class="s2">&quot;TIME&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">],</span>
-            <span class="s2">&quot;STEP&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;/&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">steps</span><span class="p">))],</span>
-            <span class="s2">&quot;PARAM&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">param</span><span class="p">],</span>
-            <span class="s2">&quot;TARGET&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">],</span>
+            <span class="s2">&quot;CLASS&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_</span><span class="p">,</span>
+            <span class="s2">&quot;TYPE&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_type</span><span class="p">,</span>
+            <span class="s2">&quot;EXPVER&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">expver</span><span class="p">,</span>
+            <span class="s2">&quot;LEVTYPE&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">levtype</span><span class="p">,</span>
+            <span class="s2">&quot;DATE&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="p">,</span>
+            <span class="s2">&quot;TIME&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
+            <span class="s2">&quot;STEP&quot;</span><span class="p">:</span> <span class="s2">&quot;/&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">steps</span><span class="p">)),</span>
+            <span class="s2">&quot;PARAM&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">param</span><span class="p">,</span>
+            <span class="s2">&quot;TARGET&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">,</span>
         <span class="p">}</span>
 
-<div class="viewcode-block" id="BaseRequest.add_grid">
-<a class="viewcode-back" href="../../deode.html#deode.mars_utils.BaseRequest.add_grid">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">add_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grid</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add grid key.</span>
+<div class="viewcode-block" id="BaseRequest.update_request">
+<a class="viewcode-back" href="../../deode.html#deode.mars_utils.BaseRequest.update_request">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">upd</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add or replace heys in a mars request.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            grid (string): resolution of the grid</span>
+<span class="sd">            upd (dict): a dict with keys and values</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">[</span><span class="s2">&quot;GRID&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">grid</span><span class="p">]</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">upd</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="BaseRequest.add_eps_members">
@@ -1716,19 +1750,12 @@
 
             <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;NUMBER&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;/&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">members</span><span class="p">))],</span>
-                    <span class="s2">&quot;TARGET&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">],</span>
+                    <span class="s2">&quot;NUMBER&quot;</span><span class="p">:</span> <span class="s2">&quot;/&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">members</span><span class="p">)),</span>
+                    <span class="s2">&quot;TARGET&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">,</span>
                 <span class="p">}</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">[</span><span class="s2">&quot;TARGET&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;_</span><span class="si">{</span><span class="n">members</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span></div>
-
-
-<div class="viewcode-block" id="BaseRequest.add_process">
-<a class="viewcode-back" href="../../deode.html#deode.mars_utils.BaseRequest.add_process">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">add_process</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add process if needed.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">[</span><span class="s2">&quot;PROCESS&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;LOCAL&quot;</span><span class="p">]</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">[</span><span class="s2">&quot;TARGET&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;_</span><span class="si">{</span><span class="n">members</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span></div>
 
 
 <div class="viewcode-block" id="BaseRequest.add_levelist">
@@ -1756,41 +1783,7 @@
             <span class="k">return</span>
 
         <span class="c1"># Add levelist to request</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">[</span><span class="s2">&quot;LEVELIST&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">local_levelist</span><span class="p">]</span></div>
-
-
-<div class="viewcode-block" id="BaseRequest.update_based_on_target">
-<a class="viewcode-back" href="../../deode.html#deode.mars_utils.BaseRequest.update_based_on_target">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">update_based_on_target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update request based on target.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            source      (Path): Path to source</span>
-<span class="sd">        Raises:</span>
-<span class="sd">            ValueError (error): wrong method used</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Target: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">)</span>
-        <span class="k">if</span> <span class="s2">&quot;mars_latlonZ&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
-                <span class="p">{</span>
-                    <span class="s2">&quot;SOURCE&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">source</span><span class="p">],</span>
-                    <span class="s2">&quot;REPRESS&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;GG&quot;</span><span class="p">],</span>
-                    <span class="s2">&quot;STEP&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;00&quot;</span><span class="p">],</span>
-                <span class="p">}</span>
-            <span class="p">)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_</span> <span class="o">==</span> <span class="s2">&quot;D1&quot;</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
-                    <span class="p">{</span>
-                        <span class="s2">&quot;DATE&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;20201019&quot;</span><span class="p">],</span>
-                        <span class="s2">&quot;TIME&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;1200&quot;</span><span class="p">],</span>
-                        <span class="s2">&quot;CLASS&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;OD&quot;</span><span class="p">],</span>
-                    <span class="p">}</span>
-                <span class="p">)</span>
-
-        <span class="k">elif</span> <span class="s2">&quot;mars_latlonGG&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">[</span><span class="s2">&quot;SOURCE&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">source</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Wrong call of read&quot;</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">[</span><span class="s2">&quot;LEVELIST&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">local_levelist</span></div>
 
 
 <div class="viewcode-block" id="BaseRequest.add_database_options">
@@ -1811,13 +1804,6 @@
                 <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="BaseRequest.to_dataframe">
-<a class="viewcode-back" href="../../deode.html#deode.mars_utils.BaseRequest.to_dataframe">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">to_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write request to dataframe.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">)</span></div>
-
-
 <div class="viewcode-block" id="BaseRequest.replace">
 <a class="viewcode-back" href="../../deode.html#deode.mars_utils.BaseRequest.replace">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">replace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -1835,7 +1821,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-05-14T08:59:42Z.
+      <span class="lastupdated">Last updated on 2025-05-15T10:28:23Z.
       </span></p>
   </div>
 
