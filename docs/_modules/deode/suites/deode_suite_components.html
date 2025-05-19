@@ -1236,7 +1236,7 @@
 <span></span><span class="sd">&quot;&quot;&quot;Module to create the different parts of the DEODE ecFlow suite.&quot;&quot;&quot;</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">deode.suites.suite_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">Cycle</span><span class="p">,</span> <span class="n">Cycles</span><span class="p">,</span> <span class="n">lbc_times_generator</span>
 
@@ -1822,7 +1822,7 @@
         <span class="n">input_template</span><span class="p">,</span>
         <span class="n">ecf_files</span><span class="p">,</span>
         <span class="n">bdint</span><span class="p">:</span> <span class="n">timedelta</span><span class="p">,</span>
-        <span class="n">lbc_time_generator</span><span class="p">:</span> <span class="n">Generator</span><span class="p">[</span><span class="n">datetime</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
+        <span class="n">lbc_time_generator</span><span class="p">:</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">datetime</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
         <span class="n">trigger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">do_prep</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -1842,7 +1842,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">lbc_time_generator</span> <span class="o">=</span> <span class="n">lbc_time_generator</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">bd_index</span><span class="p">,</span> <span class="n">lbc_time</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lbc_time_generator</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">bd_index</span><span class="p">,</span> <span class="n">lbc_time</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lbc_time_generator</span><span class="p">:</span>
             <span class="n">date_string</span> <span class="o">=</span> <span class="n">lbc_time</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(</span><span class="n">sep</span><span class="o">=</span><span class="s2">&quot;T&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;+00:00&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">)</span>
             <span class="n">args</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;bd_time=</span><span class="si">{</span><span class="n">date_string</span><span class="si">}</span><span class="s2">;bd_index=</span><span class="si">{</span><span class="n">bd_index</span><span class="si">}</span><span class="s2">;prep_step=False&quot;</span>
             <span class="n">variables</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;ARGS&quot;</span><span class="p">:</span> <span class="n">args</span><span class="p">}</span>
@@ -2555,7 +2555,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-05-19T13:25:02Z.
+      <span class="lastupdated">Last updated on 2025-05-19T13:30:10Z.
       </span></p>
   </div>
 

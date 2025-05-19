@@ -1237,7 +1237,7 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..datetime_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">as_datetime</span><span class="p">,</span> <span class="n">as_timedelta</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
@@ -1351,7 +1351,7 @@
     <span class="n">step</span><span class="p">:</span> <span class="n">timedelta</span><span class="p">,</span>
     <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;start&quot;</span><span class="p">,</span>
     <span class="n">do_prep</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">datetime</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">datetime</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate lbc times.</span>
 
 <span class="sd">    For each of them there will be LBC[NN] family.</span>
@@ -1369,12 +1369,15 @@
 <span class="sd">    Returns:</span>
 <span class="sd">            datetime: The time period for which the last LBC will be computed.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;restart&quot;</span> <span class="ow">or</span> <span class="p">(</span><span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;start&quot;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">do_prep</span><span class="p">):</span>
         <span class="n">basetime</span> <span class="o">+=</span> <span class="n">step</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="mi">1</span>
 
     <span class="k">while</span> <span class="n">basetime</span> <span class="o">&lt;=</span> <span class="n">endtime</span><span class="p">:</span>
         <span class="c1"># Yield the updated basetime</span>
-        <span class="k">yield</span> <span class="n">basetime</span>
+        <span class="k">yield</span> <span class="n">index</span><span class="p">,</span> <span class="n">basetime</span>
+        <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="n">basetime</span> <span class="o">+=</span> <span class="n">step</span>
 
     <span class="c1"># Return the last basetime</span>
@@ -1390,7 +1393,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-05-19T13:25:02Z.
+      <span class="lastupdated">Last updated on 2025-05-19T13:30:10Z.
       </span></p>
   </div>
 
