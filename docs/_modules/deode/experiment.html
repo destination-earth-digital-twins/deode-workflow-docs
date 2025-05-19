@@ -1250,10 +1250,9 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">deode.derived_variables</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_times</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">deode.eps.eps_setup</span><span class="w"> </span><span class="kn">import</span> <span class="n">EPSConfig</span><span class="p">,</span> <span class="n">generate_member_settings</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">deode.general_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">modify_mappings</span><span class="p">,</span> <span class="n">recursive_dict_deviation</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">deode.host_actions</span><span class="w"> </span><span class="kn">import</span> <span class="n">HostNotFoundError</span><span class="p">,</span> <span class="n">SelectHost</span><span class="p">,</span> <span class="n">set_deode_home</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">deode.host_actions</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_deode_home</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">deode.logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">deode.os_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">resolve_path_relative_to_package</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">deode.scheduler</span><span class="w"> </span><span class="kn">import</span> <span class="n">EcflowServer</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">deode.toolbox</span><span class="w"> </span><span class="kn">import</span> <span class="n">Platform</span>
 
 
@@ -1590,28 +1589,6 @@
         <span class="n">exp</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">update</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;platform&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;deode_home&quot;</span><span class="p">:</span> <span class="n">deode_home</span><span class="p">}})</span>
         <span class="n">exp</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">expand_macros</span><span class="p">()</span>
 
-    <span class="c1"># Resolve ecf_host/ecf_port if used</span>
-    <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="n">HostNotFoundError</span><span class="p">):</span>
-        <span class="n">ecf_host</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;scheduler.ecfvars.ecf_host&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="n">ecf_port</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;scheduler.ecfvars.ecf_port&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">ecf_host</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">ecf_port</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">pl</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
-            <span class="n">ecf_host</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">ecf_host</span><span class="p">)</span>
-            <span class="n">ecf_host</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">ecf_host</span><span class="p">,</span> <span class="n">object_</span><span class="o">=</span><span class="n">SelectHost</span><span class="p">)</span>
-            <span class="n">ecf_port</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">ecf_port</span><span class="p">)</span>
-            <span class="n">ecf_port</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">ecf_port</span><span class="p">,</span> <span class="n">object_</span><span class="o">=</span><span class="n">EcflowServer</span><span class="p">)</span>
-            <span class="n">exp</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span>
-                <span class="n">update</span><span class="o">=</span><span class="p">{</span>
-                    <span class="s2">&quot;scheduler&quot;</span><span class="p">:</span> <span class="p">{</span>
-                        <span class="s2">&quot;ecfvars&quot;</span><span class="p">:</span> <span class="p">{</span>
-                            <span class="s2">&quot;ecf_host_resolved&quot;</span><span class="p">:</span> <span class="n">ecf_host</span><span class="p">,</span>
-                            <span class="s2">&quot;ecf_port_resolved&quot;</span><span class="p">:</span> <span class="n">ecf_port</span><span class="p">,</span>
-                        <span class="p">}</span>
-                    <span class="p">}</span>
-                <span class="p">}</span>
-            <span class="p">)</span>
-
     <span class="k">if</span> <span class="n">output_file</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="s2">&quot;.toml&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">output_file</span><span class="p">):</span>
         <span class="n">output_dir</span> <span class="o">=</span> <span class="n">output_file</span>
         <span class="n">config</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">update</span><span class="o">=</span><span class="n">set_times</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">config</span><span class="p">))</span>
@@ -1666,7 +1643,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-05-19T08:57:29Z.
+      <span class="lastupdated">Last updated on 2025-05-19T12:43:38Z.
       </span></p>
   </div>
 
