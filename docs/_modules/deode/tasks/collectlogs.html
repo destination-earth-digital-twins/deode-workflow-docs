@@ -898,6 +898,11 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-bd-has-surfex">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">bd_has_surfex</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-collectlogs">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">collectlogs</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-collectlogs-staticlogs">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">collectlogs</span> <span class="pre">&gt;</span> <span class="pre">staticlogs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-collectlogs-hourlogs">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">collectlogs</span> <span class="pre">&gt;</span> <span class="pre">hourlogs</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-pgd">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">pgd</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-pgd-npatch">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">pgd</span> <span class="pre">&gt;</span> <span class="pre">npatch</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-pgd-one-decade">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">pgd</span> <span class="pre">&gt;</span> <span class="pre">one_decade</span></code></a></li>
@@ -1250,29 +1255,33 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">CollectLogs</span><span class="p">(</span><span class="n">Task</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Collect task and scheduler logfiles and store them as tarfiles.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">config_label</span><span class="o">=</span><span class="s2">&quot;staticlogs&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct object.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            config (deode.ParsedConfig): Configuration</span>
+<span class="sd">            config_label (str,optional): Which data to search for</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Task</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">archive</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_system_value</span><span class="p">(</span><span class="s2">&quot;archive&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_system_value</span><span class="p">(</span><span class="s2">&quot;logs&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">wrk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_system_value</span><span class="p">(</span><span class="s2">&quot;wrk&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">joboutdir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;task.args.joboutdir&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tarname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;task.args.tarname&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">task_logs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;task.args.task_logs&quot;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">config_label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;task.args.config_label&quot;</span><span class="p">]</span>
-        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config_label</span> <span class="o">=</span> <span class="n">config_label</span>
+        <span class="n">collectlogs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">key</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;collectlogs.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">config_label</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">joboutdir</span> <span class="o">=</span> <span class="n">collectlogs</span><span class="p">[</span><span class="s2">&quot;joboutdir&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tarname</span> <span class="o">=</span> <span class="n">collectlogs</span><span class="p">[</span><span class="s2">&quot;tarname&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">task_logs</span> <span class="o">=</span> <span class="n">collectlogs</span><span class="p">[</span><span class="s2">&quot;task_logs&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">joboutdir</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">joboutdir</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tarfile</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">wrk</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tarname</span><span class="si">}</span><span class="s2">.tar.gz&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">do_archiving</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.do_archiving&quot;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">archive</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_system_value</span><span class="p">(</span><span class="s2">&quot;archive&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_system_value</span><span class="p">(</span><span class="s2">&quot;logs&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wrk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_system_value</span><span class="p">(</span><span class="s2">&quot;wrk&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="CollectLogs.scan_logs">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.collectlogs.CollectLogs.scan_logs">[docs]</a>
@@ -1334,6 +1343,36 @@
             <span class="n">Archive</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config_label</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;FDB&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span></div>
 </div>
 
+
+
+<div class="viewcode-block" id="CollectLogsStatic">
+<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.collectlogs.CollectLogsStatic">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CollectLogsStatic</span><span class="p">(</span><span class="n">CollectLogs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Collectlog task for static data.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config (deode.ParsedConfig): Configuration</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">CollectLogs</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="s2">&quot;staticlogs&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="CollectLogsHour">
+<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.collectlogs.CollectLogsHour">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CollectLogsHour</span><span class="p">(</span><span class="n">CollectLogs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Collectlog task for static data.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config (deode.ParsedConfig): Configuration</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">CollectLogs</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="s2">&quot;hourlogs&quot;</span><span class="p">)</span></div>
+
 </pre></div>
 
            </div>
@@ -1344,7 +1383,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-05-19T13:30:10Z.
+      <span class="lastupdated">Last updated on 2025-05-20T15:08:11Z.
       </span></p>
   </div>
 

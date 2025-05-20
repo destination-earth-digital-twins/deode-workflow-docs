@@ -898,6 +898,11 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-bd-has-surfex">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">bd_has_surfex</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-collectlogs">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">collectlogs</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-collectlogs-staticlogs">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">collectlogs</span> <span class="pre">&gt;</span> <span class="pre">staticlogs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-collectlogs-hourlogs">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">collectlogs</span> <span class="pre">&gt;</span> <span class="pre">hourlogs</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-pgd">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">pgd</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-pgd-npatch">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">pgd</span> <span class="pre">&gt;</span> <span class="pre">npatch</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-pgd-one-decade">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">pgd</span> <span class="pre">&gt;</span> <span class="pre">one_decade</span></code></a></li>
@@ -1327,18 +1332,6 @@
             <span class="n">time_dependent_trigger_node</span> <span class="o">=</span> <span class="n">static_data</span>
             <span class="n">collect_logs_trigger</span> <span class="o">=</span> <span class="p">[</span><span class="n">static_data</span><span class="p">]</span>
 
-            <span class="c1"># Prepare arguments for CollectLogs</span>
-            <span class="n">task_logs</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;system.climdir&quot;</span><span class="p">]</span>
-            <span class="n">args</span> <span class="o">=</span> <span class="s2">&quot;;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-                <span class="p">[</span>
-                    <span class="sa">f</span><span class="s2">&quot;joboutdir=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_out</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">/StaticData&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;tarname=StaticData&quot;</span><span class="p">,</span>
-                    <span class="sa">f</span><span class="s2">&quot;task_logs=</span><span class="si">{</span><span class="n">task_logs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;config_label=staticlogs&quot;</span><span class="p">,</span>
-                <span class="p">]</span>
-            <span class="p">)</span>
-            <span class="n">variables</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;ARGS&quot;</span><span class="p">:</span> <span class="n">args</span><span class="p">}</span>
-
             <span class="k">if</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.do_archiving&quot;</span><span class="p">]:</span>
                 <span class="n">archive_static</span> <span class="o">=</span> <span class="n">EcflowSuiteTask</span><span class="p">(</span>
                     <span class="s2">&quot;ArchiveStatic&quot;</span><span class="p">,</span>
@@ -1353,14 +1346,14 @@
                 <span class="n">collect_logs_trigger</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">archive_static</span><span class="p">)</span>
 
             <span class="n">collect_logs</span> <span class="o">=</span> <span class="n">EcflowSuiteTask</span><span class="p">(</span>
-                <span class="s2">&quot;CollectLogs&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;CollectLogsStatic&quot;</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">suite</span><span class="p">,</span>
                 <span class="n">config</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">task_settings</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
                 <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
                 <span class="n">trigger</span><span class="o">=</span><span class="n">collect_logs_trigger</span><span class="p">,</span>
-                <span class="n">variables</span><span class="o">=</span><span class="n">variables</span><span class="p">,</span>
+                <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                 <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="c1"># Update triggers for final cleaning node</span>
@@ -1374,8 +1367,6 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">task_settings</span><span class="p">,</span>
                 <span class="n">input_template</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">ecf_out</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
                 <span class="n">time_dependent_trigger_node</span><span class="p">,</span>
                 <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
                 <span class="n">do_prep</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">do_prep</span><span class="p">,</span>
@@ -1410,7 +1401,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-05-19T13:30:10Z.
+      <span class="lastupdated">Last updated on 2025-05-20T15:08:11Z.
       </span></p>
   </div>
 
