@@ -1473,6 +1473,8 @@
 <span class="sd">            NotImplementedError: Operation not implemented yet&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">gids</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">))]</span>
+        <span class="n">gid_to_file_map</span> <span class="o">=</span> <span class="p">{}</span>
+
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">params</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Parameters are not defined&quot;</span><span class="p">)</span>
 
@@ -1481,7 +1483,7 @@
             <span class="n">f_out</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">enter_context</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">fnames</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;ab&quot;</span><span class="p">))</span>
 
             <span class="k">while</span> <span class="kc">None</span> <span class="ow">in</span> <span class="n">gids</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">f_in</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">f_in</span><span class="p">,</span> <span class="n">fname</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">fnames</span><span class="p">):</span>
                     <span class="n">gid</span> <span class="o">=</span> <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_grib_new_from_file</span><span class="p">(</span><span class="n">f_in</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">gid</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                         <span class="k">continue</span>
@@ -1492,6 +1494,7 @@
                         <span class="p">)</span>
                         <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
                             <span class="n">gids</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">gid</span>
+                            <span class="n">gid_to_file_map</span><span class="p">[</span><span class="n">gid</span><span class="p">]</span> <span class="o">=</span> <span class="n">fname</span>
                             <span class="k">break</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_release</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
@@ -1584,21 +1587,34 @@
                     <span class="s2">&quot;Operation </span><span class="si">{}</span><span class="s2"> not implemented yet.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">operation</span><span class="p">)</span>
                 <span class="p">)</span>
 
-            <span class="c1"># Ensure that the gid used for cloning does not come from the additional file</span>
+            <span class="c1"># Prioritize cloning GRIB message from original file</span>
+            <span class="c1"># followed by order in &quot;additional files&quot;</span>
             <span class="n">gid_res</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="k">for</span> <span class="n">gid</span> <span class="ow">in</span> <span class="n">gids</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">gid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_get</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="s2">&quot;file&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">fnames</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-                    <span class="n">gid_res</span> <span class="o">=</span> <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_clone</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+            <span class="n">found</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">fnames</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">gid</span> <span class="ow">in</span> <span class="n">gids</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">gid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">gid_to_file_map</span><span class="p">[</span><span class="n">gid</span><span class="p">]</span> <span class="o">==</span> <span class="n">file</span><span class="p">:</span>
+                        <span class="n">gid_res</span> <span class="o">=</span> <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_clone</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+                        <span class="n">found</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="k">break</span>
+                <span class="k">if</span> <span class="n">found</span><span class="p">:</span>
                     <span class="k">break</span>
-
-            <span class="k">if</span> <span class="n">gid_res</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">gid_res</span> <span class="o">=</span> <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_clone</span><span class="p">(</span><span class="n">gids</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
             <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_set_values</span><span class="p">(</span><span class="n">gid_res</span><span class="p">,</span> <span class="n">result_values</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">output_parameter</span> <span class="ow">in</span> <span class="n">output_params</span><span class="p">:</span>
-                <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_set</span><span class="p">(</span>
-                    <span class="n">gid_res</span><span class="p">,</span> <span class="n">output_parameter</span><span class="p">,</span> <span class="n">output_params</span><span class="p">[</span><span class="n">output_parameter</span><span class="p">]</span>
-                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">output_parameter</span> <span class="o">==</span> <span class="s2">&quot;productDefinitionTemplateNumber&quot;</span><span class="p">:</span>
+                    <span class="c1"># Special case for productDefinitionTemplateNumber as</span>
+                    <span class="c1"># setting this changes the time unit</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">set_while_retaining_time_unit</span><span class="p">(</span>
+                        <span class="n">gid_res</span><span class="p">,</span>
+                        <span class="n">output_parameter</span><span class="p">,</span>
+                        <span class="n">output_params</span><span class="p">[</span><span class="n">output_parameter</span><span class="p">],</span>
+                    <span class="p">)</span>
+
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_set</span><span class="p">(</span>
+                        <span class="n">gid_res</span><span class="p">,</span> <span class="n">output_parameter</span><span class="p">,</span> <span class="n">output_params</span><span class="p">[</span><span class="n">output_parameter</span><span class="p">]</span>
+                    <span class="p">)</span>
 
             <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_write</span><span class="p">(</span><span class="n">gid_res</span><span class="p">,</span> <span class="n">f_out</span><span class="p">)</span>
             <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_release</span><span class="p">(</span><span class="n">gid_res</span><span class="p">)</span>
@@ -1787,6 +1803,22 @@
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">unique_values</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="AddCalculatedFields.set_while_retaining_time_unit">
+<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.gribmodify.AddCalculatedFields.set_while_retaining_time_unit">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_while_retaining_time_unit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gid_res</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set a key in a GRIB message while retaining the time unit.&quot;&quot;&quot;</span>
+        <span class="c1"># Get the current time unit and forecast time from the original GRIB message</span>
+        <span class="n">time_unit_indicator</span> <span class="o">=</span> <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_get</span><span class="p">(</span><span class="n">gid_res</span><span class="p">,</span> <span class="s2">&quot;indicatorOfUnitForForecastTime&quot;</span><span class="p">)</span>
+        <span class="n">forecast_time</span> <span class="o">=</span> <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_get</span><span class="p">(</span><span class="n">gid_res</span><span class="p">,</span> <span class="s2">&quot;forecastTime&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Set the new value</span>
+        <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_set</span><span class="p">(</span><span class="n">gid_res</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+        <span class="c1"># Restore the time unit and forecast time</span>
+        <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_set</span><span class="p">(</span><span class="n">gid_res</span><span class="p">,</span> <span class="s2">&quot;indicatorOfUnitForForecastTime&quot;</span><span class="p">,</span> <span class="n">time_unit_indicator</span><span class="p">)</span>
+        <span class="n">eccodes</span><span class="o">.</span><span class="n">codes_set</span><span class="p">(</span><span class="n">gid_res</span><span class="p">,</span> <span class="s2">&quot;forecastTime&quot;</span><span class="p">,</span> <span class="n">forecast_time</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="AddCalculatedFields.execute">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.gribmodify.AddCalculatedFields.execute">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1807,7 +1839,6 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">file_templates</span><span class="p">[</span><span class="n">filetype</span><span class="p">][</span><span class="s2">&quot;grib&quot;</span><span class="p">],</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">output_settings</span><span class="p">[</span><span class="n">filetype</span><span class="p">],</span>
             <span class="p">)</span>
-            <span class="k">del</span> <span class="n">file_handle</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">basetime</span><span class="p">]</span>
 
             <span class="c1"># Load gribmodify rules from JSON file</span>
             <span class="n">grib_modify_rules_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
@@ -1858,6 +1889,24 @@
                         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">config_modify_rules</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s1">&#39;output_name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
                     <span class="p">)</span>
 
+                <span class="c1"># Check if the rule is valid at basetime</span>
+                <span class="k">if</span> <span class="n">validtime</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">basetime</span><span class="p">:</span>
+                    <span class="n">valid_at_basetime</span> <span class="o">=</span> <span class="n">rule</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;valid_at_basetime&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+                    <span class="n">static_field</span> <span class="o">=</span> <span class="n">rule</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;static_field&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">valid_at_basetime</span> <span class="ow">or</span> <span class="n">static_field</span><span class="p">):</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                            <span class="s2">&quot;Skipping field with name: </span><span class="si">{}</span><span class="s2"> as it is not valid at basetime&quot;</span><span class="p">,</span>
+                            <span class="n">rule</span><span class="p">[</span><span class="s2">&quot;output_name&quot;</span><span class="p">],</span>
+                        <span class="p">)</span>
+                        <span class="k">continue</span>
+                <span class="k">elif</span> <span class="n">rule</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;static_field&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+                    <span class="c1"># Do not process static fields at times different from basetime</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                        <span class="s2">&quot;Skipping field with name: </span><span class="si">{}</span><span class="s2"> as it is not basetime&quot;</span><span class="p">,</span>
+                        <span class="n">rule</span><span class="p">[</span><span class="s2">&quot;output_name&quot;</span><span class="p">],</span>
+                    <span class="p">)</span>
+                    <span class="k">continue</span>
+
                 <span class="n">additional_files</span> <span class="o">=</span> <span class="n">rule</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;additional_files&quot;</span><span class="p">,</span> <span class="p">[])</span>
                 <span class="n">additional_file_paths</span> <span class="o">=</span> <span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">find_additional_files</span><span class="p">(</span><span class="n">additional_files</span><span class="p">,</span> <span class="n">validtime</span><span class="p">)</span>
@@ -1891,7 +1940,9 @@
                         <span class="k">if</span> <span class="s2">&quot;minimum_frequency&quot;</span> <span class="ow">in</span> <span class="n">config_modify_rules</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
                         <span class="k">else</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
                     <span class="p">)</span>
-                    <span class="k">if</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span> <span class="o">%</span> <span class="n">min_freq</span> <span class="o">!=</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="s2">&quot;PT0H&quot;</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">min_freq</span> <span class="o">!=</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="s2">&quot;PT0H&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">as_timedelta</span><span class="p">(</span>
+                        <span class="n">dt</span>
+                    <span class="p">)</span> <span class="o">%</span> <span class="n">min_freq</span> <span class="o">!=</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="s2">&quot;PT0H&quot;</span><span class="p">):</span>
                         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
                             <span class="s2">&quot;Skip field with label: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span>
                             <span class="n">config_modify_rules</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s2">&quot;output_name&quot;</span><span class="p">],</span>
@@ -1933,7 +1984,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-05-28T13:48:25Z.
+      <span class="lastupdated">Last updated on 2025-05-28T21:04:29Z.
       </span></p>
   </div>
 

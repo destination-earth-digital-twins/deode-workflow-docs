@@ -1278,6 +1278,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">file_templates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;file_templates&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">csc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.csc&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">gl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_binary</span><span class="p">(</span><span class="s2">&quot;gl&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">basetime</span> <span class="o">=</span> <span class="n">as_datetime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.times.basetime&quot;</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;CreateGribStatic&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">rules</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;creategrib.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="p">{})</span>
@@ -1388,6 +1389,23 @@
                             <span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="p">[</span><span class="n">filetype</span><span class="p">][</span><span class="s2">&quot;output_frequency_reference&quot;</span><span class="p">]</span>
                         <span class="p">],</span>
                     <span class="p">)</span>
+                <span class="c1"># Check for &quot;basetime_only&quot; specifying output only at basetime</span>
+                <span class="n">basetime_only</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="p">[</span><span class="n">filetype</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">csc</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;basetime_only&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+                <span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">basetime_only</span><span class="p">:</span>
+                    <span class="c1"># Remove all but basetime</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Remove all but basetime for filetype=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">filetype</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">basetime</span> <span class="ow">in</span> <span class="n">file_handle</span><span class="p">:</span>
+                        <span class="n">file_handle</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">basetime</span><span class="p">:</span> <span class="n">file_handle</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">basetime</span><span class="p">]}</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                            <span class="s2">&quot;Basetime </span><span class="si">{}</span><span class="s2"> not found in file_handle for filetype=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">basetime</span><span class="p">,</span>
+                            <span class="n">filetype</span><span class="p">,</span>
+                        <span class="p">)</span>
+
                 <span class="k">for</span> <span class="n">validtime</span><span class="p">,</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">file_handle</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                     <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">file_templates</span><span class="p">[</span><span class="n">filetype</span><span class="p">][</span><span class="s2">&quot;grib&quot;</span><span class="p">],</span> <span class="n">validtime</span><span class="o">=</span><span class="n">validtime</span>
@@ -1453,7 +1471,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-05-28T13:48:25Z.
+      <span class="lastupdated">Last updated on 2025-05-28T21:04:29Z.
       </span></p>
   </div>
 
