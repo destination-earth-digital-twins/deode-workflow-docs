@@ -1878,7 +1878,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">FileManager</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;FileManager class.</span>
 
-<span class="sd">    Default DEDODE provider.</span>
+<span class="sd">    Default DEODE provider.</span>
 
 <span class="sd">    Platform specific.</span>
 
@@ -1970,13 +1970,21 @@
 
 <div class="viewcode-block" id="FileManager.input_data_iterator">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.FileManager.input_data_iterator">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">input_data_iterator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data_definition</span><span class="p">,</span> <span class="n">provider_id</span><span class="o">=</span><span class="s2">&quot;symlink&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">input_data_iterator</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">input_data_definition</span><span class="p">,</span>
+        <span class="n">basetime</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">validtime</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">provider_id</span><span class="o">=</span><span class="s2">&quot;symlink&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle input data spec dict.</span>
 
 <span class="sd">        Loop through the defined data types and fetch them.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            input_data_definition (dict): Input data spec</span>
+<span class="sd">            basetime (datetime.datetime, optional): Base time. Defaults to None.</span>
+<span class="sd">            validtime (datetime.datetime, optional): Valid time. Defaults to None.</span>
 <span class="sd">            provider_id (str): Provider id. Defaults to &quot;symlink&quot;</span>
 
 <span class="sd">        Raises:</span>
@@ -1985,16 +1993,25 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">data_type</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">input_data_definition</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Link data type: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">data_type</span><span class="p">)</span>
-            <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">])</span>
             <span class="n">files</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;files&quot;</span><span class="p">]</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-                <span class="k">for</span> <span class="n">filenames</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">filenames</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">filenames</span><span class="p">,</span> <span class="n">provider_id</span><span class="o">=</span><span class="n">provider_id</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                        <span class="n">filename</span><span class="p">,</span>
+                        <span class="n">basetime</span><span class="o">=</span><span class="n">basetime</span><span class="p">,</span>
+                        <span class="n">validtime</span><span class="o">=</span><span class="n">validtime</span><span class="p">,</span>
+                        <span class="n">provider_id</span><span class="o">=</span><span class="n">provider_id</span><span class="p">,</span>
+                    <span class="p">)</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-                <span class="k">for</span> <span class="n">_outfile</span><span class="p">,</span> <span class="n">_infile</span> <span class="ow">in</span> <span class="n">files</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="n">infile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">_infile</span><span class="p">)</span>
-                    <span class="n">outfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">_outfile</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">infile</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">provider_id</span><span class="o">=</span><span class="n">provider_id</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">infile</span> <span class="ow">in</span> <span class="n">files</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">infile</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                        <span class="n">outfile</span><span class="p">,</span>
+                        <span class="n">basetime</span><span class="o">=</span><span class="n">basetime</span><span class="p">,</span>
+                        <span class="n">validtime</span><span class="o">=</span><span class="n">validtime</span><span class="p">,</span>
+                        <span class="n">provider_id</span><span class="o">=</span><span class="n">provider_id</span><span class="p">,</span>
+                    <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown data type in </span><span class="si">{</span><span class="n">input_data_definition</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
@@ -2700,7 +2717,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-06-04T09:53:13Z.
+      <span class="lastupdated">Last updated on 2025-06-05T08:58:09Z.
       </span></p>
   </div>
 
