@@ -1263,7 +1263,6 @@
 <span></span><span class="sd">&quot;&quot;&quot;NoSchedulerTemplate.&quot;&quot;&quot;</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">deode.config_parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigParserDefaults</span><span class="p">,</span> <span class="n">GeneralConstants</span><span class="p">,</span> <span class="n">ParsedConfig</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">deode.derived_variables</span><span class="w"> </span><span class="kn">import</span> <span class="n">derived_variables</span><span class="p">,</span> <span class="n">set_times</span>
@@ -1278,17 +1277,13 @@
 
 <div class="viewcode-block" id="default_main">
 <a class="viewcode-back" href="../../../deode.templates.html#deode.templates.stand_alone.default_main">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">default_main</span><span class="p">(</span>
-    <span class="n">task</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">config_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">deode_home</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">member</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">default_main</span><span class="p">(</span><span class="n">task</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">config_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">deode_home</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Execute default main.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        task (str): Task name</span>
 <span class="sd">        config_file (str): Config file</span>
 <span class="sd">        deode_home(str): Deode home path</span>
-<span class="sd">        member (Optional[int], optional): Member number for which to run the</span>
-<span class="sd">            standalone task. Defaults to None.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">deode_host</span> <span class="o">=</span> <span class="n">DeodeHost</span><span class="p">()</span><span class="o">.</span><span class="n">detect_deode_host</span><span class="p">()</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Read config from </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">config_file</span><span class="p">)</span>
@@ -1297,7 +1292,14 @@
         <span class="n">json_schema</span><span class="o">=</span><span class="n">ConfigParserDefaults</span><span class="o">.</span><span class="n">MAIN_CONFIG_JSON_SCHEMA</span><span class="p">,</span>
         <span class="n">host</span><span class="o">=</span><span class="n">deode_host</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="k">if</span> <span class="n">member</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="c1"># Get eps member specific config if a member is specified</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">member</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.member&quot;</span><span class="p">])</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;MEMBER is not an integer, skipping eps setup for task </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">task</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Update config based on member</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Setup EPS&quot;</span><span class="p">)</span>
         <span class="n">config</span> <span class="o">=</span> <span class="n">get_member_config</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">member</span><span class="o">=</span><span class="n">member</span><span class="p">)</span>
 
     <span class="n">config</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">update</span><span class="o">=</span><span class="n">set_times</span><span class="p">(</span><span class="n">config</span><span class="p">))</span>
@@ -1317,12 +1319,10 @@
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Running </span><span class="si">{}</span><span class="s2"> v</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">GeneralConstants</span><span class="o">.</span><span class="n">PACKAGE_NAME</span><span class="p">,</span> <span class="n">GeneralConstants</span><span class="o">.</span><span class="n">VERSION</span><span class="p">)</span>
-    <span class="n">member_</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;STAND_ALONE_MEMBER&quot;</span><span class="p">)</span>
     <span class="n">default_main</span><span class="p">(</span>
         <span class="n">task</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;STAND_ALONE_TASK_NAME&quot;</span><span class="p">],</span>
         <span class="n">config_file</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;STAND_ALONE_TASK_CONFIG&quot;</span><span class="p">],</span>
         <span class="n">deode_home</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;STAND_ALONE_DEODE_HOME&quot;</span><span class="p">],</span>
-        <span class="n">member</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">member_</span><span class="p">)</span> <span class="k">if</span> <span class="n">member_</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span>
 </pre></div>
 
@@ -1334,7 +1334,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-06-12T08:15:38Z.
+      <span class="lastupdated">Last updated on 2025-06-12T10:21:55Z.
       </span></p>
   </div>
 
