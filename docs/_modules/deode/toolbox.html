@@ -2593,7 +2593,7 @@
 <span class="sd">            bool: True if success</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">rules</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;fdb.negative_rules&quot;</span><span class="p">])</span>
+        <span class="n">rules</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fdb.negative_rules&quot;</span><span class="p">,</span> <span class="p">{})</span>
         <span class="n">grib_set</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;fdb.grib_set&quot;</span><span class="p">])</span>
         <span class="k">if</span> <span class="s2">&quot;expver&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">grib_set</span><span class="p">:</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
@@ -2628,7 +2628,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">fdb</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
 
             <span class="n">create_inv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fdb.create_inverse_filter&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">create_inv</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">create_inv</span> <span class="ow">and</span> <span class="nb">bool</span><span class="p">(</span><span class="n">rules</span><span class="p">):</span>
                 <span class="c1"># Create example files for parameters not archived</span>
                 <span class="n">inv_temp1</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">_temp1_inv.grib&quot;</span>
                 <span class="n">inv_rules_file</span> <span class="o">=</span> <span class="s2">&quot;inv_temp_rules&quot;</span>
@@ -2647,12 +2647,19 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_write_rules_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">rules</span><span class="p">,</span> <span class="n">neg</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">oper</span><span class="o">=</span><span class="s2">&quot; &amp;&amp; &quot;</span><span class="p">):</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">neg</span><span class="si">}</span><span class="s1">(</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1"> is &quot;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">&quot;)&#39;</span>
-            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">rules</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-            <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span>
-        <span class="p">]</span>
-        <span class="n">rule</span> <span class="o">=</span> <span class="s2">&quot;if (&quot;</span> <span class="o">+</span> <span class="n">oper</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;) { append; }</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">rules</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Applying rules from fdb.negative_rules&quot;</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">neg</span><span class="si">}</span><span class="s1">(</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1"> is &quot;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">&quot;)&#39;</span>
+                <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">rules</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span>
+            <span class="p">]</span>
+            <span class="n">rule</span> <span class="o">=</span> <span class="s2">&quot;if (&quot;</span> <span class="o">+</span> <span class="n">oper</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;) { append; }</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s2">&quot;No parameters excluded in fdb.negative_rules. Archiving all fields.&quot;</span>
+            <span class="p">)</span>
+            <span class="n">rule</span> <span class="o">=</span> <span class="s2">&quot;append;</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">outfile</span><span class="p">:</span>
             <span class="n">outfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;set edition = 2;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">outfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">rule</span><span class="p">)</span></div>
@@ -2717,7 +2724,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-06-08T18:33:48Z.
+      <span class="lastupdated">Last updated on 2025-06-12T08:15:38Z.
       </span></p>
   </div>
 
