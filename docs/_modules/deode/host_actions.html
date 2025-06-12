@@ -1034,6 +1034,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-platform-deode-home">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">platform</span> <span class="pre">&gt;</span> <span class="pre">deode_home</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-platform-pgd-data-path">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">platform</span> <span class="pre">&gt;</span> <span class="pre">pgd_data_path</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-platform-soilgrid-data-path">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">platform</span> <span class="pre">&gt;</span> <span class="pre">soilgrid_data_path</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-platform-global-sfcdir">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">platform</span> <span class="pre">&gt;</span> <span class="pre">global_sfcdir</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-platform-gmted2010-data-path">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">platform</span> <span class="pre">&gt;</span> <span class="pre">gmted2010_data_path</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-platform-ecosg-data-path">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">platform</span> <span class="pre">&gt;</span> <span class="pre">ecosg_data_path</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-platform-climdata">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">platform</span> <span class="pre">&gt;</span> <span class="pre">climdata</span></code></a></li>
@@ -1362,12 +1363,15 @@
 
 <div class="viewcode-block" id="DeodeHost.detect_deode_host">
 <a class="viewcode-back" href="../../deode.html#deode.host_actions.DeodeHost.detect_deode_host">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">detect_deode_host</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">detect_deode_host</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">use_default</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Detect deode host by matching various properties.</span>
 
 <span class="sd">        First check self.deode_host as set by os.getenv(&quot;DEODE_HOST&quot;),</span>
 <span class="sd">        second use the defined hosts in known_hosts.yml. If no matches</span>
 <span class="sd">        are found return the first host defined in known_hosts.yml</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            use_default (boolean, optional): Flag to return default host if host not found</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            RuntimeError: Ambiguous matches</span>
@@ -1392,10 +1396,15 @@
                     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No deode-host detection using </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">matches</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">matches</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">known_hosts</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;No deode-host detected from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">hostname</span><span class="si">}</span><span class="s2">, use </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">default_host</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">use_default</span><span class="p">:</span>
+                <span class="n">matches</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">known_hosts</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;No deode-host detected from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">hostname</span><span class="si">}</span><span class="s2">, &quot;</span>
+                    <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;use </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">default_host</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">matches</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No deode-host detected from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">hostname</span><span class="si">}</span><span class="s2">, return None&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">matches</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ambiguous matches: </span><span class="si">{</span><span class="n">matches</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
@@ -1505,7 +1514,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-06-12T10:21:55Z.
+      <span class="lastupdated">Last updated on 2025-06-12T10:25:33Z.
       </span></p>
   </div>
 
