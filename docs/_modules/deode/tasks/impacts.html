@@ -1398,55 +1398,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Task</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
 
-        <span class="n">impact</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;impact&quot;</span><span class="p">,</span> <span class="n">BasicConfig</span><span class="p">({}))</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
-        <span class="n">installed_impact</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;platform.impact&quot;</span><span class="p">,</span> <span class="p">{})</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">impact</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="c1"># Resolve ecf_host/ecf_port if used</span>
-        <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="n">HostNotFoundError</span><span class="p">):</span>
-            <span class="n">ecf_host</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;scheduler.ecfvars.ecf_host&quot;</span><span class="p">)</span>
-            <span class="n">ecf_port</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;scheduler.ecfvars.ecf_port&quot;</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="n">ecf_host</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">ecf_port</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">pl</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
-                <span class="n">ecf_host</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">ecf_host</span><span class="p">)</span>
-                <span class="n">ecf_host</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">ecf_host</span><span class="p">,</span> <span class="n">object_</span><span class="o">=</span><span class="n">SelectHost</span><span class="p">)</span>
-                <span class="n">ecf_port</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">ecf_port</span><span class="p">)</span>
-                <span class="n">ecf_port</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">ecf_port</span><span class="p">,</span> <span class="n">object_</span><span class="o">=</span><span class="n">EcflowServer</span><span class="p">)</span>
-
-                <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span>
-                    <span class="n">update</span><span class="o">=</span><span class="p">{</span>
-                        <span class="s2">&quot;scheduler&quot;</span><span class="p">:</span> <span class="p">{</span>
-                            <span class="s2">&quot;ecfvars&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                <span class="s2">&quot;ecf_host_resolved&quot;</span><span class="p">:</span> <span class="n">ecf_host</span><span class="p">,</span>
-                                <span class="s2">&quot;ecf_port_resolved&quot;</span><span class="p">:</span> <span class="n">ecf_port</span><span class="p">,</span>
-                            <span class="p">}</span>
-                        <span class="p">}</span>
-                    <span class="p">}</span>
-                <span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">impact_model</span> <span class="ow">in</span> <span class="n">impact</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="p">(</span>
-                <span class="n">impact_model</span><span class="p">[</span><span class="s2">&quot;active&quot;</span><span class="p">]</span>
-                <span class="ow">and</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">installed_impact</span>
-                <span class="ow">and</span> <span class="n">taskname</span> <span class="ow">in</span> <span class="n">impact_model</span>
-            <span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">impact</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">impact_model</span><span class="p">[</span><span class="n">taskname</span><span class="p">]</span>
-                <span class="k">for</span> <span class="n">conf</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;communicate&quot;</span><span class="p">,</span> <span class="s2">&quot;path&quot;</span><span class="p">,</span> <span class="s2">&quot;config_name&quot;</span><span class="p">]:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">impact</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="n">conf</span><span class="p">]</span> <span class="o">=</span> <span class="n">impact_model</span><span class="p">[</span><span class="n">conf</span><span class="p">]</span>
-
-                <span class="c1"># Update user ecf host and port with resolved values</span>
-                <span class="n">user_ecf_host</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">impact</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s2">&quot;communicate&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;user_ecf_host&quot;</span><span class="p">)</span>
-                <span class="n">user_ecf_port</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">impact</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s2">&quot;communicate&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;user_ecf_port&quot;</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">user_ecf_host</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">user_ecf_port</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">pl</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">impact</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s2">&quot;communicate&quot;</span><span class="p">][</span><span class="s2">&quot;user_ecf_host&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
-                        <span class="n">user_ecf_host</span>
-                    <span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">impact</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s2">&quot;communicate&quot;</span><span class="p">][</span><span class="s2">&quot;user_ecf_port&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
-                        <span class="n">user_ecf_port</span>
-                    <span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">is_active</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">impact</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">impact</span> <span class="o">=</span> <span class="n">get_impact</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">taskname</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ImpactModels.execute">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.impacts.ImpactModels.execute">[docs]</a>
@@ -1457,6 +1409,71 @@
             <span class="n">model</span> <span class="o">=</span> <span class="n">ImpactModel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">impact_model_</span><span class="p">,</span> <span class="n">platform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="p">)</span>
             <span class="n">model</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span></div>
 </div>
+
+
+
+<div class="viewcode-block" id="get_impact">
+<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.impacts.get_impact">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_impact</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">taskname</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gather impact settings.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        config (deode.ParsedConfig): Configuration</span>
+<span class="sd">        taskname (str): Indicating taskname</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        impact (dict): Impact model settings</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_impact</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;impact&quot;</span><span class="p">,</span> <span class="n">BasicConfig</span><span class="p">({}))</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
+    <span class="n">installed_impact</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;platform.impact&quot;</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="n">impact</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># Resolve ecf_host/ecf_port if used</span>
+    <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="n">HostNotFoundError</span><span class="p">):</span>
+        <span class="n">ecf_host</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;scheduler.ecfvars.ecf_host&quot;</span><span class="p">)</span>
+        <span class="n">ecf_port</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;scheduler.ecfvars.ecf_port&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">ecf_host</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">ecf_port</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pl</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+            <span class="n">ecf_host</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">ecf_host</span><span class="p">)</span>
+            <span class="n">ecf_host</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">ecf_host</span><span class="p">,</span> <span class="n">object_</span><span class="o">=</span><span class="n">SelectHost</span><span class="p">)</span>
+            <span class="n">ecf_port</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">ecf_port</span><span class="p">)</span>
+            <span class="n">ecf_port</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">ecf_port</span><span class="p">,</span> <span class="n">object_</span><span class="o">=</span><span class="n">EcflowServer</span><span class="p">)</span>
+
+            <span class="n">config</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span>
+                <span class="n">update</span><span class="o">=</span><span class="p">{</span>
+                    <span class="s2">&quot;scheduler&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;ecfvars&quot;</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="s2">&quot;ecf_host_resolved&quot;</span><span class="p">:</span> <span class="n">ecf_host</span><span class="p">,</span>
+                            <span class="s2">&quot;ecf_port_resolved&quot;</span><span class="p">:</span> <span class="n">ecf_port</span><span class="p">,</span>
+                        <span class="p">}</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">impact_model</span> <span class="ow">in</span> <span class="n">_impact</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">impact_model</span><span class="p">[</span><span class="s2">&quot;active&quot;</span><span class="p">]</span>
+            <span class="ow">and</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">installed_impact</span>
+            <span class="ow">and</span> <span class="n">taskname</span> <span class="ow">in</span> <span class="n">impact_model</span>
+        <span class="p">):</span>
+            <span class="n">impact</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">impact_model</span><span class="p">[</span><span class="n">taskname</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">conf</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;communicate&quot;</span><span class="p">,</span> <span class="s2">&quot;path&quot;</span><span class="p">,</span> <span class="s2">&quot;config_name&quot;</span><span class="p">]:</span>
+                <span class="n">impact</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="n">conf</span><span class="p">]</span> <span class="o">=</span> <span class="n">impact_model</span><span class="p">[</span><span class="n">conf</span><span class="p">]</span>
+
+            <span class="c1"># Update user ecf host and port with resolved values</span>
+            <span class="n">user_ecf_host</span> <span class="o">=</span> <span class="n">impact</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s2">&quot;communicate&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;user_ecf_host&quot;</span><span class="p">)</span>
+            <span class="n">user_ecf_port</span> <span class="o">=</span> <span class="n">impact</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s2">&quot;communicate&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;user_ecf_port&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">user_ecf_host</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">user_ecf_port</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">pl</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+                <span class="n">impact</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s2">&quot;communicate&quot;</span><span class="p">][</span><span class="s2">&quot;user_ecf_host&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
+                    <span class="n">user_ecf_host</span>
+                <span class="p">)</span>
+                <span class="n">impact</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s2">&quot;communicate&quot;</span><span class="p">][</span><span class="s2">&quot;user_ecf_port&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
+                    <span class="n">user_ecf_port</span>
+                <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">impact</span></div>
 
 
 
@@ -1483,7 +1500,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-06-12T10:30:17Z.
+      <span class="lastupdated">Last updated on 2025-06-12T10:30:59Z.
       </span></p>
   </div>
 
