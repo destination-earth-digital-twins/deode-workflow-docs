@@ -183,7 +183,6 @@
 <li class="toctree-l4"><a class="reference internal" href="../deode.tasks.html#module-deode.tasks.e923">deode.tasks.e923 module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../deode.tasks.html#module-deode.tasks.e923_update">deode.tasks.e923_update module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../deode.tasks.html#module-deode.tasks.e927">deode.tasks.e927 module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../deode.tasks.html#module-deode.tasks.extractsqlite">deode.tasks.extractsqlite module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../deode.tasks.html#module-deode.tasks.forecast">deode.tasks.forecast module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../deode.tasks.html#module-deode.tasks.gmtedsoil">deode.tasks.gmtedsoil module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../deode.tasks.html#module-deode.tasks.gribmodify">deode.tasks.gribmodify module</a></li>
@@ -193,6 +192,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../deode.tasks.html#module-deode.tasks.prep_run">deode.tasks.prep_run module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../deode.tasks.html#module-deode.tasks.serial">deode.tasks.serial module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../deode.tasks.html#module-deode.tasks.sfx">deode.tasks.sfx module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../deode.tasks.html#module-deode.tasks.sqlite">deode.tasks.sqlite module</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../deode.templates.html">deode.templates package</a><ul>
@@ -840,6 +840,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-suite-control-interpolate-boundaries">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">suite_control</span> <span class="pre">&gt;</span> <span class="pre">interpolate_boundaries</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-suite-control-do-marsprep">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">suite_control</span> <span class="pre">&gt;</span> <span class="pre">do_marsprep</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-suite-control-do-extractsqlite">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">suite_control</span> <span class="pre">&gt;</span> <span class="pre">do_extractsqlite</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-suite-control-do-mergesqlite">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">suite_control</span> <span class="pre">&gt;</span> <span class="pre">do_mergesqlite</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-suite-control-create-static-data">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">suite_control</span> <span class="pre">&gt;</span> <span class="pre">create_static_data</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-suite-control-create-time-dependent-suite">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">suite_control</span> <span class="pre">&gt;</span> <span class="pre">create_time_dependent_suite</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-suite-control-split-mars">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">suite_control</span> <span class="pre">&gt;</span> <span class="pre">split_mars</span></code></a></li>
@@ -945,6 +946,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-archiving">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-archiving-prefix">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">prefix</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-archiving-hour">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">hour</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-cleaning">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span></code></a><ul>
@@ -1102,139 +1104,140 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../changelog_link.html">CHANGELOG</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#unreleased">Unreleased</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#added">Added</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#fixed">Fixed</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id1">[0.17.0] - 2025-06-13</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id2">Fixed</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#added">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id3">Added</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#changed">Changed</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id3">Fixed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id4">Fixed</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id4">[0.16.1] - 2025-05-23</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id5">Fixed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id5">[0.16.1] - 2025-05-23</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id6">Fixed</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id6">[0.16.0] - 2025-05-21</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id7">Added</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id8">Changed</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id9">Fixed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id7">[0.16.0] - 2025-05-21</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id8">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id9">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id10">Fixed</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id10">[0.15.0] - 2025-04-24</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id11">Added</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id12">Changed</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id13">Fixed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id11">[0.15.0] - 2025-04-24</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id12">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id13">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id14">Fixed</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id14">[0.14.0] - 2025-03-27</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id15">Added</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id16">Changed</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id17">Fixed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id15">[0.14.0] - 2025-03-27</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id16">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id17">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id18">Fixed</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id18">[0.13.2] - 2025-03-21</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id19">Changed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id19">[0.13.2] - 2025-03-21</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id20">Changed</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id20">[0.13.1] - 2025-02-27</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id21">Changed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id21">[0.13.1] - 2025-02-27</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id22">Changed</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id22">[0.13.0] - 2025-02-26</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id23">Added</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id24">Changed</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id25">Fixed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id23">[0.13.0] - 2025-02-26</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id24">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id25">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id26">Fixed</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id26">[0.12.1] - 2025-02-21</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id27">[0.12.0] - 2025-02-21</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id28">Added</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id29">Changed</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id30">Fixed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id27">[0.12.1] - 2025-02-21</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id28">[0.12.0] - 2025-02-21</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id29">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id30">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id31">Fixed</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id31">[0.11.0] - 2025-02-13</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id32">Changed</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id33">Fixed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id32">[0.11.0] - 2025-02-13</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id33">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id34">Fixed</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id34">[0.10.0] - 2024-12-17</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id35">Added</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id36">Fixed</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id37">Changed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id35">[0.10.0] - 2024-12-17</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id36">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id37">Fixed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id38">Changed</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id38">[0.9.1] - 2024-11-22</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id39">Fixed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id39">[0.9.1] - 2024-11-22</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id40">Fixed</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id40">[0.9.0] - 2024-11-20</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id41">Added</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id42">Changed</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id43">Fixed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id41">[0.9.0] - 2024-11-20</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id42">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id43">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id44">Fixed</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id44">[0.8.0] - 2024-10-31</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id45">Added</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id46">Changed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id45">[0.8.0] - 2024-10-31</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id46">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id47">Changed</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#removed">Removed</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id47">[0.7.1] - 2024-10-17</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id48">Added</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id48">[0.7.1] - 2024-10-17</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id49">Added</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id49">[0.7.0] - 2024-10-09</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id50">Added</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id51">Changed</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id52">Fixed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id50">[0.7.0] - 2024-10-09</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id51">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id52">Changed</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id53">Fixed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id54">Fixed</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id54">[0.6.1] - 2024-09-24</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id55">Fixed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id55">[0.6.1] - 2024-09-24</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id56">Fixed</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#bugfix-v0-6-1-2024-09-24">[bugfix_v0.6.1] - 2024-09-24</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id56">[0.6.0] - 2024-09-19</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id57">Added</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id58">Changed</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id59">Fixed</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id60">Removed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id57">[0.6.0] - 2024-09-19</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id58">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id59">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id60">Fixed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id61">Removed</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id61">[0.5.0] - 2024-05-06</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id62">Added</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id63">Changed</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id64">Fixed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id62">[0.5.0] - 2024-05-06</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id63">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id64">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id65">Fixed</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id65">[0.4.0] - 2024-03-01</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id66">[0.4.0] - 2024-03-01</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#breaking-changes">Breaking changes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id66">Added</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id67">Changed</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id68">Removed</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id69">Fixed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id67">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id68">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id69">Removed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id70">Fixed</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#maintenance">Maintenance</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id70">[0.3.0] - 2023-11-28</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id71">Added</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id72">Changed</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id73">Fixed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id71">[0.3.0] - 2023-11-28</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id72">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id73">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id74">Fixed</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id74">[0.2.0] - 2023-10-27</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id75">Added</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id76">Changed</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id77">Removed</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id78">Fixed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id75">[0.2.0] - 2023-10-27</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id76">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id77">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id78">Removed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id79">Fixed</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id79">[0.1.0] - 2023-10-11</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id80">Added</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../changelog_link.html#id80">[0.1.0] - 2023-10-11</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../changelog_link.html#id81">Added</a></li>
 </ul>
 </li>
 </ul>
@@ -1265,7 +1268,7 @@
            <div itemprop="articleBody">
              
   <p>The following section was automatically generated running
-<code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">doc</span> <span class="pre">config</span></code> on 2025-06-17T14:01:59.</p>
+<code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">doc</span> <span class="pre">config</span></code> on 2025-06-18T07:31:11.</p>
 <section id="config">
 <h1>Config<a class="headerlink" href="#config" title="Link to this heading"></a></h1>
 <p><strong>Title:</strong> Config</p>
@@ -1394,7 +1397,7 @@
 <td><p>-</p></td>
 <td><p>EPS Members Configuration</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../deode.tasks.html#module-deode.tasks.extractsqlite" title="deode.tasks.extractsqlite"><span class="xref myst py py-mod">extractsqlite</span></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#extractsqlite"><span class="xref myst">extractsqlite</span></a></p></td>
 <td><p>object</p></td>
 <td><p>No</p></td>
 <td><p>-</p></td>
@@ -3613,67 +3616,73 @@
 <td><p>-</p></td>
 <td><p>Activates extraction of selected points to SQLite files for verification.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#suite_control_create_static_data"><span class="xref myst">create_static_data</span></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#suite_control_do_mergesqlite"><span class="xref myst">do_mergesqlite</span></a></p></td>
+<td><p>boolean</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>Activates merging of extracted sqlite files. Requires do_extractsqlite to be true, and number of ensemble members to be greater than 1, to have an effect.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#suite_control_create_static_data"><span class="xref myst">create_static_data</span></a></p></td>
 <td><p>boolean</p></td>
 <td><p>No</p></td>
 <td><p>-</p></td>
 <td><p>Activate the generation of PGD and monthly climate files in the suite</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#suite_control_create_time_dependent_suite"><span class="xref myst">create_time_dependent_suite</span></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#suite_control_create_time_dependent_suite"><span class="xref myst">create_time_dependent_suite</span></a></p></td>
 <td><p>boolean</p></td>
 <td><p>No</p></td>
 <td><p>-</p></td>
 <td><p>Activate the time dependent part of the suite</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#suite_control_split_mars"><span class="xref myst">split_mars</span></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#suite_control_split_mars"><span class="xref myst">split_mars</span></a></p></td>
 <td><p>boolean</p></td>
 <td><p>No</p></td>
 <td><p>false</p></td>
 <td><p>Do marsprep only for one step before c903</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#suite_control_do_cleaning"><span class="xref myst">do_cleaning</span></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#suite_control_do_cleaning"><span class="xref myst">do_cleaning</span></a></p></td>
 <td><p>boolean</p></td>
 <td><p>No</p></td>
 <td><p>false</p></td>
 <td><p>Do file cleaning</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#suite_control_n_io_merge"><span class="xref myst">n_io_merge</span></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#suite_control_n_io_merge"><span class="xref myst">n_io_merge</span></a></p></td>
 <td><p>integer</p></td>
 <td><p>No</p></td>
 <td><p>1</p></td>
 <td><p>Number of IOmerge tasks</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#suite_control_n_creategrib"><span class="xref myst">n_creategrib</span></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#suite_control_n_creategrib"><span class="xref myst">n_creategrib</span></a></p></td>
 <td><p>integer</p></td>
 <td><p>No</p></td>
 <td><p>1</p></td>
 <td><p>Number of CreateGrib tasks</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#suite_control_n_addcalculatedfields"><span class="xref myst">n_addcalculatedfields</span></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#suite_control_n_addcalculatedfields"><span class="xref myst">n_addcalculatedfields</span></a></p></td>
 <td><p>integer</p></td>
 <td><p>No</p></td>
 <td><p>1</p></td>
 <td><p>Number of AddCalculatedFields tasks</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#suite_control_member_specific_static_data"><span class="xref myst">member_specific_static_data</span></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#suite_control_member_specific_static_data"><span class="xref myst">member_specific_static_data</span></a></p></td>
 <td><p>boolean</p></td>
 <td><p>No</p></td>
 <td><p>false</p></td>
 <td><p>Whether to create member specific static data (true) or not</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#suite_control_member_specific_mars_prep"><span class="xref myst">member_specific_mars_prep</span></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#suite_control_member_specific_mars_prep"><span class="xref myst">member_specific_mars_prep</span></a></p></td>
 <td><p>boolean</p></td>
 <td><p>No</p></td>
 <td><p>false</p></td>
 <td><p>Whether to do member specific marsprep (true) or common marsprep</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#suite_control_max_static_data_tasks"><span class="xref myst">max_static_data_tasks</span></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#suite_control_max_static_data_tasks"><span class="xref myst">max_static_data_tasks</span></a></p></td>
 <td><p>integer</p></td>
 <td><p>No</p></td>
 <td><p>10</p></td>
 <td><p>Limit for max number of monthly tasks, run at same time</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#suite_control_DeodeCleaningSuiteDefinition"><span class="xref myst">DeodeCleaningSuiteDefinition</span></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#suite_control_DeodeCleaningSuiteDefinition"><span class="xref myst">DeodeCleaningSuiteDefinition</span></a></p></td>
 <td><p>object</p></td>
 <td><p>No</p></td>
 <td><p>-</p></td>
@@ -3852,6 +3861,26 @@
 </tbody>
 </table>
 <p><strong>Description:</strong> Activates extraction of selected points to SQLite files for verification.</p>
+<p><a name="suite_control_do_mergesqlite"></a></p>
+</section>
+<section id="property-config-suite-control-do-mergesqlite">
+<h3>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">suite_control</span> <span class="pre">&gt;</span> <span class="pre">do_mergesqlite</span></code><a class="headerlink" href="#property-config-suite-control-do-mergesqlite" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> Activates merging of extracted sqlite files. Requires do_extractsqlite to be true, and number of ensemble members to be greater than 1, to have an effect.</p>
 <p><a name="suite_control_create_static_data"></a></p>
 </section>
 <section id="property-config-suite-control-create-static-data">
@@ -9519,6 +9548,12 @@
 <td><p>-</p></td>
 <td><p>Path prefixes</p></td>
 </tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#archiving_hour"><span class="xref myst">hour</span></a></p></td>
+<td><p>object</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>Example settings for the ‘ArchiveHour task</p></td>
+</tr>
 </tbody>
 </table>
 <p><a name="archiving_prefix"></a></p>
@@ -9581,7 +9616,321 @@
 </tbody>
 </table>
 <p><strong>Description:</strong> Prefix to use for available archive types. Define one per type where applicable.</p>
+<p><a name="archiving_hour"></a></p>
+</section>
+</section>
+<section id="property-config-archiving-hour">
+<h3>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">hour</span></code><a class="headerlink" href="#property-config-archiving-hour" title="Link to this heading"></a></h3>
+<p><strong>Title:</strong> Example settings for the ‘ArchiveHour task</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">object</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Additional properties</strong></p></td>
+<td><p><a class="reference internal" href="#"><span class="xref myst">[Any type: allowed]</span></a></p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Title/Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="#archiving_hour_example"><span class="xref myst">example</span></a></p></td>
+<td><p>object</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>Example settings for the archiving rules. Any number of rules can be defined to accomodate the needs</p></td>
+</tr>
+</tbody>
+</table>
+<p><a name="archiving_hour_example"></a></p>
+<section id="property-config-archiving-hour-example">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">hour</span> <span class="pre">&gt;</span> <span class="pre">example</span></code><a class="headerlink" href="#property-config-archiving-hour-example" title="Link to this heading"></a></h4>
+<p><strong>Title:</strong> Example settings for the archiving rules. Any number of rules can be defined to accomodate the needs</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">object</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Additional properties</strong></p></td>
+<td><p><a class="reference internal" href="#"><span class="xref myst">[Any type: allowed]</span></a></p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Title/Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="#archiving_hour_example_active"><span class="xref myst">active</span></a></p></td>
+<td><p>boolean</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>Activates the default archiving. Could be boolean or string refering to a boolean in the config file. See the sqlite archiving for an example</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#archiving_hour_example_inpath"><span class="xref myst">inpath</span></a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>Location of input files for archiving</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#archiving_hour_example_outpath"><span class="xref myst">outpath</span></a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>Relative location of the archived files</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#archiving_hour_example_pattern"><span class="xref myst">pattern</span></a></p></td>
+<td><p>Combination</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>Search pattern for files to be included. Could be a single pattern or list of patterns.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#archiving_hour_example_newname"><span class="xref myst">newname</span></a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>Target name for renaming of files. Only works is pattern is a string and matches an existing file</p></td>
+</tr>
+</tbody>
+</table>
+<p><a name="archiving_hour_example_active"></a></p>
+<section id="property-config-archiving-hour-example-active">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">hour</span> <span class="pre">&gt;</span> <span class="pre">example</span> <span class="pre">&gt;</span> <span class="pre">active</span></code><a class="headerlink" href="#property-config-archiving-hour-example-active" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> Activates the default archiving. Could be boolean or string refering to a boolean in the config file. See the sqlite archiving for an example</p>
+<p><a name="archiving_hour_example_inpath"></a></p>
+</section>
+<section id="property-config-archiving-hour-example-inpath">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">hour</span> <span class="pre">&gt;</span> <span class="pre">example</span> <span class="pre">&gt;</span> <span class="pre">inpath</span></code><a class="headerlink" href="#property-config-archiving-hour-example-inpath" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> Location of input files for archiving</p>
+<p><a name="archiving_hour_example_outpath"></a></p>
+</section>
+<section id="property-config-archiving-hour-example-outpath">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">hour</span> <span class="pre">&gt;</span> <span class="pre">example</span> <span class="pre">&gt;</span> <span class="pre">outpath</span></code><a class="headerlink" href="#property-config-archiving-hour-example-outpath" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> Relative location of the archived files</p>
+<p><a name="archiving_hour_example_pattern"></a></p>
+</section>
+<section id="property-config-archiving-hour-example-pattern">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">hour</span> <span class="pre">&gt;</span> <span class="pre">example</span> <span class="pre">&gt;</span> <span class="pre">pattern</span></code><a class="headerlink" href="#property-config-archiving-hour-example-pattern" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">combining</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Additional properties</strong></p></td>
+<td><p><a class="reference internal" href="#"><span class="xref myst">[Any type: allowed]</span></a></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> Search pattern for files to be included. Could be a single pattern or list of patterns.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Any of(Option)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="#archiving_hour_example_pattern_anyOf_i0"><span class="xref myst">item 0</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#archiving_hour_example_pattern_anyOf_i1"><span class="xref myst">item 1</span></a></p></td>
+</tr>
+</tbody>
+</table>
+<p><a name="archiving_hour_example_pattern_anyOf_i0"></a></p>
+</section>
+<section id="property-config-archiving-hour-example-pattern-anyof-item-0">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">hour</span> <span class="pre">&gt;</span> <span class="pre">example</span> <span class="pre">&gt;</span> <span class="pre">pattern</span> <span class="pre">&gt;</span> <span class="pre">anyOf</span> <span class="pre">&gt;</span> <span class="pre">item</span> <span class="pre">0</span></code><a class="headerlink" href="#property-config-archiving-hour-example-pattern-anyof-item-0" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<p><a name="archiving_hour_example_pattern_anyOf_i1"></a></p>
+</section>
+<section id="property-config-archiving-hour-example-pattern-anyof-item-1">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">hour</span> <span class="pre">&gt;</span> <span class="pre">example</span> <span class="pre">&gt;</span> <span class="pre">pattern</span> <span class="pre">&gt;</span> <span class="pre">anyOf</span> <span class="pre">&gt;</span> <span class="pre">item</span> <span class="pre">1</span></code><a class="headerlink" href="#property-config-archiving-hour-example-pattern-anyof-item-1" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">array</span> <span class="pre">of</span> <span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p>Array restrictions</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Min items</strong></p></td>
+<td><p>N/A</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Max items</strong></p></td>
+<td><p>N/A</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Items unicity</strong></p></td>
+<td><p>False</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Additional items</strong></p></td>
+<td><p>False</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Tuple validation</strong></p></td>
+<td><p>See below</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Each item of this array must be</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="#archiving_hour_example_pattern_anyOf_i1_items"><span class="xref myst">item 1 items</span></a></p></td>
+<td><p>-</p></td>
+</tr>
+</tbody>
+</table>
+<p><a name="autogenerated_heading_37"></a></p>
+</section>
+<section id="config-archiving-hour-example-pattern-anyof-item-1-item-1-items">
+<h5>Config &gt; archiving &gt; hour &gt; example &gt; pattern &gt; anyOf &gt; item 1 &gt; item 1 items<a class="headerlink" href="#config-archiving-hour-example-pattern-anyof-item-1-item-1-items" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<p><a name="archiving_hour_example_newname"></a></p>
+</section>
+<section id="property-config-archiving-hour-example-newname">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">archiving</span> <span class="pre">&gt;</span> <span class="pre">hour</span> <span class="pre">&gt;</span> <span class="pre">example</span> <span class="pre">&gt;</span> <span class="pre">newname</span></code><a class="headerlink" href="#property-config-archiving-hour-example-newname" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> Target name for renaming of files. Only works is pattern is a string and matches an existing file</p>
 <p><a name="cleaning"></a></p>
+</section>
 </section>
 </section>
 </section>
@@ -9739,7 +10088,7 @@
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_37"></a></p>
+<p><a name="autogenerated_heading_38"></a></p>
 <section id="id11">
 <h5>The following properties are required<a class="headerlink" href="#id11" title="Link to this heading"></a></h5>
 <ul class="simple">
@@ -9770,7 +10119,7 @@
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_38"></a></p>
+<p><a name="autogenerated_heading_39"></a></p>
 <section id="id12">
 <h5>The following properties are required<a class="headerlink" href="#id12" title="Link to this heading"></a></h5>
 <ul class="simple">
@@ -12252,7 +12601,7 @@
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_39"></a></p>
+<p><a name="autogenerated_heading_40"></a></p>
 </section>
 <section id="config-eps-general-members-oneof-item-2-item-2-items">
 <h5>Config &gt; eps &gt; general &gt; members &gt; oneOf &gt; item 2 &gt; item 2 items<a class="headerlink" href="#config-eps-general-members-oneof-item-2-item-2-items" title="Link to this heading"></a></h5>
@@ -13665,7 +14014,7 @@
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_40"></a></p>
+<p><a name="autogenerated_heading_41"></a></p>
 </section>
 <section id="config-macros-select-default-gen-macros-gen-macros-items">
 <h5>Config &gt; macros &gt; select &gt; default &gt; gen_macros &gt; gen_macros items<a class="headerlink" href="#config-macros-select-default-gen-macros-gen-macros-items" title="Link to this heading"></a></h5>
@@ -13796,7 +14145,7 @@
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_41"></a></p>
+<p><a name="autogenerated_heading_42"></a></p>
 </section>
 <section id="config-macros-select-default-group-macros-group-macros-items">
 <h5>Config &gt; macros &gt; select &gt; default &gt; group_macros &gt; group_macros items<a class="headerlink" href="#config-macros-select-default-group-macros-group-macros-items" title="Link to this heading"></a></h5>
@@ -13871,7 +14220,7 @@
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_42"></a></p>
+<p><a name="autogenerated_heading_43"></a></p>
 </section>
 <section id="config-macros-select-default-os-macros-os-macros-items">
 <h5>Config &gt; macros &gt; select &gt; default &gt; os_macros &gt; os_macros items<a class="headerlink" href="#config-macros-select-default-os-macros-os-macros-items" title="Link to this heading"></a></h5>
@@ -19863,7 +20212,7 @@
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_43"></a></p>
+<p><a name="autogenerated_heading_44"></a></p>
 <section id="config-platform-archive-types-archive-types-items">
 <h4>Config &gt; platform &gt; archive_types &gt; archive_types items<a class="headerlink" href="#config-platform-archive-types-archive-types-items" title="Link to this heading"></a></h4>
 <table class="docutils align-default">
@@ -21668,7 +22017,7 @@
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_44"></a></p>
+<p><a name="autogenerated_heading_45"></a></p>
 </section>
 <section id="config-submission-types-serial-tasks-tasks-items">
 <h5>Config &gt; submission &gt; types &gt; serial &gt; tasks &gt; tasks items<a class="headerlink" href="#config-submission-types-serial-tasks-tasks-items" title="Link to this heading"></a></h5>
@@ -21932,7 +22281,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_45"></a></p>
+<p><a name="autogenerated_heading_46"></a></p>
 </section>
 <section id="config-submission-types-serial-modules-items">
 <h5>Config &gt; submission &gt; types &gt; serial &gt; MODULES &gt; ^(.<em>)$ &gt; ^(.</em>)$ items<a class="headerlink" href="#config-submission-types-serial-modules-items" title="Link to this heading"></a></h5>
@@ -22091,7 +22440,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_46"></a></p>
+<p><a name="autogenerated_heading_47"></a></p>
 </section>
 <section id="config-submission-types-parallel-tasks-tasks-items">
 <h5>Config &gt; submission &gt; types &gt; parallel &gt; tasks &gt; tasks items<a class="headerlink" href="#config-submission-types-parallel-tasks-tasks-items" title="Link to this heading"></a></h5>
@@ -22355,7 +22704,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_47"></a></p>
+<p><a name="autogenerated_heading_48"></a></p>
 </section>
 <section id="config-submission-types-parallel-modules-items">
 <h5>Config &gt; submission &gt; types &gt; parallel &gt; MODULES &gt; ^(.<em>)$ &gt; ^(.</em>)$ items<a class="headerlink" href="#config-submission-types-parallel-modules-items" title="Link to this heading"></a></h5>
@@ -22514,7 +22863,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_48"></a></p>
+<p><a name="autogenerated_heading_49"></a></p>
 </section>
 <section id="config-submission-types-background-vm-tasks-tasks-items">
 <h5>Config &gt; submission &gt; types &gt; background_vm &gt; tasks &gt; tasks items<a class="headerlink" href="#config-submission-types-background-vm-tasks-tasks-items" title="Link to this heading"></a></h5>
@@ -22778,7 +23127,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_49"></a></p>
+<p><a name="autogenerated_heading_50"></a></p>
 </section>
 <section id="config-submission-types-background-vm-modules-items">
 <h5>Config &gt; submission &gt; types &gt; background_vm &gt; MODULES &gt; ^(.<em>)$ &gt; ^(.</em>)$ items<a class="headerlink" href="#config-submission-types-background-vm-modules-items" title="Link to this heading"></a></h5>
@@ -22937,7 +23286,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_50"></a></p>
+<p><a name="autogenerated_heading_51"></a></p>
 </section>
 <section id="config-submission-types-background-hpc-tasks-tasks-items">
 <h5>Config &gt; submission &gt; types &gt; background_hpc &gt; tasks &gt; tasks items<a class="headerlink" href="#config-submission-types-background-hpc-tasks-tasks-items" title="Link to this heading"></a></h5>
@@ -23201,7 +23550,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_51"></a></p>
+<p><a name="autogenerated_heading_52"></a></p>
 </section>
 <section id="config-submission-types-background-hpc-modules-items">
 <h5>Config &gt; submission &gt; types &gt; background_hpc &gt; MODULES &gt; ^(.<em>)$ &gt; ^(.</em>)$ items<a class="headerlink" href="#config-submission-types-background-hpc-modules-items" title="Link to this heading"></a></h5>
@@ -23360,7 +23709,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_52"></a></p>
+<p><a name="autogenerated_heading_53"></a></p>
 </section>
 <section id="config-submission-types-gnu-tasks-tasks-items">
 <h5>Config &gt; submission &gt; types &gt; gnu &gt; tasks &gt; tasks items<a class="headerlink" href="#config-submission-types-gnu-tasks-tasks-items" title="Link to this heading"></a></h5>
@@ -23624,7 +23973,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_53"></a></p>
+<p><a name="autogenerated_heading_54"></a></p>
 </section>
 <section id="config-submission-types-gnu-modules-items">
 <h5>Config &gt; submission &gt; types &gt; gnu &gt; MODULES &gt; ^(.<em>)$ &gt; ^(.</em>)$ items<a class="headerlink" href="#config-submission-types-gnu-modules-items" title="Link to this heading"></a></h5>
@@ -23783,7 +24132,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_54"></a></p>
+<p><a name="autogenerated_heading_55"></a></p>
 </section>
 <section id="config-submission-types-sqlite-tasks-tasks-items">
 <h5>Config &gt; submission &gt; types &gt; sqlite &gt; tasks &gt; tasks items<a class="headerlink" href="#config-submission-types-sqlite-tasks-tasks-items" title="Link to this heading"></a></h5>
@@ -24047,7 +24396,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_55"></a></p>
+<p><a name="autogenerated_heading_56"></a></p>
 </section>
 <section id="config-submission-types-sqlite-modules-items">
 <h5>Config &gt; submission &gt; types &gt; sqlite &gt; MODULES &gt; ^(.<em>)$ &gt; ^(.</em>)$ items<a class="headerlink" href="#config-submission-types-sqlite-modules-items" title="Link to this heading"></a></h5>
@@ -24206,7 +24555,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_56"></a></p>
+<p><a name="autogenerated_heading_57"></a></p>
 </section>
 <section id="config-submission-types-forecast-cpu-tasks-tasks-items">
 <h5>Config &gt; submission &gt; types &gt; Forecast_cpu &gt; tasks &gt; tasks items<a class="headerlink" href="#config-submission-types-forecast-cpu-tasks-tasks-items" title="Link to this heading"></a></h5>
@@ -24470,7 +24819,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_57"></a></p>
+<p><a name="autogenerated_heading_58"></a></p>
 </section>
 <section id="config-submission-types-forecast-cpu-modules-items">
 <h5>Config &gt; submission &gt; types &gt; Forecast_cpu &gt; MODULES &gt; ^(.<em>)$ &gt; ^(.</em>)$ items<a class="headerlink" href="#config-submission-types-forecast-cpu-modules-items" title="Link to this heading"></a></h5>
@@ -24629,7 +24978,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_58"></a></p>
+<p><a name="autogenerated_heading_59"></a></p>
 </section>
 <section id="config-submission-types-forecast-gpu-tasks-tasks-items">
 <h5>Config &gt; submission &gt; types &gt; Forecast_gpu &gt; tasks &gt; tasks items<a class="headerlink" href="#config-submission-types-forecast-gpu-tasks-tasks-items" title="Link to this heading"></a></h5>
@@ -24893,7 +25242,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_59"></a></p>
+<p><a name="autogenerated_heading_60"></a></p>
 </section>
 <section id="config-submission-types-forecast-gpu-modules-items">
 <h5>Config &gt; submission &gt; types &gt; Forecast_gpu &gt; MODULES &gt; ^(.<em>)$ &gt; ^(.</em>)$ items<a class="headerlink" href="#config-submission-types-forecast-gpu-modules-items" title="Link to this heading"></a></h5>
@@ -25355,7 +25704,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_60"></a></p>
+<p><a name="autogenerated_heading_61"></a></p>
 <section id="at-least-one-of-the-items-must-be">
 <h4>At least one of the items must be<a class="headerlink" href="#at-least-one-of-the-items-must-be" title="Link to this heading"></a></h4>
 <table class="docutils align-default">
@@ -25418,7 +25767,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_61"></a></p>
+<p><a name="autogenerated_heading_62"></a></p>
 <section id="id13">
 <h4>At least one of the items must be<a class="headerlink" href="#id13" title="Link to this heading"></a></h4>
 <table class="docutils align-default">
@@ -25451,7 +25800,7 @@ must respect the following conditions</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-06-17T14:02:01Z.
+      <span class="lastupdated">Last updated on 2025-06-18T07:31:13Z.
       </span></p>
   </div>
 
