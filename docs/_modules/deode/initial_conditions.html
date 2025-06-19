@@ -872,6 +872,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-system-bddir-sfx">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">system</span> <span class="pre">&gt;</span> <span class="pre">bddir_sfx</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-system-bddir">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">system</span> <span class="pre">&gt;</span> <span class="pre">bddir</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-system-intp-bddir">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">system</span> <span class="pre">&gt;</span> <span class="pre">intp_bddir</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-system-intp-bddir-sfx">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">system</span> <span class="pre">&gt;</span> <span class="pre">intp_bddir_sfx</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-system-climdir">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">system</span> <span class="pre">&gt;</span> <span class="pre">climdir</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-system-bindir">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">system</span> <span class="pre">&gt;</span> <span class="pre">bindir</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-system-bdclimdir">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">system</span> <span class="pre">&gt;</span> <span class="pre">bdclimdir</span></code></a></li>
@@ -1297,6 +1298,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">starttime</span> <span class="o">=</span> <span class="n">as_datetime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.times.start&quot;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cycle_length</span> <span class="o">=</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.times.cycle_length&quot;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">archive</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;system.archive&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">intp_bddir_sfx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;system.intp_bddir_sfx&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">archive</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">file_templates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;file_templates&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">surfex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.surfex&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.mode&quot;</span><span class="p">]</span>
@@ -1368,7 +1370,7 @@
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">intp_bddir</span><span class="si">}</span><span class="s2">/ELSCF@CNMEXP@ALBC000&quot;</span>
             <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">source_sfx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">archive</span><span class="si">}</span><span class="s2">/ICMSH@CNMEXP@INIT.sfx&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">intp_bddir_sfx</span><span class="si">}</span><span class="s2">/ICMSH@CNMEXP@INIT.sfx&quot;</span>
             <span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
@@ -1405,7 +1407,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-06-19T07:12:11Z.
+      <span class="lastupdated">Last updated on 2025-06-19T08:51:57Z.
       </span></p>
   </div>
 
