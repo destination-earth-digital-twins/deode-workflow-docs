@@ -381,6 +381,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.general_utils.get_empty_nested_defaultdict"><code class="docutils literal notranslate"><span class="pre">get_empty_nested_defaultdict()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.general_utils.merge_dicts"><code class="docutils literal notranslate"><span class="pre">merge_dicts()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.general_utils.modify_mappings"><code class="docutils literal notranslate"><span class="pre">modify_mappings()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.general_utils.recursive_delete_keys"><code class="docutils literal notranslate"><span class="pre">recursive_delete_keys()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.general_utils.recursive_dict_deviation"><code class="docutils literal notranslate"><span class="pre">recursive_dict_deviation()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.general_utils.value_from_any_generator"><code class="docutils literal notranslate"><span class="pre">value_from_any_generator()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.general_utils.value_from_mapping_generator"><code class="docutils literal notranslate"><span class="pre">value_from_mapping_generator()</span></code></a></li>
@@ -1558,6 +1559,29 @@
 
     <span class="k">return</span> <span class="n">new_dict</span></div>
 
+
+
+<div class="viewcode-block" id="recursive_delete_keys">
+<a class="viewcode-back" href="../../deode.html#deode.general_utils.recursive_delete_keys">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">recursive_delete_keys</span><span class="p">(</span><span class="n">mapping</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">keys_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Recursively delete keys from a mapping based on a dictionary of keys to delete.</span>
+
+<span class="sd">    Keys are deleted in-place on the `mapping` object.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        mapping: The mapping to delete keys from.</span>
+<span class="sd">        keys_dict: The dictionary of keys to delete.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">keys_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mapping</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="n">recursive_delete_keys</span><span class="p">(</span><span class="n">mapping</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">value</span><span class="p">)</span>
+                <span class="c1"># Make sure to delete empty dicts</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">mapping</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+                    <span class="k">del</span> <span class="n">mapping</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">del</span> <span class="n">mapping</span><span class="p">[</span><span class="n">key</span><span class="p">]</span></div>
+
 </pre></div>
 
            </div>
@@ -1568,7 +1592,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-06-19T08:51:57Z.
+      <span class="lastupdated">Last updated on 2025-06-23T07:12:11Z.
       </span></p>
   </div>
 
