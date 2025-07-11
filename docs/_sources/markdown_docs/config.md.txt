@@ -1,5 +1,5 @@
 The following section was automatically generated running
-        `deode doc config` on 2025-07-08T12:38:14.
+        `deode doc config` on 2025-07-11T06:42:35.
 
 # Config
 
@@ -75,6 +75,8 @@ The following section was automatically generated running
 | [output_settings](#general_output_settings)                 | object           | No       | -            | Output Settings                                                                                                                                                                                                                                                                                                                              |
 | [remove_sections](#general_remove_sections)                 | array            | No       | []           | Sections to remove prior to config merge                                                                                                                                                                                                                                                                                                     |
 | [windfarm](#general_windfarm)                               | boolean          | No       | false        | Switch on wind farm parameterisation                                                                                                                                                                                                                                                                                                         |
+| [upd_sst_sic](#general_upd_sst_sic)                         | boolean          | No       | false        | Switch to update SST/SIC during forecast                                                                                                                                                                                                                                                                                                     |
+| [surfex_sea_ice](#general_surfex_sea_ice)                   | enum (of string) | No       | "sice"       | Treatment of sea ice in surfex                                                                                                                                                                                                                                                                                                               |
 
 <a name="general_times"></a>
 ### Property `Config > general > times`
@@ -901,6 +903,32 @@ Must be one of:
 
 **Description:** Switch on wind farm parameterisation
 
+<a name="general_upd_sst_sic"></a>
+### Property `Config > general > upd_sst_sic`
+
+|              |           |
+| ------------ | --------- |
+| **Type**     | `boolean` |
+| **Required** | No        |
+| **Default**  | `false`   |
+
+**Description:** Switch to update SST/SIC during forecast
+
+<a name="general_surfex_sea_ice"></a>
+### Property `Config > general > surfex_sea_ice`
+
+|              |                    |
+| ------------ | ------------------ |
+| **Type**     | `enum (of string)` |
+| **Required** | No                 |
+| **Default**  | `"sice"`           |
+
+**Description:** Treatment of sea ice in surfex
+
+Must be one of:
+* "sice"
+* "none"
+
 <a name="suite_control"></a>
 ## Property `Config > suite_control`
 
@@ -922,6 +950,7 @@ Must be one of:
 | [do_pgd](#suite_control_do_pgd)                                             | boolean          | No       | -                      | Activate generation of a PGD file                                                                                                                                                                                                                                       |
 | [mode](#suite_control_mode)                                                 | enum (of string) | No       | -                      | Choose a strategy to achieve initial/initial_sfx files (start:  start from interpolated files and then propagate the FG between cycles, restart: start from a previous run and then propagate the FG between cycles, cold_start: always start from interpolated files). |
 | [interpolate_boundaries](#suite_control_interpolate_boundaries)             | boolean          | No       | -                      | Activates the boundary interpolation                                                                                                                                                                                                                                    |
+| [do_interpolsstsic](#suite_control_do_interpolsstsic)                       | boolean          | No       | -                      | Activates the SST & SIC boundary interpolation                                                                                                                                                                                                                          |
 | [do_marsprep](#suite_control_do_marsprep)                                   | boolean          | No       | -                      | Run marsprep or skip extraction                                                                                                                                                                                                                                         |
 | [do_extractsqlite](#suite_control_do_extractsqlite)                         | boolean          | No       | -                      | Activates extraction of selected points to SQLite files for verification.                                                                                                                                                                                               |
 | [do_mergesqlite](#suite_control_do_mergesqlite)                             | boolean          | No       | -                      | Activates merging of extracted sqlite files. Requires do_extractsqlite to be true, and number of ensemble members to be greater than 1, to have an effect.                                                                                                              |
@@ -1003,6 +1032,16 @@ Must be one of:
 | **Required** | No        |
 
 **Description:** Activates the boundary interpolation
+
+<a name="suite_control_do_interpolsstsic"></a>
+### Property `Config > suite_control > do_interpolsstsic`
+
+|              |           |
+| ------------ | --------- |
+| **Type**     | `boolean` |
+| **Required** | No        |
+
+**Description:** Activates the SST & SIC boundary interpolation
 
 <a name="suite_control_do_marsprep"></a>
 ### Property `Config > suite_control > do_marsprep`
@@ -1385,30 +1424,32 @@ Must be one of:
 
 **Description:** DEODE system specific path settings
 
-| Property                                                       | Type   | Required | Default                                           | Title/Description                                                                            |
-| -------------------------------------------------------------- | ------ | -------- | ------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| [forecast_dir_link](#system_forecast_dir_link)                 | string | No       | "../Forecast"                                     | Name of the softlink pointing to the Forecast task work directory                            |
-| [bdfile_sfx_template](#system_bdfile_sfx_template)             | string | No       | -                                                 | Name template for input initial surfex file for prep                                         |
-| [bdfile_template](#system_bdfile_template)                     | string | No       | -                                                 | Name template for input boundary files                                                       |
-| [bddir_sfx](#system_bddir_sfx)                                 | string | No       | -                                                 | Location of input intial file for surfex                                                     |
-| [bddir](#system_bddir)                                         | string | No       | -                                                 | Location of input boundaries                                                                 |
-| [intp_bddir](#system_intp_bddir)                               | string | No       | "@WRK@"                                           | Location of boundaries on the current domain, i.e. the output directory of e927              |
-| [intp_bddir_sfx](#system_intp_bddir_sfx)                       | string | No       | "@ARCHIVE@"                                       | Location of the inital surfex file for the current domain, i.e. the output directory of Prep |
-| [climdir](#system_climdir)                                     | string | No       | -                                                 | Location of generated/used climate files (PGD/monthly files)                                 |
-| [bindir](#system_bindir)                                       | string | No       | -                                                 | Location of binaries                                                                         |
-| [bdclimdir](#system_bdclimdir)                                 | string | No       | -                                                 | Location of host model climate files used for e927/c903                                      |
-| [wrk](#system_wrk)                                             | string | No       | "@CASEDIR@/@YYYY@@MM@@DD@_@HH@@mm@"               | Location of date specific working directory                                                  |
-| [fullpos_config_file](#system_fullpos_config_file)             | string | No       | -                                                 | Path to the fullpos yml config file                                                          |
-| [archive_timestamp](#system_archive_timestamp)                 | string | No       | "@YYYY@/@MM@/@DD@/@HH@/"                          | Relative path of date specific archive                                                       |
-| [archive](#system_archive)                                     | string | No       | "@ARCHIVE_ROOT@/@ARCHIVE_TIMESTAMP@/@MEMBER_STR@" | Absolute path of date specific archive                                                       |
-| [logs](#system_logs)                                           | string | No       | -                                                 | Location of collected logfiles                                                               |
-| [namelists](#system_namelists)                                 | string | No       | "@DEODE_HOME@/data/namelists/@CYCLE@"             | Path to static namelists                                                                     |
-| [marsdir](#system_marsdir)                                     | string | No       | -                                                 | Location input files extracted from MARS by Marsprep                                         |
-| [global_sfcdir](#system_global_sfcdir)                         | string | No       | -                                                 | Path to SFC files needed for c903, which are not in MARS                                     |
-| [prev_case](#system_prev_case)                                 | string | No       | "@CASE@"                                          | Name of the previous experiment                                                              |
-| [sfx_input_definition](#system_sfx_input_definition)           | string | No       | "@CYCLE@/sfx.json"                                | Path to the surfex json config file                                                          |
-| [forecast_input_definition](#system_forecast_input_definition) | string | No       | "@CYCLE@/forecast.json"                           | Path to the forecast json config file                                                        |
-| [c903_input_definition](#system_c903_input_definition)         | string | No       | "@CYCLE@/c903.json"                               | Path to the c903 json config file                                                            |
+| Property                                                       | Type   | Required | Default                                           | Title/Description                                                                                                    |
+| -------------------------------------------------------------- | ------ | -------- | ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| [forecast_dir_link](#system_forecast_dir_link)                 | string | No       | "../Forecast"                                     | Name of the softlink pointing to the Forecast task work directory                                                    |
+| [bdfile_sfx_template](#system_bdfile_sfx_template)             | string | No       | -                                                 | Name template for input initial surfex file for prep                                                                 |
+| [bdfile_sst_template](#system_bdfile_sst_template)             | string | No       | -                                                 | Name template for input SST & SIC files of the host model                                                            |
+| [bdfile_template](#system_bdfile_template)                     | string | No       | -                                                 | Name template for input boundary files                                                                               |
+| [sstfile_template](#system_sstfile_template)                   | string | No       | -                                                 | Name template for SST & SIC input boundary files interpolated to the model grid (currently hard-coded in model code) |
+| [bddir_sfx](#system_bddir_sfx)                                 | string | No       | -                                                 | Location of input intial file for surfex                                                                             |
+| [bddir](#system_bddir)                                         | string | No       | -                                                 | Location of input boundaries                                                                                         |
+| [intp_bddir](#system_intp_bddir)                               | string | No       | "@WRK@"                                           | Location of boundaries on the current domain, i.e. the output directory of e927                                      |
+| [intp_bddir_sfx](#system_intp_bddir_sfx)                       | string | No       | "@ARCHIVE@"                                       | Location of the inital surfex file for the current domain, i.e. the output directory of Prep                         |
+| [climdir](#system_climdir)                                     | string | No       | -                                                 | Location of generated/used climate files (PGD/monthly files)                                                         |
+| [bindir](#system_bindir)                                       | string | No       | -                                                 | Location of binaries                                                                                                 |
+| [bdclimdir](#system_bdclimdir)                                 | string | No       | -                                                 | Location of host model climate files used for e927/c903                                                              |
+| [wrk](#system_wrk)                                             | string | No       | "@CASEDIR@/@YYYY@@MM@@DD@_@HH@@mm@"               | Location of date specific working directory                                                                          |
+| [fullpos_config_file](#system_fullpos_config_file)             | string | No       | -                                                 | Path to the fullpos yml config file                                                                                  |
+| [archive_timestamp](#system_archive_timestamp)                 | string | No       | "@YYYY@/@MM@/@DD@/@HH@/"                          | Relative path of date specific archive                                                                               |
+| [archive](#system_archive)                                     | string | No       | "@ARCHIVE_ROOT@/@ARCHIVE_TIMESTAMP@/@MEMBER_STR@" | Absolute path of date specific archive                                                                               |
+| [logs](#system_logs)                                           | string | No       | -                                                 | Location of collected logfiles                                                                                       |
+| [namelists](#system_namelists)                                 | string | No       | "@DEODE_HOME@/data/namelists/@CYCLE@"             | Path to static namelists                                                                                             |
+| [marsdir](#system_marsdir)                                     | string | No       | -                                                 | Location input files extracted from MARS by Marsprep                                                                 |
+| [global_sfcdir](#system_global_sfcdir)                         | string | No       | -                                                 | Path to SFC files needed for c903, which are not in MARS                                                             |
+| [prev_case](#system_prev_case)                                 | string | No       | "@CASE@"                                          | Name of the previous experiment                                                                                      |
+| [sfx_input_definition](#system_sfx_input_definition)           | string | No       | "@CYCLE@/sfx.json"                                | Path to the surfex json config file                                                                                  |
+| [forecast_input_definition](#system_forecast_input_definition) | string | No       | "@CYCLE@/forecast.json"                           | Path to the forecast json config file                                                                                |
+| [c903_input_definition](#system_c903_input_definition)         | string | No       | "@CYCLE@/c903.json"                               | Path to the c903 json config file                                                                                    |
 
 <a name="system_forecast_dir_link"></a>
 ### Property `Config > system > forecast_dir_link`
@@ -1431,6 +1472,16 @@ Must be one of:
 
 **Description:** Name template for input initial surfex file for prep
 
+<a name="system_bdfile_sst_template"></a>
+### Property `Config > system > bdfile_sst_template`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Name template for input SST & SIC files of the host model
+
 <a name="system_bdfile_template"></a>
 ### Property `Config > system > bdfile_template`
 
@@ -1440,6 +1491,16 @@ Must be one of:
 | **Required** | No       |
 
 **Description:** Name template for input boundary files
+
+<a name="system_sstfile_template"></a>
+### Property `Config > system > sstfile_template`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Name template for SST & SIC input boundary files interpolated to the model grid (currently hard-coded in model code)
 
 <a name="system_bddir_sfx"></a>
 ### Property `Config > system > bddir_sfx`
@@ -1654,16 +1715,18 @@ Must be one of:
 
 **Description:** Settings for control of boundary treatment.
 
-| Property                                                       | Type             | Required | Default | Title/Description                                                             |
-| -------------------------------------------------------------- | ---------------- | -------- | ------- | ----------------------------------------------------------------------------- |
-| [bdint](#boundaries_bdint)                                     | string           | No       | -       | Boundary interval                                                             |
-| [bdshift](#boundaries_bdshift)                                 | string           | No       | -       | Shift of boundary initial time. E.g. 'PT3H' would mean use 3H old boundaries  |
-| [max_interpolation_tasks](#boundaries_max_interpolation_tasks) | number           | No       | -       | Number of interpolate tasks run in parallel                                   |
-| [bdmodel](#boundaries_bdmodel)                                 | enum (of string) | No       | "ifs"   | Coupling model                                                                |
-| [humi_gp](#boundaries_humi_gp)                                 | boolean          | No       | -       | Value of TFP_Q%LLGP in domain namelist for c903. True for gridpoint humidity. |
-| [lam](#boundaries_lam)                                         | object           | No       | -       | LAM related boundary settings                                                 |
-| [ifs](#boundaries_ifs)                                         | object           | No       | -       | IFS related settings                                                          |
-| [bd_has_surfex](#boundaries_bd_has_surfex)                     | boolean          | No       | -       | Set to true if the host model runs with surfex                                |
+| Property                                                       | Type                      | Required | Default | Title/Description                                                             |
+| -------------------------------------------------------------- | ------------------------- | -------- | ------- | ----------------------------------------------------------------------------- |
+| [bdint](#boundaries_bdint)                                     | string                    | No       | -       | Boundary interval                                                             |
+| [bdshift](#boundaries_bdshift)                                 | string                    | No       | -       | Shift of boundary initial time. E.g. 'PT3H' would mean use 3H old boundaries  |
+| [max_interpolation_tasks](#boundaries_max_interpolation_tasks) | number                    | No       | -       | Number of interpolate tasks run in parallel                                   |
+| [bdmodel](#boundaries_bdmodel)                                 | enum (of string)          | No       | "ifs"   | Coupling model                                                                |
+| [sstmodels](#boundaries_sstmodels)                             | array of enum (of string) | No       | -       | Coupling model for SST & SIC                                                  |
+| [sst_is_lsm](#boundaries_sst_is_lsm)                           | enum (of string)          | No       | "auto"  | Switch for using SST as LSM                                                   |
+| [humi_gp](#boundaries_humi_gp)                                 | boolean                   | No       | -       | Value of TFP_Q%LLGP in domain namelist for c903. True for gridpoint humidity. |
+| [lam](#boundaries_lam)                                         | object                    | No       | -       | LAM related boundary settings                                                 |
+| [ifs](#boundaries_ifs)                                         | object                    | No       | -       | IFS related settings                                                          |
+| [bd_has_surfex](#boundaries_bd_has_surfex)                     | boolean                   | No       | -       | Set to true if the host model runs with surfex                                |
 
 <a name="boundaries_bdint"></a>
 ### Property `Config > boundaries > bdint`
@@ -1711,6 +1774,55 @@ Must be one of:
 Must be one of:
 * "lam"
 * "ifs"
+
+<a name="boundaries_sstmodels"></a>
+### Property `Config > boundaries > sstmodels`
+
+|              |                             |
+| ------------ | --------------------------- |
+| **Type**     | `array of enum (of string)` |
+| **Required** | No                          |
+
+**Description:** Coupling model for SST & SIC
+
+|                      | Array restrictions |
+| -------------------- | ------------------ |
+| **Min items**        | N/A                |
+| **Max items**        | N/A                |
+| **Items unicity**    | False              |
+| **Additional items** | False              |
+| **Tuple validation** | See below          |
+
+| Each item of this array must be                | Description |
+| ---------------------------------------------- | ----------- |
+| [sstmodels items](#boundaries_sstmodels_items) | -           |
+
+<a name="autogenerated_heading_19"></a>
+#### Config > boundaries > sstmodels > sstmodels items
+
+|              |                    |
+| ------------ | ------------------ |
+| **Type**     | `enum (of string)` |
+| **Required** | No                 |
+
+Must be one of:
+* "IFS"
+
+<a name="boundaries_sst_is_lsm"></a>
+### Property `Config > boundaries > sst_is_lsm`
+
+|              |                    |
+| ------------ | ------------------ |
+| **Type**     | `enum (of string)` |
+| **Required** | No                 |
+| **Default**  | `"auto"`           |
+
+**Description:** Switch for using SST as LSM
+
+Must be one of:
+* "lsm"
+* "sst"
+* "auto"
 
 <a name="boundaries_humi_gp"></a>
 ### Property `Config > boundaries > humi_gp`
@@ -1851,7 +1963,7 @@ Must be one of:
 | -------------------------------------------------------- | ----------- |
 | [item 0 items](#boundaries_ifs_bdmembers_anyOf_i0_items) | -           |
 
-<a name="autogenerated_heading_19"></a>
+<a name="autogenerated_heading_20"></a>
 ##### Config > boundaries > ifs > bdmembers > anyOf > item 0 > item 0 items
 
 |              |          |
@@ -1879,7 +1991,7 @@ Must be one of:
 | -------------------------------------------------------- | ----------- |
 | [item 1 items](#boundaries_ifs_bdmembers_anyOf_i1_items) | -           |
 
-<a name="autogenerated_heading_20"></a>
+<a name="autogenerated_heading_21"></a>
 ##### Config > boundaries > ifs > bdmembers > anyOf > item 1 > item 1 items
 
 |              |           |
@@ -2148,7 +2260,7 @@ Must be one of:
 | --------------------------------- | ----------- |
 | [main items](#fullpos_main_items) | -           |
 
-<a name="autogenerated_heading_21"></a>
+<a name="autogenerated_heading_22"></a>
 #### Config > fullpos > main > main items
 
 |              |          |
@@ -2187,7 +2299,7 @@ Must be one of:
 | --------------------------------------------------------------------------- | ----------- |
 | [additionalProperties items](#fullpos_selection_additionalProperties_items) | -           |
 
-<a name="autogenerated_heading_22"></a>
+<a name="autogenerated_heading_23"></a>
 ##### Config > fullpos > selection > additionalProperties > additionalProperties items
 
 |              |          |
@@ -2367,7 +2479,7 @@ Must be one of:
 | ------------------------------------------------------------- | ----------- |
 | [csc_specific items](#gribmodify_fullpos1_csc_specific_items) | -           |
 
-<a name="autogenerated_heading_23"></a>
+<a name="autogenerated_heading_24"></a>
 ##### Config > gribmodify > fullpos.1 > csc_specific > csc_specific items
 
 |              |          |
@@ -2444,7 +2556,7 @@ Must be one of:
 | ------------------------------------------------------------- | ----------- |
 | [csc_specific items](#gribmodify_fullpos2_csc_specific_items) | -           |
 
-<a name="autogenerated_heading_24"></a>
+<a name="autogenerated_heading_25"></a>
 ##### Config > gribmodify > fullpos.2 > csc_specific > csc_specific items
 
 |              |          |
@@ -2521,7 +2633,7 @@ Must be one of:
 | ------------------------------------------------------------- | ----------- |
 | [csc_specific items](#gribmodify_fullpos3_csc_specific_items) | -           |
 
-<a name="autogenerated_heading_25"></a>
+<a name="autogenerated_heading_26"></a>
 ##### Config > gribmodify > fullpos.3 > csc_specific > csc_specific items
 
 |              |          |
@@ -2598,7 +2710,7 @@ Must be one of:
 | ------------------------------------------------------------- | ----------- |
 | [csc_specific items](#gribmodify_fullpos4_csc_specific_items) | -           |
 
-<a name="autogenerated_heading_26"></a>
+<a name="autogenerated_heading_27"></a>
 ##### Config > gribmodify > fullpos.4 > csc_specific > csc_specific items
 
 |              |          |
@@ -2675,7 +2787,7 @@ Must be one of:
 | ------------------------------------------------------------- | ----------- |
 | [csc_specific items](#gribmodify_fullpos5_csc_specific_items) | -           |
 
-<a name="autogenerated_heading_27"></a>
+<a name="autogenerated_heading_28"></a>
 ##### Config > gribmodify > fullpos.5 > csc_specific > csc_specific items
 
 |              |          |
@@ -2752,7 +2864,7 @@ Must be one of:
 | ------------------------------------------------------------- | ----------- |
 | [csc_specific items](#gribmodify_fullpos6_csc_specific_items) | -           |
 
-<a name="autogenerated_heading_28"></a>
+<a name="autogenerated_heading_29"></a>
 ##### Config > gribmodify > fullpos.6 > csc_specific > csc_specific items
 
 |              |          |
@@ -2829,7 +2941,7 @@ Must be one of:
 | ------------------------------------------------------------ | ----------- |
 | [csc_specific items](#gribmodify_surfex1_csc_specific_items) | -           |
 
-<a name="autogenerated_heading_29"></a>
+<a name="autogenerated_heading_30"></a>
 ##### Config > gribmodify > surfex.1 > csc_specific > csc_specific items
 
 |              |          |
@@ -2906,7 +3018,7 @@ Must be one of:
 | ------------------------------------------------------------ | ----------- |
 | [csc_specific items](#gribmodify_surfex2_csc_specific_items) | -           |
 
-<a name="autogenerated_heading_30"></a>
+<a name="autogenerated_heading_31"></a>
 ##### Config > gribmodify > surfex.2 > csc_specific > csc_specific items
 
 |              |          |
@@ -2983,7 +3095,7 @@ Must be one of:
 | ------------------------------------------------------------ | ----------- |
 | [csc_specific items](#gribmodify_surfex3_csc_specific_items) | -           |
 
-<a name="autogenerated_heading_31"></a>
+<a name="autogenerated_heading_32"></a>
 ##### Config > gribmodify > surfex.3 > csc_specific > csc_specific items
 
 |              |          |
@@ -3060,7 +3172,7 @@ Must be one of:
 | ------------------------------------------------------------ | ----------- |
 | [csc_specific items](#gribmodify_surfex4_csc_specific_items) | -           |
 
-<a name="autogenerated_heading_32"></a>
+<a name="autogenerated_heading_33"></a>
 ##### Config > gribmodify > surfex.4 > csc_specific > csc_specific items
 
 |              |          |
@@ -3137,7 +3249,7 @@ Must be one of:
 | ------------------------------------------------------------ | ----------- |
 | [csc_specific items](#gribmodify_surfex5_csc_specific_items) | -           |
 
-<a name="autogenerated_heading_33"></a>
+<a name="autogenerated_heading_34"></a>
 ##### Config > gribmodify > surfex.5 > csc_specific > csc_specific items
 
 |              |          |
@@ -3214,7 +3326,7 @@ Must be one of:
 | ------------------------------------------------------------ | ----------- |
 | [csc_specific items](#gribmodify_surfex6_csc_specific_items) | -           |
 
-<a name="autogenerated_heading_34"></a>
+<a name="autogenerated_heading_35"></a>
 ##### Config > gribmodify > surfex.6 > csc_specific > csc_specific items
 
 |              |          |
@@ -3291,7 +3403,7 @@ Must be one of:
 | ------------------------------------------------------------ | ----------- |
 | [csc_specific items](#gribmodify_surfex7_csc_specific_items) | -           |
 
-<a name="autogenerated_heading_35"></a>
+<a name="autogenerated_heading_36"></a>
 ##### Config > gribmodify > surfex.7 > csc_specific > csc_specific items
 
 |              |          |
@@ -3368,7 +3480,7 @@ Must be one of:
 | ------------------------------------------------------------ | ----------- |
 | [csc_specific items](#gribmodify_surfex8_csc_specific_items) | -           |
 
-<a name="autogenerated_heading_36"></a>
+<a name="autogenerated_heading_37"></a>
 ##### Config > gribmodify > surfex.8 > csc_specific > csc_specific items
 
 |              |          |
@@ -3555,7 +3667,7 @@ Must be one of:
 | -------------------------------------------------------------- | ----------- |
 | [item 1 items](#archiving_hour_example_pattern_anyOf_i1_items) | -           |
 
-<a name="autogenerated_heading_37"></a>
+<a name="autogenerated_heading_38"></a>
 ##### Config > archiving > hour > example > pattern > anyOf > item 1 > item 1 items
 
 |              |          |
@@ -3624,7 +3736,7 @@ Must be one of:
 | **Required**              | No                                                                        |
 | **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
 
-<a name="autogenerated_heading_38"></a>
+<a name="autogenerated_heading_39"></a>
 ##### The following properties are required
 * include
 * ncycles_delay
@@ -3639,7 +3751,7 @@ Must be one of:
 | **Required**              | No                                                                        |
 | **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
 
-<a name="autogenerated_heading_39"></a>
+<a name="autogenerated_heading_40"></a>
 ##### The following properties are required
 * include
 * cleaning_delay
@@ -4648,7 +4760,7 @@ Must be one of:
 | --------------------------------------------------- | ----------- |
 | [item 2 items](#eps_general_members_oneOf_i2_items) | -           |
 
-<a name="autogenerated_heading_40"></a>
+<a name="autogenerated_heading_41"></a>
 ##### Config > eps > general > members > oneOf > item 2 > item 2 items
 
 |              |           |
@@ -5221,7 +5333,7 @@ Must be one of:
 | ----------------------------------------------------------- | ----------- |
 | [gen_macros items](#macros_select_default_gen_macros_items) | -           |
 
-<a name="autogenerated_heading_41"></a>
+<a name="autogenerated_heading_42"></a>
 ##### Config > macros > select > default > gen_macros > gen_macros items
 
 |                           |                                                                           |
@@ -5274,7 +5386,7 @@ Must be one of:
 | --------------------------------------------------------------- | ----------- |
 | [group_macros items](#macros_select_default_group_macros_items) | -           |
 
-<a name="autogenerated_heading_42"></a>
+<a name="autogenerated_heading_43"></a>
 ##### Config > macros > select > default > group_macros > group_macros items
 
 |              |          |
@@ -5304,7 +5416,7 @@ Must be one of:
 | --------------------------------------------------------- | ----------- |
 | [os_macros items](#macros_select_default_os_macros_items) | -           |
 
-<a name="autogenerated_heading_43"></a>
+<a name="autogenerated_heading_44"></a>
 ##### Config > macros > select > default > os_macros > os_macros items
 
 |              |          |
@@ -7768,7 +7880,7 @@ Must be one of:
 | ---------------------------------------------------- | ----------- |
 | [archive_types items](#platform_archive_types_items) | -           |
 
-<a name="autogenerated_heading_44"></a>
+<a name="autogenerated_heading_45"></a>
 #### Config > platform > archive_types > archive_types items
 
 |              |                    |
@@ -8535,7 +8647,7 @@ Must be one of:
 | --------------------------------------------------- | ----------- |
 | [tasks items](#submission_types_serial_tasks_items) | -           |
 
-<a name="autogenerated_heading_45"></a>
+<a name="autogenerated_heading_46"></a>
 ##### Config > submission > types > serial > tasks > tasks items
 
 |              |          |
@@ -8649,7 +8761,7 @@ must respect the following conditions
 | --------------------------------------------------------------- | ----------- |
 | [^(.*)$ items](#submission_types_serial_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_46"></a>
+<a name="autogenerated_heading_47"></a>
 ##### Config > submission > types > serial > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -8703,7 +8815,7 @@ must respect the following conditions
 | ----------------------------------------------------- | ----------- |
 | [tasks items](#submission_types_parallel_tasks_items) | -           |
 
-<a name="autogenerated_heading_47"></a>
+<a name="autogenerated_heading_48"></a>
 ##### Config > submission > types > parallel > tasks > tasks items
 
 |              |          |
@@ -8817,7 +8929,7 @@ must respect the following conditions
 | ----------------------------------------------------------------- | ----------- |
 | [^(.*)$ items](#submission_types_parallel_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_48"></a>
+<a name="autogenerated_heading_49"></a>
 ##### Config > submission > types > parallel > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -8871,7 +8983,7 @@ must respect the following conditions
 | ---------------------------------------------------------- | ----------- |
 | [tasks items](#submission_types_background_vm_tasks_items) | -           |
 
-<a name="autogenerated_heading_49"></a>
+<a name="autogenerated_heading_50"></a>
 ##### Config > submission > types > background_vm > tasks > tasks items
 
 |              |          |
@@ -8985,7 +9097,7 @@ must respect the following conditions
 | ---------------------------------------------------------------------- | ----------- |
 | [^(.*)$ items](#submission_types_background_vm_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_50"></a>
+<a name="autogenerated_heading_51"></a>
 ##### Config > submission > types > background_vm > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -9039,7 +9151,7 @@ must respect the following conditions
 | ----------------------------------------------------------- | ----------- |
 | [tasks items](#submission_types_background_hpc_tasks_items) | -           |
 
-<a name="autogenerated_heading_51"></a>
+<a name="autogenerated_heading_52"></a>
 ##### Config > submission > types > background_hpc > tasks > tasks items
 
 |              |          |
@@ -9153,7 +9265,7 @@ must respect the following conditions
 | ----------------------------------------------------------------------- | ----------- |
 | [^(.*)$ items](#submission_types_background_hpc_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_52"></a>
+<a name="autogenerated_heading_53"></a>
 ##### Config > submission > types > background_hpc > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -9207,7 +9319,7 @@ must respect the following conditions
 | ------------------------------------------------ | ----------- |
 | [tasks items](#submission_types_gnu_tasks_items) | -           |
 
-<a name="autogenerated_heading_53"></a>
+<a name="autogenerated_heading_54"></a>
 ##### Config > submission > types > gnu > tasks > tasks items
 
 |              |          |
@@ -9321,7 +9433,7 @@ must respect the following conditions
 | ------------------------------------------------------------ | ----------- |
 | [^(.*)$ items](#submission_types_gnu_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_54"></a>
+<a name="autogenerated_heading_55"></a>
 ##### Config > submission > types > gnu > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -9375,7 +9487,7 @@ must respect the following conditions
 | --------------------------------------------------- | ----------- |
 | [tasks items](#submission_types_sqlite_tasks_items) | -           |
 
-<a name="autogenerated_heading_55"></a>
+<a name="autogenerated_heading_56"></a>
 ##### Config > submission > types > sqlite > tasks > tasks items
 
 |              |          |
@@ -9489,7 +9601,7 @@ must respect the following conditions
 | --------------------------------------------------------------- | ----------- |
 | [^(.*)$ items](#submission_types_sqlite_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_56"></a>
+<a name="autogenerated_heading_57"></a>
 ##### Config > submission > types > sqlite > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -9543,7 +9655,7 @@ must respect the following conditions
 | --------------------------------------------------------- | ----------- |
 | [tasks items](#submission_types_Forecast_cpu_tasks_items) | -           |
 
-<a name="autogenerated_heading_57"></a>
+<a name="autogenerated_heading_58"></a>
 ##### Config > submission > types > Forecast_cpu > tasks > tasks items
 
 |              |          |
@@ -9657,7 +9769,7 @@ must respect the following conditions
 | --------------------------------------------------------------------- | ----------- |
 | [^(.*)$ items](#submission_types_Forecast_cpu_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_58"></a>
+<a name="autogenerated_heading_59"></a>
 ##### Config > submission > types > Forecast_cpu > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -9711,7 +9823,7 @@ must respect the following conditions
 | --------------------------------------------------------- | ----------- |
 | [tasks items](#submission_types_Forecast_gpu_tasks_items) | -           |
 
-<a name="autogenerated_heading_59"></a>
+<a name="autogenerated_heading_60"></a>
 ##### Config > submission > types > Forecast_gpu > tasks > tasks items
 
 |              |          |
@@ -9825,7 +9937,7 @@ must respect the following conditions
 | --------------------------------------------------------------------- | ----------- |
 | [^(.*)$ items](#submission_types_Forecast_gpu_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_60"></a>
+<a name="autogenerated_heading_61"></a>
 ##### Config > submission > types > Forecast_gpu > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -10014,7 +10126,7 @@ must respect the following conditions
 | **Additional items** | False              |
 | **Tuple validation** | See below          |
 
-<a name="autogenerated_heading_61"></a>
+<a name="autogenerated_heading_62"></a>
 #### At least one of the items must be
 
 |              |          |
@@ -10040,7 +10152,7 @@ must respect the following conditions
 | **Additional items** | False              |
 | **Tuple validation** | See below          |
 
-<a name="autogenerated_heading_62"></a>
+<a name="autogenerated_heading_63"></a>
 #### At least one of the items must be
 
 |              |          |
