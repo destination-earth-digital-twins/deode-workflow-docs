@@ -827,6 +827,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-general-csc">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">general</span> <span class="pre">&gt;</span> <span class="pre">csc</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-general-cycle">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">general</span> <span class="pre">&gt;</span> <span class="pre">cycle</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-general-event-type">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">general</span> <span class="pre">&gt;</span> <span class="pre">event_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-general-famodel">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">general</span> <span class="pre">&gt;</span> <span class="pre">famodel</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-general-initfile">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">general</span> <span class="pre">&gt;</span> <span class="pre">initfile</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-general-initfile-sfx">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">general</span> <span class="pre">&gt;</span> <span class="pre">initfile_sfx</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-general-namelist">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">general</span> <span class="pre">&gt;</span> <span class="pre">namelist</span></code></a></li>
@@ -1366,9 +1367,16 @@
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Use ECCODES_DEFINITION_PATH </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">eccodes_definition_path</span><span class="p">)</span>
             <span class="k">return</span>
 
+        <span class="c1"># Path to modelname definitions</span>
+        <span class="n">deode_eccodes_modelname_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_platform_value</span><span class="p">(</span><span class="s2">&quot;archive_root&quot;</span><span class="p">),</span> <span class="s2">&quot;eccodes&quot;</span><span class="p">,</span> <span class="s2">&quot;definitions&quot;</span>
+        <span class="p">)</span>
         <span class="c1"># Path to local tables</span>
         <span class="n">deode_eccodes_definition_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span>
             <span class="n">ConfigParserDefaults</span><span class="o">.</span><span class="n">DATA_DIRECTORY</span> <span class="o">/</span> <span class="s2">&quot;eccodes/definitions&quot;</span>
+        <span class="p">)</span>
+        <span class="n">deode_eccodes_definition_path</span> <span class="o">=</span> <span class="s2">&quot;:&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">deode_eccodes_definition_path</span><span class="p">,</span> <span class="n">deode_eccodes_modelname_path</span><span class="p">]</span>
         <span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
@@ -1622,7 +1630,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-07-14T09:22:56Z.
+      <span class="lastupdated">Last updated on 2025-07-14T12:32:20Z.
       </span></p>
   </div>
 
