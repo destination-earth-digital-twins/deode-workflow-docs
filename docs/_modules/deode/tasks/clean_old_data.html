@@ -1369,6 +1369,28 @@
         <span class="k">return</span> <span class="n">list_to_remove</span></div>
 
 
+<div class="viewcode-block" id="CleanOldData.find_empty_directories">
+<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.clean_old_data.CleanOldData.find_empty_directories">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_empty_directories</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a list of full paths to empty directories under the given path.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path (str): Root directory to search.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[str]: Full paths of empty directories.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">empty_dirs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">topdown</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">files</span> <span class="ow">and</span> <span class="p">(</span>
+                <span class="ow">not</span> <span class="n">dirs</span> <span class="ow">or</span> <span class="nb">all</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="ow">in</span> <span class="n">empty_dirs</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">dirs</span><span class="p">)</span>
+            <span class="p">):</span>
+                <span class="n">empty_dirs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">empty_dirs</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="CleanOldData.remove_list">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.clean_old_data.CleanOldData.remove_list">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">remove_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dir_list</span><span class="p">,</span> <span class="n">files</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -1405,9 +1427,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">delay</span> <span class="o">=</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;clean_old_data.ehype_data_period&quot;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">active</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ehype_scratch</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;impact.ehype.communicate.run_root&quot;</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ehype_work</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;impact.ehype.communicate.work_root&quot;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ehype_scratch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span>
+                <span class="s2">&quot;impact.ehype.communicate.run_root&quot;</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ehype_work</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span>
+                <span class="s2">&quot;impact.ehype.communicate.work_root&quot;</span>
+            <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ehype_form</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;clean_old_data.ehype_format&quot;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ehype_form_run</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;clean_old_data.ehype_format_run&quot;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ehype_form_perm</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;clean_old_data.ehype_format_perm&quot;</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Switch of ehype cleaning as config is incomplete&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">active</span> <span class="o">=</span> <span class="kc">False</span>
@@ -1421,21 +1449,31 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Run clean data from scratch.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">active</span><span class="p">:</span>
-            <span class="n">list_to_remove_run</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_old</span><span class="p">(</span>
+            <span class="n">list_to_remove_scratch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_old</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">ehype_scratch</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">ehype_form</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">cutoff_time</span><span class="p">,</span>
                 <span class="n">ignore</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ignore_dir</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">remove_list</span><span class="p">(</span><span class="n">list_to_remove_run</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remove_list</span><span class="p">(</span><span class="n">list_to_remove_scratch</span><span class="p">)</span>
 
-            <span class="n">list_to_remove_work</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_old</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">ehype_work</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">ehype_form</span><span class="p">,</span>
+            <span class="n">list_to_remove_run</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_old</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ehype_scratch</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ehype_form_run</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">cutoff_time</span><span class="p">,</span>
                 <span class="n">ignore</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ignore_dir</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">remove_list</span><span class="p">(</span><span class="n">list_to_remove_work</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remove_list</span><span class="p">(</span><span class="n">list_to_remove_run</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remove_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">find_empty_directories</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ehype_scratch</span><span class="p">))</span>
+
+            <span class="n">list_to_remove_work</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_old</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ehype_work</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ehype_form_perm</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cutoff_time</span><span class="p">,</span>
+                <span class="n">ignore</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ignore_dir</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remove_list</span><span class="p">(</span><span class="n">list_to_remove_work</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remove_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">find_empty_directories</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ehype_work</span><span class="p">))</span></div>
 </div>
 
 
@@ -1475,7 +1513,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">cutoff_time</span><span class="p">,</span>
             <span class="n">ignore</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ignore_dir</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">remove_list</span><span class="p">(</span><span class="n">list_to_remove</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">remove_list</span><span class="p">(</span><span class="n">list_to_remove</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">remove_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">find_empty_directories</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scratch</span><span class="p">))</span></div>
 </div>
 
 
@@ -1518,6 +1557,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">remove_list</span><span class="p">(</span><span class="n">list_to_remove_files</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">remove_list</span><span class="p">(</span><span class="n">list_to_remove_jobout</span><span class="p">)</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">remove_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">find_empty_directories</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_files</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">remove_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">find_empty_directories</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_jobout</span><span class="p">))</span>
         <span class="n">suites</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">list_to_remove_files</span><span class="p">)</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">list_to_remove_jobout</span><span class="p">))</span>
@@ -1553,7 +1594,8 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Run clean IFS data.&quot;&quot;&quot;</span>
         <span class="n">list_to_remove</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_old</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">marsdir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ifs_form</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff_time</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">remove_list</span><span class="p">(</span><span class="n">list_to_remove</span><span class="p">,</span> <span class="n">files</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">remove_list</span><span class="p">(</span><span class="n">list_to_remove</span><span class="p">,</span> <span class="n">files</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">remove_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">find_empty_directories</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">marsdir</span><span class="p">))</span></div>
 </div>
 
 </pre></div>
@@ -1566,7 +1608,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-07-14T12:32:20Z.
+      <span class="lastupdated">Last updated on 2025-07-15T08:55:29Z.
       </span></p>
   </div>
 
