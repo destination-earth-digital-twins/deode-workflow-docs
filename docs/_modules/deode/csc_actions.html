@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>deode.config_parser &mdash; Deode Workflow Docs  documentation</title>
+  <title>deode.csc_actions &mdash; Deode Workflow Docs  documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
@@ -1279,7 +1279,7 @@
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
           <li class="breadcrumb-item"><a href="../deode.html">deode</a></li>
-      <li class="breadcrumb-item active">deode.config_parser</li>
+      <li class="breadcrumb-item active">deode.csc_actions</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -1288,627 +1288,52 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>Source code for deode.config_parser</h1><div class="highlight"><pre>
+  <h1>Source code for deode.csc_actions</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python3</span>
-<span class="sd">&quot;&quot;&quot;Registration and validation of options passed in the config file.&quot;&quot;&quot;</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">contextlib</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">glob</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">reduce</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-
-<span class="kn">import</span><span class="w"> </span><span class="nn">fastjsonschema</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">jsonref</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">tomli</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">tomlkit</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">fastjsonschema</span><span class="w"> </span><span class="kn">import</span> <span class="n">JsonSchemaValueException</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">json_schema_for_humans.generate</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">GenerationConfiguration</span><span class="p">,</span>
-    <span class="n">generate_from_file_object</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">toml_formatter.formatter</span><span class="w"> </span><span class="kn">import</span> <span class="n">FormattedToml</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">GeneralConstants</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.aux_types</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseMapping</span><span class="p">,</span> <span class="n">QuasiConstant</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.datetime_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">DatetimeConstants</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.formatters</span><span class="w"> </span><span class="kn">import</span> <span class="n">duration_format_validator</span><span class="p">,</span> <span class="n">duration_slice_format_validator</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.general_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">modify_mappings</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.os_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">resolve_path_relative_to_package</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.toolbox</span><span class="w"> </span><span class="kn">import</span> <span class="n">Platform</span>
+<span class="sd">&quot;&quot;&quot;Handle tstep selection.&quot;&quot;&quot;</span>
 
 
-<div class="viewcode-block" id="ConfigParserDefaults">
-<a class="viewcode-back" href="../../deode.html#deode.config_parser.ConfigParserDefaults">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">ConfigParserDefaults</span><span class="p">(</span><span class="n">QuasiConstant</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Defaults related to the parsing of config files.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="SelectTstep">
+<a class="viewcode-back" href="../../deode.html#deode.csc_actions.SelectTstep">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SelectTstep</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for the tstep selection.&quot;&quot;&quot;</span>
 
-    <span class="n">DATA_DIRECTORY</span> <span class="o">=</span> <span class="n">GeneralConstants</span><span class="o">.</span><span class="n">PACKAGE_DIRECTORY</span> <span class="o">/</span> <span class="s2">&quot;data&quot;</span>
-    <span class="n">CONFIG_DIRECTORY</span> <span class="o">=</span> <span class="n">DATA_DIRECTORY</span> <span class="o">/</span> <span class="s2">&quot;config_files&quot;</span>
-    <span class="n">PACKAGE_INCLUDE_DIR</span> <span class="o">=</span> <span class="n">CONFIG_DIRECTORY</span> <span class="o">/</span> <span class="s2">&quot;include&quot;</span>
-
-    <span class="n">PACKAGE_CONFIG_PATH</span> <span class="o">=</span> <span class="p">(</span><span class="n">CONFIG_DIRECTORY</span> <span class="o">/</span> <span class="s2">&quot;config.toml&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">(</span><span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="c1"># Define the default path to the config file</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">CONFIG_PATH</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;DEODE_CONFIG_PATH&quot;</span><span class="p">,</span> <span class="s2">&quot;config.toml&quot;</span><span class="p">))</span>
-        <span class="n">CONFIG_PATH</span> <span class="o">=</span> <span class="n">CONFIG_PATH</span><span class="o">.</span><span class="n">resolve</span><span class="p">(</span><span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
-        <span class="n">CONFIG_PATH</span> <span class="o">=</span> <span class="n">PACKAGE_CONFIG_PATH</span>
-
-    <span class="n">SCHEMAS_DIRECTORY</span> <span class="o">=</span> <span class="n">CONFIG_DIRECTORY</span> <span class="o">/</span> <span class="s2">&quot;config_file_schemas&quot;</span>
-    <span class="n">MAIN_CONFIG_JSON_SCHEMA_PATH</span> <span class="o">=</span> <span class="n">SCHEMAS_DIRECTORY</span> <span class="o">/</span> <span class="s2">&quot;main_config_schema.json&quot;</span>
-    <span class="n">MAIN_CONFIG_JSON_SCHEMA</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">MAIN_CONFIG_JSON_SCHEMA_PATH</span><span class="o">.</span><span class="n">read_text</span><span class="p">())</span></div>
-
-
-
-<div class="viewcode-block" id="ConfigPaths">
-<a class="viewcode-back" href="../../deode.html#deode.config_parser.ConfigPaths">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">ConfigPaths</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Support multiple path search.&quot;&quot;&quot;</span>
-
-    <span class="n">_env_data_paths</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;DEODE_CONFIG_DATA_DIR&quot;</span><span class="p">)</span>
-    <span class="n">CONFIG_DATA_SEARCHPATHS</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="n">_env_data_paths</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">_env_data_paths</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[]</span>
-    <span class="p">)</span>
-    <span class="n">erroneous_paths</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">path</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">CONFIG_DATA_SEARCHPATHS</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isabs</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-    <span class="p">]</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">erroneous_paths</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DEODE_CONFIG_DATA_DIR is not absolute: </span><span class="si">{</span><span class="n">erroneous_paths</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">CONFIG_DATA_SEARCHPATHS</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ConfigParserDefaults</span><span class="o">.</span><span class="n">DATA_DIRECTORY</span><span class="p">)</span>
-
-<div class="viewcode-block" id="ConfigPaths.print">
-<a class="viewcode-back" href="../../deode.html#deode.config_parser.ConfigPaths.print">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">print</span><span class="p">(</span><span class="n">config_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Prints the available config directories.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_select_tstep_based_on_csc_and_resolution</span><span class="p">(</span><span class="n">csc</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">resolution</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Select tstep based on csc and resolution.</span>
 
-<span class="sd">        Displays the main config search paths as defined by list_paths</span>
-<span class="sd">        in addition to the actual search paths in the config file used.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">def</span><span class="w"> </span><span class="nf">path_info</span><span class="p">(</span><span class="n">list_paths</span><span class="p">,</span> <span class="n">dirmap</span><span class="o">=</span><span class="nb">tuple</span><span class="p">({})):</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;Populates the a list of search paths with found directories.</span>
-
-<span class="sd">            Args:</span>
-<span class="sd">                list_paths (list): directories to search for</span>
-<span class="sd">                dirmap (dict): Mapping between display name and actual path</span>
-
-<span class="sd">            Raises:</span>
-<span class="sd">                RuntimeError: In case of multiple conflicting paths detected</span>
-
-<span class="sd">            Returns:</span>
-<span class="sd">                mapping (dict): Dict of search result</span>
-
-<span class="sd">            &quot;&quot;&quot;</span>
-            <span class="n">mapping</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="k">for</span> <span class="n">dir_</span> <span class="ow">in</span> <span class="n">list_paths</span><span class="p">:</span>
-                <span class="n">rdir</span> <span class="o">=</span> <span class="n">dirmap</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">dir_</span><span class="p">,</span> <span class="n">dir_</span><span class="p">)</span>
-                <span class="n">mapping</span><span class="p">[</span><span class="n">dir_</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="n">pattern</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;**/</span><span class="si">{</span><span class="n">rdir</span><span class="si">}</span><span class="s2">&quot;</span>
-
-                <span class="k">for</span> <span class="n">searchpath</span> <span class="ow">in</span> <span class="n">ConfigPaths</span><span class="o">.</span><span class="n">CONFIG_DATA_SEARCHPATHS</span><span class="p">:</span>
-                    <span class="n">res</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">searchpath</span><span class="p">)</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="n">pattern</span><span class="p">))</span>
-                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                        <span class="n">mapping</span><span class="p">[</span><span class="n">dir_</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Multiple matches found for subpath: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">searchpath</span><span class="p">)</span>
-                        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Results: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">res</span><span class="p">)</span>
-                        <span class="k">raise</span> <span class="ne">RuntimeError</span>
-
-            <span class="k">return</span> <span class="n">mapping</span>
-
-        <span class="n">dirmap</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;config_file_schemas&quot;</span><span class="p">:</span> <span class="s2">&quot;config_files/config_file_schemas&quot;</span><span class="p">,</span>
-        <span class="p">}</span>
-        <span class="n">list_paths</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="s2">&quot;config_files&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;config_file_schemas&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;namelist_generation_input&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;input&quot;</span><span class="p">,</span>
-        <span class="p">]</span>
-        <span class="n">list_config_paths</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">raw_config</span> <span class="o">=</span> <span class="n">BasicConfig</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">_key</span><span class="p">,</span> <span class="n">_value</span> <span class="ow">in</span> <span class="n">raw_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;include&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;config_file_</span><span class="si">{</span><span class="n">_key</span><span class="si">}</span><span class="s2">_section&quot;</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="n">_value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;@HOST@&quot;</span><span class="p">,</span> <span class="n">host</span><span class="p">)</span> <span class="k">if</span> <span class="n">host</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">_value</span>
-            <span class="n">dirmap</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">list_paths</span><span class="p">:</span>
-                <span class="n">list_config_paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-
-        <span class="n">path_info_main</span> <span class="o">=</span> <span class="n">path_info</span><span class="p">(</span><span class="n">list_paths</span><span class="p">,</span> <span class="n">dirmap</span><span class="p">)</span>
-        <span class="n">path_info_config</span> <span class="o">=</span> <span class="n">path_info</span><span class="p">(</span><span class="n">list_config_paths</span><span class="p">,</span> <span class="n">dirmap</span><span class="p">)</span>
-
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;DEODE paths for host=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">host</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot; Package directory: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">GeneralConstants</span><span class="o">.</span><span class="n">PACKAGE_DIRECTORY</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="s2">&quot; Searchpaths: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ConfigPaths</span><span class="o">.</span><span class="n">CONFIG_DATA_SEARCHPATHS</span><span class="p">]</span>
-        <span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="s2">&quot; Data paths in search order: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">path_info_main</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
-        <span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="s2">&quot; Config file include paths in search order: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span>
-            <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">path_info_config</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">),</span>
-        <span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="ConfigPaths.path_from_subpath">
-<a class="viewcode-back" href="../../deode.html#deode.config_parser.ConfigPaths.path_from_subpath">[docs]</a>
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">path_from_subpath</span><span class="p">(</span><span class="n">subpath</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Interface to find full path given any subpath, by searching &#39;searchpaths&#39;.</span>
-
-<span class="sd">        Arguments:</span>
-<span class="sd">            subpath (str): Subpath to search for</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            (Path): Full path to target</span>
+<span class="sd">        Args:</span>
+<span class="sd">            csc (str): The csc to use</span>
+<span class="sd">            resolution (str): The resolution to use</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            RuntimeRerror: Various errors</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">pattern</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;**/</span><span class="si">{</span><span class="n">subpath</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="n">searchpaths</span> <span class="o">=</span> <span class="n">ConfigPaths</span><span class="o">.</span><span class="n">CONFIG_DATA_SEARCHPATHS</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">searchpath</span> <span class="ow">in</span> <span class="n">searchpaths</span><span class="p">:</span>
-            <span class="n">results</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">searchpath</span><span class="p">)</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="n">pattern</span><span class="p">))</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Multiple matches found for subpath: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">subpath</span><span class="p">)</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Results: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Multiple matches&quot;</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not find </span><span class="si">{</span><span class="n">subpath</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
-</div>
-
-
-
-<div class="viewcode-block" id="ConfigFileValidationError">
-<a class="viewcode-back" href="../../deode.html#deode.config_parser.ConfigFileValidationError">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">ConfigFileValidationError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Error to be raised when parsing the input config file fails.&quot;&quot;&quot;</span></div>
-
-
-
-<div class="viewcode-block" id="ConflictingValidationSchemasError">
-<a class="viewcode-back" href="../../deode.html#deode.config_parser.ConflictingValidationSchemasError">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">ConflictingValidationSchemasError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Error to be raised when more than one schema is defined for a config section.&quot;&quot;&quot;</span></div>
-
-
-
-<div class="viewcode-block" id="BasicConfig">
-<a class="viewcode-back" href="../../deode.html#deode.config_parser.BasicConfig">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">BasicConfig</span><span class="p">(</span><span class="n">BaseMapping</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for configs. Arbitrary entries allowed: no validation is performed.&quot;&quot;&quot;</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">_metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialise an instance in a `dict`-like fashion.&quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="n">_metadata</span>
-
-<div class="viewcode-block" id="BasicConfig.from_file">
-<a class="viewcode-back" href="../../deode.html#deode.config_parser.BasicConfig.from_file">[docs]</a>
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">from_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve configs from a file in miscellaneous formats.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            path (typing.Union[pathlib.Path, str]): Path to the config file.</span>
-<span class="sd">            **kwargs: Arguments passed to the class constructor.</span>
+<span class="sd">            ValueError: CSC and/or resolution not supported.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            cls: Configs retrieved from the specified path.</span>
+<span class="sd">            int: The tstep</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
-
-        <span class="n">configs</span> <span class="o">=</span> <span class="n">_read_raw_config_file</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">configs</span><span class="p">,</span> <span class="n">_metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;source_file_path&quot;</span><span class="p">:</span> <span class="n">path</span><span class="p">},</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="BasicConfig.save_as">
-<a class="viewcode-back" href="../../deode.html#deode.config_parser.BasicConfig.save_as">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">save_as</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_file</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save config file.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            config_file (str): Path to config file</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
-            <span class="n">tomlkit</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(),</span> <span class="n">fh</span><span class="p">)</span>
-        <span class="n">formatted_toml</span> <span class="o">=</span> <span class="n">FormattedToml</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">config_file</span><span class="p">)</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">formatted_toml</span><span class="p">))</span></div>
-
-
-    <span class="nd">@BaseMapping</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the underlying data stored by the instance.&quot;&quot;&quot;</span>
-        <span class="n">input_sanitation_ops</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">},</span>
-            <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">items</span><span class="p">()},</span>
-        <span class="p">]</span>
-        <span class="n">new</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="n">modify_mappings</span><span class="p">,</span> <span class="n">input_sanitation_ops</span><span class="p">,</span> <span class="n">new</span><span class="p">)</span>
-        <span class="n">BaseMapping</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">,</span> <span class="n">nested_maps_type</span><span class="o">=</span><span class="n">BasicConfig</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the metadata associated with the instance.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_metadata&quot;</span><span class="p">,</span> <span class="p">{})</span>
-
-    <span class="nd">@metadata</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the metadata associated with the instance.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">new</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span> <span class="o">=</span> <span class="n">modify_mappings</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="n">new</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span></div>
-
-
-
-<div class="viewcode-block" id="JsonSchema">
-<a class="viewcode-back" href="../../deode.html#deode.config_parser.JsonSchema">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">JsonSchema</span><span class="p">(</span><span class="n">BaseMapping</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to use for JSON schemas. Provides a `validate` method to validate data.&quot;&quot;&quot;</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialise instance.&quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">jsonref</span><span class="o">.</span><span class="n">replace_refs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">_validation_function</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">_get_json_validation_function</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-
-<div class="viewcode-block" id="JsonSchema.validate">
-<a class="viewcode-back" href="../../deode.html#deode.config_parser.JsonSchema.validate">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a copy of `data` validated against the stored JSON schema.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validation_function</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="JsonSchema.get_markdown_doc">
-<a class="viewcode-back" href="../../deode.html#deode.config_parser.JsonSchema.get_markdown_doc">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_markdown_doc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return human-readable doc for the schema in markdown format.&quot;&quot;&quot;</span>
-        <span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">tmpdir</span><span class="p">:</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;schema.json&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">schema_file</span><span class="p">:</span>
-                <span class="n">schema_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">()))</span>
-
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span>
-                <span class="n">Path</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;schema_doc.md&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span>
-            <span class="p">)</span> <span class="k">as</span> <span class="n">doc_file</span><span class="p">,</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">redirect_stdout</span><span class="p">(</span><span class="kc">None</span><span class="p">):</span>
-                <span class="n">generate_from_file_object</span><span class="p">(</span>
-                    <span class="n">schema_file</span><span class="o">=</span><span class="n">schema_file</span><span class="p">,</span>
-                    <span class="n">result_file</span><span class="o">=</span><span class="n">doc_file</span><span class="p">,</span>
-                    <span class="n">config</span><span class="o">=</span><span class="n">GenerationConfiguration</span><span class="p">(</span>
-                        <span class="n">template_name</span><span class="o">=</span><span class="s2">&quot;md&quot;</span><span class="p">,</span>
-                        <span class="n">show_toc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                        <span class="n">template_md_options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;show_heading_numbers&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-                        <span class="n">with_footer</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                        <span class="n">properties_table_columns</span><span class="o">=</span><span class="p">[</span>
-                            <span class="s2">&quot;property&quot;</span><span class="p">,</span>
-                            <span class="s2">&quot;type&quot;</span><span class="p">,</span>
-                            <span class="s2">&quot;required&quot;</span><span class="p">,</span>
-                            <span class="s2">&quot;default&quot;</span><span class="p">,</span>
-                            <span class="s2">&quot;title/description&quot;</span><span class="p">,</span>
-                        <span class="p">],</span>
-                    <span class="p">),</span>
-                <span class="p">)</span>
-
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;schema_doc.md&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">doc_file</span><span class="p">:</span>
-                <span class="n">schema_doc</span> <span class="o">=</span> <span class="n">doc_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-
-        <span class="k">return</span> <span class="n">schema_doc</span></div>
-</div>
-
-
-
-<div class="viewcode-block" id="ParsedConfig">
-<a class="viewcode-back" href="../../deode.html#deode.config_parser.ParsedConfig">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">ParsedConfig</span><span class="p">(</span><span class="n">BasicConfig</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Object that holds parsed configs validated against a `json_schema`.&quot;&quot;&quot;</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-        <span class="n">json_schema</span><span class="p">,</span>
-        <span class="n">include_dir</span><span class="o">=</span><span class="n">ConfigParserDefaults</span><span class="o">.</span><span class="n">CONFIG_DIRECTORY</span><span class="p">,</span>
-        <span class="n">host</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-    <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialise an instance with an arbitrary number of entries &amp; validate them.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">include_dir</span> <span class="o">=</span> <span class="n">include_dir</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">json_schema</span> <span class="o">=</span> <span class="n">json_schema</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">host</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-    <span class="nd">@BasicConfig</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the underlying data stored by the instance.</span>
-
-<span class="sd">        Skip the validation if the class is instantiated with an empty schema.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">validate_json_schema</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">json_schema</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
-
-        <span class="n">new</span><span class="p">,</span> <span class="n">json_schema</span> <span class="o">=</span> <span class="n">_expand_config_include_section</span><span class="p">(</span>
-            <span class="n">raw_config</span><span class="o">=</span><span class="n">new</span><span class="p">,</span>
-            <span class="n">json_schema</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">json_schema</span><span class="p">,</span>
-            <span class="n">config_include_search_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">include_dir</span><span class="p">,</span>
-            <span class="n">host</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="n">ParsedConfig</span><span class="o">.</span><span class="n">json_schema</span><span class="o">.</span><span class="n">fset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">json_schema</span><span class="p">,</span> <span class="n">_validate_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-
-        <span class="c1"># Make sure all sections defined in the schema are also present in the new config</span>
-        <span class="n">sections_that_should_not_be_defaulted</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="s2">&quot;include&quot;</span><span class="p">,</span>
-            <span class="o">*</span><span class="n">new</span><span class="p">,</span>
-            <span class="o">*</span><span class="n">json_schema</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;required&quot;</span><span class="p">,</span> <span class="p">[]),</span>
-        <span class="p">]</span>
-        <span class="k">for</span> <span class="n">property_name</span><span class="p">,</span> <span class="n">property_schema</span> <span class="ow">in</span> <span class="n">json_schema</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;properties&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">property_name</span> <span class="ow">in</span> <span class="n">sections_that_should_not_be_defaulted</span><span class="p">:</span>
-                <span class="k">continue</span>
-            <span class="k">if</span> <span class="n">property_schema</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;object&quot;</span><span class="p">:</span>
-                <span class="n">new</span><span class="p">[</span><span class="n">property_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-
-        <span class="k">if</span> <span class="n">validate_json_schema</span><span class="p">:</span>
-            <span class="n">new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">json_schema</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
-        <span class="n">BasicConfig</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">include_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the search dir used sections in the raw config&#39;s `include` section.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_include_dir</span>
-
-    <span class="nd">@include_dir</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">include_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the search dir for `include` config sections.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_include_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">json_schema</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the instance&#39;s JSON schema.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_json_schema</span>
-
-    <span class="nd">@json_schema</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">json_schema</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">,</span> <span class="n">_validate_data</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_json_schema</span> <span class="o">=</span> <span class="n">JsonSchema</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">_validate_data</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
-
-<div class="viewcode-block" id="ParsedConfig.from_file">
-<a class="viewcode-back" href="../../deode.html#deode.config_parser.ParsedConfig.from_file">[docs]</a>
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">from_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">include_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Do as in `BasicConfig`. If `None`, `include_dir` will become `path.parent`.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">include_dir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">include_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span>
-        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">include_dir</span><span class="o">=</span><span class="n">include_dir</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
-
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">rtn</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;)&quot;</span><span class="p">)</span>
-        <span class="n">rtn</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;, json_schema=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">json_schema</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s1">&#39;json&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span>
-        <span class="k">return</span> <span class="n">rtn</span>
-
-<div class="viewcode-block" id="ParsedConfig.expand_macros">
-<a class="viewcode-back" href="../../deode.html#deode.config_parser.ParsedConfig.expand_macros">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">expand_macros</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expand_all</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Expand macros in config recursively.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            expand_all (boolean): Flag to expand all macros</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            config (ParsedConfig): Parsed configuration</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
-        <span class="n">macros</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;macros&quot;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="s2">&quot;case&quot;</span> <span class="ow">in</span> <span class="n">macros</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">expand_all</span><span class="p">:</span>
-            <span class="n">macros</span><span class="p">[</span><span class="s2">&quot;select&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;case&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;macros.case&quot;</span><span class="p">]}</span>
-        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;macros&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">macros</span>
-        <span class="n">macro_platform</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">BasicConfig</span><span class="p">(</span><span class="n">config</span><span class="p">))</span>
-        <span class="n">config</span> <span class="o">=</span> <span class="n">macro_platform</span><span class="o">.</span><span class="n">resolve_macros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">())</span>
-        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">update</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">config</span></div>
-</div>
-
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_read_raw_config_file</span><span class="p">(</span><span class="n">config_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Read raw configs from files in miscellaneous formats.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        config_path (Path): Path to the config file.</span>
-
-<span class="sd">    Raises:</span>
-<span class="sd">        NotImplementedError: If the config file format is not supported.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        dict: Configs read from the specified path.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">config_path</span> <span class="o">=</span> <span class="n">resolve_path_relative_to_package</span><span class="p">(</span><span class="n">config_path</span><span class="p">)</span>
-
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Reading configs from file &lt;</span><span class="si">{}</span><span class="s2">&gt;&quot;</span><span class="p">,</span> <span class="n">config_path</span><span class="p">)</span>
-
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">config_file</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">config_path</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">&quot;.toml&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">tomli</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">config_path</span><span class="o">.</span><span class="n">suffix</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;.yaml&quot;</span><span class="p">,</span> <span class="s2">&quot;.yml&quot;</span><span class="p">]:</span>
-            <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">config_path</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">&quot;.json&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span>
-
-    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unsupported config file format &quot;</span><span class="si">{</span><span class="n">config_path</span><span class="o">.</span><span class="n">suffix</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_get_config_include_definitions</span><span class="p">(</span><span class="n">raw_config</span><span class="p">):</span>
-    <span class="n">config_includes</span> <span class="o">=</span> <span class="n">raw_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;include&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-    <span class="n">overlapping_sections</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">config_includes</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">raw_config</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">overlapping_sections</span><span class="p">:</span>
-        <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;`[include]` section(s) [</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">overlapping_sections</span><span class="p">)</span><span class="si">}</span><span class="s2">] &quot;</span>
-        <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot;already present in parent config.&quot;</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">config_includes</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_get_all_json_schemas</span><span class="p">(</span><span class="n">json_schema</span><span class="p">,</span> <span class="n">schemas_path</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Load and add all json schema files in the schemas_path directory.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        json_schema (dict): Input json schema</span>
-<span class="sd">        schemas_path (str): Path to json files</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        json_schema (dict): Updated json dict</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">exclude</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;main_config_schema.json&quot;</span><span class="p">,</span> <span class="s2">&quot;default_config_schema.json&quot;</span><span class="p">]</span>
-
-    <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">schemas_path</span><span class="si">}</span><span class="s2">/*.json&quot;</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="ow">in</span> <span class="n">exclude</span><span class="p">:</span>
-            <span class="k">continue</span>
-        <span class="n">section_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;_section_schema.json&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-        <span class="n">updated_schema</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;$ref&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;file:</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}</span>
-        <span class="n">json_schema</span><span class="p">[</span><span class="s2">&quot;properties&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">section_name</span><span class="p">:</span> <span class="n">updated_schema</span><span class="p">})</span>
-
-    <span class="k">return</span> <span class="n">json_schema</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_expand_config_include_section</span><span class="p">(</span>
-    <span class="n">raw_config</span><span class="p">,</span>
-    <span class="n">json_schema</span><span class="p">,</span>
-    <span class="n">config_include_search_dir</span><span class="o">=</span><span class="n">ConfigParserDefaults</span><span class="o">.</span><span class="n">CONFIG_DIRECTORY</span><span class="p">,</span>
-    <span class="n">schemas_path</span><span class="o">=</span><span class="n">ConfigParserDefaults</span><span class="o">.</span><span class="n">SCHEMAS_DIRECTORY</span><span class="p">,</span>
-    <span class="n">_parent_sections</span><span class="o">=</span><span class="p">(),</span>
-    <span class="n">host</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Merge config includes and return new config &amp; corresponding validation schema.&quot;&quot;&quot;</span>
-    <span class="c1"># If the json schema is empty on arrival, keep it empty</span>
-    <span class="n">raw_config</span> <span class="o">=</span> <span class="n">modify_mappings</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="n">raw_config</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
-    <span class="n">json_schema</span> <span class="o">=</span> <span class="n">modify_mappings</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="n">json_schema</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
-
-    <span class="n">config_include_defs</span> <span class="o">=</span> <span class="n">_get_config_include_definitions</span><span class="p">(</span><span class="n">raw_config</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="s2">&quot;properties&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">json_schema</span><span class="p">:</span>
-        <span class="n">json_schema</span><span class="p">[</span><span class="s2">&quot;properties&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">config_include_search_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">config_include_search_dir</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
-    <span class="n">config_include_sections</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">config_include_defs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">json_schema</span> <span class="o">=</span> <span class="n">_get_all_json_schemas</span><span class="p">(</span><span class="n">json_schema</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">schemas_path</span><span class="p">))</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">section_name</span><span class="p">,</span> <span class="n">include_path_</span> <span class="ow">in</span> <span class="n">config_include_defs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">include_path_</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-                <span class="k">if</span> <span class="s2">&quot;@HOST@&quot;</span> <span class="ow">in</span> <span class="n">include_path_</span> <span class="ow">and</span> <span class="n">host</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;include_path=</span><span class="si">{</span><span class="n">include_path_</span><span class="si">}</span><span class="s2"> requires host to be set&quot;</span>
-                    <span class="p">)</span>
-                <span class="n">include_path</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="n">include_path_</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;@HOST@&quot;</span><span class="p">,</span> <span class="n">host</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="n">host</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-                    <span class="k">else</span> <span class="n">include_path_</span>
-                <span class="p">)</span>
-                <span class="n">include_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">include_path</span><span class="p">)</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">include_path</span><span class="o">.</span><span class="n">is_absolute</span><span class="p">():</span>
-                    <span class="n">include_path</span> <span class="o">=</span> <span class="n">ConfigPaths</span><span class="o">.</span><span class="n">path_from_subpath</span><span class="p">(</span><span class="n">include_path</span><span class="p">)</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Include: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">include_path</span><span class="p">)</span>
-                <span class="n">included_config_section</span> <span class="o">=</span> <span class="n">_read_raw_config_file</span><span class="p">(</span><span class="n">include_path</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">included_config_section</span> <span class="o">=</span> <span class="n">include_path_</span>
-            <span class="n">_sections_traversed</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">_parent_sections</span><span class="p">,</span> <span class="n">section_name</span><span class="p">)</span>
-            <span class="n">sections_traversed_str</span> <span class="o">=</span> <span class="s2">&quot; -&gt; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_sections_traversed</span><span class="p">)</span>
-            <span class="k">if</span> <span class="s2">&quot;include&quot;</span> <span class="ow">in</span> <span class="n">raw_config</span> <span class="ow">and</span> <span class="n">section_name</span> <span class="ow">in</span> <span class="n">json_schema</span><span class="p">[</span><span class="s2">&quot;properties&quot;</span><span class="p">]:</span>
-                <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Validation schema for `[include]` section &quot;</span>
-                <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39; &quot;</span><span class="si">{</span><span class="n">sections_traversed_str</span><span class="si">}</span><span class="s1">&quot; &#39;</span>
-                <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot;also detected in its parent section&#39;s schema. &quot;</span>
-                <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot;`[include]` schemas must NOT be added to their parent&#39;s schemas,&quot;</span>
-                <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot;but rather in their own separate files.&quot;</span>
-                <span class="k">raise</span> <span class="n">ConflictingValidationSchemasError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-
-            <span class="n">schema_file</span> <span class="o">=</span> <span class="n">schemas_path</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">section_name</span><span class="si">}</span><span class="s2">_section_schema.json&quot;</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">schema_file</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="s1">&#39;No validation schema for config section &quot;</span><span class="si">{}</span><span class="s1">&quot;. Using default.&#39;</span><span class="p">,</span>
-                    <span class="n">sections_traversed_str</span><span class="p">,</span>
-                <span class="p">)</span>
-                <span class="n">schema_file</span> <span class="o">=</span> <span class="n">schemas_path</span> <span class="o">/</span> <span class="s2">&quot;default_section_schema.json&quot;</span>
-
-            <span class="n">updated_config</span><span class="p">,</span> <span class="n">updated_schema</span> <span class="o">=</span> <span class="n">_expand_config_include_section</span><span class="p">(</span>
-                <span class="n">raw_config</span><span class="o">=</span><span class="n">included_config_section</span><span class="p">,</span>
-                <span class="n">json_schema</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;$ref&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;file:</span><span class="si">{</span><span class="n">schema_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">},</span>
-                <span class="n">config_include_search_dir</span><span class="o">=</span><span class="n">config_include_search_dir</span><span class="p">,</span>
-                <span class="n">schemas_path</span><span class="o">=</span><span class="n">schemas_path</span><span class="p">,</span>
-                <span class="n">_parent_sections</span><span class="o">=</span><span class="n">_sections_traversed</span><span class="p">,</span>
+        <span class="k">if</span> <span class="nb">round</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">resolution</span><span class="p">))</span> <span class="o">==</span> <span class="mi">500</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">csc</span> <span class="o">==</span> <span class="s2">&quot;HARMONIE_AROME&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mi">15</span>
+            <span class="k">if</span> <span class="n">csc</span> <span class="o">==</span> <span class="s2">&quot;ALARO&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mi">20</span>
+            <span class="k">if</span> <span class="n">csc</span> <span class="o">==</span> <span class="s2">&quot;AROME&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mi">20</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;CSC not supported. Choose between [&#39;HARMONIE_AROME&#39;, &#39;ALARO&#39;, &#39;AROME&#39;].&quot;</span>
             <span class="p">)</span>
-            <span class="n">config_include_sections</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">updated_config</span><span class="p">)</span>
-            <span class="n">json_schema</span><span class="p">[</span><span class="s2">&quot;properties&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">section_name</span><span class="p">:</span> <span class="n">updated_schema</span><span class="p">})</span>
-
-    <span class="n">raw_config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">config_include_sections</span><span class="p">)</span>
-    <span class="k">if</span> <span class="s2">&quot;include&quot;</span> <span class="ow">in</span> <span class="n">raw_config</span><span class="p">:</span>
-        <span class="n">raw_config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;include&quot;</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">raw_config</span><span class="p">,</span> <span class="n">json_schema</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_get_json_validation_function</span><span class="p">(</span><span class="n">json_schema</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a validation function compiled with schema `json_schema`.&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">json_schema</span><span class="p">:</span>
-        <span class="c1"># Validation will just convert everything to dict in this case</span>
-        <span class="k">return</span> <span class="k">lambda</span> <span class="n">obj</span><span class="p">:</span> <span class="n">modify_mappings</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="n">obj</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
-    <span class="n">validation_func</span> <span class="o">=</span> <span class="n">fastjsonschema</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
-        <span class="n">json_schema</span><span class="o">.</span><span class="n">dict</span><span class="p">(),</span>
-        <span class="n">formats</span><span class="o">=</span><span class="p">{</span>
-            <span class="s2">&quot;duration&quot;</span><span class="p">:</span> <span class="n">duration_format_validator</span><span class="p">,</span>
-            <span class="s2">&quot;duration_slice&quot;</span><span class="p">:</span> <span class="n">duration_slice_format_validator</span><span class="p">,</span>
-        <span class="p">},</span>
-    <span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">validation_func</span><span class="p">(</span><span class="n">modify_mappings</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="n">obj</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="nb">dict</span><span class="p">))</span>
-        <span class="k">except</span> <span class="n">JsonSchemaValueException</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-            <span class="n">error_path</span> <span class="o">=</span> <span class="s2">&quot; -&gt; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">err</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
-            <span class="n">human_readable_msg</span> <span class="o">=</span> <span class="n">err</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">err</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-
-            <span class="c1"># Give a better err msg when times/date-times/durations don&#39;t follow ISO 8601</span>
-            <span class="n">human_readable_msg</span> <span class="o">=</span> <span class="n">human_readable_msg</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;must match pattern </span><span class="si">{</span><span class="n">DatetimeConstants</span><span class="o">.</span><span class="n">ISO_8601_TIME_DURATION_REGEX</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;must be an ISO 8601 duration string&quot;</span><span class="p">,</span>
+        <span class="k">if</span> <span class="nb">round</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">resolution</span><span class="p">))</span> <span class="o">==</span> <span class="mi">750</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">csc</span> <span class="o">==</span> <span class="s2">&quot;HARMONIE_AROME&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mi">20</span>
+            <span class="k">if</span> <span class="n">csc</span> <span class="o">==</span> <span class="s2">&quot;ALARO&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mi">30</span>
+            <span class="k">if</span> <span class="n">csc</span> <span class="o">==</span> <span class="s2">&quot;AROME&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mi">30</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;CSC not supported. Choose between [&#39;HARMONIE_AROME&#39;, &#39;ALARO&#39;, &#39;AROME&#39;].&quot;</span>
             <span class="p">)</span>
-            <span class="k">for</span> <span class="n">spec</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;date-time&quot;</span><span class="p">,</span> <span class="s2">&quot;date&quot;</span><span class="p">,</span> <span class="s2">&quot;time&quot;</span><span class="p">]:</span>
-                <span class="n">human_readable_msg</span> <span class="o">=</span> <span class="n">human_readable_msg</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;must be </span><span class="si">{</span><span class="n">spec</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;must be an ISO 8601 </span><span class="si">{</span><span class="n">spec</span><span class="si">}</span><span class="s2"> string&quot;</span>
-                <span class="p">)</span>
 
-            <span class="k">raise</span> <span class="n">ConfigFileValidationError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">error_path</span><span class="si">}</span><span class="s1">&quot; </span><span class="si">{</span><span class="n">human_readable_msg</span><span class="si">}</span><span class="s1">. &#39;</span>
-                <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;Received type &quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">err</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&quot; with value &quot;</span><span class="si">{</span><span class="n">err</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s1">&quot;.&#39;</span>
-            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span>
-
-    <span class="k">return</span> <span class="n">validate</span>
-
-
-<div class="viewcode-block" id="evaluate_dynamic_dates">
-<a class="viewcode-back" href="../../deode.html#deode.config_parser.evaluate_dynamic_dates">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">evaluate_dynamic_dates</span><span class="p">(</span><span class="n">config_data</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Replace dynamic dates like &#39;yesterday&#39; with actual timestamps.&quot;&quot;&quot;</span>
-    <span class="n">times_section</span> <span class="o">=</span> <span class="n">config_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;general&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;times&quot;</span><span class="p">,</span> <span class="p">{})</span>
-
-    <span class="k">if</span> <span class="n">times_section</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;start&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;yesterday&quot;</span><span class="p">:</span>
-        <span class="n">yesterday</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="n">yesterday</span><span class="o">.</span><span class="n">year</span><span class="p">,</span> <span class="n">yesterday</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> <span class="n">yesterday</span><span class="o">.</span><span class="n">day</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="n">times_section</span><span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">start_time</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;Z&quot;</span>
-
-    <span class="k">return</span> <span class="n">config_data</span></div>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Resolution not supported. Choose between [&#39;500&#39;, &#39;750&#39;].&quot;</span><span class="p">)</span></div>
 
 </pre></div>
 

@@ -313,6 +313,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.config_parser.evaluate_dynamic_dates"><code class="docutils literal notranslate"><span class="pre">evaluate_dynamic_dates()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.csc_actions">deode.csc_actions module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.csc_actions.SelectTstep"><code class="docutils literal notranslate"><span class="pre">SelectTstep</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.custom_validators">deode.custom_validators module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.custom_validators.import_from_string"><code class="docutils literal notranslate"><span class="pre">import_from_string()</span></code></a></li>
 </ul>
@@ -505,6 +509,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.namelist.NamelistGenerator.fn_config"><code class="docutils literal notranslate"><span class="pre">NamelistGenerator.fn_config()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.namelist.NamelistGenerator.fn_stepfreq"><code class="docutils literal notranslate"><span class="pre">NamelistGenerator.fn_stepfreq()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.namelist.NamelistGenerator.fn_steplist"><code class="docutils literal notranslate"><span class="pre">NamelistGenerator.fn_steplist()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.namelist.NamelistGenerator.fn_tstep"><code class="docutils literal notranslate"><span class="pre">NamelistGenerator.fn_tstep()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.namelist.NamelistGenerator.generate_namelist"><code class="docutils literal notranslate"><span class="pre">NamelistGenerator.generate_namelist()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.namelist.NamelistGenerator.load"><code class="docutils literal notranslate"><span class="pre">NamelistGenerator.load()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.namelist.NamelistGenerator.load_user_namelist"><code class="docutils literal notranslate"><span class="pre">NamelistGenerator.load_user_namelist()</span></code></a></li>
@@ -667,6 +672,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.toolbox.Platform.sub_value"><code class="docutils literal notranslate"><span class="pre">Platform.sub_value()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.toolbox.Platform.substitute"><code class="docutils literal notranslate"><span class="pre">Platform.substitute()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.toolbox.Platform.substitute_datetime"><code class="docutils literal notranslate"><span class="pre">Platform.substitute_datetime()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.toolbox.Platform.substitute_tstep"><code class="docutils literal notranslate"><span class="pre">Platform.substitute_tstep()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.toolbox.Provider"><code class="docutils literal notranslate"><span class="pre">Provider</span></code></a><ul>
@@ -836,6 +842,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-general-windfarm">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">general</span> <span class="pre">&gt;</span> <span class="pre">windfarm</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-general-upd-sst-sic">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">general</span> <span class="pre">&gt;</span> <span class="pre">upd_sst_sic</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-general-surfex-sea-ice">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">general</span> <span class="pre">&gt;</span> <span class="pre">surfex_sea_ice</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-general-precision">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">general</span> <span class="pre">&gt;</span> <span class="pre">precision</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-suite-control">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">suite_control</span></code></a><ul>
@@ -1295,6 +1302,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">geohash</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">troika.connections.ssh</span><span class="w"> </span><span class="kn">import</span> <span class="n">SSHConnection</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">.csc_actions</span><span class="w"> </span><span class="kn">import</span> <span class="n">SelectTstep</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.datetime_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">as_datetime</span><span class="p">,</span> <span class="n">get_decade</span><span class="p">,</span> <span class="n">oi2dt_list</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.os_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">deodemakedirs</span>
@@ -1721,6 +1729,50 @@
         <span class="k">return</span> <span class="n">pattern</span></div>
 
 
+<div class="viewcode-block" id="Platform.substitute_tstep">
+<a class="viewcode-back" href="../../deode.html#deode.toolbox.Platform.substitute_tstep">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">substitute_tstep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Substitute tstep.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            pattern (str): _description_</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: Substituted string.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: In case of erroneous macro</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">pattern</span>
+
+        <span class="k">if</span> <span class="n">pattern</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;@&quot;</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Erroneous macro somewhere in pattern=</span><span class="si">{</span><span class="n">pattern</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">pattern</span>
+
+        <span class="n">i</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">start</span><span class="p">()</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;@&quot;</span><span class="p">,</span> <span class="n">pattern</span><span class="p">)]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">sub_patterns</span> <span class="o">=</span> <span class="p">[</span><span class="n">pattern</span><span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:</span> <span class="n">i</span><span class="p">[</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="mi">2</span><span class="p">)]</span>
+        <span class="k">except</span> <span class="ne">IndexError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not separate pattern:</span><span class="si">{</span><span class="n">pattern</span><span class="si">}</span><span class="s2"> by &#39;@&#39;&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">error</span>
+
+        <span class="k">for</span> <span class="n">sub_pattern</span> <span class="ow">in</span> <span class="n">sub_patterns</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">KeyError</span><span class="p">):</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">macros</span><span class="p">[</span><span class="n">sub_pattern</span><span class="o">.</span><span class="n">upper</span><span class="p">()]</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">val</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;@&quot;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                    <span class="k">pass</span>
+
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;before replace macro=</span><span class="si">{}</span><span class="s2"> pattern=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">sub_pattern</span><span class="p">,</span> <span class="n">pattern</span><span class="p">)</span>
+                <span class="n">pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_value</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">sub_pattern</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;after replace macro=</span><span class="si">{}</span><span class="s2"> pattern=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">sub_pattern</span><span class="p">,</span> <span class="n">pattern</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">pattern</span></div>
+
+
 <div class="viewcode-block" id="Platform.substitute">
 <a class="viewcode-back" href="../../deode.html#deode.toolbox.Platform.substitute">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">substitute</span><span class="p">(</span>
@@ -1822,6 +1874,12 @@
             <span class="n">pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_value</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s2">&quot;LS&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ls</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
             <span class="n">tstep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain.tstep&quot;</span><span class="p">]</span>
+            <span class="n">tstep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">substitute_tstep</span><span class="p">(</span><span class="n">tstep</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">tstep</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tstep</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="n">tstep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">tstep</span><span class="p">,</span> <span class="n">SelectTstep</span><span class="p">)</span>
+
             <span class="k">if</span> <span class="n">tstep</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">lead_step</span> <span class="o">=</span> <span class="n">lead_seconds</span> <span class="o">//</span> <span class="n">tstep</span>
                 <span class="n">pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_value</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s2">&quot;TTT&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">lead_step</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -2749,7 +2807,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-07-15T11:28:51Z.
+      <span class="lastupdated">Last updated on 2025-07-15T11:42:50Z.
       </span></p>
   </div>
 

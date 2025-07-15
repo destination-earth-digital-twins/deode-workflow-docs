@@ -1,5 +1,5 @@
 The following section was automatically generated running
-        `deode doc config` on 2025-07-15T11:28:49.
+        `deode doc config` on 2025-07-15T11:42:48.
 
 # Config
 
@@ -78,6 +78,7 @@ The following section was automatically generated running
 | [windfarm](#general_windfarm)                               | boolean          | No       | false        | Switch on wind farm parameterisation                                                                                                                                                                                                                                                                                                         |
 | [upd_sst_sic](#general_upd_sst_sic)                         | boolean          | No       | false        | Switch to update SST/SIC during forecast                                                                                                                                                                                                                                                                                                     |
 | [surfex_sea_ice](#general_surfex_sea_ice)                   | enum (of string) | No       | "sice"       | Treatment of sea ice in surfex                                                                                                                                                                                                                                                                                                               |
+| [precision](#general_precision)                             | enum (of string) | No       | "-sp"        | Floating point precision                                                                                                                                                                                                                                                                                                                     |
 
 <a name="general_times"></a>
 ### Property `Config > general > times`
@@ -939,6 +940,21 @@ Must be one of:
 Must be one of:
 * "sice"
 * "none"
+
+<a name="general_precision"></a>
+### Property `Config > general > precision`
+
+|              |                    |
+| ------------ | ------------------ |
+| **Type**     | `enum (of string)` |
+| **Required** | No                 |
+| **Default**  | `"-sp"`            |
+
+**Description:** Floating point precision
+
+Must be one of:
+* ""
+* "-sp"
 
 <a name="suite_control"></a>
 ## Property `Config > suite_control`
@@ -4304,7 +4320,7 @@ Must be one of:
 | [ilate](#domain_ilate)                                                   | number           | No       | 11                                                                                      | Meridional extension zone                                                  |
 | [nbzong](#domain_nbzong)                                                 | number           | No       | -1                                                                                      | Meridional coupling zone width                                             |
 | [nbzonl](#domain_nbzonl)                                                 | number           | No       | -1                                                                                      | Zonal coupling zone width                                                  |
-| [tstep](#domain_tstep)                                                   | number           | No       | -                                                                                       | Model time step in seconds                                                 |
+| [tstep](#domain_tstep)                                                   | Combination      | No       | -                                                                                       | Model time step in seconds                                                 |
 | [xloncen](#domain_xloncen)                                               | number           | No       | -                                                                                       | Domain center longitude                                                    |
 | [xlatcen](#domain_xlatcen)                                               | number           | No       | -                                                                                       | Domain center latitude                                                     |
 | [xlon0](#domain_xlon0)                                                   | Combination      | No       | ""                                                                                      | Longitude of center of projection                                          |
@@ -4532,12 +4548,34 @@ Must be one of:
 <a name="domain_tstep"></a>
 ### Property `Config > domain > tstep`
 
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `combining`                                                               |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Model time step in seconds
+
+| One of(Option)                   |
+| -------------------------------- |
+| [item 0](#domain_tstep_oneOf_i0) |
+| [item 1](#domain_tstep_oneOf_i1) |
+
+<a name="domain_tstep_oneOf_i0"></a>
+#### Property `Config > domain > tstep > oneOf > item 0`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+<a name="domain_tstep_oneOf_i1"></a>
+#### Property `Config > domain > tstep > oneOf > item 1`
+
 |              |          |
 | ------------ | -------- |
 | **Type**     | `number` |
 | **Required** | No       |
-
-**Description:** Model time step in seconds
 
 <a name="domain_xloncen"></a>
 ### Property `Config > domain > xloncen`
