@@ -1455,87 +1455,100 @@
         <span class="n">model_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;extractsqlite.sqlite_model_name&quot;</span><span class="p">]</span>
         <span class="p">)</span>
-        <span class="n">paramfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;extractsqlite.parameter_list&quot;</span><span class="p">])</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">paramfile</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Missing parameter file: </span><span class="si">{</span><span class="n">paramfile</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">paramfile_sfc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;extractsqlite.parameter_list_sfc&quot;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">paramfile_sfc</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Missing parameter file: </span><span class="si">{</span><span class="n">paramfile_sfc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">paramfile_ua</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;extractsqlite.parameter_list_ua&quot;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">paramfile_ua</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Missing parameter file: </span><span class="si">{</span><span class="n">paramfile_ua</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Parameter list sfc: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">paramfile_sfc</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Parameter list ua: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">paramfile_ua</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">paramfile</span> <span class="ow">in</span> <span class="p">[</span><span class="n">paramfile_sfc</span><span class="p">,</span> <span class="n">paramfile_ua</span><span class="p">]:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">paramfile</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file_</span><span class="p">:</span>
+                <span class="n">parameter_list</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file_</span><span class="p">)</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Parameter list: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">paramfile</span><span class="p">)</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">paramfile</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file_</span><span class="p">:</span>
-            <span class="n">parameter_list</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file_</span><span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">parameter_list</span><span class="p">:</span>
-            <span class="n">harp_param</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="s2">&quot;harp_param&quot;</span><span class="p">]</span>
-            <span class="c1"># Get param specific sqlite template and path</span>
-            <span class="n">sqlite_param_template</span> <span class="o">=</span> <span class="n">sqlite_template</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;@PP@&quot;</span><span class="p">,</span> <span class="n">harp_param</span><span class="p">)</span>
-            <span class="n">sqlite_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">sqlite_param_template</span><span class="p">))</span>
-            <span class="n">merged_sqlite_file_path</span> <span class="o">=</span> <span class="n">merged_sqlite_path</span> <span class="o">/</span> <span class="n">sqlite_file</span>
-            <span class="c1"># Prepare sqlite file paths for every member</span>
-            <span class="n">sqlite_file_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;eps.general.members&quot;</span><span class="p">]:</span>
-                <span class="n">member_config</span> <span class="o">=</span> <span class="n">get_member_config</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">member</span><span class="p">)</span>
-                <span class="n">member_path</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">member_config</span><span class="p">)</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
-                    <span class="n">member_config</span><span class="p">[</span><span class="s2">&quot;extractsqlite.sqlite_path&quot;</span><span class="p">]</span>
-                <span class="p">)</span>
-                <span class="n">full_sqlite_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">member_path</span><span class="p">)</span> <span class="o">/</span> <span class="n">sqlite_file</span>
-                <span class="n">sqlite_file_dict</span><span class="p">[</span><span class="n">member</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">full_sqlite_path</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Files to merge for parameter </span><span class="si">{</span><span class="n">harp_param</span><span class="si">}</span><span class="s2"> are:</span><span class="se">\n</span><span class="s2">&quot;</span>
-                <span class="o">+</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">sqlite_file_dict</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
-            <span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Merged filepath: </span><span class="si">{</span><span class="n">merged_sqlite_file_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-            <span class="c1"># Initialize the merged DataFrame</span>
-            <span class="n">df_merged</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="k">for</span> <span class="n">member</span><span class="p">,</span> <span class="n">file_path</span> <span class="ow">in</span> <span class="n">sqlite_file_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;SQLite file not found for member </span><span class="si">{</span><span class="n">member</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">parameter_list</span><span class="p">:</span>
+                <span class="n">harp_param</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="s2">&quot;harp_param&quot;</span><span class="p">]</span>
+                <span class="c1"># Get param specific sqlite template and path</span>
+                <span class="n">sqlite_param_template</span> <span class="o">=</span> <span class="n">sqlite_template</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;@PP@&quot;</span><span class="p">,</span> <span class="n">harp_param</span><span class="p">)</span>
+                <span class="n">sqlite_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">sqlite_param_template</span><span class="p">))</span>
+                <span class="n">merged_sqlite_file_path</span> <span class="o">=</span> <span class="n">merged_sqlite_path</span> <span class="o">/</span> <span class="n">sqlite_file</span>
+                <span class="c1"># Prepare sqlite file paths for every member</span>
+                <span class="n">sqlite_file_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;eps.general.members&quot;</span><span class="p">]:</span>
+                    <span class="n">member_config</span> <span class="o">=</span> <span class="n">get_member_config</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">member</span><span class="p">)</span>
+                    <span class="n">member_path</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">member_config</span><span class="p">)</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
+                        <span class="n">member_config</span><span class="p">[</span><span class="s2">&quot;extractsqlite.sqlite_path&quot;</span><span class="p">]</span>
                     <span class="p">)</span>
-                    <span class="k">continue</span>
-
-                <span class="k">with</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">connection</span><span class="p">:</span>
-                    <span class="n">df_member</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM FC&quot;</span><span class="p">,</span> <span class="n">connection</span><span class="p">)</span>
-
-                <span class="c1"># Find column that contains model_name</span>
-                <span class="n">value_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df_member</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">model_name</span> <span class="ow">in</span> <span class="n">col</span><span class="p">]</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">value_cols</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;No value column containing &#39;</span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2">&#39; found in </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">&quot;</span>
-                    <span class="p">)</span>
-                    <span class="k">continue</span>
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value_cols</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Multiple value columns found in </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-                <span class="n">df_member</span> <span class="o">=</span> <span class="n">df_member</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span>
-                    <span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="n">value_cols</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2">_mbr</span><span class="si">{</span><span class="n">member</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}</span>
+                    <span class="n">full_sqlite_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">member_path</span><span class="p">)</span> <span class="o">/</span> <span class="n">sqlite_file</span>
+                    <span class="n">sqlite_file_dict</span><span class="p">[</span><span class="n">member</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">full_sqlite_path</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Files to merge for parameter </span><span class="si">{</span><span class="n">harp_param</span><span class="si">}</span><span class="s2"> are:</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="o">+</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">sqlite_file_dict</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
                 <span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Merged filepath: </span><span class="si">{</span><span class="n">merged_sqlite_file_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-                <span class="c1"># Merge dataframes by keys that do not contain model_name</span>
-                <span class="n">merge_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df_member</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">model_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">col</span><span class="p">]</span>
-                <span class="k">if</span> <span class="n">df_merged</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">df_merged</span> <span class="o">=</span> <span class="n">df_member</span>
+                <span class="c1"># Initialize the merged DataFrame</span>
+                <span class="n">df_merged</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">for</span> <span class="n">member</span><span class="p">,</span> <span class="n">file_path</span> <span class="ow">in</span> <span class="n">sqlite_file_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;SQLite file not found for member </span><span class="si">{</span><span class="n">member</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="p">)</span>
+                        <span class="k">continue</span>
+
+                    <span class="k">with</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">connection</span><span class="p">:</span>
+                        <span class="n">df_member</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM FC&quot;</span><span class="p">,</span> <span class="n">connection</span><span class="p">)</span>
+
+                    <span class="c1"># Find column that contains model_name</span>
+                    <span class="n">value_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df_member</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">model_name</span> <span class="ow">in</span> <span class="n">col</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">value_cols</span><span class="p">:</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;No value column containing &#39;</span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2">&#39; </span><span class="se">\</span>
+<span class="s2">                                    found in </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="p">)</span>
+                        <span class="k">continue</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value_cols</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Multiple value columns found in </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                    <span class="n">df_member</span> <span class="o">=</span> <span class="n">df_member</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span>
+                        <span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="n">value_cols</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2">_mbr</span><span class="si">{</span><span class="n">member</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}</span>
+                    <span class="p">)</span>
+
+                    <span class="c1"># Merge dataframes by keys that do not contain model_name</span>
+                    <span class="n">merge_keys</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df_member</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">model_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">col</span>
+                    <span class="p">]</span>
+                    <span class="k">if</span> <span class="n">df_merged</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">df_merged</span> <span class="o">=</span> <span class="n">df_member</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">df_merged</span> <span class="o">=</span> <span class="n">df_merged</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">df_member</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="n">merge_keys</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;inner&quot;</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">df_merged</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="c1"># Reorder columns: keys first, *_mbrXXX columns at the end</span>
+                    <span class="n">key_cols</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="n">col</span>
+                        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df_merged</span><span class="o">.</span><span class="n">columns</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">col</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span>
+                            <span class="nb">tuple</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;_mbr</span><span class="si">{</span><span class="n">mbr</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">mbr</span> <span class="ow">in</span> <span class="n">sqlite_file_dict</span><span class="p">)</span>
+                        <span class="p">)</span>
+                    <span class="p">]</span>
+                    <span class="n">mbr_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df_merged</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">key_cols</span><span class="p">]</span>
+                    <span class="n">df_merged</span> <span class="o">=</span> <span class="n">df_merged</span><span class="p">[</span><span class="n">key_cols</span> <span class="o">+</span> <span class="n">mbr_cols</span><span class="p">]</span>
+
+                    <span class="c1"># Write merged dataframe to file</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">merged_sqlite_file_path</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="k">with</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">merged_sqlite_file_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">connection</span><span class="p">:</span>
+                        <span class="n">df_merged</span><span class="o">.</span><span class="n">to_sql</span><span class="p">(</span>
+                            <span class="s2">&quot;FC&quot;</span><span class="p">,</span> <span class="n">connection</span><span class="p">,</span> <span class="n">if_exists</span><span class="o">=</span><span class="s2">&quot;replace&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span>
+                        <span class="p">)</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Merged file written to: </span><span class="si">{</span><span class="n">merged_sqlite_file_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">df_merged</span> <span class="o">=</span> <span class="n">df_merged</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">df_member</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="n">merge_keys</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;inner&quot;</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="n">df_merged</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="c1"># Reorder columns: keys first, *_mbrXXX columns at the end</span>
-                <span class="n">key_cols</span> <span class="o">=</span> <span class="p">[</span>
-                    <span class="n">col</span>
-                    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df_merged</span><span class="o">.</span><span class="n">columns</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="n">col</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span>
-                        <span class="nb">tuple</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;_mbr</span><span class="si">{</span><span class="n">mbr</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">mbr</span> <span class="ow">in</span> <span class="n">sqlite_file_dict</span><span class="p">)</span>
-                    <span class="p">)</span>
-                <span class="p">]</span>
-                <span class="n">mbr_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df_merged</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">key_cols</span><span class="p">]</span>
-                <span class="n">df_merged</span> <span class="o">=</span> <span class="n">df_merged</span><span class="p">[</span><span class="n">key_cols</span> <span class="o">+</span> <span class="n">mbr_cols</span><span class="p">]</span>
-
-                <span class="c1"># Write merged dataframe to file</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">merged_sqlite_file_path</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-                <span class="k">with</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">merged_sqlite_file_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">connection</span><span class="p">:</span>
-                    <span class="n">df_merged</span><span class="o">.</span><span class="n">to_sql</span><span class="p">(</span><span class="s2">&quot;FC&quot;</span><span class="p">,</span> <span class="n">connection</span><span class="p">,</span> <span class="n">if_exists</span><span class="o">=</span><span class="s2">&quot;replace&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Merged file written to: </span><span class="si">{</span><span class="n">merged_sqlite_file_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No data merged for parameter </span><span class="si">{</span><span class="n">harp_param</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No data merged for parameter </span><span class="si">{</span><span class="n">harp_param</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 </div>
 
 </pre></div>
@@ -1548,7 +1561,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-08-07T06:05:07Z.
+      <span class="lastupdated">Last updated on 2025-08-07T13:00:38Z.
       </span></p>
   </div>
 
