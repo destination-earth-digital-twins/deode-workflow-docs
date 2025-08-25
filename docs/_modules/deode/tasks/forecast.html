@@ -1310,6 +1310,9 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">pysurfex.namelist</span><span class="w"> </span><span class="kn">import</span> <span class="n">InputDataFromNamelist</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pysurfex.platform_deps</span><span class="w"> </span><span class="kn">import</span> <span class="n">SystemFilePathsFromFile</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">..config_parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigPaths</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..datetime_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">as_datetime</span><span class="p">,</span> <span class="n">as_timedelta</span><span class="p">,</span> <span class="n">oi2dt_list</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..derived_variables</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_fullpos_namelist</span>
@@ -1319,12 +1322,12 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">..os_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">deodemakedirs</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">Task</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.batch</span><span class="w"> </span><span class="kn">import</span> <span class="n">BatchJob</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.sfx</span><span class="w"> </span><span class="kn">import</span> <span class="n">InputDataFromNamelist</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.sfx</span><span class="w"> </span><span class="kn">import</span> <span class="n">PySurfexBaseTask</span>
 
 
 <div class="viewcode-block" id="Forecast">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.forecast.Forecast">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">Forecast</span><span class="p">(</span><span class="n">Task</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Forecast</span><span class="p">(</span><span class="n">PySurfexBaseTask</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Forecast task.&quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
@@ -1333,7 +1336,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            config (deode.ParsedConfig): Configuration</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">Task</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="n">PySurfexBaseTask</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">cycle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.cycle&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cnmexp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.cnmexp&quot;</span><span class="p">]</span>
@@ -1535,8 +1538,11 @@
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">input_definition</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">input_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
         <span class="n">binput_data</span> <span class="o">=</span> <span class="n">InputDataFromNamelist</span><span class="p">(</span>
-            <span class="n">settings</span><span class="p">,</span> <span class="n">input_data</span><span class="p">,</span> <span class="s2">&quot;forecast&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+            <span class="n">settings</span><span class="p">,</span>
+            <span class="n">input_data</span><span class="p">,</span>
+            <span class="s2">&quot;forecast&quot;</span><span class="p">,</span>
+            <span class="n">SystemFilePathsFromFile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pysurfex_system_file</span><span class="p">),</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">data</span>
 
         <span class="k">for</span> <span class="n">dest</span><span class="p">,</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">binput_data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;target=</span><span class="si">{}</span><span class="s2">, dest=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">dest</span><span class="p">)</span>
@@ -1672,7 +1678,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-08-25T12:19:15Z.
+      <span class="lastupdated">Last updated on 2025-08-25T12:30:40Z.
       </span></p>
   </div>
 
