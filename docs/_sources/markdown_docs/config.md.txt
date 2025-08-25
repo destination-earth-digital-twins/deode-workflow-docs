@@ -1,5 +1,5 @@
 The following section was automatically generated running
-        `deode doc config` on 2025-08-25T10:24:48.
+        `deode doc config` on 2025-08-25T12:19:13.
 
 # Config
 
@@ -1459,7 +1459,7 @@ Must be one of:
 | [bdfile_template](#system_bdfile_template)                     | string | No       | -                                                 | Name template for input boundary files                                                                               |
 | [sstfile_template](#system_sstfile_template)                   | string | No       | -                                                 | Name template for SST & SIC input boundary files interpolated to the model grid (currently hard-coded in model code) |
 | [bddir_sfx](#system_bddir_sfx)                                 | string | No       | -                                                 | Location of input intial file for surfex                                                                             |
-| [bddir](#system_bddir)                                         | string | No       | -                                                 | Location of input boundaries                                                                                         |
+| [bddir](#system_bddir)                                         | string | No       | -                                                 | Location of input boundaries from e.g. MARS                                                                          |
 | [intp_bddir](#system_intp_bddir)                               | string | No       | "@WRK@"                                           | Location of boundaries on the current domain, i.e. the output directory of e927                                      |
 | [intp_bddir_sfx](#system_intp_bddir_sfx)                       | string | No       | "@ARCHIVE@"                                       | Location of the inital surfex file for the current domain, i.e. the output directory of Prep                         |
 | [climdir](#system_climdir)                                     | string | No       | -                                                 | Location of generated/used climate files (PGD/monthly files)                                                         |
@@ -1471,12 +1471,12 @@ Must be one of:
 | [archive](#system_archive)                                     | string | No       | "@ARCHIVE_ROOT@/@ARCHIVE_TIMESTAMP@/@MEMBER_STR@" | Absolute path of date specific archive                                                                               |
 | [logs](#system_logs)                                           | string | No       | -                                                 | Location of collected logfiles                                                                                       |
 | [namelists](#system_namelists)                                 | string | No       | "@DEODE_HOME@/data/namelists/@CYCLE@"             | Path to static namelists                                                                                             |
-| [marsdir](#system_marsdir)                                     | string | No       | -                                                 | Location input files extracted from MARS by Marsprep                                                                 |
 | [global_sfcdir](#system_global_sfcdir)                         | string | No       | -                                                 | Path to SFC files needed for c903, which are not in MARS                                                             |
 | [prev_case](#system_prev_case)                                 | string | No       | "@CASE@"                                          | Name of the previous experiment                                                                                      |
 | [sfx_input_definition](#system_sfx_input_definition)           | string | No       | "@CYCLE@/sfx.json"                                | Path to the surfex json config file                                                                                  |
 | [forecast_input_definition](#system_forecast_input_definition) | string | No       | "@CYCLE@/forecast.json"                           | Path to the forecast json config file                                                                                |
 | [c903_input_definition](#system_c903_input_definition)         | string | No       | "@CYCLE@/c903.json"                               | Path to the c903 json config file                                                                                    |
+| [e927_input_definition](#system_e927_input_definition)         | string | No       | "@CYCLE@/e927.json"                               | Path to the e927 json config file                                                                                    |
 
 <a name="system_forecast_dir_link"></a>
 ### Property `Config > system > forecast_dir_link`
@@ -1547,7 +1547,7 @@ Must be one of:
 | **Type**     | `string` |
 | **Required** | No       |
 
-**Description:** Location of input boundaries
+**Description:** Location of input boundaries from e.g. MARS
 
 <a name="system_intp_bddir"></a>
 ### Property `Config > system > intp_bddir`
@@ -1665,16 +1665,6 @@ Must be one of:
 
 **Description:** Path to static namelists
 
-<a name="system_marsdir"></a>
-### Property `Config > system > marsdir`
-
-|              |          |
-| ------------ | -------- |
-| **Type**     | `string` |
-| **Required** | No       |
-
-**Description:** Location input files extracted from MARS by Marsprep
-
 <a name="system_global_sfcdir"></a>
 ### Property `Config > system > global_sfcdir`
 
@@ -1728,6 +1718,17 @@ Must be one of:
 | **Default**  | `"@CYCLE@/c903.json"` |
 
 **Description:** Path to the c903 json config file
+
+<a name="system_e927_input_definition"></a>
+### Property `Config > system > e927_input_definition`
+
+|              |                       |
+| ------------ | --------------------- |
+| **Type**     | `string`              |
+| **Required** | No                    |
+| **Default**  | `"@CYCLE@/e927.json"` |
+
+**Description:** Path to the e927 json config file
 
 <a name="boundaries"></a>
 ## Property `Config > boundaries`
@@ -4966,15 +4967,16 @@ Must be one of:
 
 **Description:** Templates for file names. Each item contains of an archive and a model key where archive is the name template for files in the archive and model the name expected as input/output of the IAL code.
 
-| Property                             | Type   | Required | Default | Title/Description |
-| ------------------------------------ | ------ | -------- | ------- | ----------------- |
-| [duration](#file_templates_duration) | object | No       | -       | Duration          |
-| [fullpos](#file_templates_fullpos)   | object | No       | -       | Fullpos           |
-| [history](#file_templates_history)   | object | No       | -       | History           |
-| [pgd](#file_templates_pgd)           | object | No       | -       | PGD               |
-| [pgd_prel](#file_templates_pgd_prel) | object | No       | -       | Preliminary PGD   |
-| [pgd_host](#file_templates_pgd_host) | object | No       | -       | Host PGD          |
-| [surfex](#file_templates_surfex)     | object | No       | -       | Surfex            |
+| Property                                                           | Type   | Required | Default | Title/Description       |
+| ------------------------------------------------------------------ | ------ | -------- | ------- | ----------------------- |
+| [duration](#file_templates_duration)                               | object | No       | -       | Duration                |
+| [fullpos](#file_templates_fullpos)                                 | object | No       | -       | Fullpos                 |
+| [interpolated_boundaries](#file_templates_interpolated_boundaries) | object | No       | -       | Interpolated boundaries |
+| [history](#file_templates_history)                                 | object | No       | -       | History                 |
+| [pgd](#file_templates_pgd)                                         | object | No       | -       | PGD                     |
+| [pgd_prel](#file_templates_pgd_prel)                               | object | No       | -       | Preliminary PGD         |
+| [pgd_host](#file_templates_pgd_host)                               | object | No       | -       | Host PGD                |
+| [surfex](#file_templates_surfex)                                   | object | No       | -       | Surfex                  |
 
 <a name="file_templates_duration"></a>
 ### Property `Config > file_templates > duration`
@@ -5053,6 +5055,44 @@ Must be one of:
 | **Type**     | `string`                                    |
 | **Required** | No                                          |
 | **Default**  | `"GRIBPF@CNMEXP@@DOMAIN@+@DURATION_MODEL@"` |
+
+**Description:** File template as used by the model
+
+<a name="file_templates_interpolated_boundaries"></a>
+### Property `Config > file_templates > interpolated_boundaries`
+
+**Title:** Interpolated boundaries
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** File name templates for interpolated boundary files
+
+| Property                                                   | Type   | Required | Default | Title/Description                      |
+| ---------------------------------------------------------- | ------ | -------- | ------- | -------------------------------------- |
+| [archive](#file_templates_interpolated_boundaries_archive) | string | No       | -       | File template as stored in the archive |
+| [model](#file_templates_interpolated_boundaries_model)     | string | No       | -       | File template as used by the model     |
+
+<a name="file_templates_interpolated_boundaries_archive"></a>
+#### Property `Config > file_templates > interpolated_boundaries > archive`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** File template as stored in the archive
+
+<a name="file_templates_interpolated_boundaries_model"></a>
+#### Property `Config > file_templates > interpolated_boundaries > model`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
 
 **Description:** File template as used by the model
 
