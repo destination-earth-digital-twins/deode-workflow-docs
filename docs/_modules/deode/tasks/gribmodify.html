@@ -1523,7 +1523,7 @@
 <span class="sd">            params (list): list of parameter dictionaries of input parameters</span>
 <span class="sd">            operation (str): operation to compute new field</span>
 <span class="sd">            output_params (dict) : list of parameter dictionaries of output parameters</span>
-<span class="sd">            layer_weights (list): list of weights for each layer</span>
+<span class="sd">            layer_weights (dict): dict of level weights with level numbers as keys</span>
 <span class="sd">            physical_range (list): list of physical range for each parameter</span>
 
 <span class="sd">        Raises:</span>
@@ -1637,7 +1637,6 @@
                     <span class="n">bitmap_list</span><span class="p">,</span>
                     <span class="n">physical_range</span><span class="p">,</span>
                     <span class="n">nature_weighting</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                    <span class="n">surface</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
@@ -1702,6 +1701,10 @@
                 <span class="k">if</span> <span class="n">return_bitmap</span><span class="p">:</span>
                     <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="n">bitmap</span>
                 <span class="k">return</span> <span class="n">value</span>
+
+        <span class="c1"># Return appropriate default when no match is found</span>
+        <span class="k">if</span> <span class="n">return_bitmap</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
 
@@ -1715,7 +1718,6 @@
         <span class="n">bitmap_list</span><span class="p">,</span>
         <span class="n">physical_range</span><span class="p">,</span>
         <span class="n">nature_weighting</span><span class="p">,</span>
-        <span class="n">surface</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate patch averaging.</span>
 
@@ -1731,9 +1733,16 @@
         <span class="n">tile_fraction_range</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
         <span class="n">tiles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_unique_values</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="s2">&quot;tile&quot;</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="n">nature_tile</span><span class="p">)</span>
 
+        <span class="c1"># Verify that the layer_weights is a dict with layer numbers as keys</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">layer_weights</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Layer weights must be a dict with layer numbers as keys.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">key</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">layer_weights</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Layer weights must be a dict with layer numbers as keys.&quot;</span><span class="p">)</span>
+
         <span class="c1"># Verify that the layer weights sum to 1 within numerical uncertainty</span>
-        <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="n">layer_weights</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">&gt;</span> <span class="mf">1e-6</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Layer weights must sum to 1. Fails for: &quot;</span><span class="p">,</span> <span class="n">layer_weights</span><span class="p">)</span>
+        <span class="n">weight_sum</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">layer_weights</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">weight_sum</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">1e-6</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Layer weights must sum to 1. Current sum: </span><span class="si">{</span><span class="n">weight_sum</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="n">physical_parameter_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_unique_values</span><span class="p">(</span>
             <span class="n">params</span><span class="p">,</span> <span class="s2">&quot;shortName&quot;</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="n">tile_fraction_name</span>
@@ -1741,6 +1750,10 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">physical_parameter_name</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Only one physical parameter is allowed.&quot;</span><span class="p">)</span>
         <span class="n">physical_parameter_name</span> <span class="o">=</span> <span class="n">physical_parameter_name</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Get the keys to iterate over for levels</span>
+        <span class="n">weight_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">layer_weights</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">weight_keys</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>  <span class="c1"># Sort numerically: [&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, ...]</span>
 
         <span class="c1"># Initialize arrays</span>
         <span class="n">num_tiles</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tiles</span><span class="p">)</span>
@@ -1753,6 +1766,7 @@
             <span class="p">(</span><span class="n">num_tiles</span><span class="p">,</span> <span class="n">num_layers</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">values_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
         <span class="p">)</span>
 
+        <span class="c1"># Populate arrays with values and bitmaps</span>
         <span class="k">for</span> <span class="n">tile_index</span><span class="p">,</span> <span class="n">tile</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tiles</span><span class="p">):</span>
             <span class="n">tile_fraction_value</span><span class="p">,</span> <span class="n">tile_fraction_bitmap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value_for_params</span><span class="p">(</span>
                 <span class="n">params</span><span class="p">,</span>
@@ -1774,8 +1788,11 @@
             <span class="n">tile_fraction_values</span><span class="p">[</span><span class="n">tile_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">tile_fraction_value</span>
             <span class="n">tile_fraction_bitmaps</span><span class="p">[</span><span class="n">tile_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">tile_fraction_bitmap</span>
 
-            <span class="k">for</span> <span class="n">layer_index</span><span class="p">,</span> <span class="n">layer_weight</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">layer_weights</span><span class="p">):</span>
-                <span class="n">level</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">surface</span> <span class="ow">is</span> <span class="kc">True</span> <span class="k">else</span> <span class="n">layer_index</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">for</span> <span class="n">layer_index</span><span class="p">,</span> <span class="n">weight_key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">weight_keys</span><span class="p">):</span>
+                <span class="n">level</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">weight_key</span><span class="p">)</span>  <span class="c1"># Convert string to int</span>
+                <span class="n">layer_weight</span> <span class="o">=</span> <span class="n">layer_weights</span><span class="p">[</span>
+                    <span class="n">weight_key</span>
+                <span class="p">]</span>  <span class="c1"># Get the layer weight for this level</span>
                 <span class="p">(</span>
                     <span class="n">physical_parameter_value</span><span class="p">,</span>
                     <span class="n">physical_parameter_bitmap</span><span class="p">,</span>
@@ -1790,6 +1807,7 @@
                     <span class="n">bitmap_list</span><span class="p">,</span>
                     <span class="n">return_bitmap</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                 <span class="p">)</span>
+
                 <span class="k">if</span> <span class="n">physical_range</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">physical_parameter_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
                         <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
@@ -1811,16 +1829,22 @@
                 <span class="c1"># and physical parameter bitmaps are not equal</span>
 
         <span class="c1"># Do the layer weighting</span>
-        <span class="k">for</span> <span class="n">layer_index</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">layer_weights</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">layer_index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_layers</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">tile_index</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tiles</span><span class="p">):</span>
                 <span class="n">tile_fraction_value</span> <span class="o">=</span> <span class="n">tile_fraction_values</span><span class="p">[</span><span class="n">tile_index</span><span class="p">]</span>
+
+                <span class="c1"># The tile fraction value is normalized by the sum of the fraction values</span>
+                <span class="n">tile_fraction_sum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">tile_fraction_values</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">tile_fraction_value</span> <span class="o">=</span> <span class="n">tile_fraction_value</span> <span class="o">/</span> <span class="n">tile_fraction_sum</span>
                 <span class="n">physical_parameter_value</span> <span class="o">=</span> <span class="n">physical_parameter_values</span><span class="p">[</span>
                     <span class="n">tile_index</span><span class="p">,</span> <span class="n">layer_index</span>
                 <span class="p">]</span>
+
                 <span class="c1"># The layer weight is normalized by the sum of the layer weights</span>
                 <span class="n">layer_weight</span> <span class="o">=</span> <span class="n">layer_weight_array</span><span class="p">[</span><span class="n">tile_index</span><span class="p">,</span> <span class="n">layer_index</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span>
                     <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">layer_weight_array</span><span class="p">[</span><span class="n">tile_index</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
                 <span class="p">)</span>
+
                 <span class="n">value</span> <span class="o">=</span> <span class="n">physical_parameter_value</span> <span class="o">*</span> <span class="n">layer_weight</span> <span class="o">*</span> <span class="n">tile_fraction_value</span>
                 <span class="k">if</span> <span class="n">nature_weighting</span><span class="p">:</span>
                     <span class="n">nature_fraction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value_for_params</span><span class="p">(</span>
@@ -1830,6 +1854,7 @@
                         <span class="n">bitmap_list</span><span class="p">,</span>
                         <span class="n">apply_bitmap</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                     <span class="p">)</span>
+
                     <span class="n">nature_fraction</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
                         <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
                             <span class="n">nature_fraction</span> <span class="o">&gt;=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">tile_fraction_range</span><span class="p">),</span>
@@ -1907,7 +1932,6 @@
             <span class="c1"># Expand input_grib_id entries</span>
             <span class="n">expanded_modify_rules</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">expand_input_grib_id</span><span class="p">(</span><span class="n">modify_rules</span><span class="p">)</span>
             <span class="n">modify_rules</span> <span class="o">=</span> <span class="n">expanded_modify_rules</span>
-
             <span class="n">config_modify_rules</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;gribmodify&quot;</span><span class="p">][</span><span class="n">filetype</span><span class="p">]</span>
 
             <span class="k">for</span> <span class="n">validtime</span><span class="p">,</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">file_handle</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -1940,6 +1964,7 @@
                     <span class="p">),</span>
                     <span class="kc">None</span><span class="p">,</span>
                 <span class="p">)</span>
+
                 <span class="k">if</span> <span class="n">rule</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                         <span class="sa">f</span><span class="s2">&quot;No modify rule found for output: &quot;</span>
@@ -2041,7 +2066,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-08-25T12:30:40Z.
+      <span class="lastupdated">Last updated on 2025-08-26T10:48:09Z.
       </span></p>
   </div>
 
