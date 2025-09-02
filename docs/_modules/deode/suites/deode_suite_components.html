@@ -864,6 +864,8 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-suite-control-n-addcalculatedfields">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">suite_control</span> <span class="pre">&gt;</span> <span class="pre">n_addcalculatedfields</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-suite-control-member-specific-static-data">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">suite_control</span> <span class="pre">&gt;</span> <span class="pre">member_specific_static_data</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-suite-control-member-specific-mars-prep">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">suite_control</span> <span class="pre">&gt;</span> <span class="pre">member_specific_mars_prep</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-suite-control-mirror-globaldt">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">suite_control</span> <span class="pre">&gt;</span> <span class="pre">mirror_globalDT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-suite-control-mirror-offline">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">suite_control</span> <span class="pre">&gt;</span> <span class="pre">mirror_offline</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-suite-control-max-static-data-tasks">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">suite_control</span> <span class="pre">&gt;</span> <span class="pre">max_static_data_tasks</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-suite-control-deodecleaningsuitedefinition">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">suite_control</span> <span class="pre">&gt;</span> <span class="pre">DeodeCleaningSuiteDefinition</span></code></a></li>
 </ul>
@@ -1322,6 +1324,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">..logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..submission</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProcessorLayout</span><span class="p">,</span> <span class="n">TaskSettings</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..tasks.impacts</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_impact</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..toolbox</span><span class="w"> </span><span class="kn">import</span> <span class="n">Platform</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">EcflowSuiteFamily</span><span class="p">,</span>
     <span class="n">EcflowSuiteLimit</span><span class="p">,</span>
@@ -1778,6 +1781,65 @@
 
 
 
+<div class="viewcode-block" id="MirrorFamily">
+<a class="viewcode-back" href="../../../deode.suites.html#deode.suites.deode_suite_components.MirrorFamily">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MirrorFamily</span><span class="p">(</span><span class="n">EcflowSuiteFamily</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for creating the InputDataFamily ecFlow family.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">parent</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">,</span>
+        <span class="n">task_settings</span><span class="p">:</span> <span class="n">TaskSettings</span><span class="p">,</span>
+        <span class="n">input_template</span><span class="p">,</span>
+        <span class="n">ecf_files</span><span class="p">,</span>
+        <span class="n">trigger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">cycle_valid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Class initialization.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="s2">&quot;Mirrors&quot;</span><span class="p">,</span>
+            <span class="n">parent</span><span class="p">,</span>
+            <span class="n">ecf_files</span><span class="p">,</span>
+            <span class="n">trigger</span><span class="o">=</span><span class="n">trigger</span><span class="p">,</span>
+            <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.mirror_globalDT&quot;</span><span class="p">]:</span>
+            <span class="n">EcflowSuiteTask</span><span class="p">(</span>
+                <span class="n">config</span><span class="p">[</span><span class="s2">&quot;platform.mirrorglobalDT&quot;</span><span class="p">][</span><span class="s2">&quot;remote_path&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">config</span><span class="p">,</span>
+                <span class="n">task_settings</span><span class="p">,</span>
+                <span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
+                <span class="n">trigger</span><span class="o">=</span><span class="p">[</span><span class="n">trigger</span><span class="p">],</span>
+                <span class="n">mirror</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">mirror_config</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;platform.mirrorglobalDT&quot;</span><span class="p">],</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.mirror_offline&quot;</span><span class="p">]:</span>
+            <span class="n">mirror_config</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;platform.mirroroffline&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
+            <span class="n">mirror_config</span><span class="p">[</span><span class="s2">&quot;remote_path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">config</span><span class="p">)</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
+                <span class="n">mirror_config</span><span class="p">[</span><span class="s2">&quot;remote_path&quot;</span><span class="p">],</span> <span class="n">validtime</span><span class="o">=</span><span class="n">cycle_valid</span>
+            <span class="p">)</span>
+            <span class="n">EcflowSuiteTask</span><span class="p">(</span>
+                <span class="n">config</span><span class="p">[</span><span class="s2">&quot;platform.mirroroffline&quot;</span><span class="p">][</span><span class="s2">&quot;remote_path&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">config</span><span class="p">,</span>
+                <span class="n">task_settings</span><span class="p">,</span>
+                <span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
+                <span class="n">trigger</span><span class="o">=</span><span class="p">[</span><span class="n">trigger</span><span class="p">],</span>
+                <span class="n">mirror</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">mirror_config</span><span class="o">=</span><span class="n">mirror_config</span><span class="p">,</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+            <span class="p">)</span></div>
+
+
+
 <div class="viewcode-block" id="InputDataFamily">
 <a class="viewcode-back" href="../../../deode.suites.html#deode.suites.deode_suite_components.InputDataFamily">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">InputDataFamily</span><span class="p">(</span><span class="n">EcflowSuiteFamily</span><span class="p">):</span>
@@ -1793,6 +1855,8 @@
         <span class="n">trigger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">external_marsprep_trigger_node</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">add_var_trigger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">remote_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Class initialization.&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
@@ -1813,6 +1877,7 @@
         <span class="p">)</span>
 
         <span class="n">marsprep_trigger_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">prepare_cycle</span><span class="p">]</span>
+
         <span class="k">if</span> <span class="n">external_marsprep_trigger_node</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">marsprep_trigger_nodes</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">external_marsprep_trigger_node</span><span class="p">)</span>
 
@@ -1830,6 +1895,8 @@
                 <span class="n">input_template</span><span class="o">=</span><span class="n">input_template</span><span class="p">,</span>
                 <span class="n">trigger</span><span class="o">=</span><span class="n">marsprep_trigger_nodes</span><span class="p">,</span>
                 <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+                <span class="n">add_var_trigger</span><span class="o">=</span><span class="n">add_var_trigger</span><span class="p">,</span>
+                <span class="n">remote_path</span><span class="o">=</span><span class="n">remote_path</span><span class="p">,</span>
             <span class="p">)</span></div>
 
 
@@ -2090,6 +2157,8 @@
         <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">do_prep</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">dry_run</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">add_var_trigger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">remote_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Class initialization.&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
@@ -2098,8 +2167,9 @@
             <span class="n">ecf_files</span><span class="p">,</span>
             <span class="n">trigger</span><span class="o">=</span><span class="n">trigger</span><span class="p">,</span>
             <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+            <span class="n">add_var_trigger</span><span class="o">=</span><span class="n">add_var_trigger</span><span class="p">,</span>
+            <span class="n">remote_path</span><span class="o">=</span><span class="n">remote_path</span><span class="p">,</span>
         <span class="p">)</span>
-
         <span class="n">e923_update_task</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">csc</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.csc&quot;</span><span class="p">]</span>
 
@@ -2532,6 +2602,8 @@
                 <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
             <span class="p">)</span>
 
+            <span class="n">check_globaldt_date</span> <span class="o">=</span> <span class="n">check_offline_date</span> <span class="o">=</span> <span class="n">path_globaldt</span> <span class="o">=</span> <span class="n">path_offline</span> <span class="o">=</span> <span class="kc">None</span>
+
             <span class="k">if</span> <span class="ow">not</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.member_specific_mars_prep&quot;</span><span class="p">]:</span>
                 <span class="n">external_marsprep_trigger_nodes</span> <span class="o">=</span> <span class="p">[</span>
                     <span class="n">prev_interpolation_triggers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">member</span><span class="p">)</span>
@@ -2542,6 +2614,61 @@
                     <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">external_marsprep_trigger_nodes</span><span class="p">)</span>
                     <span class="k">else</span> <span class="kc">None</span>
                 <span class="p">)</span>
+
+                <span class="k">if</span> <span class="p">(</span>
+                    <span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.mirror_globalDT&quot;</span><span class="p">]</span>
+                    <span class="ow">and</span> <span class="s2">&quot;platform.mirrorglobalDT&quot;</span> <span class="ow">in</span> <span class="n">config</span>
+                <span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+                    <span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.mirror_offline&quot;</span><span class="p">]</span>
+                    <span class="ow">and</span> <span class="s2">&quot;platform.mirroroffline&quot;</span> <span class="ow">in</span> <span class="n">config</span>
+                <span class="p">):</span>
+                    <span class="n">MirrorFamily</span><span class="p">(</span>
+                        <span class="n">time_family</span><span class="p">,</span>
+                        <span class="n">config</span><span class="p">,</span>
+                        <span class="n">task_settings</span><span class="p">,</span>
+                        <span class="n">input_template</span><span class="p">,</span>
+                        <span class="n">ecf_files</span><span class="p">,</span>
+                        <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+                        <span class="n">cycle_valid</span><span class="o">=</span><span class="n">cycle</span><span class="o">.</span><span class="n">validtime</span><span class="p">,</span>
+                    <span class="p">)</span>
+
+                    <span class="k">if</span> <span class="p">(</span>
+                        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.mirror_globalDT&quot;</span><span class="p">]</span>
+                        <span class="ow">and</span> <span class="s2">&quot;platform.mirrorglobalDT&quot;</span> <span class="ow">in</span> <span class="n">config</span>
+                    <span class="p">):</span>
+                        <span class="n">path_globaldt</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">/</span><span class="si">{1}</span><span class="s2">/</span><span class="si">{2}</span><span class="s2">/Mirrors/</span><span class="si">{3}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">parent</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
+                            <span class="n">cycle</span><span class="o">.</span><span class="n">day</span><span class="p">,</span>
+                            <span class="n">cycle</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
+                            <span class="n">config</span><span class="p">[</span><span class="s2">&quot;platform.mirrorglobalDT&quot;</span><span class="p">][</span><span class="s2">&quot;remote_path&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span>
+                                <span class="o">-</span><span class="mi">1</span>
+                            <span class="p">],</span>
+                        <span class="p">)</span>
+
+                        <span class="k">if</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;platform.mirrorglobalDT&quot;</span><span class="p">][</span><span class="s2">&quot;check_var&quot;</span><span class="p">]:</span>
+                            <span class="n">check_globaldt_date</span> <span class="o">=</span> <span class="p">{</span>
+                                <span class="n">config</span><span class="p">[</span><span class="s2">&quot;platform.mirrorglobalDT&quot;</span><span class="p">][</span><span class="s2">&quot;check_var&quot;</span><span class="p">]:</span> <span class="n">cycle</span><span class="o">.</span><span class="n">day</span>
+                            <span class="p">}</span>
+
+                    <span class="k">if</span> <span class="p">(</span>
+                        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.mirror_offline&quot;</span><span class="p">]</span>
+                        <span class="ow">and</span> <span class="s2">&quot;platform.mirroroffline&quot;</span> <span class="ow">in</span> <span class="n">config</span>
+                    <span class="p">):</span>
+                        <span class="n">path_offline</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">/</span><span class="si">{1}</span><span class="s2">/</span><span class="si">{2}</span><span class="s2">/Mirrors/</span><span class="si">{3}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">parent</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
+                            <span class="n">cycle</span><span class="o">.</span><span class="n">day</span><span class="p">,</span>
+                            <span class="n">cycle</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
+                            <span class="n">config</span><span class="p">[</span><span class="s2">&quot;platform.mirroroffline&quot;</span><span class="p">][</span><span class="s2">&quot;remote_path&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span>
+                                <span class="o">-</span><span class="mi">1</span>
+                            <span class="p">],</span>
+                        <span class="p">)</span>
+                        <span class="k">if</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;platform.mirroroffline&quot;</span><span class="p">][</span><span class="s2">&quot;check_var&quot;</span><span class="p">]:</span>
+                            <span class="n">check_offline_date</span> <span class="o">=</span> <span class="p">{</span>
+                                <span class="n">config</span><span class="p">[</span><span class="s2">&quot;platform.mirroroffline&quot;</span><span class="p">][</span>
+                                    <span class="s2">&quot;check_var&quot;</span>
+                                <span class="p">]:</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">/</span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cycle</span><span class="o">.</span><span class="n">day</span><span class="p">,</span> <span class="n">cycle</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+                            <span class="p">}</span>
+
                 <span class="n">inputdata</span> <span class="o">=</span> <span class="n">InputDataFamily</span><span class="p">(</span>
                     <span class="n">time_family</span><span class="p">,</span>
                     <span class="n">config</span><span class="p">,</span>
@@ -2551,6 +2678,8 @@
                     <span class="n">trigger</span><span class="o">=</span><span class="n">trigger</span><span class="p">,</span>
                     <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
                     <span class="n">external_marsprep_trigger_node</span><span class="o">=</span><span class="n">external_marsprep_trigger_nodes</span><span class="p">,</span>
+                    <span class="n">add_var_trigger</span><span class="o">=</span><span class="n">check_globaldt_date</span><span class="p">,</span>
+                    <span class="n">remote_path</span><span class="o">=</span><span class="n">path_globaldt</span><span class="p">,</span>
                 <span class="p">)</span>
                 <span class="n">ready_for_cycle</span> <span class="o">=</span> <span class="n">inputdata</span>
 
@@ -2586,6 +2715,7 @@
                         <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">external_marsprep_trigger_nodes</span><span class="p">)</span>
                         <span class="k">else</span> <span class="kc">None</span>
                     <span class="p">)</span>
+
                     <span class="n">inputdata</span> <span class="o">=</span> <span class="n">InputDataFamily</span><span class="p">(</span>
                         <span class="n">member_family</span><span class="p">,</span>
                         <span class="n">config</span><span class="p">,</span>
@@ -2610,6 +2740,8 @@
                         <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
                         <span class="n">do_prep</span><span class="o">=</span><span class="n">do_prep</span><span class="p">,</span>
                         <span class="n">dry_run</span><span class="o">=</span><span class="n">dry_run</span><span class="p">,</span>
+                        <span class="n">add_var_trigger</span><span class="o">=</span><span class="n">check_offline_date</span><span class="p">,</span>
+                        <span class="n">remote_path</span><span class="o">=</span><span class="n">path_offline</span><span class="p">,</span>
                     <span class="p">)</span>
 
                     <span class="n">ready_for_cycle</span> <span class="o">=</span> <span class="n">prev_interpolation_triggers</span><span class="p">[</span><span class="n">member</span><span class="p">]</span> <span class="o">=</span> <span class="n">int_family</span>
@@ -2715,7 +2847,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-09-01T09:14:33Z.
+      <span class="lastupdated">Last updated on 2025-09-02T08:58:38Z.
       </span></p>
   </div>
 

@@ -864,6 +864,8 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-suite-control-n-addcalculatedfields">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">suite_control</span> <span class="pre">&gt;</span> <span class="pre">n_addcalculatedfields</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-suite-control-member-specific-static-data">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">suite_control</span> <span class="pre">&gt;</span> <span class="pre">member_specific_static_data</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-suite-control-member-specific-mars-prep">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">suite_control</span> <span class="pre">&gt;</span> <span class="pre">member_specific_mars_prep</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-suite-control-mirror-globaldt">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">suite_control</span> <span class="pre">&gt;</span> <span class="pre">mirror_globalDT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-suite-control-mirror-offline">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">suite_control</span> <span class="pre">&gt;</span> <span class="pre">mirror_offline</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-suite-control-max-static-data-tasks">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">suite_control</span> <span class="pre">&gt;</span> <span class="pre">max_static_data_tasks</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-suite-control-deodecleaningsuitedefinition">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">suite_control</span> <span class="pre">&gt;</span> <span class="pre">DeodeCleaningSuiteDefinition</span></code></a></li>
 </ul>
@@ -1311,6 +1313,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">..datetime_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">as_datetime</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogDefaults</span><span class="p">,</span> <span class="n">logger</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..submission</span><span class="w"> </span><span class="kn">import</span> <span class="n">TaskSettings</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..toolbox</span><span class="w"> </span><span class="kn">import</span> <span class="n">Platform</span>
@@ -1519,6 +1522,9 @@
         <span class="n">trigger</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
             <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;EcflowSuiteTriggers&quot;</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="s2">&quot;EcflowNode&quot;</span><span class="p">],</span> <span class="s2">&quot;EcflowNode&quot;</span><span class="p">]</span>
         <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">mirror_config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">add_var_trigger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">remote_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">def_status</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">cron</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1534,6 +1540,11 @@
 <span class="sd">            variables (dict, optional): Variables to map. Defaults to None</span>
 <span class="sd">            trigger (Union[EcflowSuiteTriggers, List[EcflowNode], EcflowNode]):</span>
 <span class="sd">                Trigger. Defaults to None</span>
+<span class="sd">            mirror_config (dict, optional): Variables for the mirror task</span>
+<span class="sd">            add_var_trigger(dict): Dictionary to add trigger based on ECF-variable.</span>
+<span class="sd">                Defaults to None</span>
+<span class="sd">            remote_path(str): path to the mirror node on the remote ecflow suite.</span>
+<span class="sd">                Defaults to None</span>
 <span class="sd">            def_status (str, ecflow.Defstatus): Def status. Defaults to None</span>
 <span class="sd">            ecf_files_remotely(str, optional): Remote file prefix</span>
 <span class="sd">            cron (EcflowSuiteCron): Cron. Defauts to None</span>
@@ -1567,6 +1578,10 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">ecf_node</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">ecf_node</span><span class="o">.</span><span class="n">add_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_type</span> <span class="o">==</span> <span class="s2">&quot;suite&quot;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">ecf_node</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">add_suite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_type</span> <span class="o">==</span> <span class="s2">&quot;mirror&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">mirror_config</span><span class="p">[</span><span class="s2">&quot;check_var&quot;</span><span class="p">]:</span>
+                    <span class="n">variables</span> <span class="o">=</span> <span class="p">{</span><span class="n">mirror_config</span><span class="p">[</span><span class="s2">&quot;check_var&quot;</span><span class="p">]:</span> <span class="s2">&quot;placeholder&quot;</span><span class="p">}</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ecf_node</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">ecf_node</span><span class="o">.</span><span class="n">add_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
@@ -1608,6 +1623,22 @@
                         <span class="p">[</span><span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">trigger</span><span class="p">]</span>
                     <span class="p">)</span>
                     <span class="k">if</span> <span class="n">trigger</span><span class="o">.</span><span class="n">trigger_string</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_node</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">add_var_trigger</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">add_var_trigger</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                                <span class="n">trigger</span><span class="o">.</span><span class="n">trigger_string</span> <span class="o">=</span> <span class="p">(</span>
+                                    <span class="s2">&quot;(</span><span class="si">{0}</span><span class="s2"> AND ((</span><span class="si">{1}</span><span class="s2"> == complete &quot;</span>
+                                    <span class="s2">&quot;AND </span><span class="si">{1}</span><span class="s2">:</span><span class="si">{2}</span><span class="s2"> == </span><span class="si">{3}</span><span class="s2">) OR </span><span class="si">{1}</span><span class="s2">:</span><span class="si">{2}</span><span class="s2"> &gt; </span><span class="si">{3}</span><span class="s2">))&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                        <span class="n">trigger</span><span class="o">.</span><span class="n">trigger_string</span><span class="p">,</span>
+                                        <span class="n">remote_path</span><span class="p">,</span>
+                                        <span class="n">key</span><span class="p">,</span>
+                                        <span class="n">as_datetime</span><span class="p">(</span><span class="n">val</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">),</span>
+                                    <span class="p">)</span>
+                                <span class="p">)</span>
+                        <span class="k">elif</span> <span class="n">remote_path</span><span class="p">:</span>
+                            <span class="n">trigger</span><span class="o">.</span><span class="n">trigger_string</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> AND </span><span class="si">{1}</span><span class="s2"> == complete&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                <span class="n">trigger</span><span class="o">.</span><span class="n">trigger_string</span><span class="p">,</span> <span class="n">remote_path</span>
+                            <span class="p">)</span>
+
                         <span class="bp">self</span><span class="o">.</span><span class="n">ecf_node</span><span class="o">.</span><span class="n">add_trigger</span><span class="p">(</span><span class="n">trigger</span><span class="o">.</span><span class="n">trigger_string</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
@@ -1619,6 +1650,22 @@
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">trigger</span><span class="p">,</span> <span class="n">EcflowNode</span><span class="p">):</span>
                 <span class="n">trigger</span> <span class="o">=</span> <span class="n">EcflowSuiteTriggers</span><span class="p">([</span><span class="n">EcflowSuiteTrigger</span><span class="p">(</span><span class="n">trigger</span><span class="p">)])</span>
                 <span class="k">if</span> <span class="n">trigger</span><span class="o">.</span><span class="n">trigger_string</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_node</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">add_var_trigger</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">add_var_trigger</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                            <span class="n">trigger</span><span class="o">.</span><span class="n">trigger_string</span> <span class="o">=</span> <span class="p">(</span>
+                                <span class="s2">&quot;(</span><span class="si">{0}</span><span class="s2"> AND ((</span><span class="si">{1}</span><span class="s2"> == complete &quot;</span>
+                                <span class="s2">&quot;AND </span><span class="si">{1}</span><span class="s2">:</span><span class="si">{2}</span><span class="s2"> == </span><span class="si">{3}</span><span class="s2">) OR </span><span class="si">{1}</span><span class="s2">:</span><span class="si">{2}</span><span class="s2"> &gt; </span><span class="si">{3}</span><span class="s2">))&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                    <span class="n">trigger</span><span class="o">.</span><span class="n">trigger_string</span><span class="p">,</span>
+                                    <span class="n">remote_path</span><span class="p">,</span>
+                                    <span class="n">key</span><span class="p">,</span>
+                                    <span class="n">as_datetime</span><span class="p">(</span><span class="n">val</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">),</span>
+                                <span class="p">)</span>
+                            <span class="p">)</span>
+
+                    <span class="k">elif</span> <span class="n">remote_path</span><span class="p">:</span>
+                        <span class="n">trigger</span><span class="o">.</span><span class="n">trigger_string</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> AND </span><span class="si">{1}</span><span class="s2"> == complete&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">trigger</span><span class="o">.</span><span class="n">trigger_string</span><span class="p">,</span> <span class="n">remote_path</span>
+                        <span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">ecf_node</span><span class="o">.</span><span class="n">add_trigger</span><span class="p">(</span><span class="n">trigger</span><span class="o">.</span><span class="n">trigger_string</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
@@ -1651,7 +1698,20 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
                     <span class="s2">&quot;defstatus must be either str or an ecflow.Defstatus object&quot;</span>
-                <span class="p">)</span></div>
+                <span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_type</span> <span class="o">==</span> <span class="s2">&quot;mirror&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ecf_node</span><span class="o">.</span><span class="n">add_mirror</span><span class="p">(</span>
+                <span class="n">ecflow</span><span class="o">.</span><span class="n">MirrorAttr</span><span class="p">(</span>
+                    <span class="n">mirror_config</span><span class="p">[</span><span class="s2">&quot;mirror_name&quot;</span><span class="p">],</span>
+                    <span class="n">mirror_config</span><span class="p">[</span><span class="s2">&quot;remote_path&quot;</span><span class="p">],</span>
+                    <span class="n">mirror_config</span><span class="p">[</span><span class="s2">&quot;remote_host&quot;</span><span class="p">],</span>
+                    <span class="n">mirror_config</span><span class="p">[</span><span class="s2">&quot;remote_port&quot;</span><span class="p">],</span>
+                    <span class="n">mirror_config</span><span class="p">[</span><span class="s2">&quot;remote_polling&quot;</span><span class="p">],</span>
+                    <span class="n">mirror_config</span><span class="p">[</span><span class="s2">&quot;remote_ssl&quot;</span><span class="p">],</span>
+                    <span class="n">mirror_config</span><span class="p">[</span><span class="s2">&quot;remote_auth&quot;</span><span class="p">],</span>
+                <span class="p">)</span>
+            <span class="p">)</span></div>
 
 
 
@@ -1672,6 +1732,8 @@
         <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">cron</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">add_var_trigger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">remote_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct EcflowNodeContainer.</span>
 
@@ -1686,6 +1748,10 @@
 <span class="sd">            ecf_files_remotely(str, optional): ECF_FILES on ecflow server</span>
 <span class="sd">            cron (EcflowSuiteCron): Cron. Defauts to None</span>
 <span class="sd">            limit (EcflowSuiteLimit): Limit. Default None</span>
+<span class="sd">            add_var_trigger(dict): Dictionary to add trigger based on ECF-variable.</span>
+<span class="sd">                Defaults to None</span>
+<span class="sd">            remote_path(str): path to the mirror node on the remote ecflow suite.</span>
+<span class="sd">                Defaults to None</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">EcflowNode</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
@@ -1700,6 +1766,8 @@
             <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
             <span class="n">cron</span><span class="o">=</span><span class="n">cron</span><span class="p">,</span>
             <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span>
+            <span class="n">add_var_trigger</span><span class="o">=</span><span class="n">add_var_trigger</span><span class="p">,</span>
+            <span class="n">remote_path</span><span class="o">=</span><span class="n">remote_path</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 
@@ -1776,6 +1844,8 @@
         <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">cron</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">add_var_trigger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">remote_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct the family.</span>
 
@@ -1789,6 +1859,10 @@
 <span class="sd">                    ecf_files_remotely(str, optional): ECF_FILES on ecflow server</span>
 <span class="sd">                    cron (EcflowSuiteCron): Cron. Defaut None</span>
 <span class="sd">                    limit (EcflowSuiteLimit): Limit. Default None</span>
+<span class="sd">                    add_var_trigger(dict): dict to add trigger based on ECF-variable.</span>
+<span class="sd">                        Defaults to None</span>
+<span class="sd">                    remote_path(str): path to the mirror node on the remote ecflow suite.</span>
+<span class="sd">                        Defaults to None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">EcflowNodeContainer</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
@@ -1802,6 +1876,8 @@
             <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
             <span class="n">cron</span><span class="o">=</span><span class="n">cron</span><span class="p">,</span>
             <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span>
+            <span class="n">add_var_trigger</span><span class="o">=</span><span class="n">add_var_trigger</span><span class="p">,</span>
+            <span class="n">remote_path</span><span class="o">=</span><span class="n">remote_path</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ecf_remote_container_path</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_node</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -1826,11 +1902,15 @@
         <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">ecf_micro</span><span class="o">=</span><span class="s2">&quot;%&quot;</span><span class="p">,</span>
         <span class="n">trigger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">mirror</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">mirror_config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">def_status</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">cron</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">add_var_trigger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">remote_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Constuct the EcflowSuiteTask.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct the EcflowSuiteTask.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            name (str): Name of task</span>
@@ -1844,27 +1924,50 @@
 <span class="sd">            variables (dict, optional): Variables to map. Defaults to None</span>
 <span class="sd">            ecf_micro (str, optional): ECF_MICRO. Defaults to %</span>
 <span class="sd">            trigger (EcflowSuiteTriggers): Trigger. Defaults to None</span>
+<span class="sd">            mirror (bool, optional): Task is a mirror (True) or a regular task,</span>
+<span class="sd">                Defaults to False</span>
+<span class="sd">            mirror_config (dict, optional): dictionary with remote mirror settings,</span>
+<span class="sd">                Defaults to None</span>
 <span class="sd">            def_status (str, ecflow.Defstatus): Def status. Defaults to None</span>
 <span class="sd">            ecf_files_remotely(str, optional): ECF_FILES on ecflow server</span>
 <span class="sd">            cron (EcflowSuiteCron): Cron. Defaut None</span>
-
+<span class="sd">            add_var_trigger(dict): dict to add trigger based on ECF-variable.</span>
+<span class="sd">                Defaults to None</span>
+<span class="sd">            remote_path(str): path to the mirror node on the remote ecflow suite.</span>
+<span class="sd">                Defaults to None</span>
 <span class="sd">        Raises:</span>
 <span class="sd">            ValueError: If input template is to be parsed but it is not passed.</span>
 <span class="sd">            FileNotFoundError: If the task container is not found.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">EcflowNode</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">name</span><span class="p">,</span>
-            <span class="s2">&quot;task&quot;</span><span class="p">,</span>
-            <span class="n">parent</span><span class="p">,</span>
-            <span class="n">ecf_files</span><span class="p">,</span>
-            <span class="n">variables</span><span class="o">=</span><span class="n">variables</span><span class="p">,</span>
-            <span class="n">trigger</span><span class="o">=</span><span class="n">trigger</span><span class="p">,</span>
-            <span class="n">def_status</span><span class="o">=</span><span class="n">def_status</span><span class="p">,</span>
-            <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
-            <span class="n">cron</span><span class="o">=</span><span class="n">cron</span><span class="p">,</span>
-        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">mirror</span><span class="p">:</span>
+            <span class="n">trigger</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">trigger</span><span class="p">)</span> <span class="k">if</span> <span class="n">trigger</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">mirror</span><span class="p">:</span>
+            <span class="n">EcflowNode</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">name</span><span class="p">,</span>
+                <span class="s2">&quot;mirror&quot;</span><span class="p">,</span>
+                <span class="n">parent</span><span class="p">,</span>
+                <span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">mirror_config</span><span class="o">=</span><span class="n">mirror_config</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">EcflowNode</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">name</span><span class="p">,</span>
+                <span class="s2">&quot;task&quot;</span><span class="p">,</span>
+                <span class="n">parent</span><span class="p">,</span>
+                <span class="n">ecf_files</span><span class="p">,</span>
+                <span class="n">variables</span><span class="o">=</span><span class="n">variables</span><span class="p">,</span>
+                <span class="n">trigger</span><span class="o">=</span><span class="n">trigger</span><span class="p">,</span>
+                <span class="n">def_status</span><span class="o">=</span><span class="n">def_status</span><span class="p">,</span>
+                <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
+                <span class="n">cron</span><span class="o">=</span><span class="n">cron</span><span class="p">,</span>
+                <span class="n">add_var_trigger</span><span class="o">=</span><span class="n">add_var_trigger</span><span class="p">,</span>
+                <span class="n">remote_path</span><span class="o">=</span><span class="n">remote_path</span><span class="p">,</span>
+            <span class="p">)</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">parent</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">parent</span><span class="o">.</span><span class="n">ecf_local_container_path</span><span class="p">)</span>
@@ -1892,7 +1995,7 @@
                 <span class="n">variables</span><span class="o">=</span><span class="n">variables</span><span class="p">,</span>
                 <span class="n">ecf_micro</span><span class="o">=</span><span class="n">ecf_micro</span><span class="p">,</span>
             <span class="p">)</span>
-        <span class="k">elif</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">task_container</span><span class="p">):</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">task_container</span><span class="p">))</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">mirror</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Container </span><span class="si">{</span><span class="n">task_container</span><span class="si">}</span><span class="s2"> is missing!&quot;</span><span class="p">)</span></div>
 
 
@@ -2040,7 +2143,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-09-01T09:14:33Z.
+      <span class="lastupdated">Last updated on 2025-09-02T08:58:38Z.
       </span></p>
   </div>
 
