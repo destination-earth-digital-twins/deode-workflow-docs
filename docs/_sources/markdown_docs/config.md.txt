@@ -1,5 +1,5 @@
 The following section was automatically generated running
-        `deode doc config` on 2025-09-02T12:03:21.
+        `deode doc config` on 2025-09-08T12:04:23.
 
 # Config
 
@@ -78,7 +78,6 @@ The following section was automatically generated running
 | [windfarm](#general_windfarm)                               | boolean          | No       | false        | Switch on wind farm parameterisation                                                                                                                                                                                                                                                                                                         |
 | [upd_sst_sic](#general_upd_sst_sic)                         | boolean          | No       | false        | Switch to update SST/SIC during forecast                                                                                                                                                                                                                                                                                                     |
 | [surfex_sea_ice](#general_surfex_sea_ice)                   | enum (of string) | No       | "sice"       | Treatment of sea ice in surfex                                                                                                                                                                                                                                                                                                               |
-| [precision](#general_precision)                             | enum (of string) | No       | "-sp"        | Floating point precision                                                                                                                                                                                                                                                                                                                     |
 
 <a name="general_times"></a>
 ### Property `Config > general > times`
@@ -940,21 +939,6 @@ Must be one of:
 Must be one of:
 * "sice"
 * "none"
-
-<a name="general_precision"></a>
-### Property `Config > general > precision`
-
-|              |                    |
-| ------------ | ------------------ |
-| **Type**     | `enum (of string)` |
-| **Required** | No                 |
-| **Default**  | `"-sp"`            |
-
-**Description:** Floating point precision
-
-Must be one of:
-* ""
-* "-sp"
 
 <a name="suite_control"></a>
 ## Property `Config > suite_control`
@@ -8152,6 +8136,7 @@ Must be one of:
 | [albnir_veg_dir](#platform_albnir_veg_dir)           | string                    | No       | -                               | Path to near-infrared spectrum vegetation data.                                                |
 | [albvis_soil_dir](#platform_albvis_soil_dir)         | string                    | No       | -                               | Path to visible soil spectrum data.                                                            |
 | [albvis_veg_dir](#platform_albvis_veg_dir)           | string                    | No       | -                               | Path to visible spectrum vegetation data.                                                      |
+| [install_dir](#platform_install_dir)                 | string                    | No       | -                               | Install location                                                                               |
 | [lai_dir](#platform_lai_dir)                         | string                    | No       | -                               | TBA                                                                                            |
 | [tree_height_dir](#platform_tree_height_dir)         | string                    | No       | -                               | Path to tree_height data.                                                                      |
 | [windfarm_path](#platform_windfarm_path)             | string                    | No       | -                               | Path to wind farm parameterisation input data.                                                 |
@@ -8399,6 +8384,16 @@ Must be one of:
 | **Required** | No       |
 
 **Description:** Path to visible spectrum vegetation data.
+
+<a name="platform_install_dir"></a>
+### Property `Config > platform > install_dir`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Install location
 
 <a name="platform_lai_dir"></a>
 ### Property `Config > platform > lai_dir`
@@ -8725,18 +8720,22 @@ Must be one of:
 
 **Description:** Defines host dependent runtime settings such as binaries, batch job rules, modules and similar
 
-| Property                                               | Type    | Required | Default                            | Title/Description                                                                                                                                        |
-| ------------------------------------------------------ | ------- | -------- | ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [account](#submission_account)                         | string  | No       | -                                  | Global setting of account to be used. E.g. \`#SBATCH -A some_account\` for slurm. Setting of account on group or task level overrides the global setting |
-| [bindir](#submission_bindir)                           | string  | No       | "@INSTALL_DIR@/@CYCLE@/latest/bin" | Location of binaries                                                                                                                                     |
-| [nproma](#submission_nproma)                           | number  | No       | -32                                | NPROMA size in the forecast model. See the namelists for where it is used                                                                                |
-| [lfftw](#submission_lfftw)                             | boolean | No       | true                               | Use of the FFTW library. See the namelists for where it is used                                                                                          |
-| [module_initfile](#submission_module_initfile)         | string  | No       | -                                  | File to use for module initialization, overrides module_initpath                                                                                         |
-| [module_initpath](#submission_module_initpath)         | string  | No       | -                                  | Path to the version of env_modules_python.py to be used in the module initialization                                                                     |
-| [default_submit_type](#submission_default_submit_type) | string  | No       | -                                  | Defines the default submit type for tasks not listed in any defined type                                                                                 |
-| [task_exceptions](#submission_task_exceptions)         | object  | No       | -                                  | Allows to define task specific settings like BATCH, MODULES, NPROC. Use as task_exceptions.taskname.property                                             |
-| [types](#submission_types)                             | object  | No       | -                                  | Submission types                                                                                                                                         |
-| [iomerge](#submission_iomerge)                         | object  | No       | -                                  | IO-merge group                                                                                                                                           |
+| Property                                               | Type             | Required | Default                                   | Title/Description                                                                                                                                        |
+| ------------------------------------------------------ | ---------------- | -------- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [account](#submission_account)                         | string           | No       | -                                         | Global setting of account to be used. E.g. \`#SBATCH -A some_account\` for slurm. Setting of account on group or task level overrides the global setting |
+| [bindir](#submission_bindir)                           | string           | No       | "@INSTALL_DIR@/@CYCLE@/@IAL_VERSION@/bin" | Location of IAL binaries                                                                                                                                 |
+| [bindir_gl](#submission_bindir_gl)                     | string           | No       | "@INSTALL_DIR@/gl/@GL_VERSION@/bin/"      | Location of GL binary                                                                                                                                    |
+| [precision](#submission_precision)                     | enum (of string) | No       | "-sp"                                     | Floating point precision as used in the Forecast task                                                                                                    |
+| [ial_version](#submission_ial_version)                 | string           | No       | "latest"                                  | Version of IAL binary to use                                                                                                                             |
+| [gl_version](#submission_gl_version)                   | string           | No       | "latest"                                  | Version of GL binary to use                                                                                                                              |
+| [nproma](#submission_nproma)                           | number           | No       | -32                                       | NPROMA size in the forecast model. See the namelists for where it is used                                                                                |
+| [lfftw](#submission_lfftw)                             | boolean          | No       | true                                      | Use of the FFTW library. See the namelists for where it is used                                                                                          |
+| [module_initfile](#submission_module_initfile)         | string           | No       | -                                         | File to use for module initialization, overrides module_initpath                                                                                         |
+| [module_initpath](#submission_module_initpath)         | string           | No       | -                                         | Path to the version of env_modules_python.py to be used in the module initialization                                                                     |
+| [default_submit_type](#submission_default_submit_type) | string           | No       | -                                         | Defines the default submit type for tasks not listed in any defined type                                                                                 |
+| [task_exceptions](#submission_task_exceptions)         | object           | No       | -                                         | Allows to define task specific settings like BATCH, MODULES, NPROC. Use as task_exceptions.taskname.property                                             |
+| [types](#submission_types)                             | object           | No       | -                                         | Submission types                                                                                                                                         |
+| [iomerge](#submission_iomerge)                         | object           | No       | -                                         | IO-merge group                                                                                                                                           |
 
 <a name="submission_account"></a>
 ### Property `Config > submission > account`
@@ -8751,13 +8750,61 @@ Must be one of:
 <a name="submission_bindir"></a>
 ### Property `Config > submission > bindir`
 
-|              |                                      |
-| ------------ | ------------------------------------ |
-| **Type**     | `string`                             |
-| **Required** | No                                   |
-| **Default**  | `"@INSTALL_DIR@/@CYCLE@/latest/bin"` |
+|              |                                             |
+| ------------ | ------------------------------------------- |
+| **Type**     | `string`                                    |
+| **Required** | No                                          |
+| **Default**  | `"@INSTALL_DIR@/@CYCLE@/@IAL_VERSION@/bin"` |
 
-**Description:** Location of binaries
+**Description:** Location of IAL binaries
+
+<a name="submission_bindir_gl"></a>
+### Property `Config > submission > bindir_gl`
+
+|              |                                        |
+| ------------ | -------------------------------------- |
+| **Type**     | `string`                               |
+| **Required** | No                                     |
+| **Default**  | `"@INSTALL_DIR@/gl/@GL_VERSION@/bin/"` |
+
+**Description:** Location of GL binary
+
+<a name="submission_precision"></a>
+### Property `Config > submission > precision`
+
+|              |                    |
+| ------------ | ------------------ |
+| **Type**     | `enum (of string)` |
+| **Required** | No                 |
+| **Default**  | `"-sp"`            |
+
+**Description:** Floating point precision as used in the Forecast task
+
+Must be one of:
+* ""
+* "-sp"
+
+<a name="submission_ial_version"></a>
+### Property `Config > submission > ial_version`
+
+|              |            |
+| ------------ | ---------- |
+| **Type**     | `string`   |
+| **Required** | No         |
+| **Default**  | `"latest"` |
+
+**Description:** Version of IAL binary to use
+
+<a name="submission_gl_version"></a>
+### Property `Config > submission > gl_version`
+
+|              |            |
+| ------------ | ---------- |
+| **Type**     | `string`   |
+| **Required** | No         |
+| **Default**  | `"latest"` |
+
+**Description:** Version of GL binary to use
 
 <a name="submission_nproma"></a>
 ### Property `Config > submission > nproma`
