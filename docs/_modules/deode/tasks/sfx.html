@@ -382,6 +382,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../deode.html#module-deode.general_utils">deode.general_utils module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.general_utils.expand_dict_key_slice"><code class="docutils literal notranslate"><span class="pre">expand_dict_key_slice()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.general_utils.expand_string_slice"><code class="docutils literal notranslate"><span class="pre">expand_string_slice()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.general_utils.get_empty_nested_defaultdict"><code class="docutils literal notranslate"><span class="pre">get_empty_nested_defaultdict()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.general_utils.merge_dicts"><code class="docutils literal notranslate"><span class="pre">merge_dicts()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.general_utils.modify_mappings"><code class="docutils literal notranslate"><span class="pre">modify_mappings()</span></code></a></li>
@@ -1492,6 +1493,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute.&quot;&quot;&quot;</span>
         <span class="n">cnmexp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.cnmexp&quot;</span><span class="p">]</span>
         <span class="n">output</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">intp_bddir_sfx</span><span class="si">}</span><span class="s2">/ICMSH</span><span class="si">{</span><span class="n">cnmexp</span><span class="si">}</span><span class="s2">INIT.sfx&quot;</span>
+        <span class="n">bdmodel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;boundaries.bdmodel&quot;</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">output</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">force</span><span class="p">:</span>
             <span class="n">binary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_binary</span><span class="p">(</span><span class="s2">&quot;PREP&quot;</span><span class="p">)</span>
@@ -1509,8 +1511,7 @@
             <span class="c1"># Select the correct input file</span>
             <span class="n">basetime</span> <span class="o">=</span> <span class="n">as_datetime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.times.basetime&quot;</span><span class="p">])</span>
             <span class="n">bddir_sfx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;system.bddir_sfx&quot;</span><span class="p">]</span>
-            <span class="n">bdfile_sfx_template</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;file_templates.bdfile_sfx.archive&quot;</span><span class="p">]</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;boundaries.bdmodel&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;ifs&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">bdmodel</span> <span class="o">==</span> <span class="s2">&quot;ifs&quot;</span><span class="p">:</span>
                 <span class="n">mars</span> <span class="o">=</span> <span class="n">Marsprep</span><span class="o">.</span><span class="n">mars_selection</span><span class="p">(</span>
                     <span class="n">selection</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;boundaries.ifs.selection&quot;</span><span class="p">]</span>
@@ -1527,6 +1528,10 @@
             <span class="n">bd_basetime</span> <span class="o">=</span> <span class="n">basetime</span> <span class="o">-</span> <span class="n">cycle_offset</span><span class="p">(</span>
                 <span class="n">basetime</span><span class="p">,</span> <span class="n">bdcycle</span><span class="p">,</span> <span class="n">bdcycle_start</span><span class="o">=</span><span class="n">bdcycle_start</span><span class="p">,</span> <span class="n">bdshift</span><span class="o">=</span><span class="n">bdshift</span>
             <span class="p">)</span>
+
+            <span class="n">bdfile_sfx_template</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;file_templates.bdfile_sfx.archive&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;boundaries.</span><span class="si">{</span><span class="n">bdmodel</span><span class="si">}</span><span class="s2">.bdmember&quot;</span><span class="p">):</span>
+                <span class="n">bdfile_sfx_template</span> <span class="o">=</span> <span class="n">bdfile_sfx_template</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;@BDMEMBER@&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span>
             <span class="n">prep_input_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">bddir_sfx</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">bdfile_sfx_template</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
                 <span class="n">basetime</span><span class="o">=</span><span class="n">bd_basetime</span><span class="p">,</span>
@@ -1627,7 +1632,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-09-08T12:04:25Z.
+      <span class="lastupdated">Last updated on 2025-09-09T07:33:04Z.
       </span></p>
   </div>
 

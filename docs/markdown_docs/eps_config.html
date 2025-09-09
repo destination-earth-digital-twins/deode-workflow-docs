@@ -383,6 +383,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../deode.html#module-deode.general_utils">deode.general_utils module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../deode.html#deode.general_utils.expand_dict_key_slice"><code class="docutils literal notranslate"><span class="pre">expand_dict_key_slice()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../deode.html#deode.general_utils.expand_string_slice"><code class="docutils literal notranslate"><span class="pre">expand_string_slice()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../deode.html#deode.general_utils.get_empty_nested_defaultdict"><code class="docutils literal notranslate"><span class="pre">get_empty_nested_defaultdict()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../deode.html#deode.general_utils.merge_dicts"><code class="docutils literal notranslate"><span class="pre">merge_dicts()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../deode.html#deode.general_utils.modify_mappings"><code class="docutils literal notranslate"><span class="pre">modify_mappings()</span></code></a></li>
@@ -1345,7 +1346,6 @@ E.g. to run a 1 control + 2 perturbed members (using IFSENS boundary data) ensem
 <span class="w">  </span><span class="n">start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;-P1D&quot;</span>
 
 <span class="k">[boundaries.ifs]</span>
-<span class="w">  </span><span class="n">bdmembers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">]</span>
 <span class="w">  </span><span class="n">selection</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;IFSENS&quot;</span>
 
 <span class="k">[eps.general]</span>
@@ -1395,7 +1395,6 @@ The general.times.start setting is set to “-P1D” by default, to make the exa
 
 <span class="k">[boundaries.ifs]</span>
 <span class="w">  </span><span class="n">selection</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;IFSENS&quot;</span>
-<span class="w">  </span><span class="n">bdmembers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">]</span>
 
 <span class="k">[eps.general]</span>
 <span class="w">  </span><span class="n">members</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;0:3&quot;</span>
@@ -1437,37 +1436,30 @@ The general.times.start setting is set to “-P1D” by default, to make the exa
 </section>
 <section id="common-or-member-specific-mars-data-retrieval">
 <h2>Common or member specific mars data retrieval<a class="headerlink" href="#common-or-member-specific-mars-data-retrieval" title="Link to this heading"></a></h2>
-<p>By default, mars data is retrieved for all members simultaneously to optimize the mars requests. This is controlled by the <code class="docutils literal notranslate"><span class="pre">suite_control.member_specific_mars_prep</span> <span class="pre">=</span> <span class="pre">false</span></code> setting. As shown in above example, all what one has to do, to retrieve the correct members, is to set the <code class="docutils literal notranslate"><span class="pre">bdmembers</span></code> and <code class="docutils literal notranslate"><span class="pre">bdmember</span></code> settings:</p>
+<p>By default, mars data is retrieved for all members simultaneously to optimize the mars requests. This is controlled by the <code class="docutils literal notranslate"><span class="pre">suite_control.member_specific_mars_prep</span> <span class="pre">=</span> <span class="pre">false</span></code> setting. As shown in above example, all what one has to do, to retrieve the correct members, is to set the <code class="docutils literal notranslate"><span class="pre">bdmember</span></code> settings:</p>
 <div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[general.times]</span>
 <span class="w">  </span><span class="n">start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;-P1D&quot;</span>
 
 <span class="k">[boundaries.ifs]</span>
 <span class="w">  </span><span class="n">selection</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;IFSENS&quot;</span>
-<span class="w">  </span><span class="n">bdmembers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">]</span>
 
 <span class="k">[eps.general]</span>
 <span class="w">  </span><span class="n">members</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;0:3&quot;</span>
 
 <span class="k">[eps.member_settings.boundaries.ifs]</span>
-<span class="w">  </span><span class="n">bdmember</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">]</span><span class="w">  </span><span class="c1"># or bdmember = &quot;@MEMBER@&quot;</span>
+<span class="w">  </span><span class="n">bdmember</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">]</span>
 </pre></div>
 </div>
 <blockquote>
 <div><p><strong><em>NOTE:</em></strong>:
 The general.times.start setting is set to “-P1D” by default, to make the example able to run out-of-the-box, since IFSENS data is only available in mars for the past two weeks.</p>
 </div></blockquote>
-<p>One can ask why we need both a <code class="docutils literal notranslate"><span class="pre">boundaries.ifs.bdmembers</span></code> and a <code class="docutils literal notranslate"><span class="pre">eps.member_settings.boundaries.ifs.bdmember</span></code> setting. The reason is that the <code class="docutils literal notranslate"><span class="pre">bdmembers</span></code> setting is used to determine which boundary members we should retrieve IFSENS data for, whereas the <code class="docutils literal notranslate"><span class="pre">bdmember</span></code> setting is used to determine which IFSENS member data to use for each member.</p>
-<p>To instead retrieve mars data individually for each member, one has to</p>
-<ol class="arabic simple">
-<li><p>set the <code class="docutils literal notranslate"><span class="pre">member_specific_mars_prep</span></code> setting to <code class="docutils literal notranslate"><span class="pre">true</span></code> in the <code class="docutils literal notranslate"><span class="pre">[suite_control]</span></code> section.</p></li>
-<li><p>set the <code class="docutils literal notranslate"><span class="pre">bdmembers</span></code> and <code class="docutils literal notranslate"><span class="pre">bdmember</span></code> setting individually for each member either in the <code class="docutils literal notranslate"><span class="pre">[boundaries.ifs]</span></code> section or in the <code class="docutils literal notranslate"><span class="pre">[eps.member_settings.boundaries.ifs]</span></code> section. In both cases, one can use macros to define the members. Only in the latter case, one can set them to explicit numbers.</p></li>
-</ol>
+<p>To instead retrieve mars data individually for each member, one just has to set the <code class="docutils literal notranslate"><span class="pre">member_specific_mars_prep</span></code> setting to <code class="docutils literal notranslate"><span class="pre">true</span></code> in the <code class="docutils literal notranslate"><span class="pre">[suite_control]</span></code> section.</p>
 <p>i.e.</p>
 <div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[suite_control]</span>
 <span class="w">  </span><span class="n">member_specific_mars_prep</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
 
 <span class="k">[boundaries.ifs]</span>
-<span class="w">  </span><span class="n">bdmembers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;@MEMBER@&quot;</span><span class="p">]</span>
 <span class="w">  </span><span class="n">bdmember</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;@MEMBER@&quot;</span>
 <span class="w">  </span><span class="n">selection</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;IFSENS&quot;</span>
 
@@ -1486,24 +1478,9 @@ The general.times.start setting is set to “-P1D” by default, to make the exa
 <span class="w">  </span><span class="n">members</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;0:3&quot;</span>
 
 <span class="k">[eps.member_settings.boundaries.ifs]</span>
-<span class="w">  </span><span class="n">bdmembers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[[</span><span class="s2">&quot;@MEMBER@&quot;</span><span class="p">]]</span><span class="w">  </span><span class="c1"># or bdmembers = [[0], [1], [2]]. Note the extra brackets. They area necessary to make bdmembers be a list after member settings expansion</span>
-<span class="w">  </span><span class="n">bdmember</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;@MEMBER@&quot;</span><span class="w">   </span><span class="c1"># or bdmember = [0, 1, 2]</span>
+<span class="w">  </span><span class="n">bdmember</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">]</span><span class="w">   </span><span class="c1"># or bdmember = &quot;@MEMBER@&quot;</span>
 </pre></div>
 </div>
-<p>To make it clear why one cannot set explicit numbers in the <code class="docutils literal notranslate"><span class="pre">[boundaries.ifs]</span></code> section while <code class="docutils literal notranslate"><span class="pre">member_specific_mars_prep</span> <span class="pre">=</span> <span class="pre">true</span></code>, if one e.g. did</p>
-<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[suite_control]</span>
-<span class="w">  </span><span class="n">member_specific_mars_prep</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
-
-<span class="k">[boundaries.ifs]</span>
-<span class="w">  </span><span class="n">bdmembers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">]</span>
-<span class="w">  </span><span class="n">bdmember</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
-<span class="w">  </span><span class="n">selection</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;IFSENS&quot;</span>
-
-<span class="k">[eps.general]</span>
-<span class="w">  </span><span class="n">members</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;0:3&quot;</span>
-</pre></div>
-</div>
-<p>it would result in every member retrieving data for member 0, 1, and 2, but only using member 0 data.</p>
 </section>
 <section id="member-specific-static-data">
 <h2>Member specific static data<a class="headerlink" href="#member-specific-static-data" title="Link to this heading"></a></h2>
@@ -1547,7 +1524,6 @@ The general.times.start setting is set to “-P1D” by default, to make the exa
 
 <span class="k">[boundaries.ifs]</span>
 <span class="w">  </span><span class="n">selection</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;IFSENS&quot;</span>
-<span class="w">  </span><span class="n">bdmembers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">]</span>
 
 <span class="k">[eps.general]</span>
 <span class="w">  </span><span class="n">members</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;0:3&quot;</span>
@@ -1640,7 +1616,8 @@ The general.times.start setting is set to “-P1D” by default, to make the exa
 <p>E.g. <code class="docutils literal notranslate"><span class="pre">members</span> <span class="pre">=</span> <span class="pre">[1,</span> <span class="pre">3,</span> <span class="pre">5]</span></code> will include members 1, 3, and 5 in the ensemble,
 whereas <code class="docutils literal notranslate"><span class="pre">members</span> <span class="pre">=</span> <span class="pre">&quot;0,</span> <span class="pre">1,</span> <span class="pre">2,</span> <span class="pre">4:10:2&quot;</span></code> will include members 0, 1, 2, 4, 6, and 8. Setting <code class="docutils literal notranslate"><span class="pre">members</span> <span class="pre">=</span> <span class="pre">1</span></code> will include only member 1.
 The format of the string slices follows the Python slice notation, i.e. <code class="docutils literal notranslate"><span class="pre">start:stop:step</span></code>.
-The default value for <code class="docutils literal notranslate"><span class="pre">step</span></code> is 1, so <code class="docutils literal notranslate"><span class="pre">start:stop</span></code> is equivalent to <code class="docutils literal notranslate"><span class="pre">start:stop:1</span></code>.</p>
+The default value for <code class="docutils literal notranslate"><span class="pre">step</span></code> is 1, so <code class="docutils literal notranslate"><span class="pre">start:stop</span></code> is equivalent to <code class="docutils literal notranslate"><span class="pre">start:stop:1</span></code>.
+The above rules also apply for the <code class="docutils literal notranslate"><span class="pre">bdmember</span></code> setting.</p>
 <p>To adjust the default member settings to ones needs, one can set member specific settings
 for basically any existing settings of the Deode-Workflow config file. There are various
 ways to do this, but in any case the settings shall be placed under the
@@ -1775,7 +1752,7 @@ are saved to the resulting config file.</p></li>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-09-08T12:04:25Z.
+      <span class="lastupdated">Last updated on 2025-09-09T07:33:04Z.
       </span></p>
   </div>
 

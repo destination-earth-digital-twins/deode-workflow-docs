@@ -382,6 +382,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../deode.html#module-deode.general_utils">deode.general_utils module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.general_utils.expand_dict_key_slice"><code class="docutils literal notranslate"><span class="pre">expand_dict_key_slice()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.general_utils.expand_string_slice"><code class="docutils literal notranslate"><span class="pre">expand_string_slice()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.general_utils.get_empty_nested_defaultdict"><code class="docutils literal notranslate"><span class="pre">get_empty_nested_defaultdict()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.general_utils.merge_dicts"><code class="docutils literal notranslate"><span class="pre">merge_dicts()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.general_utils.modify_mappings"><code class="docutils literal notranslate"><span class="pre">modify_mappings()</span></code></a></li>
@@ -1320,6 +1321,8 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">deode.eps.eps_setup</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_member_config</span><span class="p">,</span> <span class="n">infer_members</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">..config_parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">ParsedConfig</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..datetime_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">as_datetime</span><span class="p">,</span> <span class="n">as_timedelta</span><span class="p">,</span> <span class="n">cycle_offset</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
@@ -1360,16 +1363,35 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Task</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
 
-        <span class="c1"># Default to [None] to cover the deterministic case with no</span>
-        <span class="c1"># boundary member nesting.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bdmembers</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="p">[</span>
-                <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">bdmember</span><span class="p">))</span>
-                <span class="k">for</span> <span class="n">bdmember</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;boundaries.ifs.bdmembers&quot;</span><span class="p">]</span>
-            <span class="p">]</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;boundaries.ifs.bdmembers&quot;</span><span class="p">]</span>
-            <span class="k">else</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span>
-        <span class="p">)</span>
+        <span class="c1"># Get bdmember(s) from member specific eps setting if member specific</span>
+        <span class="c1"># mars prep is enabled</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.member_specific_mars_prep&quot;</span><span class="p">]:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">member_</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;MEMBER&quot;</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;MEMBER environment variable must be an integer if &quot;</span>
+                    <span class="s2">&quot;suite_control.member_specific_mars_prep is True&quot;</span>
+                <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">member_config</span> <span class="o">=</span> <span class="n">get_member_config</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">member_</span><span class="p">)</span>
+                <span class="n">bdmember_config_value</span> <span class="o">=</span> <span class="n">member_config</span><span class="p">[</span><span class="s2">&quot;boundaries.ifs.bdmember&quot;</span><span class="p">]</span>
+
+        <span class="c1"># Get bdmember(s) from eps members settings (attempted first) or</span>
+        <span class="c1"># boundaries.ifs.bdmember.</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">bdmember_config_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span>
+                    <span class="s2">&quot;eps.member_settings.boundaries.ifs.bdmember&quot;</span>
+                <span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="n">bdmember_config_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;boundaries.ifs.bdmember&quot;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">bdmember</span> <span class="o">=</span> <span class="n">infer_members</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">bdmember_config_value</span><span class="p">))</span>
+        <span class="c1"># Default to [None] if self.bdmember is empty to cover the deterministic</span>
+        <span class="c1"># case with no boundary member nesting.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">bdmember</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bdmember</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span>
 
         <span class="c1"># path to sfcdata on disk</span>
         <span class="n">resolution</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;resolution&quot;</span><span class="p">]</span>
@@ -1505,7 +1527,7 @@
         <span class="n">request</span><span class="p">:</span> <span class="n">BaseRequest</span><span class="p">,</span>
         <span class="n">prefetch</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
         <span class="n">specify_domain</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
-        <span class="n">bdmembers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">bdmember</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">grid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">source</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">fieldset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1516,7 +1538,7 @@
 <span class="sd">            request:            BaseRequest object to update</span>
 <span class="sd">            prefetch:           Retrieve or stage</span>
 <span class="sd">            specify_domain:     Use lat/lon and rotation or use global (default)</span>
-<span class="sd">            bdmembers:          Boundary members to retrieve in case of eps.</span>
+<span class="sd">            bdmember:          Boundary members to retrieve in case of eps.</span>
 <span class="sd">            grid:               Specific grid for some request. Default None.</span>
 <span class="sd">            source:             Sorce for retrieve data from disk. Defaults None.</span>
 <span class="sd">            fieldset:           Name of fieldset. Defaults None.</span>
@@ -1530,8 +1552,8 @@
         <span class="c1"># between a deterministic run with no boundary member nesting (members = [None])</span>
         <span class="c1"># and an ensemble run with boundary member nesting (e.g. members = [0]</span>
         <span class="c1"># for a one member ensemble, members = [0, 1, 2] for a three member ensemble etc.)</span>
-        <span class="k">if</span> <span class="n">bdmembers</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="n">bdmembers</span><span class="p">):</span>
-            <span class="n">request</span><span class="o">.</span><span class="n">update_request</span><span class="p">({</span><span class="s2">&quot;NUMBER&quot;</span><span class="p">:</span> <span class="s2">&quot;/&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">bdmembers</span><span class="p">))})</span>
+        <span class="k">if</span> <span class="n">bdmember</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="n">bdmember</span><span class="p">):</span>
+            <span class="n">request</span><span class="o">.</span><span class="n">update_request</span><span class="p">({</span><span class="s2">&quot;NUMBER&quot;</span><span class="p">:</span> <span class="s2">&quot;/&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">bdmember</span><span class="p">))})</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mars_version</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
             <span class="n">request</span><span class="o">.</span><span class="n">update_request</span><span class="p">({</span><span class="s2">&quot;PROCESS&quot;</span><span class="p">:</span> <span class="s2">&quot;LOCAL&quot;</span><span class="p">})</span>
@@ -1606,7 +1628,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get grid point surface data.&quot;&quot;&quot;</span>
         <span class="n">tag</span> <span class="o">=</span> <span class="s2">&quot;ICMGG&quot;</span>
         <span class="n">steps</span><span class="p">,</span> <span class="n">members_dict</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">get_steps_and_members_to_retrieve</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">steps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">prepdir</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bdmembers</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">steps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">prepdir</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bdmember</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="n">steps</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">get_gg_data</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">steps</span><span class="p">,</span> <span class="n">members_dict</span><span class="p">)</span>
@@ -1647,7 +1669,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get spectral harmonic data.&quot;&quot;&quot;</span>
         <span class="n">tag</span> <span class="o">=</span> <span class="s2">&quot;ICMSH&quot;</span>
         <span class="n">steps</span><span class="p">,</span> <span class="n">members_dict</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">get_steps_and_members_to_retrieve</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">steps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">prepdir</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bdmembers</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">steps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">prepdir</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bdmember</span>
         <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">steps</span><span class="p">:</span>
@@ -1669,7 +1691,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get gridpoint upper air data.&quot;&quot;&quot;</span>
         <span class="n">tag</span> <span class="o">=</span> <span class="s2">&quot;ICMUA&quot;</span>
         <span class="n">steps</span><span class="p">,</span> <span class="n">members_dict</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">get_steps_and_members_to_retrieve</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">steps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">prepdir</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bdmembers</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">steps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">prepdir</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bdmember</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="n">steps</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">get_ua_data</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">steps</span><span class="p">,</span> <span class="n">members_dict</span><span class="p">)</span>
@@ -1694,7 +1716,7 @@
             <span class="p">)</span>
         <span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bdmembers</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bdmember</span><span class="p">:</span>
             <span class="n">prep_filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
                 <span class="n">bdfile</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;@BDMEMBER@&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">member</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)),</span>
                 <span class="n">basetime</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bd_basetime</span><span class="p">,</span>
@@ -1718,7 +1740,7 @@
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;No need Prep file&quot;</span><span class="p">)</span>
             <span class="n">bdmember_fetch_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bdmembers</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bdmember</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">member</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">bdmember_fetch_list</span><span class="p">:</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
                         <span class="s2">&quot;Prep file member=</span><span class="si">{}</span><span class="s2"> already exists as </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span>
@@ -1747,7 +1769,7 @@
 
         <span class="c1"># Split the lat/lon part and perform it here</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">get_lat_lon_data</span><span class="p">(</span><span class="n">bdmember_fetch_list</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">get_geopotential_latlon</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bdmembers</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">bdmember_fetch_list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_geopotential_latlon</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bdmember</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">bdmember_fetch_list</span><span class="p">)</span>
 
         <span class="c1"># Get the file list to join</span>
         <span class="k">for</span> <span class="n">bdmember</span> <span class="ow">in</span> <span class="n">bdmember_fetch_list</span><span class="p">:</span>
@@ -1774,7 +1796,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">steps</span><span class="p">,</span>
             <span class="n">prep_dir</span><span class="p">,</span>
             <span class="n">bdfile</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">bdmembers</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bdmember</span><span class="p">,</span>
             <span class="n">platform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="p">,</span>
             <span class="n">basetime</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bd_basetime</span><span class="p">,</span>
             <span class="n">validtime</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">basetime</span><span class="p">,</span>
@@ -2175,7 +2197,7 @@
             <span class="n">request</span><span class="p">,</span>
             <span class="n">prefetch</span><span class="o">=</span><span class="n">prefetch</span><span class="p">,</span>
             <span class="n">specify_domain</span><span class="o">=</span><span class="n">specify_domain</span><span class="p">,</span>
-            <span class="n">bdmembers</span><span class="o">=</span><span class="n">members</span><span class="p">,</span>
+            <span class="n">bdmember</span><span class="o">=</span><span class="n">members</span><span class="p">,</span>
             <span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">,</span>
             <span class="n">source</span><span class="o">=</span><span class="n">source</span><span class="p">,</span>
             <span class="n">fieldset</span><span class="o">=</span><span class="n">fieldset</span><span class="p">,</span>
@@ -2329,7 +2351,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-09-08T12:04:25Z.
+      <span class="lastupdated">Last updated on 2025-09-09T07:33:04Z.
       </span></p>
   </div>
 

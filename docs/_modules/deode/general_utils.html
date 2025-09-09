@@ -382,6 +382,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.general_utils">deode.general_utils module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.general_utils.expand_dict_key_slice"><code class="docutils literal notranslate"><span class="pre">expand_dict_key_slice()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.general_utils.expand_string_slice"><code class="docutils literal notranslate"><span class="pre">expand_string_slice()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.general_utils.get_empty_nested_defaultdict"><code class="docutils literal notranslate"><span class="pre">get_empty_nested_defaultdict()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.general_utils.merge_dicts"><code class="docutils literal notranslate"><span class="pre">merge_dicts()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.general_utils.modify_mappings"><code class="docutils literal notranslate"><span class="pre">modify_mappings()</span></code></a></li>
@@ -1482,6 +1483,65 @@
 
 
 
+<div class="viewcode-block" id="expand_string_slice">
+<a class="viewcode-back" href="../../deode.html#deode.general_utils.expand_string_slice">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">expand_string_slice</span><span class="p">(</span>
+    <span class="n">string</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span> <span class="n">indices</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Expand a string slice into a list of integers returned as generator.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        string (int | str): The string to expand</span>
+<span class="sd">        indices (List[int]): Indices to respect, i.e. for max/min bounds</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If string, that is not a slice string, cannot be converted</span>
+<span class="sd">            to int</span>
+
+<span class="sd">    Yields:</span>
+<span class="sd">        Generator[int | List[int], None, None]: The expanded string returned as</span>
+<span class="sd">            a generator.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Check if key is a slice</span>
+    <span class="k">if</span> <span class="s2">&quot;:&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
+        <span class="c1"># Parse slice</span>
+        <span class="n">start</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span> <span class="k">else</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">string</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">))</span>
+        <span class="n">stop</span><span class="p">,</span> <span class="n">step</span> <span class="o">=</span> <span class="n">args</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="k">else</span> <span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="c1"># Set bounds of start/stop if indices is not empty</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># If start is None, set it to min index (permits strings like &quot;:5&quot;)</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">start</span> <span class="ow">or</span> <span class="nb">min</span><span class="p">(</span><span class="n">indices</span><span class="p">))</span>
+            <span class="c1"># If stop is None, set it to max index (permits strings like &quot;5:&quot;)</span>
+            <span class="c1"># +1 to include the last index</span>
+            <span class="n">stop</span> <span class="o">=</span> <span class="n">stop</span> <span class="ow">or</span> <span class="nb">max</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="s2">&quot;Indices is empty, cannot set bounds of slice strings.&quot;</span>
+                <span class="o">+</span> <span class="s2">&quot; Return from generator&quot;</span>
+            <span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Make type checker understand that now start and stop are not None</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">start</span><span class="p">)</span>
+        <span class="n">stop</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">stop</span><span class="p">)</span>
+
+        <span class="c1"># Iterate over the expanded strings and yield them together with the value</span>
+        <span class="k">for</span> <span class="n">string_expanded</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span> <span class="ow">or</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="n">string_expanded</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Return string as int, and value as is if string is not a slice</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="nb">int</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;string &#39;</span><span class="si">{</span><span class="n">string</span><span class="si">}</span><span class="s2">&#39; could not be converted to int. &quot;</span>
+                <span class="s2">&quot;If string is not string slice, it should be convertible&quot;</span>
+                <span class="s2">&quot; to int.&quot;</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span></div>
+
+
+
 <div class="viewcode-block" id="expand_dict_key_slice">
 <a class="viewcode-back" href="../../deode.html#deode.general_utils.expand_dict_key_slice">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">expand_dict_key_slice</span><span class="p">(</span>
@@ -1509,43 +1569,8 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">generate_key_value_pairs</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">dict_</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="c1"># Check if key is a slice</span>
-            <span class="k">if</span> <span class="s2">&quot;:&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
-                <span class="c1"># Parse slice</span>
-                <span class="n">start</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span> <span class="k">else</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">))</span>
-                <span class="n">stop</span><span class="p">,</span> <span class="n">step</span> <span class="o">=</span> <span class="n">args</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="k">else</span> <span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="kc">None</span><span class="p">)</span>
-
-                <span class="c1"># Set bounds of start/stop if indices is not empty</span>
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="c1"># If start is None, set it to min index (permits keys like &quot;:5&quot;)</span>
-                    <span class="n">start</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">start</span> <span class="ow">or</span> <span class="nb">min</span><span class="p">(</span><span class="n">indices</span><span class="p">))</span>
-                    <span class="c1"># If stop is None, set it to max index (permits keys like &quot;5:&quot;)</span>
-                    <span class="c1"># +1 to include the last index</span>
-                    <span class="n">stop</span> <span class="o">=</span> <span class="n">stop</span> <span class="ow">or</span> <span class="nb">max</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                        <span class="s2">&quot;Indices is empty, cannot set bounds of slice keys.&quot;</span>
-                        <span class="o">+</span> <span class="s2">&quot; Return from generator&quot;</span>
-                    <span class="p">)</span>
-                    <span class="k">return</span>
-
-                <span class="c1"># Make type checker understand that now start and stop are not None</span>
-                <span class="n">start</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">start</span><span class="p">)</span>
-                <span class="n">stop</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">stop</span><span class="p">)</span>
-
-                <span class="c1"># Iterate over the expanded keys and yield them together with the value</span>
-                <span class="k">for</span> <span class="n">key_expanded</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span> <span class="ow">or</span> <span class="mi">1</span><span class="p">):</span>
-                    <span class="k">yield</span> <span class="n">key_expanded</span><span class="p">,</span> <span class="n">value</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># Return key as int, and value as is if key is not a slice</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="k">yield</span> <span class="nb">int</span><span class="p">(</span><span class="n">key</span><span class="p">),</span> <span class="n">value</span>
-                <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;Key &#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&#39; could not be converted to int. &quot;</span>
-                        <span class="s2">&quot;If key is not string slice, it should be convertible&quot;</span>
-                        <span class="s2">&quot; to int.&quot;</span>
-                    <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+            <span class="k">for</span> <span class="n">expanded_key</span> <span class="ow">in</span> <span class="n">expand_string_slice</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">indices</span><span class="p">):</span>
+                <span class="k">yield</span> <span class="n">expanded_key</span><span class="p">,</span> <span class="n">value</span>
 
     <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">generate_key_value_pairs</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">:</span>
@@ -1632,7 +1657,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-09-08T12:04:25Z.
+      <span class="lastupdated">Last updated on 2025-09-09T07:33:04Z.
       </span></p>
   </div>
 
