@@ -1422,7 +1422,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">pgd_prel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;file_templates.pgd_prel.archive&quot;</span><span class="p">],</span> <span class="n">basetime</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">basetime</span>
         <span class="p">)</span>
-        <span class="c1"># TODO get from args</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">force</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="Pgd.execute">
@@ -1456,6 +1455,9 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="p">,</span>
             <span class="p">]</span>
 
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">force</span><span class="p">:</span>
+                <span class="n">argv</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;--force&quot;</span><span class="p">)</span>
+
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">one_decade</span><span class="p">:</span>
                 <span class="n">basetime</span> <span class="o">=</span> <span class="n">as_datetime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">basetime</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">%H&quot;</span><span class="p">)</span>
                 <span class="n">argv</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;--basetime&quot;</span><span class="p">,</span> <span class="n">basetime</span><span class="p">,</span> <span class="s2">&quot;--one-decade&quot;</span><span class="p">]</span>
@@ -1484,7 +1486,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">nlgen</span> <span class="o">=</span> <span class="n">NamelistGenerator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;surfex&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">archive</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_system_value</span><span class="p">(</span><span class="s2">&quot;archive&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">intp_bddir_sfx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_system_value</span><span class="p">(</span><span class="s2">&quot;intp_bddir_sfx&quot;</span><span class="p">)</span>
-        <span class="c1"># TODO get from args</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">force</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="Prep.execute">
@@ -1566,6 +1567,9 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="p">,</span>
             <span class="p">]</span>
 
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">force</span><span class="p">:</span>
+                <span class="n">argv</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;--force&quot;</span><span class="p">)</span>
+
             <span class="k">if</span> <span class="n">bd_has_surfex</span><span class="p">:</span>
                 <span class="n">const_clim_host</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;file_templates.pgd_host.archive&quot;</span><span class="p">]</span>
                 <span class="n">pgd_host_source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
@@ -1632,7 +1636,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-09-11T11:16:11Z.
+      <span class="lastupdated">Last updated on 2025-09-11T12:17:59Z.
       </span></p>
   </div>
 
