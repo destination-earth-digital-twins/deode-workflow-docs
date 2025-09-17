@@ -1349,9 +1349,14 @@
         <span class="n">bdcycle</span> <span class="o">=</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;ifs_cycle_length&quot;</span><span class="p">])</span>
         <span class="n">bdcycle_start</span> <span class="o">=</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="n">mars</span><span class="p">[</span><span class="s2">&quot;ifs_cycle_start&quot;</span><span class="p">])</span>
         <span class="n">bdshift</span> <span class="o">=</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;boundaries.bdshift&quot;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">outfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;file_templates.sstfile.archive&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_system_value</span><span class="p">(</span><span class="s1">&#39;intp_bddir&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">outfile</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
         <span class="c1"># Boundary basetime</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bd_basetime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">basetime</span> <span class="o">-</span> <span class="n">cycle_offset</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">basetime</span><span class="p">,</span> <span class="n">bdcycle</span><span class="p">,</span> <span class="n">bdcycle_start</span><span class="o">=</span><span class="n">bdcycle_start</span><span class="p">,</span> <span class="n">bdshift</span><span class="o">=-</span><span class="n">bdshift</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">basetime</span><span class="p">,</span> <span class="n">bdcycle</span><span class="p">,</span> <span class="n">bdcycle_start</span><span class="o">=</span><span class="n">bdcycle_start</span><span class="p">,</span> <span class="n">bdshift</span><span class="o">=</span><span class="n">bdshift</span>
         <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">bd_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;task.args.bd_index&quot;</span><span class="p">]</span>
@@ -1418,13 +1423,6 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">adjust_sst_under_ice</span> <span class="o">=</span> <span class="s2">&quot;.FALSE.&quot;</span>
 
-        <span class="c1"># Output file, name hard-coded in source code</span>
-        <span class="n">sstfile_template</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;file_templates.sstfile.archive&quot;</span><span class="p">]</span>
-
-        <span class="n">intp_bddir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_system_value</span><span class="p">(</span><span class="s2">&quot;intp_bddir&quot;</span><span class="p">)</span>
-        <span class="n">outfile</span> <span class="o">=</span> <span class="n">sstfile_template</span>
-        <span class="n">target</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">intp_bddir</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">sstfile_template</span><span class="si">}</span><span class="s2">&quot;</span>
-
         <span class="c1"># Create namelist for gl</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;namgl&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">namelist</span><span class="p">:</span>
             <span class="n">namelist</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
@@ -1456,11 +1454,11 @@
 
         <span class="c1"># Run gl</span>
         <span class="n">batch</span> <span class="o">=</span> <span class="n">BatchJob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">,</span> <span class="n">wrapper</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="p">)</span>
-        <span class="n">batch</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">gl</span><span class="si">}</span><span class="s2"> -sst3 -n namgl -o </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">outfile</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">batch</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">gl</span><span class="si">}</span><span class="s2"> -sst3 -n namgl -o </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outfile</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;WRKDIR: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrk</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;OUTPUT </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">outfile</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span></div>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;OUTPUT </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outfile</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outfile</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">)</span></div>
 </div>
 
 </pre></div>
@@ -1473,7 +1471,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-09-16T09:16:46Z.
+      <span class="lastupdated">Last updated on 2025-09-17T15:50:39Z.
       </span></p>
   </div>
 
