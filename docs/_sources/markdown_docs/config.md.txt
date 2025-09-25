@@ -1,5 +1,5 @@
 The following section was automatically generated running
-        `deode doc config` on 2025-09-25T11:49:21.
+        `deode doc config` on 2025-09-25T13:50:17.
 
 # Config
 
@@ -4951,9 +4951,185 @@ Must be one of:
 
 **Description:** FDB settings
 
-| Property                  | Type   | Required | Default | Title/Description                  |
-| ------------------------- | ------ | -------- | ------- | ---------------------------------- |
-| [grib_set](#fdb_grib_set) | object | No       | -       | Suite definition to play in EcFlow |
+| Property                                        | Type   | Required | Default       | Title/Description                                                                         |
+| ----------------------------------------------- | ------ | -------- | ------------- | ----------------------------------------------------------------------------------------- |
+| [negative_rules](#fdb_negative_rules)           | object | No       | -             | Fields to filter out prior to archiving. For a given key a list of values should be given |
+| [expver_restrictions](#fdb_expver_restrictions) | object | No       | -             | List users allowed to archive to a specific expver.                                       |
+| [grib_set](#fdb_grib_set)                       | object | No       | -             | GRIB2 metadata updated before archiving to FDB. Any GRIB key may be added                 |
+| [databridge_user](#fdb_databridge_user)         | string | No       | "@PROD_USER@" | User allowed to write to the databridge                                                   |
+
+<a name="fdb_negative_rules"></a>
+### Property `Config > fdb > negative_rules`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Fields to filter out prior to archiving. For a given key a list of values should be given
+
+| Property                               | Type  | Required | Default | Title/Description |
+| -------------------------------------- | ----- | -------- | ------- | ----------------- |
+| [levtype](#fdb_negative_rules_levtype) | array | No       | -       | Type of level     |
+
+<a name="fdb_negative_rules_levtype"></a>
+#### Property `Config > fdb > negative_rules > levtype`
+
+|              |         |
+| ------------ | ------- |
+| **Type**     | `array` |
+| **Required** | No      |
+
+**Description:** Type of level
+
+|                      | Array restrictions |
+| -------------------- | ------------------ |
+| **Min items**        | N/A                |
+| **Max items**        | N/A                |
+| **Items unicity**    | False              |
+| **Additional items** | False              |
+| **Tuple validation** | N/A                |
+
+<a name="fdb_expver_restrictions"></a>
+### Property `Config > fdb > expver_restrictions`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** List users allowed to archive to a specific expver. 
+
+| Property                              | Type        | Required | Default | Title/Description      |
+| ------------------------------------- | ----------- | -------- | ------- | ---------------------- |
+| [0001](#fdb_expver_restrictions_0001) | Combination | No       | -       | Operational expver     |
+| [0099](#fdb_expver_restrictions_0099) | Combination | No       | -       | Pre-operational expver |
+| [0098](#fdb_expver_restrictions_0098) | Combination | No       | -       | Development expver     |
+
+<a name="fdb_expver_restrictions_0001"></a>
+#### Property `Config > fdb > expver_restrictions > 0001`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `combining`                                                               |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Operational expver
+
+| Any of(Option)                                   |
+| ------------------------------------------------ |
+| [item 0](#fdb_expver_restrictions_0001_anyOf_i0) |
+| [item 1](#fdb_expver_restrictions_0001_anyOf_i1) |
+
+<a name="fdb_expver_restrictions_0001_anyOf_i0"></a>
+##### Property `Config > fdb > expver_restrictions > 0001 > anyOf > item 0`
+
+|              |                 |
+| ------------ | --------------- |
+| **Type**     | `string`        |
+| **Required** | No              |
+| **Default**  | `"@PROD_USER@"` |
+
+<a name="fdb_expver_restrictions_0001_anyOf_i1"></a>
+##### Property `Config > fdb > expver_restrictions > 0001 > anyOf > item 1`
+
+|              |         |
+| ------------ | ------- |
+| **Type**     | `array` |
+| **Required** | No      |
+
+|                      | Array restrictions |
+| -------------------- | ------------------ |
+| **Min items**        | N/A                |
+| **Max items**        | N/A                |
+| **Items unicity**    | False              |
+| **Additional items** | False              |
+| **Tuple validation** | N/A                |
+
+<a name="fdb_expver_restrictions_0099"></a>
+#### Property `Config > fdb > expver_restrictions > 0099`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `combining`                                                               |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Pre-operational expver
+
+| Any of(Option)                                   |
+| ------------------------------------------------ |
+| [item 0](#fdb_expver_restrictions_0099_anyOf_i0) |
+| [item 1](#fdb_expver_restrictions_0099_anyOf_i1) |
+
+<a name="fdb_expver_restrictions_0099_anyOf_i0"></a>
+##### Property `Config > fdb > expver_restrictions > 0099 > anyOf > item 0`
+
+|              |                 |
+| ------------ | --------------- |
+| **Type**     | `string`        |
+| **Required** | No              |
+| **Default**  | `"@PROD_USER@"` |
+
+<a name="fdb_expver_restrictions_0099_anyOf_i1"></a>
+##### Property `Config > fdb > expver_restrictions > 0099 > anyOf > item 1`
+
+|              |         |
+| ------------ | ------- |
+| **Type**     | `array` |
+| **Required** | No      |
+
+|                      | Array restrictions |
+| -------------------- | ------------------ |
+| **Min items**        | N/A                |
+| **Max items**        | N/A                |
+| **Items unicity**    | False              |
+| **Additional items** | False              |
+| **Tuple validation** | N/A                |
+
+<a name="fdb_expver_restrictions_0098"></a>
+#### Property `Config > fdb > expver_restrictions > 0098`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `combining`                                                               |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Development expver
+
+| Any of(Option)                                   |
+| ------------------------------------------------ |
+| [item 0](#fdb_expver_restrictions_0098_anyOf_i0) |
+| [item 1](#fdb_expver_restrictions_0098_anyOf_i1) |
+
+<a name="fdb_expver_restrictions_0098_anyOf_i0"></a>
+##### Property `Config > fdb > expver_restrictions > 0098 > anyOf > item 0`
+
+|              |                |
+| ------------ | -------------- |
+| **Type**     | `string`       |
+| **Required** | No             |
+| **Default**  | `"@DEV_USER@"` |
+
+<a name="fdb_expver_restrictions_0098_anyOf_i1"></a>
+##### Property `Config > fdb > expver_restrictions > 0098 > anyOf > item 1`
+
+|              |         |
+| ------------ | ------- |
+| **Type**     | `array` |
+| **Required** | No      |
+
+|                      | Array restrictions |
+| -------------------- | ------------------ |
+| **Min items**        | N/A                |
+| **Max items**        | N/A                |
+| **Items unicity**    | False              |
+| **Additional items** | False              |
+| **Tuple validation** | N/A                |
 
 <a name="fdb_grib_set"></a>
 ### Property `Config > fdb > grib_set`
@@ -4964,7 +5140,7 @@ Must be one of:
 | **Required**              | No                                                                        |
 | **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
 
-**Description:** Suite definition to play in EcFlow
+**Description:** GRIB2 metadata updated before archiving to FDB. Any GRIB key may be added
 
 | Property                       | Type   | Required | Default | Title/Description                                     |
 | ------------------------------ | ------ | -------- | ------- | ----------------------------------------------------- |
@@ -4985,6 +5161,17 @@ Must be one of:
 | -------------- | - |
 | **Min length** | 4 |
 | **Max length** | 4 |
+
+<a name="fdb_databridge_user"></a>
+### Property `Config > fdb > databridge_user`
+
+|              |                 |
+| ------------ | --------------- |
+| **Type**     | `string`        |
+| **Required** | No              |
+| **Default**  | `"@PROD_USER@"` |
+
+**Description:** User allowed to write to the databridge
 
 <a name="file_templates"></a>
 ## Property `Config > file_templates`
