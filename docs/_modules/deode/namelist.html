@@ -1854,8 +1854,18 @@
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot; namelists: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nlfile</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot; rules: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cnfile</span><span class="p">)</span>
             <span class="c1"># Read namelist file with all the categories</span>
+            <span class="c1"># and make sure all namelist names are uppercase</span>
+            <span class="c1"># required for the update to work</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nlfile</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;rt&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-                <span class="n">nldict</span> <span class="o">=</span> <span class="n">OmegaConf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+                <span class="n">_nldict</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+                <span class="n">nldict</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="n">section</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="n">namelist_name</span><span class="o">.</span><span class="n">upper</span><span class="p">():</span> <span class="n">values</span>
+                        <span class="k">for</span> <span class="n">namelist_name</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">namelists</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                    <span class="p">}</span>
+                    <span class="k">for</span> <span class="n">section</span><span class="p">,</span> <span class="n">namelists</span> <span class="ow">in</span> <span class="n">_nldict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="p">}</span>
+                <span class="n">nldict</span> <span class="o">=</span> <span class="n">OmegaConf</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">nldict</span><span class="p">)</span>
 
             <span class="c1"># Read file that describes assembly category order</span>
             <span class="c1"># for the various targets (tasks)</span>
@@ -2406,7 +2416,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-10-01T12:54:31Z.
+      <span class="lastupdated">Last updated on 2025-10-02T08:28:05Z.
       </span></p>
   </div>
 
