@@ -1018,7 +1018,6 @@
 <li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-extractsqlite-sqlite-model-name">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">extractsqlite</span> <span class="pre">&gt;</span> <span class="pre">sqlite_model_name</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-extractsqlite-sqlite-path">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">extractsqlite</span> <span class="pre">&gt;</span> <span class="pre">sqlite_path</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-extractsqlite-sqlite-template">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">extractsqlite</span> <span class="pre">&gt;</span> <span class="pre">sqlite_template</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-extractsqlite-station-list">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">extractsqlite</span> <span class="pre">&gt;</span> <span class="pre">station_list</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-extractsqlite-selection">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">extractsqlite</span> <span class="pre">&gt;</span> <span class="pre">selection</span></code></a></li>
 </ul>
 </li>
@@ -1331,7 +1330,7 @@
            <div itemprop="articleBody">
              
   <p>The following section was automatically generated running
-<code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">doc</span> <span class="pre">config</span></code> on 2025-10-02T08:28:03.</p>
+<code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">doc</span> <span class="pre">config</span></code> on 2025-10-02T09:16:30.</p>
 <section id="config">
 <h1>Config<a class="headerlink" href="#config" title="Link to this heading"></a></h1>
 <p><strong>Title:</strong> Config</p>
@@ -13275,10 +13274,10 @@
 </thead>
 <tbody>
 <tr class="row-even"><td><p><a class="reference internal" href="#extractsqlite_parameter_list"><span class="xref myst">parameter_list</span></a></p></td>
-<td><p>string</p></td>
+<td><p>array of object</p></td>
 <td><p>No</p></td>
-<td><p>“&#64;DEODE_HOME&#64;/data/sqlite/param_list_&#64;CSC&#64;.json”</p></td>
-<td><p>List of parameters to extract</p></td>
+<td><p>[]</p></td>
+<td><p>A list where each element contains name of parameter and location files</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#extractsqlite_sqlite_model_name"><span class="xref myst">sqlite_model_name</span></a></p></td>
 <td><p>string</p></td>
@@ -13298,13 +13297,7 @@
 <td><p>“FCTABLE/{MODEL}/{YYYY}/{MM}/FCTABLE_{PP}<em>{YYYY}{MM}</em>{HH}.sqlite”</p></td>
 <td><p>File name template for generated sqlite files</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#extractsqlite_station_list"><span class="xref myst">station_list</span></a></p></td>
-<td><p>string</p></td>
-<td><p>No</p></td>
-<td><p>“&#64;DEODE_HOME&#64;/data/sqlite/station_list_default.csv”</p></td>
-<td><p>Station list used for extraction</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#extractsqlite_selection"><span class="xref myst">selection</span></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#extractsqlite_selection"><span class="xref myst">selection</span></a></p></td>
 <td><p>string</p></td>
 <td><p>No</p></td>
 <td><p>“PT1H”</p></td>
@@ -13323,18 +13316,146 @@
 </thead>
 <tbody>
 <tr class="row-even"><td><p><strong>Type</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">array</span> <span class="pre">of</span> <span class="pre">object</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>Required</strong></p></td>
 <td><p>No</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>Default</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&quot;&#64;DEODE_HOME&#64;/data/sqlite/param_list_&#64;CSC&#64;.json&quot;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[]</span></code></p></td>
 </tr>
 </tbody>
 </table>
-<p><strong>Description:</strong> List of parameters to extract</p>
+<p><strong>Description:</strong> A list where each element contains name of parameter and location files</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p>Array restrictions</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Min items</strong></p></td>
+<td><p>N/A</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Max items</strong></p></td>
+<td><p>N/A</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Items unicity</strong></p></td>
+<td><p>False</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Additional items</strong></p></td>
+<td><p>False</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Tuple validation</strong></p></td>
+<td><p>See below</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Each item of this array must be</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="#extractsqlite_parameter_list_items"><span class="xref myst">parameter_list items</span></a></p></td>
+<td><p>-</p></td>
+</tr>
+</tbody>
+</table>
+<p><a name="autogenerated_heading_42"></a></p>
+<section id="config-extractsqlite-parameter-list-parameter-list-items">
+<h4>Config &gt; extractsqlite &gt; parameter_list &gt; parameter_list items<a class="headerlink" href="#config-extractsqlite-parameter-list-parameter-list-items" title="Link to this heading"></a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">object</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Additional properties</strong></p></td>
+<td><p><a class="reference internal" href="#"><span class="xref myst">[Any type: allowed]</span></a></p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Title/Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="#extractsqlite_parameter_list_items_param_list"><span class="xref myst">param_list</span></a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>-</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#extractsqlite_parameter_list_items_location_list"><span class="xref myst">location_list</span></a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>-</p></td>
+</tr>
+</tbody>
+</table>
+<p><a name="autogenerated_heading_43"></a></p>
+<section id="id13">
+<h5>The following properties are required<a class="headerlink" href="#id13" title="Link to this heading"></a></h5>
+<ul class="simple">
+<li><p>param_file</p></li>
+<li><p>location_file</p></li>
+</ul>
+<p><a name="extractsqlite_parameter_list_items_param_list"></a></p>
+</section>
+<section id="property-config-extractsqlite-parameter-list-parameter-list-items-param-list">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">extractsqlite</span> <span class="pre">&gt;</span> <span class="pre">parameter_list</span> <span class="pre">&gt;</span> <span class="pre">parameter_list</span> <span class="pre">items</span> <span class="pre">&gt;</span> <span class="pre">param_list</span></code><a class="headerlink" href="#property-config-extractsqlite-parameter-list-parameter-list-items-param-list" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<p><a name="extractsqlite_parameter_list_items_location_list"></a></p>
+</section>
+<section id="property-config-extractsqlite-parameter-list-parameter-list-items-location-list">
+<h5>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">extractsqlite</span> <span class="pre">&gt;</span> <span class="pre">parameter_list</span> <span class="pre">&gt;</span> <span class="pre">parameter_list</span> <span class="pre">items</span> <span class="pre">&gt;</span> <span class="pre">location_list</span></code><a class="headerlink" href="#property-config-extractsqlite-parameter-list-parameter-list-items-location-list" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
 <p><a name="extractsqlite_sqlite_model_name"></a></p>
+</section>
+</section>
 </section>
 <section id="property-config-extractsqlite-sqlite-model-name">
 <h3>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">extractsqlite</span> <span class="pre">&gt;</span> <span class="pre">sqlite_model_name</span></code><a class="headerlink" href="#property-config-extractsqlite-sqlite-model-name" title="Link to this heading"></a></h3>
@@ -13403,29 +13524,6 @@
 </tbody>
 </table>
 <p><strong>Description:</strong> File name template for generated sqlite files</p>
-<p><a name="extractsqlite_station_list"></a></p>
-</section>
-<section id="property-config-extractsqlite-station-list">
-<h3>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">extractsqlite</span> <span class="pre">&gt;</span> <span class="pre">station_list</span></code><a class="headerlink" href="#property-config-extractsqlite-station-list" title="Link to this heading"></a></h3>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p></p></th>
-<th class="head"><p></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Type</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Required</strong></p></td>
-<td><p>No</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Default</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&quot;&#64;DEODE_HOME&#64;/data/sqlite/station_list_default.csv&quot;</span></code></p></td>
-</tr>
-</tbody>
-</table>
-<p><strong>Description:</strong> Station list used for extraction</p>
 <p><a name="extractsqlite_selection"></a></p>
 </section>
 <section id="property-config-extractsqlite-selection">
@@ -15204,7 +15302,7 @@
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_42"></a></p>
+<p><a name="autogenerated_heading_44"></a></p>
 </section>
 <section id="config-macros-select-default-gen-macros-gen-macros-items">
 <h5>Config &gt; macros &gt; select &gt; default &gt; gen_macros &gt; gen_macros items<a class="headerlink" href="#config-macros-select-default-gen-macros-gen-macros-items" title="Link to this heading"></a></h5>
@@ -15335,7 +15433,7 @@
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_43"></a></p>
+<p><a name="autogenerated_heading_45"></a></p>
 </section>
 <section id="config-macros-select-default-group-macros-group-macros-items">
 <h5>Config &gt; macros &gt; select &gt; default &gt; group_macros &gt; group_macros items<a class="headerlink" href="#config-macros-select-default-group-macros-group-macros-items" title="Link to this heading"></a></h5>
@@ -15410,7 +15508,7 @@
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_44"></a></p>
+<p><a name="autogenerated_heading_46"></a></p>
 </section>
 <section id="config-macros-select-default-os-macros-os-macros-items">
 <h5>Config &gt; macros &gt; select &gt; default &gt; os_macros &gt; os_macros items<a class="headerlink" href="#config-macros-select-default-os-macros-os-macros-items" title="Link to this heading"></a></h5>
@@ -21668,7 +21766,7 @@
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_45"></a></p>
+<p><a name="autogenerated_heading_47"></a></p>
 <section id="config-platform-archive-types-archive-types-items">
 <h4>Config &gt; platform &gt; archive_types &gt; archive_types items<a class="headerlink" href="#config-platform-archive-types-archive-types-items" title="Link to this heading"></a></h4>
 <table class="docutils align-default">
@@ -23650,7 +23748,7 @@
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_46"></a></p>
+<p><a name="autogenerated_heading_48"></a></p>
 </section>
 <section id="config-submission-types-serial-tasks-tasks-items">
 <h5>Config &gt; submission &gt; types &gt; serial &gt; tasks &gt; tasks items<a class="headerlink" href="#config-submission-types-serial-tasks-tasks-items" title="Link to this heading"></a></h5>
@@ -23914,7 +24012,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_47"></a></p>
+<p><a name="autogenerated_heading_49"></a></p>
 </section>
 <section id="config-submission-types-serial-modules-items">
 <h5>Config &gt; submission &gt; types &gt; serial &gt; MODULES &gt; ^(.<em>)$ &gt; ^(.</em>)$ items<a class="headerlink" href="#config-submission-types-serial-modules-items" title="Link to this heading"></a></h5>
@@ -24073,7 +24171,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_48"></a></p>
+<p><a name="autogenerated_heading_50"></a></p>
 </section>
 <section id="config-submission-types-parallel-tasks-tasks-items">
 <h5>Config &gt; submission &gt; types &gt; parallel &gt; tasks &gt; tasks items<a class="headerlink" href="#config-submission-types-parallel-tasks-tasks-items" title="Link to this heading"></a></h5>
@@ -24337,7 +24435,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_49"></a></p>
+<p><a name="autogenerated_heading_51"></a></p>
 </section>
 <section id="config-submission-types-parallel-modules-items">
 <h5>Config &gt; submission &gt; types &gt; parallel &gt; MODULES &gt; ^(.<em>)$ &gt; ^(.</em>)$ items<a class="headerlink" href="#config-submission-types-parallel-modules-items" title="Link to this heading"></a></h5>
@@ -24496,7 +24594,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_50"></a></p>
+<p><a name="autogenerated_heading_52"></a></p>
 </section>
 <section id="config-submission-types-background-vm-tasks-tasks-items">
 <h5>Config &gt; submission &gt; types &gt; background_vm &gt; tasks &gt; tasks items<a class="headerlink" href="#config-submission-types-background-vm-tasks-tasks-items" title="Link to this heading"></a></h5>
@@ -24760,7 +24858,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_51"></a></p>
+<p><a name="autogenerated_heading_53"></a></p>
 </section>
 <section id="config-submission-types-background-vm-modules-items">
 <h5>Config &gt; submission &gt; types &gt; background_vm &gt; MODULES &gt; ^(.<em>)$ &gt; ^(.</em>)$ items<a class="headerlink" href="#config-submission-types-background-vm-modules-items" title="Link to this heading"></a></h5>
@@ -24919,7 +25017,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_52"></a></p>
+<p><a name="autogenerated_heading_54"></a></p>
 </section>
 <section id="config-submission-types-background-hpc-tasks-tasks-items">
 <h5>Config &gt; submission &gt; types &gt; background_hpc &gt; tasks &gt; tasks items<a class="headerlink" href="#config-submission-types-background-hpc-tasks-tasks-items" title="Link to this heading"></a></h5>
@@ -25183,7 +25281,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_53"></a></p>
+<p><a name="autogenerated_heading_55"></a></p>
 </section>
 <section id="config-submission-types-background-hpc-modules-items">
 <h5>Config &gt; submission &gt; types &gt; background_hpc &gt; MODULES &gt; ^(.<em>)$ &gt; ^(.</em>)$ items<a class="headerlink" href="#config-submission-types-background-hpc-modules-items" title="Link to this heading"></a></h5>
@@ -25342,7 +25440,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_54"></a></p>
+<p><a name="autogenerated_heading_56"></a></p>
 </section>
 <section id="config-submission-types-gnu-tasks-tasks-items">
 <h5>Config &gt; submission &gt; types &gt; gnu &gt; tasks &gt; tasks items<a class="headerlink" href="#config-submission-types-gnu-tasks-tasks-items" title="Link to this heading"></a></h5>
@@ -25606,7 +25704,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_55"></a></p>
+<p><a name="autogenerated_heading_57"></a></p>
 </section>
 <section id="config-submission-types-gnu-modules-items">
 <h5>Config &gt; submission &gt; types &gt; gnu &gt; MODULES &gt; ^(.<em>)$ &gt; ^(.</em>)$ items<a class="headerlink" href="#config-submission-types-gnu-modules-items" title="Link to this heading"></a></h5>
@@ -25765,7 +25863,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_56"></a></p>
+<p><a name="autogenerated_heading_58"></a></p>
 </section>
 <section id="config-submission-types-sqlite-tasks-tasks-items">
 <h5>Config &gt; submission &gt; types &gt; sqlite &gt; tasks &gt; tasks items<a class="headerlink" href="#config-submission-types-sqlite-tasks-tasks-items" title="Link to this heading"></a></h5>
@@ -26029,7 +26127,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_57"></a></p>
+<p><a name="autogenerated_heading_59"></a></p>
 </section>
 <section id="config-submission-types-sqlite-modules-items">
 <h5>Config &gt; submission &gt; types &gt; sqlite &gt; MODULES &gt; ^(.<em>)$ &gt; ^(.</em>)$ items<a class="headerlink" href="#config-submission-types-sqlite-modules-items" title="Link to this heading"></a></h5>
@@ -26188,7 +26286,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_58"></a></p>
+<p><a name="autogenerated_heading_60"></a></p>
 </section>
 <section id="config-submission-types-forecast-cpu-tasks-tasks-items">
 <h5>Config &gt; submission &gt; types &gt; Forecast_cpu &gt; tasks &gt; tasks items<a class="headerlink" href="#config-submission-types-forecast-cpu-tasks-tasks-items" title="Link to this heading"></a></h5>
@@ -26452,7 +26550,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_59"></a></p>
+<p><a name="autogenerated_heading_61"></a></p>
 </section>
 <section id="config-submission-types-forecast-cpu-modules-items">
 <h5>Config &gt; submission &gt; types &gt; Forecast_cpu &gt; MODULES &gt; ^(.<em>)$ &gt; ^(.</em>)$ items<a class="headerlink" href="#config-submission-types-forecast-cpu-modules-items" title="Link to this heading"></a></h5>
@@ -26611,7 +26709,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_60"></a></p>
+<p><a name="autogenerated_heading_62"></a></p>
 </section>
 <section id="config-submission-types-forecast-gpu-tasks-tasks-items">
 <h5>Config &gt; submission &gt; types &gt; Forecast_gpu &gt; tasks &gt; tasks items<a class="headerlink" href="#config-submission-types-forecast-gpu-tasks-tasks-items" title="Link to this heading"></a></h5>
@@ -26875,7 +26973,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_61"></a></p>
+<p><a name="autogenerated_heading_63"></a></p>
 </section>
 <section id="config-submission-types-forecast-gpu-modules-items">
 <h5>Config &gt; submission &gt; types &gt; Forecast_gpu &gt; MODULES &gt; ^(.<em>)$ &gt; ^(.</em>)$ items<a class="headerlink" href="#config-submission-types-forecast-gpu-modules-items" title="Link to this heading"></a></h5>
@@ -27337,7 +27435,7 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_62"></a></p>
+<p><a name="autogenerated_heading_64"></a></p>
 <section id="at-least-one-of-the-items-must-be">
 <h4>At least one of the items must be<a class="headerlink" href="#at-least-one-of-the-items-must-be" title="Link to this heading"></a></h4>
 <table class="docutils align-default">
@@ -27400,9 +27498,9 @@ must respect the following conditions</p>
 </tr>
 </tbody>
 </table>
-<p><a name="autogenerated_heading_63"></a></p>
-<section id="id13">
-<h4>At least one of the items must be<a class="headerlink" href="#id13" title="Link to this heading"></a></h4>
+<p><a name="autogenerated_heading_65"></a></p>
+<section id="id14">
+<h4>At least one of the items must be<a class="headerlink" href="#id14" title="Link to this heading"></a></h4>
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p></p></th>
@@ -27433,7 +27531,7 @@ must respect the following conditions</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-10-02T08:28:05Z.
+      <span class="lastupdated">Last updated on 2025-10-02T09:16:32Z.
       </span></p>
   </div>
 

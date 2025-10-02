@@ -1,5 +1,5 @@
 The following section was automatically generated running
-        `deode doc config` on 2025-10-02T08:28:03.
+        `deode doc config` on 2025-10-02T09:16:30.
 
 # Config
 
@@ -4895,25 +4895,71 @@ Must be one of:
 
 **Description:** Model for validation of the data in the 'sqlite' section of the config file.
 
-| Property                                              | Type   | Required | Default                                                           | Title/Description                                                                                    |
-| ----------------------------------------------------- | ------ | -------- | ----------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| [parameter_list](#extractsqlite_parameter_list)       | string | No       | "@DEODE_HOME@/data/sqlite/param_list_@CSC@.json"                  | List of parameters to extract                                                                        |
-| [sqlite_model_name](#extractsqlite_sqlite_model_name) | string | No       | "@CASE@"                                                          | Model name used in the sqlite tables                                                                 |
-| [sqlite_path](#extractsqlite_sqlite_path)             | string | No       | "@ARCHIVE_ROOT@/sqlite/"                                          | Path to generated sqlite files                                                                       |
-| [sqlite_template](#extractsqlite_sqlite_template)     | string | No       | "FCTABLE/{MODEL}/{YYYY}/{MM}/FCTABLE_{PP}_{YYYY}{MM}_{HH}.sqlite" | File name template for generated sqlite files                                                        |
-| [station_list](#extractsqlite_station_list)           | string | No       | "@DEODE_HOME@/data/sqlite/station_list_default.csv"               | Station list used for extraction                                                                     |
-| [selection](#extractsqlite_selection)                 | string | No       | "PT1H"                                                            | Temporal selection. Same syntax as for output_settings. Leave empty to inherit the fullpos settings. |
+| Property                                              | Type            | Required | Default                                                           | Title/Description                                                                                    |
+| ----------------------------------------------------- | --------------- | -------- | ----------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| [parameter_list](#extractsqlite_parameter_list)       | array of object | No       | []                                                                | A list where each element contains name of parameter and location files                              |
+| [sqlite_model_name](#extractsqlite_sqlite_model_name) | string          | No       | "@CASE@"                                                          | Model name used in the sqlite tables                                                                 |
+| [sqlite_path](#extractsqlite_sqlite_path)             | string          | No       | "@ARCHIVE_ROOT@/sqlite/"                                          | Path to generated sqlite files                                                                       |
+| [sqlite_template](#extractsqlite_sqlite_template)     | string          | No       | "FCTABLE/{MODEL}/{YYYY}/{MM}/FCTABLE_{PP}_{YYYY}{MM}_{HH}.sqlite" | File name template for generated sqlite files                                                        |
+| [selection](#extractsqlite_selection)                 | string          | No       | "PT1H"                                                            | Temporal selection. Same syntax as for output_settings. Leave empty to inherit the fullpos settings. |
 
 <a name="extractsqlite_parameter_list"></a>
 ### Property `Config > extractsqlite > parameter_list`
 
-|              |                                                    |
-| ------------ | -------------------------------------------------- |
-| **Type**     | `string`                                           |
-| **Required** | No                                                 |
-| **Default**  | `"@DEODE_HOME@/data/sqlite/param_list_@CSC@.json"` |
+|              |                   |
+| ------------ | ----------------- |
+| **Type**     | `array of object` |
+| **Required** | No                |
+| **Default**  | `[]`              |
 
-**Description:** List of parameters to extract
+**Description:** A list where each element contains name of parameter and location files
+
+|                      | Array restrictions |
+| -------------------- | ------------------ |
+| **Min items**        | N/A                |
+| **Max items**        | N/A                |
+| **Items unicity**    | False              |
+| **Additional items** | False              |
+| **Tuple validation** | See below          |
+
+| Each item of this array must be                             | Description |
+| ----------------------------------------------------------- | ----------- |
+| [parameter_list items](#extractsqlite_parameter_list_items) | -           |
+
+<a name="autogenerated_heading_42"></a>
+#### Config > extractsqlite > parameter_list > parameter_list items
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+| Property                                                           | Type   | Required | Default | Title/Description |
+| ------------------------------------------------------------------ | ------ | -------- | ------- | ----------------- |
+| [param_list](#extractsqlite_parameter_list_items_param_list)       | string | No       | -       | -                 |
+| [location_list](#extractsqlite_parameter_list_items_location_list) | string | No       | -       | -                 |
+
+<a name="autogenerated_heading_43"></a>
+##### The following properties are required
+* param_file
+* location_file
+
+<a name="extractsqlite_parameter_list_items_param_list"></a>
+##### Property `Config > extractsqlite > parameter_list > parameter_list items > param_list`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+<a name="extractsqlite_parameter_list_items_location_list"></a>
+##### Property `Config > extractsqlite > parameter_list > parameter_list items > location_list`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
 
 <a name="extractsqlite_sqlite_model_name"></a>
 ### Property `Config > extractsqlite > sqlite_model_name`
@@ -4947,17 +4993,6 @@ Must be one of:
 | **Default**  | `"FCTABLE/{MODEL}/{YYYY}/{MM}/FCTABLE_{PP}_{YYYY}{MM}_{HH}.sqlite"` |
 
 **Description:** File name template for generated sqlite files
-
-<a name="extractsqlite_station_list"></a>
-### Property `Config > extractsqlite > station_list`
-
-|              |                                                       |
-| ------------ | ----------------------------------------------------- |
-| **Type**     | `string`                                              |
-| **Required** | No                                                    |
-| **Default**  | `"@DEODE_HOME@/data/sqlite/station_list_default.csv"` |
-
-**Description:** Station list used for extraction
 
 <a name="extractsqlite_selection"></a>
 ### Property `Config > extractsqlite > selection`
@@ -5673,7 +5708,7 @@ Must be one of:
 | ----------------------------------------------------------- | ----------- |
 | [gen_macros items](#macros_select_default_gen_macros_items) | -           |
 
-<a name="autogenerated_heading_42"></a>
+<a name="autogenerated_heading_44"></a>
 ##### Config > macros > select > default > gen_macros > gen_macros items
 
 |                           |                                                                           |
@@ -5726,7 +5761,7 @@ Must be one of:
 | --------------------------------------------------------------- | ----------- |
 | [group_macros items](#macros_select_default_group_macros_items) | -           |
 
-<a name="autogenerated_heading_43"></a>
+<a name="autogenerated_heading_45"></a>
 ##### Config > macros > select > default > group_macros > group_macros items
 
 |              |          |
@@ -5756,7 +5791,7 @@ Must be one of:
 | --------------------------------------------------------- | ----------- |
 | [os_macros items](#macros_select_default_os_macros_items) | -           |
 
-<a name="autogenerated_heading_44"></a>
+<a name="autogenerated_heading_46"></a>
 ##### Config > macros > select > default > os_macros > os_macros items
 
 |              |          |
@@ -8331,7 +8366,7 @@ Must be one of:
 | ---------------------------------------------------- | ----------- |
 | [archive_types items](#platform_archive_types_items) | -           |
 
-<a name="autogenerated_heading_45"></a>
+<a name="autogenerated_heading_47"></a>
 #### Config > platform > archive_types > archive_types items
 
 |              |                    |
@@ -9178,7 +9213,7 @@ Must be one of:
 | --------------------------------------------------- | ----------- |
 | [tasks items](#submission_types_serial_tasks_items) | -           |
 
-<a name="autogenerated_heading_46"></a>
+<a name="autogenerated_heading_48"></a>
 ##### Config > submission > types > serial > tasks > tasks items
 
 |              |          |
@@ -9292,7 +9327,7 @@ must respect the following conditions
 | --------------------------------------------------------------- | ----------- |
 | [^(.*)$ items](#submission_types_serial_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_47"></a>
+<a name="autogenerated_heading_49"></a>
 ##### Config > submission > types > serial > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -9346,7 +9381,7 @@ must respect the following conditions
 | ----------------------------------------------------- | ----------- |
 | [tasks items](#submission_types_parallel_tasks_items) | -           |
 
-<a name="autogenerated_heading_48"></a>
+<a name="autogenerated_heading_50"></a>
 ##### Config > submission > types > parallel > tasks > tasks items
 
 |              |          |
@@ -9460,7 +9495,7 @@ must respect the following conditions
 | ----------------------------------------------------------------- | ----------- |
 | [^(.*)$ items](#submission_types_parallel_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_49"></a>
+<a name="autogenerated_heading_51"></a>
 ##### Config > submission > types > parallel > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -9514,7 +9549,7 @@ must respect the following conditions
 | ---------------------------------------------------------- | ----------- |
 | [tasks items](#submission_types_background_vm_tasks_items) | -           |
 
-<a name="autogenerated_heading_50"></a>
+<a name="autogenerated_heading_52"></a>
 ##### Config > submission > types > background_vm > tasks > tasks items
 
 |              |          |
@@ -9628,7 +9663,7 @@ must respect the following conditions
 | ---------------------------------------------------------------------- | ----------- |
 | [^(.*)$ items](#submission_types_background_vm_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_51"></a>
+<a name="autogenerated_heading_53"></a>
 ##### Config > submission > types > background_vm > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -9682,7 +9717,7 @@ must respect the following conditions
 | ----------------------------------------------------------- | ----------- |
 | [tasks items](#submission_types_background_hpc_tasks_items) | -           |
 
-<a name="autogenerated_heading_52"></a>
+<a name="autogenerated_heading_54"></a>
 ##### Config > submission > types > background_hpc > tasks > tasks items
 
 |              |          |
@@ -9796,7 +9831,7 @@ must respect the following conditions
 | ----------------------------------------------------------------------- | ----------- |
 | [^(.*)$ items](#submission_types_background_hpc_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_53"></a>
+<a name="autogenerated_heading_55"></a>
 ##### Config > submission > types > background_hpc > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -9850,7 +9885,7 @@ must respect the following conditions
 | ------------------------------------------------ | ----------- |
 | [tasks items](#submission_types_gnu_tasks_items) | -           |
 
-<a name="autogenerated_heading_54"></a>
+<a name="autogenerated_heading_56"></a>
 ##### Config > submission > types > gnu > tasks > tasks items
 
 |              |          |
@@ -9964,7 +9999,7 @@ must respect the following conditions
 | ------------------------------------------------------------ | ----------- |
 | [^(.*)$ items](#submission_types_gnu_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_55"></a>
+<a name="autogenerated_heading_57"></a>
 ##### Config > submission > types > gnu > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -10018,7 +10053,7 @@ must respect the following conditions
 | --------------------------------------------------- | ----------- |
 | [tasks items](#submission_types_sqlite_tasks_items) | -           |
 
-<a name="autogenerated_heading_56"></a>
+<a name="autogenerated_heading_58"></a>
 ##### Config > submission > types > sqlite > tasks > tasks items
 
 |              |          |
@@ -10132,7 +10167,7 @@ must respect the following conditions
 | --------------------------------------------------------------- | ----------- |
 | [^(.*)$ items](#submission_types_sqlite_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_57"></a>
+<a name="autogenerated_heading_59"></a>
 ##### Config > submission > types > sqlite > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -10186,7 +10221,7 @@ must respect the following conditions
 | --------------------------------------------------------- | ----------- |
 | [tasks items](#submission_types_Forecast_cpu_tasks_items) | -           |
 
-<a name="autogenerated_heading_58"></a>
+<a name="autogenerated_heading_60"></a>
 ##### Config > submission > types > Forecast_cpu > tasks > tasks items
 
 |              |          |
@@ -10300,7 +10335,7 @@ must respect the following conditions
 | --------------------------------------------------------------------- | ----------- |
 | [^(.*)$ items](#submission_types_Forecast_cpu_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_59"></a>
+<a name="autogenerated_heading_61"></a>
 ##### Config > submission > types > Forecast_cpu > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -10354,7 +10389,7 @@ must respect the following conditions
 | --------------------------------------------------------- | ----------- |
 | [tasks items](#submission_types_Forecast_gpu_tasks_items) | -           |
 
-<a name="autogenerated_heading_60"></a>
+<a name="autogenerated_heading_62"></a>
 ##### Config > submission > types > Forecast_gpu > tasks > tasks items
 
 |              |          |
@@ -10468,7 +10503,7 @@ must respect the following conditions
 | --------------------------------------------------------------------- | ----------- |
 | [^(.*)$ items](#submission_types_Forecast_gpu_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_61"></a>
+<a name="autogenerated_heading_63"></a>
 ##### Config > submission > types > Forecast_gpu > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -10657,7 +10692,7 @@ must respect the following conditions
 | **Additional items** | False              |
 | **Tuple validation** | See below          |
 
-<a name="autogenerated_heading_62"></a>
+<a name="autogenerated_heading_64"></a>
 #### At least one of the items must be
 
 |              |          |
@@ -10683,7 +10718,7 @@ must respect the following conditions
 | **Additional items** | False              |
 | **Tuple validation** | See below          |
 
-<a name="autogenerated_heading_63"></a>
+<a name="autogenerated_heading_65"></a>
 #### At least one of the items must be
 
 |              |          |
