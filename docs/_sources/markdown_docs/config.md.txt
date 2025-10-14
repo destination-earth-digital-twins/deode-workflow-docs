@@ -1,5 +1,5 @@
 The following section was automatically generated running
-        `deode doc config` on 2025-10-13T14:25:29.
+        `deode doc config` on 2025-10-14T10:56:59.
 
 # Config
 
@@ -1784,18 +1784,20 @@ Must be one of:
 
 **Description:** Settings for control of boundary treatment.
 
-| Property                                                       | Type                      | Required | Default | Title/Description                                                             |
-| -------------------------------------------------------------- | ------------------------- | -------- | ------- | ----------------------------------------------------------------------------- |
-| [bdint](#boundaries_bdint)                                     | string                    | No       | -       | Boundary interval                                                             |
-| [bdshift](#boundaries_bdshift)                                 | string                    | No       | -       | Shift of boundary initial time. E.g. 'PT3H' would mean use 3H old boundaries  |
-| [max_interpolation_tasks](#boundaries_max_interpolation_tasks) | number                    | No       | -       | Number of interpolate tasks run in parallel                                   |
-| [bdmodel](#boundaries_bdmodel)                                 | enum (of string)          | No       | "ifs"   | Coupling model                                                                |
-| [sstmodels](#boundaries_sstmodels)                             | array of enum (of string) | No       | -       | Coupling model for SST & SIC                                                  |
-| [sst_is_lsm](#boundaries_sst_is_lsm)                           | enum (of string)          | No       | "auto"  | Switch for using SST as LSM                                                   |
-| [humi_gp](#boundaries_humi_gp)                                 | boolean                   | No       | -       | Value of TFP_Q%LLGP in domain namelist for c903. True for gridpoint humidity. |
-| [lam](#boundaries_lam)                                         | object                    | No       | -       | LAM related boundary settings                                                 |
-| [ifs](#boundaries_ifs)                                         | object                    | No       | -       | IFS related settings                                                          |
-| [bd_has_surfex](#boundaries_bd_has_surfex)                     | boolean                   | No       | -       | Set to true if the host model runs with surfex                                |
+| Property                                                       | Type                      | Required | Default     | Title/Description                                                                 |
+| -------------------------------------------------------------- | ------------------------- | -------- | ----------- | --------------------------------------------------------------------------------- |
+| [bdint](#boundaries_bdint)                                     | string                    | No       | -           | Boundary interval                                                                 |
+| [bdshift](#boundaries_bdshift)                                 | string                    | No       | -           | Shift of boundary initial time. E.g. 'PT3H' would mean use 3H old boundaries      |
+| [bdshift_sfx](#boundaries_bdshift_sfx)                         | string                    | No       | -           | Shift of SURFEX prep input initial time. E.g. 'PT24H' would mean use 24H old file |
+| [max_interpolation_tasks](#boundaries_max_interpolation_tasks) | number                    | No       | -           | Number of interpolate tasks run in parallel                                       |
+| [bdmodel](#boundaries_bdmodel)                                 | enum (of string)          | No       | "ifs"       | Coupling model                                                                    |
+| [bdmodel_sfx](#boundaries_bdmodel_sfx)                         | enum (of string)          | No       | "from_grib" | SURFEX prep input file                                                            |
+| [sstmodels](#boundaries_sstmodels)                             | array of enum (of string) | No       | -           | Coupling model for SST & SIC                                                      |
+| [sst_is_lsm](#boundaries_sst_is_lsm)                           | enum (of string)          | No       | "auto"      | Switch for using SST as LSM                                                       |
+| [humi_gp](#boundaries_humi_gp)                                 | boolean                   | No       | -           | Value of TFP_Q%LLGP in domain namelist for c903. True for gridpoint humidity.     |
+| [lam](#boundaries_lam)                                         | object                    | No       | -           | LAM related boundary settings                                                     |
+| [ifs](#boundaries_ifs)                                         | object                    | No       | -           | IFS related settings                                                              |
+| [bd_has_surfex](#boundaries_bd_has_surfex)                     | boolean                   | No       | -           | Set to true if the host model runs with surfex                                    |
 
 <a name="boundaries_bdint"></a>
 ### Property `Config > boundaries > bdint`
@@ -1818,6 +1820,17 @@ Must be one of:
 | **Format**   | `duration` |
 
 **Description:** Shift of boundary initial time. E.g. 'PT3H' would mean use 3H old boundaries
+
+<a name="boundaries_bdshift_sfx"></a>
+### Property `Config > boundaries > bdshift_sfx`
+
+|              |            |
+| ------------ | ---------- |
+| **Type**     | `string`   |
+| **Required** | No         |
+| **Format**   | `duration` |
+
+**Description:** Shift of SURFEX prep input initial time. E.g. 'PT24H' would mean use 24H old file
 
 <a name="boundaries_max_interpolation_tasks"></a>
 ### Property `Config > boundaries > max_interpolation_tasks`
@@ -1843,6 +1856,22 @@ Must be one of:
 Must be one of:
 * "lam"
 * "ifs"
+
+<a name="boundaries_bdmodel_sfx"></a>
+### Property `Config > boundaries > bdmodel_sfx`
+
+|              |                    |
+| ------------ | ------------------ |
+| **Type**     | `enum (of string)` |
+| **Required** | No                 |
+| **Default**  | `"from_grib"`      |
+
+**Description:** SURFEX prep input file
+
+Must be one of:
+* "from_grib"
+* "from_fa"
+* "from_nc"
 
 <a name="boundaries_sstmodels"></a>
 ### Property `Config > boundaries > sstmodels`
