@@ -4513,9 +4513,9 @@ Defaults to False.</p></li>
 <dt>Assumptions:</dt><dd><ul class="simple">
 <li><p>the path contains the user name as a directory.</p></li>
 <li><p>the parent of the user directory is of the format “&lt;new-dir-name&gt;” or
-“<em>_&lt;new-dir-name&gt;_</em>”, where “*” contains no underscore(s) and
-where the &lt;new-dir-name&gt; will be used as the new parent directory name
-relative to the user directory.</p></li>
+“%_&lt;new-dir-name&gt;_*”, where “*” contains no underscore(s), “%” might
+contain underscore(s)  and where the &lt;new-dir-name&gt; will be used as
+the new parent directory name relative to the user directory.</p></li>
 </ul>
 </dd>
 </dl>
@@ -4530,13 +4530,14 @@ relative to the user directory.</p></li>
 <dd class="field-odd"><p>path</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>ValueError</strong> – If the parent of the user directory does not contain 0
-    or 2 underscores.</p>
+<dd class="field-even"><p><strong>ValueError</strong> – If the parent of the user directory only contains 1 underscore.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">strip_off_mount_path</span><span class="p">(</span><span class="s2">&quot;/etc/ecmwf/nfs/dh1_home_b/$USER/Deode-Workflow/deode&quot;</span><span class="p">)</span>
 <span class="go">Path(&quot;/home/$USER/Deode-Workflow/deode&quot;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">strip_off_mount_path</span><span class="p">(</span><span class="s2">&quot;/etc/ecmwf/nfs/dh1_10_perm_b/$USER/Deode-Workflow&quot;</span><span class="p">)</span>
+<span class="go">Path(&quot;/perm/$USER/Deode-Workflow&quot;)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -5809,7 +5810,7 @@ the class.</p></li>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-10-15T09:05:49Z.
+      <span class="lastupdated">Last updated on 2025-10-15T09:59:57Z.
       </span></p>
   </div>
 
