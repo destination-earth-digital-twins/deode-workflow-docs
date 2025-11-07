@@ -392,6 +392,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#deode.general_utils.modify_mappings"><code class="docutils literal notranslate"><span class="pre">modify_mappings()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#deode.general_utils.recursive_delete_keys"><code class="docutils literal notranslate"><span class="pre">recursive_delete_keys()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#deode.general_utils.recursive_dict_deviation"><code class="docutils literal notranslate"><span class="pre">recursive_dict_deviation()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deode.general_utils.recursive_substitute"><code class="docutils literal notranslate"><span class="pre">recursive_substitute()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#deode.general_utils.value_from_any_generator"><code class="docutils literal notranslate"><span class="pre">value_from_any_generator()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#deode.general_utils.value_from_mapping_generator"><code class="docutils literal notranslate"><span class="pre">value_from_mapping_generator()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#deode.general_utils.value_from_sequence_generator"><code class="docutils literal notranslate"><span class="pre">value_from_sequence_generator()</span></code></a></li>
@@ -803,6 +804,7 @@
 <li class="toctree-l2"><a class="reference internal" href="misc_section_in_doc_page.html#impact-models">Impact models</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="misc_section_in_doc_page.html#general-design">General design</a></li>
 <li class="toctree-l3"><a class="reference internal" href="misc_section_in_doc_page.html#ehype">EHYPE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="misc_section_in_doc_page.html#deode-eps-upscaling">Deode-EPS-Upscaling</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="misc_section_in_doc_page.html#cleaning-of-experiment">Cleaning of experiment</a><ul>
@@ -1652,6 +1654,11 @@
 <li class="toctree-l4"><a class="reference internal" href="deode.tasks.html#deode.tasks.impacts.AQModels.name"><code class="docutils literal notranslate"><span class="pre">AQModels.name</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="deode.tasks.html#deode.tasks.impacts.EPSUpscaling"><code class="docutils literal notranslate"><span class="pre">EPSUpscaling</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="deode.tasks.html#deode.tasks.impacts.EPSUpscaling.name"><code class="docutils literal notranslate"><span class="pre">EPSUpscaling.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="deode.tasks.html#deode.tasks.impacts.EPSUpscaling.run"><code class="docutils literal notranslate"><span class="pre">EPSUpscaling.run()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="deode.tasks.html#deode.tasks.impacts.Ehype"><code class="docutils literal notranslate"><span class="pre">Ehype</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="deode.tasks.html#deode.tasks.impacts.Ehype.name"><code class="docutils literal notranslate"><span class="pre">Ehype.name</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="deode.tasks.html#deode.tasks.impacts.Ehype.run"><code class="docutils literal notranslate"><span class="pre">Ehype.run()</span></code></a></li>
@@ -1662,6 +1669,7 @@
 <li class="toctree-l4"><a class="reference internal" href="deode.tasks.html#deode.tasks.impacts.ImpactModel.dump"><code class="docutils literal notranslate"><span class="pre">ImpactModel.dump()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="deode.tasks.html#deode.tasks.impacts.ImpactModel.execute"><code class="docutils literal notranslate"><span class="pre">ImpactModel.execute()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="deode.tasks.html#deode.tasks.impacts.ImpactModel.filename"><code class="docutils literal notranslate"><span class="pre">ImpactModel.filename</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="deode.tasks.html#deode.tasks.impacts.ImpactModel.load"><code class="docutils literal notranslate"><span class="pre">ImpactModel.load()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="deode.tasks.html#deode.tasks.impacts.ImpactModel.name"><code class="docutils literal notranslate"><span class="pre">ImpactModel.name</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="deode.tasks.html#deode.tasks.impacts.ImpactModel.platform"><code class="docutils literal notranslate"><span class="pre">ImpactModel.platform</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="deode.tasks.html#deode.tasks.impacts.ImpactModel.run"><code class="docutils literal notranslate"><span class="pre">ImpactModel.run()</span></code></a></li>
@@ -3192,6 +3200,12 @@ the base_dict</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="deode.general_utils.recursive_substitute">
+<span class="sig-name descname"><span class="pre">recursive_substitute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">platform</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/general_utils.html#recursive_substitute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.general_utils.recursive_substitute" title="Link to this definition"></a></dt>
+<dd><p>Recursively substitute variables in a nested dictionary.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="deode.general_utils.value_from_any_generator">
 <span class="sig-name descname"><span class="pre">value_from_any_generator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">any_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/deode/general_utils.html#value_from_any_generator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.general_utils.value_from_any_generator" title="Link to this definition"></a></dt>
 <dd><p>Yield values from any type.</p>
@@ -4563,7 +4577,7 @@ the new parent directory name relative to the user directory.</p></li>
 <p>Plug-in functionality.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="deode.plugin.DeodePlugin">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DeodePlugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/plugin.html#DeodePlugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.plugin.DeodePlugin" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DeodePlugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/plugin.html#DeodePlugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.plugin.DeodePlugin" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Deode plugin.</p>
 </dd></dl>
@@ -4600,7 +4614,7 @@ the new parent directory name relative to the user directory.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="deode.plugin.DeodePluginRegistry.load_plugin">
-<span class="sig-name descname"><span class="pre">load_plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plugin</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/plugin.html#DeodePluginRegistry.load_plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.plugin.DeodePluginRegistry.load_plugin" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">load_plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plugin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#deode.plugin.DeodePlugin" title="deode.plugin.DeodePlugin"><span class="pre">DeodePlugin</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/plugin.html#DeodePluginRegistry.load_plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.plugin.DeodePluginRegistry.load_plugin" title="Link to this definition"></a></dt>
 <dd><p>Load plugin.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -4617,7 +4631,7 @@ the new parent directory name relative to the user directory.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="deode.plugin.DeodePluginRegistry.plugin_exists">
-<span class="sig-name descname"><span class="pre">plugin_exists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plugin</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/plugin.html#DeodePluginRegistry.plugin_exists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.plugin.DeodePluginRegistry.plugin_exists" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">plugin_exists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plugin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#deode.plugin.DeodePlugin" title="deode.plugin.DeodePlugin"><span class="pre">DeodePlugin</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/plugin.html#DeodePluginRegistry.plugin_exists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.plugin.DeodePluginRegistry.plugin_exists" title="Link to this definition"></a></dt>
 <dd><p>Check if plugin exists.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -4634,7 +4648,7 @@ the new parent directory name relative to the user directory.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="deode.plugin.DeodePluginRegistry.register_plugin">
-<span class="sig-name descname"><span class="pre">register_plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plugin</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/plugin.html#DeodePluginRegistry.register_plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.plugin.DeodePluginRegistry.register_plugin" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">register_plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plugin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#deode.plugin.DeodePlugin" title="deode.plugin.DeodePlugin"><span class="pre">DeodePlugin</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/plugin.html#DeodePluginRegistry.register_plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.plugin.DeodePluginRegistry.register_plugin" title="Link to this definition"></a></dt>
 <dd><p>Register plugin.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -5825,7 +5839,7 @@ the class.</p></li>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-11-06T08:42:32Z.
+      <span class="lastupdated">Last updated on 2025-11-07T09:30:48Z.
       </span></p>
   </div>
 

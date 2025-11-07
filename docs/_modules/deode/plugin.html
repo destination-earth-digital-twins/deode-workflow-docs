@@ -389,6 +389,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.general_utils.modify_mappings"><code class="docutils literal notranslate"><span class="pre">modify_mappings()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.general_utils.recursive_delete_keys"><code class="docutils literal notranslate"><span class="pre">recursive_delete_keys()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.general_utils.recursive_dict_deviation"><code class="docutils literal notranslate"><span class="pre">recursive_dict_deviation()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.general_utils.recursive_substitute"><code class="docutils literal notranslate"><span class="pre">recursive_substitute()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.general_utils.value_from_any_generator"><code class="docutils literal notranslate"><span class="pre">value_from_any_generator()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.general_utils.value_from_mapping_generator"><code class="docutils literal notranslate"><span class="pre">value_from_mapping_generator()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.general_utils.value_from_sequence_generator"><code class="docutils literal notranslate"><span class="pre">value_from_sequence_generator()</span></code></a></li>
@@ -800,6 +801,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../misc_section_in_doc_page.html#impact-models">Impact models</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#general-design">General design</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#ehype">EHYPE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#deode-eps-upscaling">Deode-EPS-Upscaling</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../misc_section_in_doc_page.html#cleaning-of-experiment">Cleaning of experiment</a><ul>
@@ -1342,11 +1344,13 @@
              
   <h1>Source code for deode.plugin</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Plug-in functionality.&quot;&quot;&quot;</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">deode</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">deode.os_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">resolve_path_relative_to_package</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
 
@@ -1370,7 +1374,7 @@
             <span class="n">config</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">config_input</span> <span class="o">=</span> <span class="n">config</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_registry_config</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">DeodePlugin</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">deode_plugin</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">load_plugins</span><span class="p">()</span>
 
@@ -1378,14 +1382,14 @@
 <a class="viewcode-back" href="../../deode.html#deode.plugin.DeodePluginRegistry.deode_plugin">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">deode_plugin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Base DEODE plugin.&quot;&quot;&quot;</span>
-        <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">deode</span><span class="o">.</span><span class="n">__path__</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">deode</span><span class="o">.</span><span class="n">__path__</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">parent</span>
         <span class="n">plugin</span> <span class="o">=</span> <span class="n">DeodePlugin</span><span class="p">(</span><span class="s2">&quot;deode&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">register_plugin</span><span class="p">(</span><span class="n">plugin</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="DeodePluginRegistry.load_plugin">
 <a class="viewcode-back" href="../../deode.html#deode.plugin.DeodePluginRegistry.load_plugin">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">load_plugin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_plugin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin</span><span class="p">:</span> <span class="s2">&quot;DeodePlugin&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Load plugin.</span>
 
 <span class="sd">        Args:</span>
@@ -1393,7 +1397,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span> <span class="o">+=</span> <span class="p">[</span><span class="n">plugin</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;plugins&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">plugin</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">plugin</span><span class="o">.</span><span class="n">path</span><span class="p">})</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;plugins&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">plugin</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">plugin</span><span class="o">.</span><span class="n">path</span><span class="p">)})</span></div>
 
 
 <div class="viewcode-block" id="DeodePluginRegistry.load_plugins">
@@ -1402,14 +1406,15 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Load all registered plugins.&quot;&quot;&quot;</span>
         <span class="n">plugins</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;plugins&quot;</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">plugins</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">path_</span> <span class="o">=</span> <span class="n">resolve_path_relative_to_package</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">name</span> <span class="o">!=</span> <span class="s2">&quot;deode&quot;</span><span class="p">:</span>
-                <span class="n">plugin</span> <span class="o">=</span> <span class="n">DeodePlugin</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+                <span class="n">plugin</span> <span class="o">=</span> <span class="n">DeodePlugin</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">path_</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">load_plugin</span><span class="p">(</span><span class="n">plugin</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="DeodePluginRegistry.plugin_exists">
 <a class="viewcode-back" href="../../deode.html#deode.plugin.DeodePluginRegistry.plugin_exists">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">plugin_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">plugin_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin</span><span class="p">:</span> <span class="s2">&quot;DeodePlugin&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if plugin exists.</span>
 
 <span class="sd">        Args:</span>
@@ -1424,7 +1429,7 @@
 
 <div class="viewcode-block" id="DeodePluginRegistry.register_plugin">
 <a class="viewcode-back" href="../../deode.html#deode.plugin.DeodePluginRegistry.register_plugin">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">register_plugin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">register_plugin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin</span><span class="p">:</span> <span class="s2">&quot;DeodePlugin&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Register plugin.</span>
 
 <span class="sd">        Args:</span>
@@ -1432,7 +1437,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugin_exists</span><span class="p">(</span><span class="n">plugin</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;plugins&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">plugin</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">plugin</span><span class="o">.</span><span class="n">path</span><span class="p">})</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;plugins&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">plugin</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">plugin</span><span class="o">.</span><span class="n">path</span><span class="p">)})</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">load_plugin</span><span class="p">(</span><span class="n">plugin</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Plugin </span><span class="si">{}</span><span class="s2"> does already exists&quot;</span><span class="p">,</span> <span class="n">plugin</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
@@ -1508,18 +1513,18 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">DeodePlugin</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Deode plugin.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct the plugin.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            name (str): Lower case name of plugin</span>
-<span class="sd">            path (str): Root path to plugin.</span>
+<span class="sd">            path (Path): Root path to plugin.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tasks_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">/tasks&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">suites_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">/suites&quot;</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tasks_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">/</span> <span class="s2">&quot;tasks&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">suites_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">/</span> <span class="s2">&quot;suites&quot;</span></div>
 
 
 
@@ -1537,7 +1542,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_plugin_config</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span>
         <span class="n">name</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
-        <span class="n">path</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">])</span>
         <span class="n">DeodePlugin</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
 
 <div class="viewcode-block" id="DeodePluginFromConfigFile.get_plugin_config">
@@ -1560,7 +1565,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-11-06T08:42:32Z.
+      <span class="lastupdated">Last updated on 2025-11-07T09:30:48Z.
       </span></p>
   </div>
 

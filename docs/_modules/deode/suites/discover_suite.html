@@ -389,6 +389,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.general_utils.modify_mappings"><code class="docutils literal notranslate"><span class="pre">modify_mappings()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.general_utils.recursive_delete_keys"><code class="docutils literal notranslate"><span class="pre">recursive_delete_keys()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.general_utils.recursive_dict_deviation"><code class="docutils literal notranslate"><span class="pre">recursive_dict_deviation()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.general_utils.recursive_substitute"><code class="docutils literal notranslate"><span class="pre">recursive_substitute()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.general_utils.value_from_any_generator"><code class="docutils literal notranslate"><span class="pre">value_from_any_generator()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.general_utils.value_from_mapping_generator"><code class="docutils literal notranslate"><span class="pre">value_from_mapping_generator()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.general_utils.value_from_sequence_generator"><code class="docutils literal notranslate"><span class="pre">value_from_sequence_generator()</span></code></a></li>
@@ -800,6 +801,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../misc_section_in_doc_page.html#impact-models">Impact models</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../misc_section_in_doc_page.html#general-design">General design</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../misc_section_in_doc_page.html#ehype">EHYPE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../misc_section_in_doc_page.html#deode-eps-upscaling">Deode-EPS-Upscaling</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../misc_section_in_doc_page.html#cleaning-of-experiment">Cleaning of experiment</a><ul>
@@ -1344,13 +1346,12 @@
 <span></span><span class="sd">&quot;&quot;&quot;Discover suites.&quot;&quot;&quot;</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">importlib</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pkgutil</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">types</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..plugin</span><span class="w"> </span><span class="kn">import</span> <span class="n">DeodePluginRegistryFromConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..plugin</span><span class="w"> </span><span class="kn">import</span> <span class="n">DeodePluginRegistry</span><span class="p">,</span> <span class="n">DeodePluginRegistryFromConfig</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">SuiteDefinition</span><span class="p">,</span> <span class="n">_get_name</span>
 
 
@@ -1415,7 +1416,7 @@
 
 <div class="viewcode-block" id="available_suites">
 <a class="viewcode-back" href="../../../deode.suites.html#deode.suites.discover_suite.available_suites">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">available_suites</span><span class="p">(</span><span class="n">reg</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">available_suites</span><span class="p">(</span><span class="n">reg</span><span class="p">:</span> <span class="n">DeodePluginRegistry</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a list of available tasks.</span>
 
 <span class="sd">    Args:</span>
@@ -1427,9 +1428,9 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">known_types</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">plg</span> <span class="ow">in</span> <span class="n">reg</span><span class="o">.</span><span class="n">plugins</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">plg</span><span class="o">.</span><span class="n">suites_path</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">plg</span><span class="o">.</span><span class="n">suites_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
             <span class="n">suites</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">ModuleType</span><span class="p">(</span><span class="n">plg</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-            <span class="n">suites</span><span class="o">.</span><span class="n">__path__</span> <span class="o">=</span> <span class="p">[</span><span class="n">plg</span><span class="o">.</span><span class="n">suites_path</span><span class="p">]</span>
+            <span class="n">suites</span><span class="o">.</span><span class="n">__path__</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">plg</span><span class="o">.</span><span class="n">suites_path</span><span class="p">)]</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">plg</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
             <span class="n">found_types</span> <span class="o">=</span> <span class="n">discover</span><span class="p">(</span><span class="n">suites</span><span class="p">,</span> <span class="n">SuiteDefinition</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">ftype</span><span class="p">,</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="n">found_types</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -1490,7 +1491,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-11-06T08:42:32Z.
+      <span class="lastupdated">Last updated on 2025-11-07T09:30:48Z.
       </span></p>
   </div>
 
