@@ -1606,10 +1606,13 @@
             <span class="n">static_data_limit</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">dry_run</span><span class="p">:</span>
                 <span class="n">static_data_max</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.max_static_data_tasks&quot;</span><span class="p">]</span>
-                <span class="n">static_data_limit</span> <span class="o">=</span> <span class="n">EcflowSuiteLimit</span><span class="p">(</span><span class="s2">&quot;static_data_limit&quot;</span><span class="p">,</span> <span class="n">static_data_max</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">ecf_node</span><span class="o">.</span><span class="n">add_limit</span><span class="p">(</span>
-                    <span class="n">static_data_limit</span><span class="o">.</span><span class="n">limit_name</span><span class="p">,</span> <span class="n">static_data_limit</span><span class="o">.</span><span class="n">max_jobs</span>
-                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">static_data_max</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">static_data_limit</span> <span class="o">=</span> <span class="n">EcflowSuiteLimit</span><span class="p">(</span>
+                        <span class="s2">&quot;static_data_limit&quot;</span><span class="p">,</span> <span class="n">static_data_max</span>
+                    <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">ecf_node</span><span class="o">.</span><span class="n">add_limit</span><span class="p">(</span>
+                        <span class="n">static_data_limit</span><span class="o">.</span><span class="n">limit_name</span><span class="p">,</span> <span class="n">static_data_limit</span><span class="o">.</span><span class="n">max_jobs</span>
+                    <span class="p">)</span>
 
             <span class="n">StaticDataTasks</span><span class="p">(</span>
                 <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
@@ -1669,10 +1672,11 @@
         <span class="n">static_data_limit</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">dry_run</span><span class="p">:</span>
             <span class="n">static_data_max</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.max_static_data_tasks&quot;</span><span class="p">]</span>
-            <span class="n">static_data_limit</span> <span class="o">=</span> <span class="n">EcflowSuiteLimit</span><span class="p">(</span><span class="s2">&quot;static_data_limit&quot;</span><span class="p">,</span> <span class="n">static_data_max</span><span class="p">)</span>
-            <span class="n">member_family</span><span class="o">.</span><span class="n">ecf_node</span><span class="o">.</span><span class="n">add_limit</span><span class="p">(</span>
-                <span class="n">static_data_limit</span><span class="o">.</span><span class="n">limit_name</span><span class="p">,</span> <span class="n">static_data_limit</span><span class="o">.</span><span class="n">max_jobs</span>
-            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">static_data_max</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">static_data_limit</span> <span class="o">=</span> <span class="n">EcflowSuiteLimit</span><span class="p">(</span><span class="s2">&quot;static_data_limit&quot;</span><span class="p">,</span> <span class="n">static_data_max</span><span class="p">)</span>
+                <span class="n">member_family</span><span class="o">.</span><span class="n">ecf_node</span><span class="o">.</span><span class="n">add_limit</span><span class="p">(</span>
+                    <span class="n">static_data_limit</span><span class="o">.</span><span class="n">limit_name</span><span class="p">,</span> <span class="n">static_data_limit</span><span class="o">.</span><span class="n">max_jobs</span>
+                <span class="p">)</span>
 
         <span class="n">StaticDataTasks</span><span class="p">(</span>
             <span class="n">member_family</span><span class="p">,</span>
@@ -2137,10 +2141,12 @@
             <span class="n">ecf_files_remotely</span><span class="o">=</span><span class="n">ecf_files_remotely</span><span class="p">,</span>
         <span class="p">)</span>
 
+        <span class="n">lbc_limit</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">dry_run</span><span class="p">:</span>
             <span class="n">bdmax</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;boundaries.max_interpolation_tasks&quot;</span><span class="p">]</span>
-            <span class="n">lbc_limit</span> <span class="o">=</span> <span class="n">EcflowSuiteLimit</span><span class="p">(</span><span class="s2">&quot;lbc_limit&quot;</span><span class="p">,</span> <span class="n">bdmax</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ecf_node</span><span class="o">.</span><span class="n">add_limit</span><span class="p">(</span><span class="n">lbc_limit</span><span class="o">.</span><span class="n">limit_name</span><span class="p">,</span> <span class="n">lbc_limit</span><span class="o">.</span><span class="n">max_jobs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">bdmax</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">lbc_limit</span> <span class="o">=</span> <span class="n">EcflowSuiteLimit</span><span class="p">(</span><span class="s2">&quot;lbc_limit&quot;</span><span class="p">,</span> <span class="n">bdmax</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ecf_node</span><span class="o">.</span><span class="n">add_limit</span><span class="p">(</span><span class="n">lbc_limit</span><span class="o">.</span><span class="n">limit_name</span><span class="p">,</span> <span class="n">lbc_limit</span><span class="o">.</span><span class="n">max_jobs</span><span class="p">)</span>
 
         <span class="n">basetime</span> <span class="o">=</span> <span class="n">as_datetime</span><span class="p">(</span><span class="n">cycles</span><span class="o">.</span><span class="n">current_cycle</span><span class="o">.</span><span class="n">basetime</span><span class="p">)</span>
         <span class="n">forecast_range</span> <span class="o">=</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.times.forecast_range&quot;</span><span class="p">])</span>
@@ -2905,7 +2911,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-11-07T09:30:48Z.
+      <span class="lastupdated">Last updated on 2025-11-10T11:24:27Z.
       </span></p>
   </div>
 
