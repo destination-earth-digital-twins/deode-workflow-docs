@@ -1616,11 +1616,12 @@
 
 <div class="viewcode-block" id="EcflowServer.remove_suites">
 <a class="viewcode-back" href="../../deode.html#deode.scheduler.EcflowServer.remove_suites">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">remove_suites</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">suite_list</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_suites</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">suite_list</span><span class="p">,</span> <span class="n">check_if_complete</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove suites selected from a list.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            suite_list (list): Suite names.</span>
+<span class="sd">            check_if_complete (boolean): True if suite should be complete.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ecf_client</span><span class="o">.</span><span class="n">sync_local</span><span class="p">()</span>
@@ -1628,8 +1629,14 @@
         <span class="n">suites</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecf_client</span><span class="o">.</span><span class="n">get_defs</span><span class="p">()</span><span class="o">.</span><span class="n">suites</span>
         <span class="k">for</span> <span class="n">suite</span> <span class="ow">in</span> <span class="n">suites</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">suite</span><span class="o">.</span><span class="n">name</span><span class="p">()</span> <span class="ow">in</span> <span class="n">suite_list</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Removing suite </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">suite</span><span class="o">.</span><span class="n">name</span><span class="p">())</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">ecf_client</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">suite</span><span class="o">.</span><span class="n">name</span><span class="p">())</span></div>
+                <span class="k">if</span> <span class="n">check_if_complete</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;State of </span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">suite</span><span class="o">.</span><span class="n">name</span><span class="p">(),</span> <span class="n">suite</span><span class="o">.</span><span class="n">get_state</span><span class="p">())</span>
+                    <span class="k">if</span> <span class="n">suite</span><span class="o">.</span><span class="n">get_state</span><span class="p">()</span> <span class="o">==</span> <span class="n">ecflow</span><span class="o">.</span><span class="n">State</span><span class="o">.</span><span class="n">complete</span><span class="p">:</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Removing complete suite </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">suite</span><span class="o">.</span><span class="n">name</span><span class="p">())</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ecf_client</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">suite</span><span class="o">.</span><span class="n">name</span><span class="p">())</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Removing suite </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">suite</span><span class="o">.</span><span class="n">name</span><span class="p">())</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">ecf_client</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">suite</span><span class="o">.</span><span class="n">name</span><span class="p">())</span></div>
 </div>
 
 
@@ -1833,7 +1840,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-11-12T09:37:15Z.
+      <span class="lastupdated">Last updated on 2025-11-18T11:40:37Z.
       </span></p>
   </div>
 
