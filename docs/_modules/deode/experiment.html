@@ -1010,6 +1010,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-domain-xbeta">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">domain</span> <span class="pre">&gt;</span> <span class="pre">xbeta</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-domain-spectral-smoothing-by-gridtype">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">domain</span> <span class="pre">&gt;</span> <span class="pre">spectral_smoothing_by_gridtype</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-domain-truncation-by-gridtype">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">domain</span> <span class="pre">&gt;</span> <span class="pre">truncation_by_gridtype</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-domain-dtf-lead-time">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">domain</span> <span class="pre">&gt;</span> <span class="pre">dtf_lead_time</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-eps">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">eps</span></code></a><ul>
@@ -1706,6 +1707,19 @@
         <span class="n">eps_exp</span><span class="o">.</span><span class="n">setup_exp</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">)</span>
         <span class="n">exp</span> <span class="o">=</span> <span class="n">eps_exp</span>
 
+    <span class="k">if</span> <span class="s2">&quot;fdb&quot;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">config</span><span class="p">:</span>
+        <span class="n">stream</span> <span class="o">=</span> <span class="s2">&quot;oper&quot;</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;eps.members&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;enfo&quot;</span>
+        <span class="n">exp</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span>
+            <span class="n">update</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;fdb&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;grib_set&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;georef&quot;</span><span class="p">:</span> <span class="n">compute_georef</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain&quot;</span><span class="p">]),</span>
+                        <span class="s2">&quot;stream&quot;</span><span class="p">:</span> <span class="n">stream</span><span class="p">,</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+
     <span class="k">if</span> <span class="n">expand_config</span><span class="p">:</span>
         <span class="n">deode_home</span> <span class="o">=</span> <span class="n">set_deode_home</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
         <span class="n">exp</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">update</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;platform&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;deode_home&quot;</span><span class="p">:</span> <span class="n">deode_home</span><span class="p">}})</span>
@@ -1720,19 +1734,6 @@
             <span class="n">output_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">output_file</span><span class="p">)</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Save config to: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">output_file</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="s2">&quot;fdb&quot;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">config</span><span class="p">:</span>
-        <span class="n">stream</span> <span class="o">=</span> <span class="s2">&quot;oper&quot;</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;eps.members&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;enfo&quot;</span>
-        <span class="n">exp</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span>
-            <span class="n">update</span><span class="o">=</span><span class="p">{</span>
-                <span class="s2">&quot;fdb&quot;</span><span class="p">:</span> <span class="p">{</span>
-                    <span class="s2">&quot;grib_set&quot;</span><span class="p">:</span> <span class="p">{</span>
-                        <span class="s2">&quot;georef&quot;</span><span class="p">:</span> <span class="n">compute_georef</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain&quot;</span><span class="p">]),</span>
-                        <span class="s2">&quot;stream&quot;</span><span class="p">:</span> <span class="n">stream</span><span class="p">,</span>
-                    <span class="p">}</span>
-                <span class="p">}</span>
-            <span class="p">}</span>
-        <span class="p">)</span>
 
     <span class="n">exp</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">save_as</span><span class="p">(</span><span class="n">output_file</span><span class="p">)</span>
 
@@ -1779,7 +1780,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-11-19T19:24:33Z.
+      <span class="lastupdated">Last updated on 2025-11-20T07:58:06Z.
       </span></p>
   </div>
 
