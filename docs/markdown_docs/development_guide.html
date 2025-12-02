@@ -728,10 +728,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../misc_section_in_doc_page.html#configure-cases">Configure cases</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../misc_section_in_doc_page.html#the-case-setup">The case setup</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#lumi-exception">Lumi exception</a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="../misc_section_in_doc_page.html#the-case-setup">The case setup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../misc_section_in_doc_page.html#adding-a-new-host">Adding a new host</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../misc_section_in_doc_page.html#time-handling">Time handling</a></li>
 </ul>
@@ -1467,7 +1464,7 @@ poetry<span class="w"> </span>devtools<span class="w"> </span>doc<span class="w"
 <h2>Testing on Atos<a class="headerlink" href="#testing-on-atos" title="Link to this heading"></a></h2>
 <p>The testing procedure above does not test the full functionality together with the IAL code. While waiting for a automated CI/CD system to be in place a few manual steps are required on atos to check the functionality.</p>
 <ul class="simple">
-<li><p>✔️ Run the default config file, using CY48t3, under ecflow following the instructions in the <a class="reference external" href="https://github.com/destination-earth-digital-twins/Deode-Workflow/blob/develop/README.md">README</a> file.</p></li>
+<li><p>✔️ Run the default config file, using CY49t2, under ecflow following the instructions in the <a class="reference external" href="https://github.com/destination-earth-digital-twins/Deode-Workflow/blob/develop/README.md">README</a> file.</p></li>
 <li><p>✔️ Run the following sequence of case configurations, i.e. the three CSC’s.</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>for case in \
@@ -1476,15 +1473,21 @@ poetry<span class="w"> </span>devtools<span class="w"> </span>doc<span class="w"
   cy46h1_harmonie_arome \
   cy49t2_arome \
   cy49t2_alaro \
+  cy49t2_harmonie_arome \
+  cy49t2_arome \
+  cy49t2_alaro \
+  alaro \
+  arome \
+  harmonie_arome \
   ; do
-  deode case ?deode/data/config_files/configurations/$case deode/data/config_files/modifications/test_settings.toml --start-suite
+  deode case ?deode/data/config_files/configurations/$case --start-suite
 done
 </pre></div>
 </div>
 <p>Once this has completed test the coupling of AROME -&gt; AROME and HARMONIE-AROME -&gt; HARMONIE-AROME:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>for case in \
-  cy48t3_arome_target \
-  cy46h1_harmonie_arome_target \
+  cy49t2_arome_target \
+  cy49t2_harmonie_arome_target \
   ; do
   deode case ?deode/data/config_files/configurations/$case deode/data/config_files/modifications/test_settings.toml --start-suite
 done
@@ -1497,10 +1500,12 @@ done
 <section id="testing-on-lumi">
 <h2>Testing on lumi<a class="headerlink" href="#testing-on-lumi" title="Link to this heading"></a></h2>
 <p>On lumi we expect the following configurations to be tested in the same way as above:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="n">cy48t3_arome</span>
-  <span class="n">cy48t3_alaro</span>
-  <span class="n">cy48t3_alaro_gpu_lumi</span>
-  <span class="n">cy46h1_harmonie_arome</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="n">cy49t2_arome</span>
+  <span class="n">cy49t2_alaro</span>
+  <span class="n">cy49h2_harmonie_arome</span>
+  <span class="n">alaro</span>
+  <span class="n">arome</span>
+  <span class="n">harmonie_arome</span>
 </pre></div>
 </div>
 <p>Note that due to the restrictions for the debug partition on lumi it’s only possible to launch one suite at the time.</p>
@@ -1753,7 +1758,7 @@ git<span class="w"> </span>push<span class="w"> </span>upstream<span class="w"> 
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-11-26T14:05:36Z.
+      <span class="lastupdated">Last updated on 2025-12-02T12:37:31Z.
       </span></p>
   </div>
 

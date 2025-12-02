@@ -728,10 +728,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../misc_section_in_doc_page.html#configure-cases">Configure cases</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../misc_section_in_doc_page.html#the-case-setup">The case setup</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#lumi-exception">Lumi exception</a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="../misc_section_in_doc_page.html#the-case-setup">The case setup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../misc_section_in_doc_page.html#adding-a-new-host">Adding a new host</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../misc_section_in_doc_page.html#time-handling">Time handling</a></li>
 </ul>
@@ -1356,16 +1353,16 @@
 <h2>The case setup<a class="headerlink" href="#the-case-setup" title="Link to this heading"></a></h2>
 <p>The Deode-workflow is designed to be highly configurable and driven from a single config file. The <code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">case</span></code> functionality offers a way to reduce the number of lengthy config files by building the final config file from smaller sections of configuration settings. A number of pre-defined configurations are available under <code class="docutils literal notranslate"><span class="pre">deode/data/config_files/configurations</span></code></p>
 <p>Example usage would be:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>deode case ?deode/data/config_files/configurations/cy48t3_alaro_gpu_lumi -o test.toml
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>deode case ?deode/data/config_files/configurations/cy49t2_alaro -o test.toml
 </pre></div>
 </div>
 <p>where ? is a file includer operator where all the arguments are defined line by line. I.e. <code class="docutils literal notranslate"><span class="pre">deode/data/config_files/configurations/cy48t3_alaro_gpu_lumi</span></code> contains a list of arguments to be evaluated. In this case we have</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">--</span><span class="n">config</span><span class="o">-</span><span class="n">file</span>
 <span class="n">deode</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">config_files</span><span class="o">/</span><span class="n">config</span><span class="o">.</span><span class="n">toml</span>
-<span class="n">deode</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">config_files</span><span class="o">/</span><span class="n">modifications</span><span class="o">/</span><span class="n">CY48t3</span><span class="o">.</span><span class="n">toml</span>
-<span class="n">deode</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">config_files</span><span class="o">/</span><span class="n">modifications</span><span class="o">/</span><span class="n">alaro</span><span class="o">.</span><span class="n">toml</span>
-<span class="n">deode</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">config_files</span><span class="o">/</span><span class="n">include</span><span class="o">/</span><span class="n">accelerator_device</span><span class="o">/</span><span class="n">lumi_gpu</span><span class="o">.</span><span class="n">toml</span>
-<span class="n">deode</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">config_files</span><span class="o">/</span><span class="n">modifications</span><span class="o">/</span><span class="n">submission</span><span class="o">/</span><span class="n">lumi_CY48t3_gpu_large_domain</span><span class="o">.</span><span class="n">toml</span>
+<span class="n">deode</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">config_files</span><span class="o">/</span><span class="n">modifications</span><span class="o">/</span><span class="n">csc</span><span class="o">/</span><span class="n">alaro</span><span class="o">.</span><span class="n">toml</span>
+<span class="n">deode</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">config_files</span><span class="o">/</span><span class="n">include</span><span class="o">/</span><span class="n">vertical_levels</span><span class="o">/</span><span class="n">MF_87</span><span class="o">.</span><span class="n">toml</span>
+<span class="n">deode</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">config_files</span><span class="o">/</span><span class="n">modifications</span><span class="o">/</span><span class="n">cycle</span><span class="o">/</span><span class="n">CY49t2</span><span class="o">.</span><span class="n">toml</span>
+<span class="n">deode</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">config_files</span><span class="o">/</span><span class="n">modifications</span><span class="o">/</span><span class="nd">@HOST</span><span class="o">@.</span><span class="n">toml</span>
 </pre></div>
 </div>
 <p>When the first config file, <code class="docutils literal notranslate"><span class="pre">config.toml</span></code>, has been read the appropriate files for the current host is included for <code class="docutils literal notranslate"><span class="pre">scheduler</span></code> <code class="docutils literal notranslate"><span class="pre">platform</span></code>and <code class="docutils literal notranslate"><span class="pre">submission</span></code>.</p>
@@ -1376,18 +1373,10 @@
 </pre></div>
 </div>
 <p>We can also do everything in one by adding the <code class="docutils literal notranslate"><span class="pre">--start-suite</span></code> flag</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>deode case ?deode/data/config_files/configurations/cy48t3_alaro_gpu_lumi -o test.toml --start-suite
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>deode case ?deode/data/config_files/configurations/cy49t2_alaro -o test.toml --start-suite
 </pre></div>
 </div>
 <p>To see all commands available for the case functionality run <code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">case</span> <span class="pre">--help</span></code>.</p>
-<section id="lumi-exception">
-<h3>Lumi exception<a class="headerlink" href="#lumi-exception" title="Link to this heading"></a></h3>
-<p>To create a config file for the DEMO domain on LUMI, we suggest using the following command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>deode case `deode/data/config_files/configurations/cy48t3_arome deode/data/config_files/modifications/submission/lumi_debug.toml
-</pre></div>
-</div>
-<p>This will ensure that tasks run on the debug partition, reducing queue time. Please note that the <code class="docutils literal notranslate"><span class="pre">lumi_debug</span></code> setting can only be used for small domains.</p>
-</section>
 </section>
 <section id="adding-a-new-host">
 <h2>Adding a new host<a class="headerlink" href="#adding-a-new-host" title="Link to this heading"></a></h2>
@@ -1411,7 +1400,7 @@
 <section id="time-handling">
 <h2>Time handling<a class="headerlink" href="#time-handling" title="Link to this heading"></a></h2>
 <p>A typical use case is to run the same configuration for a number of dates or a longer period. The example above could easily be modified to run for any arbitrary date by running</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>deode case ?deode/data/config_files/configurations/cy48t3_alaro_gpu_lumi time.toml -o test.toml
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>deode case ?deode/data/config_files/configurations/cy49t2_alaro time.toml -o test.toml
 </pre></div>
 </div>
 <p>where <code class="docutils literal notranslate"><span class="pre">time.toml</span></code> contains</p>
@@ -1433,7 +1422,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-11-26T14:05:36Z.
+      <span class="lastupdated">Last updated on 2025-12-02T12:37:31Z.
       </span></p>
   </div>
 
