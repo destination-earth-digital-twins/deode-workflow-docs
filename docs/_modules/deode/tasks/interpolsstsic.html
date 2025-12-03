@@ -915,6 +915,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-bdint">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">bdint</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-bdshift">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">bdshift</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-bdshift-sfx">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">bdshift_sfx</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-lbc-per-task">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">lbc_per_task</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-max-interpolation-tasks">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">max_interpolation_tasks</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-bdmodel">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">bdmodel</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-boundaries-bdmodel-sfx">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">boundaries</span> <span class="pre">&gt;</span> <span class="pre">bdmodel_sfx</span></code></a></li>
@@ -1356,6 +1357,7 @@
   <h1>Source code for deode.tasks.interpolsstsic</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;InterpolSstSic.&quot;&quot;&quot;</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">ast</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..datetime_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">as_datetime</span><span class="p">,</span> <span class="n">as_timedelta</span><span class="p">,</span> <span class="n">cycle_offset</span>
@@ -1401,12 +1403,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">basetime</span><span class="p">,</span> <span class="n">bdcycle</span><span class="p">,</span> <span class="n">bdcycle_start</span><span class="o">=</span><span class="n">bdcycle_start</span><span class="p">,</span> <span class="n">bdshift</span><span class="o">=</span><span class="n">bdshift</span>
         <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">bd_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;task.args.bd_index&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bd_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;task.args.bd_time&quot;</span><span class="p">]</span>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">bd_index_time_dict</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;task.args.bd_index_time_dict&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">gl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_binary</span><span class="p">(</span><span class="s2">&quot;gl&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">bd_index</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
 
 <div class="viewcode-block" id="InterpolSstSic.execute">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.interpolsstsic.InterpolSstSic.execute">[docs]</a>
@@ -1429,78 +1431,81 @@
         <span class="c1"># Boundary input file(s)</span>
         <span class="n">bddir_sst</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;system.bddir_sst&quot;</span><span class="p">]</span>
 
-        <span class="n">merge_ocean_models</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-        <span class="n">merge_ocean_files</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">sstmodel</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;boundaries.sstmodels&quot;</span><span class="p">]:</span>
-            <span class="k">if</span> <span class="n">sstmodel</span> <span class="o">==</span> <span class="s2">&quot;IFS&quot;</span><span class="p">:</span>
-                <span class="n">infile</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;file_templates.bdfile_sst.archive&quot;</span><span class="p">]</span>
-                <span class="c1"># Default to 0 for bdmember if no bdmember specified. This is to</span>
-                <span class="c1"># be able to reference files created by marsprep, which contains</span>
-                <span class="c1"># bdmember = 0 even for &quot;deterministic&quot; runs.</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;boundaries.ifs.bdmember&quot;</span><span class="p">]:</span>
-                    <span class="n">infile</span> <span class="o">=</span> <span class="n">infile</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;@BDMEMBER@&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">bd_index</span><span class="p">,</span> <span class="n">bd_time</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bd_index_time_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">merge_ocean_models</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">merge_ocean_files</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">for</span> <span class="n">sstmodel</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;boundaries.sstmodels&quot;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">sstmodel</span> <span class="o">==</span> <span class="s2">&quot;IFS&quot;</span><span class="p">:</span>
+                    <span class="n">infile</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;file_templates.bdfile_sst.archive&quot;</span><span class="p">]</span>
+                    <span class="c1"># Default to 0 for bdmember if no bdmember specified. This is to</span>
+                    <span class="c1"># be able to reference files created by marsprep, which contains</span>
+                    <span class="c1"># bdmember = 0 even for &quot;deterministic&quot; runs.</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;boundaries.ifs.bdmember&quot;</span><span class="p">]:</span>
+                        <span class="n">infile</span> <span class="o">=</span> <span class="n">infile</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;@BDMEMBER@&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span>
 
-                <span class="n">infile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
-                    <span class="n">infile</span><span class="p">,</span>
-                    <span class="n">basetime</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bd_basetime</span><span class="p">,</span>
-                    <span class="n">validtime</span><span class="o">=</span><span class="n">as_datetime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bd_time</span><span class="p">),</span>
-                <span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">bddir_sst</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">infile</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                    <span class="n">infile</span><span class="p">,</span>
-                    <span class="n">basetime</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bd_basetime</span><span class="p">,</span>
-                    <span class="n">validtime</span><span class="o">=</span><span class="n">as_datetime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bd_time</span><span class="p">),</span>
-                <span class="p">)</span>
+                    <span class="n">infile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
+                        <span class="n">infile</span><span class="p">,</span>
+                        <span class="n">basetime</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bd_basetime</span><span class="p">,</span>
+                        <span class="n">validtime</span><span class="o">=</span><span class="n">as_datetime</span><span class="p">(</span><span class="n">bd_time</span><span class="p">),</span>
+                    <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">bddir_sst</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">infile</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                        <span class="n">infile</span><span class="p">,</span>
+                        <span class="n">basetime</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bd_basetime</span><span class="p">,</span>
+                        <span class="n">validtime</span><span class="o">=</span><span class="n">as_datetime</span><span class="p">(</span><span class="n">bd_time</span><span class="p">),</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;SST model &#39;</span><span class="si">{</span><span class="n">sstmodel</span><span class="si">}</span><span class="s2">&#39; not implemented&quot;</span><span class="p">)</span>
+
+                <span class="n">merge_ocean_models</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">merge_ocean_models</span><span class="si">}</span><span class="s2">&#39;</span><span class="si">{</span><span class="n">sstmodel</span><span class="si">}</span><span class="s2">&#39;,&quot;</span>
+                <span class="n">merge_ocean_files</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">merge_ocean_files</span><span class="si">}</span><span class="s2">&#39;</span><span class="si">{</span><span class="n">infile</span><span class="si">}</span><span class="s2">&#39;,&quot;</span>
+
+            <span class="n">sst_is_lsm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;boundaries.sst_is_lsm&quot;</span><span class="p">]</span>
+
+            <span class="c1"># ADJUST_SST_UNDER_ICE must be TRUE only if sice is used</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.surfex_sea_ice&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;sice&quot;</span><span class="p">:</span>
+                <span class="n">adjust_sst_under_ice</span> <span class="o">=</span> <span class="s2">&quot;.TRUE.&quot;</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;SST model &#39;</span><span class="si">{</span><span class="n">sstmodel</span><span class="si">}</span><span class="s2">&#39; not implemented&quot;</span><span class="p">)</span>
+                <span class="n">adjust_sst_under_ice</span> <span class="o">=</span> <span class="s2">&quot;.FALSE.&quot;</span>
 
-            <span class="n">merge_ocean_models</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">merge_ocean_models</span><span class="si">}</span><span class="s2">&#39;</span><span class="si">{</span><span class="n">sstmodel</span><span class="si">}</span><span class="s2">&#39;,&quot;</span>
-            <span class="n">merge_ocean_files</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">merge_ocean_files</span><span class="si">}</span><span class="s2">&#39;</span><span class="si">{</span><span class="n">infile</span><span class="si">}</span><span class="s2">&#39;,&quot;</span>
+            <span class="c1"># Create namelist for gl</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;namgl&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">namelist</span><span class="p">:</span>
+                <span class="n">namelist</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;&quot;&quot;&amp;naminterp</span>
+<span class="s2">      MERGE_OCEAN_MODELS=</span><span class="si">{</span><span class="n">merge_ocean_models</span><span class="si">}</span>
+<span class="s2">      MERGE_OCEAN_FILES=</span><span class="si">{</span>
+<span class="w">          </span><span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
+<span class="w">              </span><span class="n">merge_ocean_files</span><span class="p">,</span>
+<span class="w">              </span><span class="n">basetime</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bd_basetime</span><span class="p">,</span>
+<span class="w">              </span><span class="n">validtime</span><span class="o">=</span><span class="n">as_datetime</span><span class="p">(</span><span class="n">bd_time</span><span class="p">)</span>
+<span class="w">          </span><span class="p">)</span>
+<span class="w">      </span><span class="si">}</span>
+<span class="s2">      CLIMATE_FILE=&#39;</span><span class="si">{</span><span class="n">climfile</span><span class="si">}</span><span class="s2">&#39;,</span>
+<span class="s2">      OUTKEY%DATE=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">basetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span><span class="si">}</span><span class="s2">,</span>
+<span class="s2">      OUTKEY%TIME=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">basetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%H%M%S&quot;</span><span class="p">)</span><span class="si">}</span><span class="s2">,</span>
+<span class="s2">      OUTKEY%ENDSTEP=</span><span class="si">{</span>
+<span class="w">          </span><span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
+<span class="w">              </span><span class="s2">&quot;@LL@&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="n">basetime</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bd_basetime</span><span class="p">,</span>
+<span class="w">              </span><span class="n">validtime</span><span class="o">=</span><span class="n">as_datetime</span><span class="p">(</span><span class="n">bd_time</span><span class="p">)</span>
+<span class="w">          </span><span class="p">)</span>
+<span class="w">      </span><span class="si">}</span><span class="s2">,</span>
+<span class="s2">      ADJUST_SST_UNDER_ICE=</span><span class="si">{</span><span class="n">adjust_sst_under_ice</span><span class="si">}</span><span class="s2">,</span>
+<span class="s2">      SST_IS_LSM=&#39;</span><span class="si">{</span><span class="n">sst_is_lsm</span><span class="si">}</span><span class="s2">&#39;</span>
+<span class="s2">    /</span>
+<span class="s2">                        &quot;&quot;&quot;</span>
+                <span class="p">)</span>
+                <span class="n">namelist</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
-        <span class="n">sst_is_lsm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;boundaries.sst_is_lsm&quot;</span><span class="p">]</span>
+            <span class="c1"># Run gl</span>
+            <span class="n">outfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outfile</span><span class="p">,</span> <span class="n">bd_index</span><span class="o">=</span><span class="n">bd_index</span><span class="p">)</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">,</span> <span class="n">bd_index</span><span class="o">=</span><span class="n">bd_index</span><span class="p">)</span>
+            <span class="n">batch</span> <span class="o">=</span> <span class="n">BatchJob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">,</span> <span class="n">wrapper</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="p">)</span>
+            <span class="n">batch</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">gl</span><span class="si">}</span><span class="s2"> -sst3 -n namgl -o </span><span class="si">{</span><span class="n">outfile</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="c1"># ADJUST_SST_UNDER_ICE must be TRUE only if sice is used</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.surfex_sea_ice&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;sice&quot;</span><span class="p">:</span>
-            <span class="n">adjust_sst_under_ice</span> <span class="o">=</span> <span class="s2">&quot;.TRUE.&quot;</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">adjust_sst_under_ice</span> <span class="o">=</span> <span class="s2">&quot;.FALSE.&quot;</span>
-
-        <span class="c1"># Create namelist for gl</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;namgl&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">namelist</span><span class="p">:</span>
-            <span class="n">namelist</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;&quot;&quot;&amp;naminterp</span>
-<span class="s2">  MERGE_OCEAN_MODELS=</span><span class="si">{</span><span class="n">merge_ocean_models</span><span class="si">}</span>
-<span class="s2">  MERGE_OCEAN_FILES=</span><span class="si">{</span>
-<span class="w">      </span><span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
-<span class="w">          </span><span class="n">merge_ocean_files</span><span class="p">,</span>
-<span class="w">          </span><span class="n">basetime</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bd_basetime</span><span class="p">,</span>
-<span class="w">          </span><span class="n">validtime</span><span class="o">=</span><span class="n">as_datetime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bd_time</span><span class="p">)</span>
-<span class="w">      </span><span class="p">)</span>
-<span class="w">  </span><span class="si">}</span>
-<span class="s2">  CLIMATE_FILE=&#39;</span><span class="si">{</span><span class="n">climfile</span><span class="si">}</span><span class="s2">&#39;,</span>
-<span class="s2">  OUTKEY%DATE=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">basetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span><span class="si">}</span><span class="s2">,</span>
-<span class="s2">  OUTKEY%TIME=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">basetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%H%M%S&quot;</span><span class="p">)</span><span class="si">}</span><span class="s2">,</span>
-<span class="s2">  OUTKEY%ENDSTEP=</span><span class="si">{</span>
-<span class="w">      </span><span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
-<span class="w">          </span><span class="s2">&quot;@LL@&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="n">basetime</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bd_basetime</span><span class="p">,</span>
-<span class="w">          </span><span class="n">validtime</span><span class="o">=</span><span class="n">as_datetime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bd_time</span><span class="p">)</span>
-<span class="w">      </span><span class="p">)</span>
-<span class="w">  </span><span class="si">}</span><span class="s2">,</span>
-<span class="s2">  ADJUST_SST_UNDER_ICE=</span><span class="si">{</span><span class="n">adjust_sst_under_ice</span><span class="si">}</span><span class="s2">,</span>
-<span class="s2">  SST_IS_LSM=&#39;</span><span class="si">{</span><span class="n">sst_is_lsm</span><span class="si">}</span><span class="s2">&#39;</span>
-<span class="s2">/</span>
-<span class="s2">                &quot;&quot;&quot;</span>
-            <span class="p">)</span>
-            <span class="n">namelist</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-
-        <span class="c1"># Run gl</span>
-        <span class="n">batch</span> <span class="o">=</span> <span class="n">BatchJob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">,</span> <span class="n">wrapper</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="p">)</span>
-        <span class="n">batch</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">gl</span><span class="si">}</span><span class="s2"> -sst3 -n namgl -o </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outfile</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;WRKDIR: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrk</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;OUTPUT </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outfile</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outfile</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">)</span></div>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;WRKDIR: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrk</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;OUTPUT </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">outfile</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span></div>
 </div>
 
 </pre></div>
@@ -1513,7 +1518,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-12-03T10:11:41Z.
+      <span class="lastupdated">Last updated on 2025-12-03T10:54:37Z.
       </span></p>
   </div>
 
