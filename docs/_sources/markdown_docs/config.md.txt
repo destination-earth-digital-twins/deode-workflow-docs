@@ -1,5 +1,5 @@
 The following section was automatically generated running
-        `deode doc config` on 2025-12-05T12:27:02.
+        `deode doc config` on 2025-12-05T13:44:42.
 
 # Config
 
@@ -1008,6 +1008,7 @@ Must be one of:
 | [member_specific_static_data](#suite_control_member_specific_static_data)   | boolean          | No       | false                  | Whether to create member specific static data (true) or not                                                                                                                                                                                                             |
 | [member_specific_mars_prep](#suite_control_member_specific_mars_prep)       | boolean          | No       | false                  | Whether to do member specific marsprep (true) or common marsprep                                                                                                                                                                                                        |
 | [mirror_globalDT](#suite_control_mirror_globalDT)                           | boolean          | No       | false                  | Mirror globalDT suite (true) and trigger if globalDT is available                                                                                                                                                                                                       |
+| [mirror_host_case](#suite_control_mirror_host_case)                         | boolean          | No       | false                  | Mirror a host suite and trigger if available.                                                                                                                                                                                                                           |
 | [mirror_offline](#suite_control_mirror_offline)                             | boolean          | No       | false                  | Mirror offlineSFX suite and trigger if offline is available                                                                                                                                                                                                             |
 | [max_static_data_tasks](#suite_control_max_static_data_tasks)               | integer          | No       | 10                     | Limit for max number of monthly tasks, run at same time                                                                                                                                                                                                                 |
 | [DeodeCleaningSuiteDefinition](#suite_control_DeodeCleaningSuiteDefinition) | object           | No       | -                      | -                                                                                                                                                                                                                                                                       |
@@ -1226,6 +1227,17 @@ Must be one of:
 | **Default**  | `false`   |
 
 **Description:** Mirror globalDT suite (true) and trigger if globalDT is available
+
+<a name="suite_control_mirror_host_case"></a>
+### Property `Config > suite_control > mirror_host_case`
+
+|              |           |
+| ------------ | --------- |
+| **Type**     | `boolean` |
+| **Required** | No        |
+| **Default**  | `false`   |
+
+**Description:** Mirror a host suite and trigger if available.
 
 <a name="suite_control_mirror_offline"></a>
 ### Property `Config > suite_control > mirror_offline`
@@ -8780,9 +8792,12 @@ Must be one of:
 
 **Description:** Settings for implemented schedulers
 
-| Property                      | Type   | Required | Default | Title/Description                                                      |
-| ----------------------------- | ------ | -------- | ------- | ---------------------------------------------------------------------- |
-| [ecfvars](#scheduler_ecfvars) | object | No       | -       | Ecflow HPC scheduler Section, defined in files under include/scheduler |
+| Property                                        | Type   | Required | Default | Title/Description                                                      |
+| ----------------------------------------------- | ------ | -------- | ------- | ---------------------------------------------------------------------- |
+| [ecfvars](#scheduler_ecfvars)                   | object | No       | -       | Ecflow HPC scheduler Section, defined in files under include/scheduler |
+| [mirror_globalDT](#scheduler_mirror_globalDT)   | object | No       | -       | Settings to mirror globalDT                                            |
+| [mirror_offline](#scheduler_mirror_offline)     | object | No       | -       | Settings to mirror offlineSFX                                          |
+| [mirror_host_case](#scheduler_mirror_host_case) | object | No       | -       | Settings to mirror a host case                                         |
 
 <a name="scheduler_ecfvars"></a>
 ### Property `Config > scheduler > ecfvars`
@@ -9007,6 +9022,336 @@ Must be one of:
 | **Required** | No       |
 
 **Description:** Deode home directory stripped for parts specific to where a node is mounted on a cluster
+
+<a name="scheduler_mirror_globalDT"></a>
+### Property `Config > scheduler > mirror_globalDT`
+
+**Title:** Settings to mirror globalDT
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+| Property                                                    | Type    | Required | Default | Title/Description                                                                       |
+| ----------------------------------------------------------- | ------- | -------- | ------- | --------------------------------------------------------------------------------------- |
+| [check_var](#scheduler_mirror_globalDT_check_var)           | string  | No       | ""      | Remote variable (like YMD) that is checked for triggering. Leave empty if not required. |
+| [mirror_name](#scheduler_mirror_globalDT_mirror_name)       | string  | No       | ""      | Name for the mirror in ecflow                                                           |
+| [remote_auth](#scheduler_mirror_globalDT_remote_auth)       | string  | No       | ""      | the location to the Mirror authentication credentials file, if required                 |
+| [remote_host](#scheduler_mirror_globalDT_remote_host)       | string  | No       | ""      | the remote ecFlow server host                                                           |
+| [remote_path](#scheduler_mirror_globalDT_remote_path)       | string  | No       | ""      | the path of the node on the remote ecFlow server                                        |
+| [remote_port](#scheduler_mirror_globalDT_remote_port)       | string  | No       | ""      | the remote ecFlow server port                                                           |
+| [remote_polling](#scheduler_mirror_globalDT_remote_polling) | string  | No       | ""      | the value (in seconds) used to periodically contact the remote ecFlow server            |
+| [remote_ssl](#scheduler_mirror_globalDT_remote_ssl)         | boolean | No       | false   | to connect to the ecFlow server using SSL                                               |
+
+<a name="scheduler_mirror_globalDT_check_var"></a>
+#### Property `Config > scheduler > mirror_globalDT > check_var`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+| **Default**  | `""`     |
+
+**Description:** Remote variable (like YMD) that is checked for triggering. Leave empty if not required.
+
+<a name="scheduler_mirror_globalDT_mirror_name"></a>
+#### Property `Config > scheduler > mirror_globalDT > mirror_name`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+| **Default**  | `""`     |
+
+**Description:** Name for the mirror in ecflow
+
+<a name="scheduler_mirror_globalDT_remote_auth"></a>
+#### Property `Config > scheduler > mirror_globalDT > remote_auth`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+| **Default**  | `""`     |
+
+**Description:** the location to the Mirror authentication credentials file, if required
+
+<a name="scheduler_mirror_globalDT_remote_host"></a>
+#### Property `Config > scheduler > mirror_globalDT > remote_host`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+| **Default**  | `""`     |
+
+**Description:** the remote ecFlow server host
+
+<a name="scheduler_mirror_globalDT_remote_path"></a>
+#### Property `Config > scheduler > mirror_globalDT > remote_path`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+| **Default**  | `""`     |
+
+**Description:** the path of the node on the remote ecFlow server
+
+<a name="scheduler_mirror_globalDT_remote_port"></a>
+#### Property `Config > scheduler > mirror_globalDT > remote_port`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+| **Default**  | `""`     |
+
+**Description:** the remote ecFlow server port
+
+<a name="scheduler_mirror_globalDT_remote_polling"></a>
+#### Property `Config > scheduler > mirror_globalDT > remote_polling`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+| **Default**  | `""`     |
+
+**Description:** the value (in seconds) used to periodically contact the remote ecFlow server
+
+<a name="scheduler_mirror_globalDT_remote_ssl"></a>
+#### Property `Config > scheduler > mirror_globalDT > remote_ssl`
+
+|              |           |
+| ------------ | --------- |
+| **Type**     | `boolean` |
+| **Required** | No        |
+| **Default**  | `false`   |
+
+**Description:** to connect to the ecFlow server using SSL
+
+<a name="scheduler_mirror_offline"></a>
+### Property `Config > scheduler > mirror_offline`
+
+**Title:** Settings to mirror offlineSFX
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+| Property                                                   | Type    | Required | Default | Title/Description                                                                       |
+| ---------------------------------------------------------- | ------- | -------- | ------- | --------------------------------------------------------------------------------------- |
+| [check_var](#scheduler_mirror_offline_check_var)           | string  | No       | ""      | Remote variable (like YMD) that is checked for triggering. Leave empty if not required. |
+| [mirror_name](#scheduler_mirror_offline_mirror_name)       | string  | No       | ""      | Name for the mirror in ecflow                                                           |
+| [remote_auth](#scheduler_mirror_offline_remote_auth)       | string  | No       | ""      | the location to the Mirror authentication credentials file, if required                 |
+| [remote_host](#scheduler_mirror_offline_remote_host)       | string  | No       | ""      | the remote ecFlow server host                                                           |
+| [remote_path](#scheduler_mirror_offline_remote_path)       | string  | No       | ""      | the path of the node on the remote ecFlow server                                        |
+| [remote_port](#scheduler_mirror_offline_remote_port)       | string  | No       | ""      | the remote ecFlow server port                                                           |
+| [remote_polling](#scheduler_mirror_offline_remote_polling) | string  | No       | ""      | the value (in seconds) used to periodically contact the remote ecFlow server            |
+| [remote_ssl](#scheduler_mirror_offline_remote_ssl)         | boolean | No       | false   | to connect to the ecFlow server using SSL                                               |
+
+<a name="scheduler_mirror_offline_check_var"></a>
+#### Property `Config > scheduler > mirror_offline > check_var`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+| **Default**  | `""`     |
+
+**Description:** Remote variable (like YMD) that is checked for triggering. Leave empty if not required.
+
+<a name="scheduler_mirror_offline_mirror_name"></a>
+#### Property `Config > scheduler > mirror_offline > mirror_name`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+| **Default**  | `""`     |
+
+**Description:** Name for the mirror in ecflow
+
+<a name="scheduler_mirror_offline_remote_auth"></a>
+#### Property `Config > scheduler > mirror_offline > remote_auth`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+| **Default**  | `""`     |
+
+**Description:** the location to the Mirror authentication credentials file, if required
+
+<a name="scheduler_mirror_offline_remote_host"></a>
+#### Property `Config > scheduler > mirror_offline > remote_host`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+| **Default**  | `""`     |
+
+**Description:** the remote ecFlow server host
+
+<a name="scheduler_mirror_offline_remote_path"></a>
+#### Property `Config > scheduler > mirror_offline > remote_path`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+| **Default**  | `""`     |
+
+**Description:** the path of the node on the remote ecFlow server
+
+<a name="scheduler_mirror_offline_remote_port"></a>
+#### Property `Config > scheduler > mirror_offline > remote_port`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+| **Default**  | `""`     |
+
+**Description:** the remote ecFlow server port
+
+<a name="scheduler_mirror_offline_remote_polling"></a>
+#### Property `Config > scheduler > mirror_offline > remote_polling`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+| **Default**  | `""`     |
+
+**Description:** the value (in seconds) used to periodically contact the remote ecFlow server
+
+<a name="scheduler_mirror_offline_remote_ssl"></a>
+#### Property `Config > scheduler > mirror_offline > remote_ssl`
+
+|              |           |
+| ------------ | --------- |
+| **Type**     | `boolean` |
+| **Required** | No        |
+| **Default**  | `false`   |
+
+**Description:** to connect to the ecFlow server using SSL
+
+<a name="scheduler_mirror_host_case"></a>
+### Property `Config > scheduler > mirror_host_case`
+
+**Title:** Settings to mirror a host case
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+| Property                                                     | Type    | Required | Default | Title/Description                                                                       |
+| ------------------------------------------------------------ | ------- | -------- | ------- | --------------------------------------------------------------------------------------- |
+| [check_var](#scheduler_mirror_host_case_check_var)           | string  | No       | ""      | Remote variable (like YMD) that is checked for triggering. Leave empty if not required. |
+| [mirror_name](#scheduler_mirror_host_case_mirror_name)       | string  | No       | ""      | Name for the mirror in ecflow                                                           |
+| [remote_auth](#scheduler_mirror_host_case_remote_auth)       | string  | No       | ""      | the location to the Mirror authentication credentials file, if required                 |
+| [remote_host](#scheduler_mirror_host_case_remote_host)       | string  | No       | ""      | the remote ecFlow server host                                                           |
+| [remote_path](#scheduler_mirror_host_case_remote_path)       | string  | No       | ""      | the path of the node on the remote ecFlow server                                        |
+| [remote_port](#scheduler_mirror_host_case_remote_port)       | string  | No       | ""      | the remote ecFlow server port                                                           |
+| [remote_polling](#scheduler_mirror_host_case_remote_polling) | string  | No       | ""      | the value (in seconds) used to periodically contact the remote ecFlow server            |
+| [remote_ssl](#scheduler_mirror_host_case_remote_ssl)         | boolean | No       | false   | to connect to the ecFlow server using SSL                                               |
+
+<a name="scheduler_mirror_host_case_check_var"></a>
+#### Property `Config > scheduler > mirror_host_case > check_var`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+| **Default**  | `""`     |
+
+**Description:** Remote variable (like YMD) that is checked for triggering. Leave empty if not required.
+
+<a name="scheduler_mirror_host_case_mirror_name"></a>
+#### Property `Config > scheduler > mirror_host_case > mirror_name`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+| **Default**  | `""`     |
+
+**Description:** Name for the mirror in ecflow
+
+<a name="scheduler_mirror_host_case_remote_auth"></a>
+#### Property `Config > scheduler > mirror_host_case > remote_auth`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+| **Default**  | `""`     |
+
+**Description:** the location to the Mirror authentication credentials file, if required
+
+<a name="scheduler_mirror_host_case_remote_host"></a>
+#### Property `Config > scheduler > mirror_host_case > remote_host`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+| **Default**  | `""`     |
+
+**Description:** the remote ecFlow server host
+
+<a name="scheduler_mirror_host_case_remote_path"></a>
+#### Property `Config > scheduler > mirror_host_case > remote_path`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+| **Default**  | `""`     |
+
+**Description:** the path of the node on the remote ecFlow server
+
+<a name="scheduler_mirror_host_case_remote_port"></a>
+#### Property `Config > scheduler > mirror_host_case > remote_port`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+| **Default**  | `""`     |
+
+**Description:** the remote ecFlow server port
+
+<a name="scheduler_mirror_host_case_remote_polling"></a>
+#### Property `Config > scheduler > mirror_host_case > remote_polling`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+| **Default**  | `""`     |
+
+**Description:** the value (in seconds) used to periodically contact the remote ecFlow server
+
+<a name="scheduler_mirror_host_case_remote_ssl"></a>
+#### Property `Config > scheduler > mirror_host_case > remote_ssl`
+
+|              |           |
+| ------------ | --------- |
+| **Type**     | `boolean` |
+| **Required** | No        |
+| **Default**  | `false`   |
+
+**Description:** to connect to the ecFlow server using SSL
 
 <a name="submission"></a>
 ## Property `Config > submission`
