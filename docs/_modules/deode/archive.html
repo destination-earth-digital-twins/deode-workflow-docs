@@ -206,6 +206,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.archive">deode.archive module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.archive.Archive"><code class="docutils literal notranslate"><span class="pre">Archive</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.archive.Archive.archive"><code class="docutils literal notranslate"><span class="pre">Archive.archive()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.archive.Archive.compress_files"><code class="docutils literal notranslate"><span class="pre">Archive.compress_files()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.archive.Archive.execute"><code class="docutils literal notranslate"><span class="pre">Archive.execute()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.archive.Archive.trigger"><code class="docutils literal notranslate"><span class="pre">Archive.trigger()</span></code></a></li>
 </ul>
@@ -1039,6 +1040,9 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-file-templates">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-file-templates-duration">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">duration</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-file-templates-ddh-dl">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">ddh_dl</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-file-templates-ddh-gl">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">ddh_gl</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-file-templates-ddh-zo">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">ddh_zo</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-file-templates-fullpos">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">fullpos</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-file-templates-interpolated-boundaries">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">interpolated_boundaries</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-file-templates-history">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">file_templates</span> <span class="pre">&gt;</span> <span class="pre">history</span></code></a></li>
@@ -1372,7 +1376,9 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pathlib</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tarfile</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">deode.fullpos</span><span class="w"> </span><span class="kn">import</span> <span class="n">flatten_list</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">deode.logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">deode.toolbox</span><span class="w"> </span><span class="kn">import</span> <span class="n">FileManager</span><span class="p">,</span> <span class="n">Platform</span>
 
@@ -1447,9 +1453,48 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="n">trigger</span><span class="p">]</span></div>
 
 
+<div class="viewcode-block" id="Archive.compress_files">
+<a class="viewcode-back" href="../../deode.html#deode.archive.Archive.compress_files">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compress_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">inpath</span><span class="p">,</span> <span class="n">outpath</span><span class="p">,</span> <span class="n">tarname</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create tarfile.</span>
+
+<span class="sd">           Creates a tarfile for files matching pattern.</span>
+<span class="sd">           If no files are found no tarfile is created and a warning is</span>
+<span class="sd">           issued.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            pattern (str,list): string of list of patterns to search for</span>
+<span class="sd">            inpath (str): Full path on the input archive</span>
+<span class="sd">            outpath (str): relative path on the output archive</span>
+<span class="sd">            tarname (str, optional): Name of output tarname</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">ptrn</span> <span class="ow">in</span> <span class="n">pattern</span><span class="p">:</span>
+            <span class="n">search</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">PurePath</span><span class="p">(</span><span class="n">inpath</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">ptrn</span><span class="p">)))</span>
+            <span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">search</span><span class="p">)</span> <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">x</span><span class="p">)])</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="n">flatten_list</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">tar</span> <span class="o">=</span> <span class="n">tarfile</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">tarname</span><span class="p">,</span> <span class="s2">&quot;w:gz&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot; add:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+                <span class="n">tar</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">arcname</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
+            <span class="n">tar</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">output</span><span class="p">(</span>
+                <span class="n">tarname</span><span class="p">,</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">PurePath</span><span class="p">(</span><span class="n">outpath</span><span class="p">,</span> <span class="n">tarname</span><span class="p">),</span> <span class="n">provider_id</span><span class="o">=</span><span class="s2">&quot;move&quot;</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;No files found matching </span><span class="si">{</span><span class="n">pattern</span><span class="si">}</span><span class="s2">, no </span><span class="si">{</span><span class="n">tarname</span><span class="si">}</span><span class="s2"> file created&quot;</span>
+            <span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="Archive.archive">
 <a class="viewcode-back" href="../../deode.html#deode.archive.Archive.archive">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">archive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">inpath</span><span class="p">,</span> <span class="n">outpath</span><span class="p">,</span> <span class="n">archive_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">newname</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">archive</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">inpath</span><span class="p">,</span> <span class="n">outpath</span><span class="p">,</span> <span class="n">archive_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">newname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tarname</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Send files to the file manager.</span>
 
 <span class="sd">        Args:</span>
@@ -1459,9 +1504,11 @@
 <span class="sd">            archive_type (str, optional): Archive type. Defaults to None.</span>
 <span class="sd">            newname (str, optional): Forces a rename of an identified file.</span>
 <span class="sd">                                     Defaults to None.</span>
+<span class="sd">            tarname (str, optional): Name of output tarname</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            FileNotFoundError: If file not found</span>
+<span class="sd">            RuntimeError: Erroneous tarname</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">outpath</span><span class="p">)</span>
@@ -1484,18 +1531,25 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">_pattern</span> <span class="o">=</span> <span class="n">pattern</span>
 
-        <span class="k">for</span> <span class="n">ptrn</span> <span class="ow">in</span> <span class="n">_pattern</span><span class="p">:</span>
-            <span class="n">search</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">PurePath</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">ptrn</span><span class="p">)))</span>
-            <span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">search</span><span class="p">)</span> <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="n">archive_type</span> <span class="o">==</span> <span class="s2">&quot;compress&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">tarname</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Please give a name for the output tarfile&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">compress_files</span><span class="p">(</span><span class="n">_pattern</span><span class="p">,</span> <span class="n">inp</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">tarname</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">ptrn</span> <span class="ow">in</span> <span class="n">_pattern</span><span class="p">:</span>
+                <span class="n">search</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">PurePath</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">ptrn</span><span class="p">)))</span>
+                <span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">search</span><span class="p">)</span> <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span>
 
-            <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">files</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">output</span><span class="p">(</span>
-                    <span class="n">filename</span><span class="p">,</span>
-                    <span class="n">pathlib</span><span class="o">.</span><span class="n">PurePath</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">archive_loc</span><span class="p">[</span><span class="n">archive_type</span><span class="p">],</span> <span class="n">out</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-                    <span class="p">),</span>
-                    <span class="n">provider_id</span><span class="o">=</span><span class="n">archive_type</span><span class="p">,</span>
-                <span class="p">)</span></div>
+                <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">files</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">output</span><span class="p">(</span>
+                        <span class="n">filename</span><span class="p">,</span>
+                        <span class="n">pathlib</span><span class="o">.</span><span class="n">PurePath</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">archive_loc</span><span class="p">[</span><span class="n">archive_type</span><span class="p">],</span>
+                            <span class="n">out</span><span class="p">,</span>
+                            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">filename</span><span class="p">),</span>
+                        <span class="p">),</span>
+                        <span class="n">provider_id</span><span class="o">=</span><span class="n">archive_type</span><span class="p">,</span>
+                    <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Archive.execute">
@@ -1509,12 +1563,14 @@
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Archiving </span><span class="si">{}</span><span class="s2"> with: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">choice</span><span class="p">)</span>
                 <span class="n">outpath</span> <span class="o">=</span> <span class="n">choice</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;outpath&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
                 <span class="n">newname</span> <span class="o">=</span> <span class="n">choice</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;newname&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="n">tarname</span> <span class="o">=</span> <span class="n">choice</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tarname&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">archive</span><span class="p">(</span>
                     <span class="n">choice</span><span class="p">[</span><span class="s2">&quot;pattern&quot;</span><span class="p">],</span>
                     <span class="n">choice</span><span class="p">[</span><span class="s2">&quot;inpath&quot;</span><span class="p">],</span>
                     <span class="n">outpath</span><span class="p">,</span>
                     <span class="n">archive_type</span><span class="p">,</span>
                     <span class="n">newname</span><span class="p">,</span>
+                    <span class="n">tarname</span><span class="p">,</span>
                 <span class="p">)</span></div>
 </div>
 
@@ -1528,7 +1584,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-12-12T08:35:20Z.
+      <span class="lastupdated">Last updated on 2025-12-12T09:33:22Z.
       </span></p>
   </div>
 
