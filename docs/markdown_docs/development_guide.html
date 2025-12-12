@@ -113,7 +113,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../lumi_link.html#contacts">Contacts</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../development_guidelines_link.html">Development Guidelines</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../development_guidelines_link.html">Development guidelines</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../development_guidelines_link.html#best-practices">Best practices</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../development_guidelines_link.html#requesting-and-accepting-declining-reviews">Requesting and accepting/declining reviews</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../development_guidelines_link.html#checklist-for-assignee">Checklist for assignee</a></li>
@@ -130,8 +130,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../development_guidelines_link.html#generate-and-view-the-documentation-to-be-published-to-our-docpages">Generate and view the documentation to be published to our docpages</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../development_guidelines_link.html#testing-on-atos">Testing on Atos</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../development_guidelines_link.html#testing-on-lumi">Testing on lumi</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../development_guidelines_link.html#testing-on-atos-and-lumi">Testing on Atos and LUMI</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../development_guidelines_link.html#testing-before-tagging">Testing before tagging</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../development_guidelines_link.html#git-branching-structure-and-workflow">Git Branching Structure and Workflow</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../development_guidelines_link.html#branching-structure">Branching Structure</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../development_guidelines_link.html#branches-in-the-upstream-repository">Branches in the Upstream Repository</a></li>
@@ -1481,55 +1483,26 @@ poetry<span class="w"> </span>devtools<span class="w"> </span>doc<span class="w"
 </div>
 </section>
 </section>
-<section id="testing-on-atos">
-<h2>Testing on Atos<a class="headerlink" href="#testing-on-atos" title="Link to this heading"></a></h2>
-<p>The testing procedure above does not test the full functionality together with the IAL code. While waiting for a automated CI/CD system to be in place a few manual steps are required on atos to check the functionality.</p>
-<ul class="simple">
-<li><p>✔️ Run the default config file, using CY49t2, under ecflow following the instructions in the <a class="reference external" href="https://github.com/destination-earth-digital-twins/Deode-Workflow/blob/develop/README.md">README</a> file.</p></li>
-<li><p>✔️ Run the following sequence of case configurations, i.e. the three CSC’s.</p></li>
-</ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>for case in \
-  cy48t3_arome \
-  cy48t3_alaro \
-  cy46h1_harmonie_arome \
-  cy49t2_arome \
-  cy49t2_alaro \
-  cy49t2_harmonie_arome \
-  cy49t2_arome \
-  cy49t2_alaro \
-  alaro \
-  arome \
-  harmonie_arome \
-  ; do
-  deode case ?deode/data/config_files/configurations/$case --start-suite
-done
-</pre></div>
-</div>
-<p>Once this has completed test the coupling of AROME -&gt; AROME and HARMONIE-AROME -&gt; HARMONIE-AROME:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>for case in \
-  cy49t2_arome_target \
-  cy49t2_harmonie_arome_target \
-  ; do
-  deode case ?deode/data/config_files/configurations/$case deode/data/config_files/modifications/test_settings.toml --start-suite
-done
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>✔️ Finally test the stand alone task for the forecast following the instructions in the <a class="reference external" href="https://github.com/destination-earth-digital-twins/Deode-Workflow/blob/develop/README.md">README</a> file.</p></li>
-</ul>
 </section>
-<section id="testing-on-lumi">
-<h2>Testing on lumi<a class="headerlink" href="#testing-on-lumi" title="Link to this heading"></a></h2>
-<p>On lumi we expect the following configurations to be tested in the same way as above:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="n">cy49t2_arome</span>
-  <span class="n">cy49t2_alaro</span>
-  <span class="n">cy49h2_harmonie_arome</span>
-  <span class="n">alaro</span>
-  <span class="n">arome</span>
-  <span class="n">harmonie_arome</span>
+<section id="testing-on-atos-and-lumi">
+<h1>Testing on Atos and LUMI<a class="headerlink" href="#testing-on-atos-and-lumi" title="Link to this heading"></a></h1>
+<p>For testing of a number of configurations we use https://github.com/uandrae/Tactus-test-runner which launches a number of ecflow suites. Install the package and make yourself familiar with the environment. For individual PR testing the minimum should be:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="n">selection</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;cy49t2_alaro&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cy49t2_alaro_target&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cy49t2_arome_R64&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cy49t2_arome_target&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cy49t2_harmonie_arome_R64&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;alaro&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;arome&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;harmonie_arome&quot;</span><span class="p">,</span>
+  <span class="p">]</span>
 </pre></div>
 </div>
-<p>Note that due to the restrictions for the debug partition on lumi it’s only possible to launch one suite at the time.</p>
+<p>I.e. run the standard toy domain with target coupling including the full sized domains. Add additional configurations as you find suitable.</p>
+<section id="testing-before-tagging">
+<h2>Testing before tagging<a class="headerlink" href="#testing-before-tagging" title="Link to this heading"></a></h2>
+<p>For testing prior to tagging all the testing should be performed as defined by <code class="docutils literal notranslate"><span class="pre">atos_bologna.toml</span></code> and <code class="docutils literal notranslate"><span class="pre">lumi.toml</span></code> respectively.</p>
 </section>
 <section id="git-branching-structure-and-workflow">
 <h2>Git Branching Structure and Workflow<a class="headerlink" href="#git-branching-structure-and-workflow" title="Link to this heading"></a></h2>
@@ -1779,7 +1752,7 @@ git<span class="w"> </span>push<span class="w"> </span>upstream<span class="w"> 
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2025-12-12T09:33:22Z.
+      <span class="lastupdated">Last updated on 2025-12-12T09:33:49Z.
       </span></p>
   </div>
 
