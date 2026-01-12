@@ -216,6 +216,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.argparse_wrapper">deode.argparse_wrapper module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.argparse_wrapper.add_expand_config"><code class="docutils literal notranslate"><span class="pre">add_expand_config()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.argparse_wrapper.add_keep_def_file"><code class="docutils literal notranslate"><span class="pre">add_keep_def_file()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.argparse_wrapper.add_namelist_args"><code class="docutils literal notranslate"><span class="pre">add_namelist_args()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.argparse_wrapper.get_parsed_args"><code class="docutils literal notranslate"><span class="pre">get_parsed_args()</span></code></a></li>
@@ -1556,14 +1557,6 @@
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">parser_case</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;--expand-config&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;-e&quot;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
-        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Expand macros in config&quot;</span><span class="p">,</span>
-        <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">parser_case</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s2">&quot;--start-suite&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-s&quot;</span><span class="p">,</span>
         <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
@@ -1574,6 +1567,7 @@
     <span class="n">add_keep_def_file</span><span class="p">(</span>
         <span class="n">parser_case</span><span class="p">,</span> <span class="n">help_message</span><span class="o">=</span><span class="s2">&quot;Keep suite definition file in case of submission&quot;</span>
     <span class="p">)</span>
+    <span class="n">add_expand_config</span><span class="p">(</span><span class="n">parser_case</span><span class="p">)</span>
     <span class="n">parser_case</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">run_command</span><span class="o">=</span><span class="n">create_exp</span><span class="p">)</span>
 
     <span class="c1">############################################</span>
@@ -1638,6 +1632,7 @@
         <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;toml&quot;</span><span class="p">,</span> <span class="s2">&quot;json&quot;</span><span class="p">,</span> <span class="s2">&quot;yaml&quot;</span><span class="p">],</span>
         <span class="n">default</span><span class="o">=</span><span class="s2">&quot;toml&quot;</span><span class="p">,</span>
     <span class="p">)</span>
+    <span class="n">add_expand_config</span><span class="p">(</span><span class="n">parser_show_config</span><span class="p">)</span>
     <span class="n">parser_show_config</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">run_command</span><span class="o">=</span><span class="n">show_config</span><span class="p">)</span>
 
     <span class="c1"># show config-schema</span>
@@ -1909,6 +1904,26 @@
         <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span></div>
 
+
+
+<div class="viewcode-block" id="add_expand_config">
+<a class="viewcode-back" href="../../deode.html#deode.argparse_wrapper.add_expand_config">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">add_expand_config</span><span class="p">(</span><span class="n">parser_object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Add object args.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        parser_object (args oject): args object to update</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">parser_object</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--expand-config&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;-e&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Expand macros in config&quot;</span><span class="p">,</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
 </pre></div>
 
            </div>
@@ -1919,7 +1934,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2026-01-12T13:53:55Z.
+      <span class="lastupdated">Last updated on 2026-01-12T18:42:31Z.
       </span></p>
   </div>
 

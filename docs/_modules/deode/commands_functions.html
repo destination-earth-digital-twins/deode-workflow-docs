@@ -216,6 +216,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.argparse_wrapper">deode.argparse_wrapper module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.argparse_wrapper.add_expand_config"><code class="docutils literal notranslate"><span class="pre">add_expand_config()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.argparse_wrapper.add_keep_def_file"><code class="docutils literal notranslate"><span class="pre">add_keep_def_file()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.argparse_wrapper.add_namelist_args"><code class="docutils literal notranslate"><span class="pre">add_namelist_args()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.argparse_wrapper.get_parsed_args"><code class="docutils literal notranslate"><span class="pre">get_parsed_args()</span></code></a></li>
@@ -1766,6 +1767,11 @@
         <span class="n">formatter_options</span><span class="o">=</span><span class="n">pkg_configs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tool.toml-formatter&quot;</span><span class="p">,</span> <span class="p">{}),</span>
     <span class="p">)</span>
 
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">expand_config</span><span class="p">:</span>
+        <span class="n">deode_home</span> <span class="o">=</span> <span class="n">set_deode_home</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">update</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;platform&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;deode_home&quot;</span><span class="p">:</span> <span class="n">deode_home</span><span class="p">}})</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">expand_macros</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
     <span class="k">try</span><span class="p">:</span>
         <span class="n">dumps</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
             <span class="n">section</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">section</span><span class="p">,</span>
@@ -1992,7 +1998,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2026-01-12T13:53:55Z.
+      <span class="lastupdated">Last updated on 2026-01-12T18:42:31Z.
       </span></p>
   </div>
 
