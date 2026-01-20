@@ -1477,7 +1477,13 @@ $ mamba activate .conda/
 <section id="preparations">
 <h4>Preparations<a class="headerlink" href="#preparations" title="Link to this heading"></a></h4>
 <ul class="simple">
-<li><p>As the ecflow server, see further down, will run on <code class="docutils literal notranslate"><span class="pre">login02</span></code> and can currently only be started on the node your on make sure you’re login to <code class="docutils literal notranslate"><span class="pre">login02</span></code> before proceeding.</p></li>
+<li><p>As the ecflow server can be instantiated on any of the four login nodes available on Leonardo (login01, login02, login05, login07), we need to setup an environment variable to keep track of what node we are running on, in the current shell session.</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export SUBMIT_HOST=$(hostname)
+</pre></div>
+</div>
+<p>For convenience, it is suggested to add the above export line at the end of your own ~/.bashrc file.</p>
+<ul class="simple">
 <li><p>Each DE330 user on LEONARDO is assigned a port number for their ecflow server. The mapping is defined in <code class="docutils literal notranslate"><span class="pre">/leonardo_work/DestE_330_25/users/SAN/leonardo_install/leonardo_users.json</span></code>. If your user is not defined here please get in contact with Matteo Ippoliti (m.ippoliti&#64;cineca.it).</p></li>
 </ul>
 </section>
@@ -1526,11 +1532,11 @@ deode v0.13.0
 </section>
 <section id="access-the-ecflow-server-with-port-forwarding">
 <h4>Access the ecflow server with port forwarding<a class="headerlink" href="#access-the-ecflow-server-with-port-forwarding" title="Link to this heading"></a></h4>
-<p>The ecflow_ui can be executed on the login node of leonardo but it’s faster to run the gui locally. To open up tthe port for ecflow_ui do locally</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ssh</span> <span class="n">YOUR_USER</span><span class="nd">@login02</span><span class="o">-</span><span class="n">ext</span><span class="o">.</span><span class="n">leonardo</span><span class="o">.</span><span class="n">cineca</span><span class="o">.</span><span class="n">it</span> <span class="o">-</span><span class="n">C</span> <span class="o">-</span><span class="n">N</span> <span class="o">-</span><span class="n">L</span> <span class="n">PORT</span><span class="p">:</span><span class="n">login02</span><span class="p">:</span><span class="n">PORT</span>
+<p>The ecflow_ui can be executed on the login node of leonardo but it’s faster to run the gui locally. To open up the port for ecflow_ui do locally</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ssh</span> <span class="n">YOUR_USER</span><span class="nd">@SUBMIT_HOST</span> <span class="o">-</span><span class="n">C</span> <span class="o">-</span><span class="n">N</span> <span class="o">-</span><span class="n">L</span> <span class="n">PORT</span><span class="p">:</span><span class="n">SUBMIT_HOST</span><span class="p">:</span><span class="n">PORT</span>
 </pre></div>
 </div>
-<p>where YOUR_USER is your LEONARDOD user name and PORT is the assigned port number in the above mentioned file.</p>
+<p>where YOUR_USER is your LEONARDOD user name, PORT is the assigned port number in the above mentioned file and SUBMIT_HOST is the login node that the ecflow server is running on (eg. login02-ext.leonardo.cineca.it).</p>
 </section>
 </section>
 </section>
@@ -2713,7 +2719,7 @@ getNewId<span class="w"> </span>-g<span class="w"> </span>d1.on-demand-extremes-
 </section>
 </section>
 <p>The following section was automatically generated running
-<code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">doc</span> <span class="pre">config</span></code> on 2026-01-12T18:42:29.</p>
+<code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">doc</span> <span class="pre">config</span></code> on 2026-01-20T13:58:49.</p>
 <section id="config">
 <h2>Config<a class="headerlink" href="#config" title="Link to this heading"></a></h2>
 <p><strong>Title:</strong> Config</p>
@@ -31044,7 +31050,7 @@ If you cannot execute <code class="docutils literal notranslate"><span class="pr
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2026-01-12T18:42:31Z.
+      <span class="lastupdated">Last updated on 2026-01-20T13:58:51Z.
       </span></p>
   </div>
 
