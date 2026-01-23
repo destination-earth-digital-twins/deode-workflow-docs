@@ -1,5 +1,5 @@
 The following section was automatically generated running
-        `deode doc config` on 2026-01-23T14:10:52.
+        `deode doc config` on 2026-01-23T15:20:35.
 
 # Config
 
@@ -35,6 +35,7 @@ The following section was automatically generated running
 | [fdb](#fdb)                         | object | No       | -       | FDB Section, defined in include/fdb.toml                        |
 | [file_templates](#file_templates)   | object | No       | -       | File Templates, defined in include/file_templates.toml          |
 | [impact](#impact)                   | object | No       | -       | Impact model settings                                           |
+| [json2tab](#json2tab)               | object | No       | -       | json-2-tab Section, defined in include/json2tab.toml            |
 | [macros](#macros)                   | object | No       | -       | Macros Section, defined in include/macros.toml                  |
 | [mars](#mars)                       | object | No       | -       | MARS settings, defined in include/mars_settings.toml            |
 | [platform](#platform)               | object | No       | -       | Platform Section, defined in files under include/platform_paths |
@@ -77,7 +78,8 @@ The following section was automatically generated running
 | [namelist](#general_namelist)                               | object           | No       | -            | Namelist                                                                                                                                                                                                                                                                                                                                     |
 | [output_settings](#general_output_settings)                 | object           | No       | -            | Output Settings                                                                                                                                                                                                                                                                                                                              |
 | [remove_sections](#general_remove_sections)                 | array            | No       | []           | Sections to remove prior to config merge                                                                                                                                                                                                                                                                                                     |
-| [windfarm](#general_windfarm)                               | boolean          | No       | false        | Switch on wind farm parameterisation                                                                                                                                                                                                                                                                                                         |
+| [windfarm](#general_windfarm)                               | boolean          | No       | false        | Switch for enabeling wind farm parameterisation                                                                                                                                                                                                                                                                                              |
+| [fullpos_windpower](#general_fullpos_windpower)             | boolean          | No       | true         | Switch for enabeling wind power production in fullpos output. Normally no need to provide but wind power output via full pos is not supported in CY48.                                                                                                                                                                                       |
 | [upd_sst_sic](#general_upd_sst_sic)                         | boolean          | No       | false        | Switch to update SST/SIC during forecast                                                                                                                                                                                                                                                                                                     |
 | [surfex_sea_ice](#general_surfex_sea_ice)                   | enum (of string) | No       | "sice"       | Treatment of sea ice in surfex                                                                                                                                                                                                                                                                                                               |
 
@@ -1187,7 +1189,18 @@ Must be one of:
 | **Required** | No        |
 | **Default**  | `false`   |
 
-**Description:** Switch on wind farm parameterisation
+**Description:** Switch for enabeling wind farm parameterisation
+
+<a name="general_fullpos_windpower"></a>
+### Property `Config > general > fullpos_windpower`
+
+|              |           |
+| ------------ | --------- |
+| **Type**     | `boolean` |
+| **Required** | No        |
+| **Default**  | `true`    |
+
+**Description:** Switch for enabeling wind power production in fullpos output. Normally no need to provide but wind power output via full pos is not supported in CY48.
 
 <a name="general_upd_sst_sic"></a>
 ### Property `Config > general > upd_sst_sic`
@@ -6153,6 +6166,204 @@ Must be one of:
 
 **Description:** Path to the impact model start command. Preferably defined in the platform section and used as a macro here
 
+<a name="json2tab"></a>
+## Property `Config > json2tab`
+
+**Title:** json-2-tab Section, defined in include/json2tab.toml
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Model for validation of the data in the 'json2tab' section of the config file.
+
+| Property                                 | Type             | Required | Default                                           | Title/Description                                                                                                        |
+| ---------------------------------------- | ---------------- | -------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| [enabled](#json2tab_enabled)             | boolean          | No       | true                                              | Switch to use the Json-2-tab converter to generate domain specific tab-files for windfarm parameterization WFP.          |
+| [force_rewrite](#json2tab_force_rewrite) | boolean          | No       | false                                             | Switch to always run json2tab when WFP is on (and maybe override existing windturbine tab-files when they already exist) |
+| [config_file](#json2tab_config_file)     | string           | No       | "@DEODE_HOME@/data/json2tab/json2tab-config.yaml" | Config file for some json-2-tab configurations not managed by Deode-Workflow.                                            |
+| [loglevel](#json2tab_loglevel)           | enum (of string) | No       | "auto"                                            | Loglevel as used for json-2-tab logging                                                                                  |
+| [input](#json2tab_input)                 | object           | No       | -                                                 | Input configuration section for json-2-tab.                                                                              |
+| [output](#json2tab_output)               | object           | No       | -                                                 | Output configuration section for json-2-tab.                                                                             |
+
+<a name="json2tab_enabled"></a>
+### Property `Config > json2tab > enabled`
+
+|              |           |
+| ------------ | --------- |
+| **Type**     | `boolean` |
+| **Required** | No        |
+| **Default**  | `true`    |
+
+**Description:** Switch to use the Json-2-tab converter to generate domain specific tab-files for windfarm parameterization WFP.
+
+<a name="json2tab_force_rewrite"></a>
+### Property `Config > json2tab > force_rewrite`
+
+|              |           |
+| ------------ | --------- |
+| **Type**     | `boolean` |
+| **Required** | No        |
+| **Default**  | `false`   |
+
+**Description:** Switch to always run json2tab when WFP is on (and maybe override existing windturbine tab-files when they already exist)
+
+<a name="json2tab_config_file"></a>
+### Property `Config > json2tab > config_file`
+
+|              |                                                     |
+| ------------ | --------------------------------------------------- |
+| **Type**     | `string`                                            |
+| **Required** | No                                                  |
+| **Default**  | `"@DEODE_HOME@/data/json2tab/json2tab-config.yaml"` |
+
+**Description:** Config file for some json-2-tab configurations not managed by Deode-Workflow.
+
+<a name="json2tab_loglevel"></a>
+### Property `Config > json2tab > loglevel`
+
+|              |                    |
+| ------------ | ------------------ |
+| **Type**     | `enum (of string)` |
+| **Required** | No                 |
+| **Default**  | `"auto"`           |
+
+**Description:** Loglevel as used for json-2-tab logging
+
+Must be one of:
+* "auto"
+* "debug"
+* "info"
+* "warning"
+* "error"
+
+<a name="json2tab_input"></a>
+### Property `Config > json2tab > input`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Input configuration section for json-2-tab.
+
+| Property                                               | Type            | Required | Default                                                                                                                                                                                                                                                 | Title/Description                                             |
+| ------------------------------------------------------ | --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| [turbine_locations](#json2tab_input_turbine_locations) | string          | No       | "@WINDFARM_PATH@/euromap.csv"                                                                                                                                                                                                                           | Main file containing turbine locations (csv, tab or geojson). |
+| [turbine_database](#json2tab_input_turbine_database)   | array of string | No       | ["@WINDFARM_PATH@/turbine_database+gened_ct_curves.json", "@WINDFARM_PATH@/turbine_database+knmi.json", "@WINDFARM_PATH@/turbine_database+wf101.json", "@WINDFARM_PATH@/turbine_specifications+belgian.csv", "@WINDFARM_PATH@/known_wf101_mapping.csv"] | List of turbine type databases with turbine specifications.   |
+
+<a name="json2tab_input_turbine_locations"></a>
+#### Property `Config > json2tab > input > turbine_locations`
+
+|              |                                 |
+| ------------ | ------------------------------- |
+| **Type**     | `string`                        |
+| **Required** | No                              |
+| **Default**  | `"@WINDFARM_PATH@/euromap.csv"` |
+
+**Description:** Main file containing turbine locations (csv, tab or geojson).
+
+<a name="json2tab_input_turbine_database"></a>
+#### Property `Config > json2tab > input > turbine_database`
+
+|              |                                                                                                                                                                                                                                                           |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Type**     | `array of string`                                                                                                                                                                                                                                         |
+| **Required** | No                                                                                                                                                                                                                                                        |
+| **Default**  | `["@WINDFARM_PATH@/turbine_database+gened_ct_curves.json", "@WINDFARM_PATH@/turbine_database+knmi.json", "@WINDFARM_PATH@/turbine_database+wf101.json", "@WINDFARM_PATH@/turbine_specifications+belgian.csv", "@WINDFARM_PATH@/known_wf101_mapping.csv"]` |
+
+**Description:** List of turbine type databases with turbine specifications.
+
+|                      | Array restrictions |
+| -------------------- | ------------------ |
+| **Min items**        | N/A                |
+| **Max items**        | N/A                |
+| **Items unicity**    | False              |
+| **Additional items** | False              |
+| **Tuple validation** | See below          |
+
+| Each item of this array must be                                  | Description                                  |
+| ---------------------------------------------------------------- | -------------------------------------------- |
+| [turbine_database items](#json2tab_input_turbine_database_items) | Path to database with turbine specifications |
+
+<a name="autogenerated_heading_47"></a>
+##### Config > json2tab > input > turbine_database > turbine_database items
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** Path to database with turbine specifications
+
+<a name="json2tab_output"></a>
+### Property `Config > json2tab > output`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Output configuration section for json-2-tab.
+
+| Property                                | Type   | Required | Default                         | Title/Description               |
+| --------------------------------------- | ------ | -------- | ------------------------------- | ------------------------------- |
+| [directory](#json2tab_output_directory) | string | No       | "@ARCHIVE_ROOT@/windfarm_data/" | Directory for all output files. |
+| [files](#json2tab_output_files)         | object | No       | -                               | Specification for output files. |
+
+<a name="json2tab_output_directory"></a>
+#### Property `Config > json2tab > output > directory`
+
+|              |                                   |
+| ------------ | --------------------------------- |
+| **Type**     | `string`                          |
+| **Required** | No                                |
+| **Default**  | `"@ARCHIVE_ROOT@/windfarm_data/"` |
+
+**Description:** Directory for all output files.
+
+<a name="json2tab_output_files"></a>
+#### Property `Config > json2tab > output > files`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Specification for output files.
+
+| Property                                                  | Type   | Required | Default                 | Title/Description                                                                      |
+| --------------------------------------------------------- | ------ | -------- | ----------------------- | -------------------------------------------------------------------------------------- |
+| [location_tab](#json2tab_output_files_location_tab)       | string | No       | "turbine_locations.tab" | Tab file output with selected turbines.                                                |
+| [type_tab_prefix](#json2tab_output_files_type_tab_prefix) | string | No       | "wind_turbine_"         | Prefix of tab file output with type definitions (will be followed by type ID and .tab) |
+
+<a name="json2tab_output_files_location_tab"></a>
+##### Property `Config > json2tab > output > files > location_tab`
+
+|              |                           |
+| ------------ | ------------------------- |
+| **Type**     | `string`                  |
+| **Required** | No                        |
+| **Default**  | `"turbine_locations.tab"` |
+
+**Description:** Tab file output with selected turbines.
+
+<a name="json2tab_output_files_type_tab_prefix"></a>
+##### Property `Config > json2tab > output > files > type_tab_prefix`
+
+|              |                   |
+| ------------ | ----------------- |
+| **Type**     | `string`          |
+| **Required** | No                |
+| **Default**  | `"wind_turbine_"` |
+
+**Description:** Prefix of tab file output with type definitions (will be followed by type ID and .tab)
+
 <a name="macros"></a>
 ## Property `Config > macros`
 
@@ -6224,7 +6435,7 @@ Must be one of:
 | ----------------------------------------------------------- | ----------- |
 | [gen_macros items](#macros_select_default_gen_macros_items) | -           |
 
-<a name="autogenerated_heading_47"></a>
+<a name="autogenerated_heading_48"></a>
 ##### Config > macros > select > default > gen_macros > gen_macros items
 
 |                           |                                                                           |
@@ -6277,7 +6488,7 @@ Must be one of:
 | --------------------------------------------------------------- | ----------- |
 | [group_macros items](#macros_select_default_group_macros_items) | -           |
 
-<a name="autogenerated_heading_48"></a>
+<a name="autogenerated_heading_49"></a>
 ##### Config > macros > select > default > group_macros > group_macros items
 
 |              |          |
@@ -6307,7 +6518,7 @@ Must be one of:
 | --------------------------------------------------------- | ----------- |
 | [os_macros items](#macros_select_default_os_macros_items) | -           |
 
-<a name="autogenerated_heading_49"></a>
+<a name="autogenerated_heading_50"></a>
 ##### Config > macros > select > default > os_macros > os_macros items
 
 |              |          |
@@ -8884,7 +9095,7 @@ Must be one of:
 | ---------------------------------------------------- | ----------- |
 | [archive_types items](#platform_archive_types_items) | -           |
 
-<a name="autogenerated_heading_50"></a>
+<a name="autogenerated_heading_51"></a>
 #### Config > platform > archive_types > archive_types items
 
 |              |                    |
@@ -10364,7 +10575,7 @@ Must be one of:
 | --------------------------------------------------- | ----------- |
 | [tasks items](#submission_types_serial_tasks_items) | -           |
 
-<a name="autogenerated_heading_51"></a>
+<a name="autogenerated_heading_52"></a>
 ##### Config > submission > types > serial > tasks > tasks items
 
 |              |          |
@@ -10478,7 +10689,7 @@ must respect the following conditions
 | --------------------------------------------------------------- | ----------- |
 | [^(.*)$ items](#submission_types_serial_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_52"></a>
+<a name="autogenerated_heading_53"></a>
 ##### Config > submission > types > serial > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -10532,7 +10743,7 @@ must respect the following conditions
 | ----------------------------------------------------- | ----------- |
 | [tasks items](#submission_types_parallel_tasks_items) | -           |
 
-<a name="autogenerated_heading_53"></a>
+<a name="autogenerated_heading_54"></a>
 ##### Config > submission > types > parallel > tasks > tasks items
 
 |              |          |
@@ -10646,7 +10857,7 @@ must respect the following conditions
 | ----------------------------------------------------------------- | ----------- |
 | [^(.*)$ items](#submission_types_parallel_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_54"></a>
+<a name="autogenerated_heading_55"></a>
 ##### Config > submission > types > parallel > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -10700,7 +10911,7 @@ must respect the following conditions
 | ---------------------------------------------------------- | ----------- |
 | [tasks items](#submission_types_background_vm_tasks_items) | -           |
 
-<a name="autogenerated_heading_55"></a>
+<a name="autogenerated_heading_56"></a>
 ##### Config > submission > types > background_vm > tasks > tasks items
 
 |              |          |
@@ -10814,7 +11025,7 @@ must respect the following conditions
 | ---------------------------------------------------------------------- | ----------- |
 | [^(.*)$ items](#submission_types_background_vm_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_56"></a>
+<a name="autogenerated_heading_57"></a>
 ##### Config > submission > types > background_vm > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -10868,7 +11079,7 @@ must respect the following conditions
 | ----------------------------------------------------------- | ----------- |
 | [tasks items](#submission_types_background_hpc_tasks_items) | -           |
 
-<a name="autogenerated_heading_57"></a>
+<a name="autogenerated_heading_58"></a>
 ##### Config > submission > types > background_hpc > tasks > tasks items
 
 |              |          |
@@ -10982,7 +11193,7 @@ must respect the following conditions
 | ----------------------------------------------------------------------- | ----------- |
 | [^(.*)$ items](#submission_types_background_hpc_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_58"></a>
+<a name="autogenerated_heading_59"></a>
 ##### Config > submission > types > background_hpc > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -11036,7 +11247,7 @@ must respect the following conditions
 | ------------------------------------------------ | ----------- |
 | [tasks items](#submission_types_gnu_tasks_items) | -           |
 
-<a name="autogenerated_heading_59"></a>
+<a name="autogenerated_heading_60"></a>
 ##### Config > submission > types > gnu > tasks > tasks items
 
 |              |          |
@@ -11150,7 +11361,7 @@ must respect the following conditions
 | ------------------------------------------------------------ | ----------- |
 | [^(.*)$ items](#submission_types_gnu_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_60"></a>
+<a name="autogenerated_heading_61"></a>
 ##### Config > submission > types > gnu > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -11204,7 +11415,7 @@ must respect the following conditions
 | --------------------------------------------------- | ----------- |
 | [tasks items](#submission_types_sqlite_tasks_items) | -           |
 
-<a name="autogenerated_heading_61"></a>
+<a name="autogenerated_heading_62"></a>
 ##### Config > submission > types > sqlite > tasks > tasks items
 
 |              |          |
@@ -11318,7 +11529,7 @@ must respect the following conditions
 | --------------------------------------------------------------- | ----------- |
 | [^(.*)$ items](#submission_types_sqlite_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_62"></a>
+<a name="autogenerated_heading_63"></a>
 ##### Config > submission > types > sqlite > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -11372,7 +11583,7 @@ must respect the following conditions
 | --------------------------------------------------------- | ----------- |
 | [tasks items](#submission_types_Forecast_cpu_tasks_items) | -           |
 
-<a name="autogenerated_heading_63"></a>
+<a name="autogenerated_heading_64"></a>
 ##### Config > submission > types > Forecast_cpu > tasks > tasks items
 
 |              |          |
@@ -11486,7 +11697,7 @@ must respect the following conditions
 | --------------------------------------------------------------------- | ----------- |
 | [^(.*)$ items](#submission_types_Forecast_cpu_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_64"></a>
+<a name="autogenerated_heading_65"></a>
 ##### Config > submission > types > Forecast_cpu > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -11540,7 +11751,7 @@ must respect the following conditions
 | --------------------------------------------------------- | ----------- |
 | [tasks items](#submission_types_Forecast_gpu_tasks_items) | -           |
 
-<a name="autogenerated_heading_65"></a>
+<a name="autogenerated_heading_66"></a>
 ##### Config > submission > types > Forecast_gpu > tasks > tasks items
 
 |              |          |
@@ -11654,7 +11865,7 @@ must respect the following conditions
 | --------------------------------------------------------------------- | ----------- |
 | [^(.*)$ items](#submission_types_Forecast_gpu_MODULES_pattern1_items) | -           |
 
-<a name="autogenerated_heading_66"></a>
+<a name="autogenerated_heading_67"></a>
 ##### Config > submission > types > Forecast_gpu > MODULES > ^(.*)$ > ^(.*)$ items
 
 |              |          |
@@ -11843,7 +12054,7 @@ must respect the following conditions
 | **Additional items** | False              |
 | **Tuple validation** | See below          |
 
-<a name="autogenerated_heading_67"></a>
+<a name="autogenerated_heading_68"></a>
 #### At least one of the items must be
 
 |              |          |
@@ -11869,7 +12080,7 @@ must respect the following conditions
 | **Additional items** | False              |
 | **Tuple validation** | See below          |
 
-<a name="autogenerated_heading_68"></a>
+<a name="autogenerated_heading_69"></a>
 #### At least one of the items must be
 
 |              |          |
