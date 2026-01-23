@@ -249,6 +249,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../deode.html#deode.cleaning.CleanDeode.prep_cleaning"><code class="docutils literal notranslate"><span class="pre">CleanDeode.prep_cleaning()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../deode.html#deode.cleaning.wipe_ecfs"><code class="docutils literal notranslate"><span class="pre">wipe_ecfs()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../deode.html#module-deode.commands_functions">deode.commands_functions module</a><ul>
@@ -267,6 +268,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../deode.html#deode.commands_functions.namelist_convert"><code class="docutils literal notranslate"><span class="pre">namelist_convert()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../deode.html#deode.commands_functions.namelist_format"><code class="docutils literal notranslate"><span class="pre">namelist_format()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../deode.html#deode.commands_functions.namelist_integrate"><code class="docutils literal notranslate"><span class="pre">namelist_integrate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../deode.html#deode.commands_functions.remove_cases"><code class="docutils literal notranslate"><span class="pre">remove_cases()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../deode.html#deode.commands_functions.run_task"><code class="docutils literal notranslate"><span class="pre">run_task()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../deode.html#deode.commands_functions.show_config"><code class="docutils literal notranslate"><span class="pre">show_config()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../deode.html#deode.commands_functions.show_config_schema"><code class="docutils literal notranslate"><span class="pre">show_config_schema()</span></code></a></li>
@@ -592,9 +594,11 @@
 <li class="toctree-l4"><a class="reference internal" href="../deode.html#deode.scheduler.EcflowServer.begin_suite"><code class="docutils literal notranslate"><span class="pre">EcflowServer.begin_suite()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../deode.html#deode.scheduler.EcflowServer.force_aborted"><code class="docutils literal notranslate"><span class="pre">EcflowServer.force_aborted()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../deode.html#deode.scheduler.EcflowServer.force_complete"><code class="docutils literal notranslate"><span class="pre">EcflowServer.force_complete()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../deode.html#deode.scheduler.EcflowServer.get_ecf_home_and_files"><code class="docutils literal notranslate"><span class="pre">EcflowServer.get_ecf_home_and_files()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../deode.html#deode.scheduler.EcflowServer.remove_suites"><code class="docutils literal notranslate"><span class="pre">EcflowServer.remove_suites()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../deode.html#deode.scheduler.EcflowServer.replace"><code class="docutils literal notranslate"><span class="pre">EcflowServer.replace()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../deode.html#deode.scheduler.EcflowServer.start_server"><code class="docutils literal notranslate"><span class="pre">EcflowServer.start_server()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../deode.html#deode.scheduler.EcflowServer.suite_is_complete"><code class="docutils literal notranslate"><span class="pre">EcflowServer.suite_is_complete()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../deode.html#deode.scheduler.EcflowTask"><code class="docutils literal notranslate"><span class="pre">EcflowTask</span></code></a></li>
@@ -818,6 +822,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../misc_section_in_doc_page.html#settings-for-the-archive-folder">Settings for the archive folder</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../misc_section_in_doc_page.html#removal-of-a-complete-case">Removal of a complete case</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../misc_section_in_doc_page.html#some-notes-about-using-the-fdb-archive">Some notes about using the FDB archive</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../misc_section_in_doc_page.html#preparing-the-fdb-tool">Preparing the fdb tool</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../misc_section_in_doc_page.html#how-to-list-available-data">How to list available data</a></li>
@@ -1111,6 +1116,13 @@
 <li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-platform-properties">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">platform</span> <span class="pre">&gt;</span> <span class="pre">properties</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-remove">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-remove-defaults">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span> <span class="pre">&gt;</span> <span class="pre">defaults</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-remove-remove-from-scheduler">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span> <span class="pre">&gt;</span> <span class="pre">remove_from_scheduler</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-remove-remove-not-completed-suites">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span> <span class="pre">&gt;</span> <span class="pre">remove_not_completed_suites</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-remove-cleaning-example">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span> <span class="pre">&gt;</span> <span class="pre">Cleaning_example</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-scheduler">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-scheduler-ecfvars">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span> <span class="pre">&gt;</span> <span class="pre">ecfvars</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-scheduler-mirror-globaldt">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span> <span class="pre">&gt;</span> <span class="pre">mirror_globalDT</span></code></a></li>
@@ -1384,7 +1396,7 @@
              
   <section id="cleaning-of-experiment">
 <span id="id1"></span><h1>Cleaning of experiment<a class="headerlink" href="#cleaning-of-experiment" title="Link to this heading"></a></h1>
-<p>The forecast suite  produces a lot of files in the working and output folders. To avoid increased usage of file storage, it is needed to have a cleaning feature, which allows configurable options to delete files.</p>
+<p>The forecast suite produces a lot of files in the working and output folders. To avoid increased usage of file storage, it is needed to have a cleaning feature, which allows configurable options to delete files.</p>
 <p>Each forecast experiment has a start and end dates and cycle length. These settings define the experiment timeline and used folders:</p>
 <p><img alt="drawing" src="../_images/experiment_timeline.jpg" /></p>
 <ul class="simple">
@@ -1414,9 +1426,12 @@ Regular usage of suite forecast for different start dates produces a series of s
 <span class="w">  </span><span class="nv">active</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="w">  </span>-<span class="w"> </span>turn<span class="w"> </span>on<span class="w"> </span>or<span class="w"> </span>turn<span class="w"> </span>off<span class="w"> </span>the<span class="w"> </span>cleaning<span class="w"> </span>task
 <span class="w">  </span><span class="nv">dry_run</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="w">  </span>-<span class="w"> </span>testing<span class="w"> </span>mode<span class="w"> </span>-<span class="w"> </span>to<span class="w"> </span>see<span class="w"> </span>which<span class="w"> </span>files<span class="w"> </span>would<span class="w"> </span>be<span class="w"> </span>deleted<span class="w"> </span>without<span class="w"> </span>their<span class="w"> </span>actual<span class="w"> </span>deletion.<span class="w"> </span>This<span class="w"> </span>could<span class="w"> </span>be<span class="w"> </span>seen<span class="w"> </span><span class="k">in</span><span class="w"> </span>the<span class="w"> </span>task<span class="w"> </span>log<span class="w"> </span>file.
 <span class="w">  </span><span class="nv">include</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;(.*)&quot;</span><span class="w"> </span>-<span class="w"> </span>regular<span class="w"> </span>expression<span class="w"> </span>which<span class="w"> </span>specifies<span class="w"> </span>which<span class="w"> </span>files<span class="w"> </span>to<span class="w"> </span>delete.<span class="w"> </span><span class="s2">&quot;(.*)&quot;</span><span class="w"> </span>is<span class="w"> </span>regular<span class="w"> </span>expesion<span class="w"> </span>which<span class="w"> </span>matches<span class="w"> </span>all<span class="w"> </span>files
+<span class="w">  </span><span class="nv">exclude</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;(.*)&quot;</span><span class="w"> </span>-<span class="w"> </span>regular<span class="w"> </span>expression<span class="w"> </span>which<span class="w"> </span>specifies<span class="w"> </span>which<span class="w"> </span>files<span class="w"> </span>not<span class="w"> </span>to<span class="w"> </span>delete.<span class="w"> </span>Leave<span class="w"> </span>empty<span class="w"> </span>to<span class="w"> </span>deactivate
 <span class="w">  </span><span class="nv">cleaning_delay</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;P1D&quot;</span><span class="w"> </span>
 <span class="w">  </span><span class="nv">cleaning_max_delay</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;P2D&quot;</span>
 <span class="w">  </span><span class="nv">step</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;PT6H&quot;</span>
+<span class="w">  </span><span class="nv">wipe</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="w"> </span>-<span class="w"> </span>Removes<span class="w"> </span>everything<span class="w"> </span>under<span class="w"> </span><span class="s2">&quot;path&quot;</span>.<span class="w"> </span>Disables<span class="w"> </span>the<span class="w"> </span>meaning<span class="w"> </span>of<span class="w"> </span>include<span class="w"> </span>or<span class="w"> </span>exclude
+<span class="w">  </span><span class="nv">ecfs_prefix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>None<span class="w"> </span>-<span class="w"> </span>Specifies<span class="w"> </span>path<span class="w"> </span>to<span class="w"> </span>ecfs<span class="w"> </span><span class="k">if</span><span class="w"> </span>this<span class="w"> </span>is<span class="w"> </span>concerned
 </pre></div>
 </div>
 <p>cleaning_delay and cleanig_max_delay are period settings which define the cleaning time interval according to the expiriment start date</p>
@@ -1451,6 +1466,14 @@ Example value of the archive folder path is <code class="docutils literal notran
 <p>The cleaning settings allow to define the cleaning time interval and step and which files to delete.</p>
 </section>
 </section>
+<section id="removal-of-a-complete-case">
+<h1>Removal of a complete case<a class="headerlink" href="#removal-of-a-complete-case" title="Link to this heading"></a></h1>
+<p>All files produced by a run case be removed by</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">deode</span> <span class="n">remove</span> <span class="p">[</span><span class="o">--</span><span class="n">config</span><span class="o">-</span><span class="n">file</span> <span class="n">CONFIG_FILE_WITH_CLEANING_SETTINGS</span><span class="o">.</span><span class="n">toml</span><span class="p">]</span> <span class="n">YOUR_CONFIG_FILE</span><span class="p">[</span><span class="n">S</span><span class="p">]</span><span class="o">.</span><span class="n">toml</span> <span class="p">[</span><span class="o">-</span><span class="n">d</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">f</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>What to actually remove is defined in <code class="docutils literal notranslate"><span class="pre">deode/data/config_files/include/remove.toml</span></code>. The settings are the same as for the cleaning config apart from <code class="docutils literal notranslate"><span class="pre">remove_from_scheduler</span></code> which removes the suite from the scheduler. With the default <code class="docutils literal notranslate"><span class="pre">remove_not_completed_suites=True</span></code> the removal is only executed if the suite is actually completed. This check can be overrided by using <code class="docutils literal notranslate"><span class="pre">-f</span></code> on command line.</p>
+</section>
 
 
            </div>
@@ -1461,7 +1484,7 @@ Example value of the archive folder path is <code class="docutils literal notran
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2026-01-21T16:09:15Z.
+      <span class="lastupdated">Last updated on 2026-01-23T12:50:09Z.
       </span></p>
   </div>
 

@@ -1,5 +1,5 @@
 The following section was automatically generated running
-        `deode doc config` on 2026-01-21T16:09:13.
+        `deode doc config` on 2026-01-23T12:50:07.
 
 # Config
 
@@ -38,6 +38,7 @@ The following section was automatically generated running
 | [macros](#macros)                   | object | No       | -       | Macros Section, defined in include/macros.toml                  |
 | [mars](#mars)                       | object | No       | -       | MARS settings, defined in include/mars_settings.toml            |
 | [platform](#platform)               | object | No       | -       | Platform Section, defined in files under include/platform_paths |
+| [remove](#remove)                   | object | No       | -       | RemoveSection                                                   |
 | [scheduler](#scheduler)             | object | No       | -       | Scheduler Section, defined in files under include/scheduler     |
 | [submission](#submission)           | object | No       | -       | Submission Section, defined in files under include/submission   |
 | [vertical_levels](#vertical_levels) | object | No       | -       | Vertical Levels, defined in files under include/vertica_levels  |
@@ -4118,6 +4119,8 @@ Must be one of:
 | [step](#cleaning_defaults_step)                             | string  | No       | -       | time step which determines moments when to make a cleaning, should be a multiple of general.times.cycle_length.                             |
 | [active](#cleaning_defaults_active)                         | boolean | No       | -       | Activate cleaning files                                                                                                                     |
 | [dry_run](#cleaning_defaults_dry_run)                       | boolean | No       | -       | test cleaning without to  delete files                                                                                                      |
+| [path](#cleaning_defaults_path)                             | string  | No       | ""      | Path to clean                                                                                                                               |
+| [wipe](#cleaning_defaults_wipe)                             | boolean | No       | false   | Flag for cleaning everything in a path                                                                                                      |
 
 | One of(Option)                        |
 | ------------------------------------- |
@@ -4227,6 +4230,28 @@ Must be one of:
 | **Required** | No        |
 
 **Description:** test cleaning without to  delete files
+
+<a name="cleaning_defaults_path"></a>
+#### Property `Config > cleaning > defaults > path`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+| **Default**  | `""`     |
+
+**Description:** Path to clean
+
+<a name="cleaning_defaults_wipe"></a>
+#### Property `Config > cleaning > defaults > wipe`
+
+|              |           |
+| ------------ | --------- |
+| **Type**     | `boolean` |
+| **Required** | No        |
+| **Default**  | `false`   |
+
+**Description:** Flag for cleaning everything in a path
 
 <a name="cleaning_Cleaning_example"></a>
 ### Property `Config > cleaning > Cleaning_example`
@@ -9184,6 +9209,278 @@ Must be one of:
 | **Type**                  | `object`                                                                  |
 | **Required**              | No                                                                        |
 | **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+<a name="remove"></a>
+## Property `Config > remove`
+
+**Title:** RemoveSection
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+**Description:** Model for validation of the remove configuration.
+
+| Property                                                           | Type    | Required | Default | Title/Description                     |
+| ------------------------------------------------------------------ | ------- | -------- | ------- | ------------------------------------- |
+| [defaults](#remove_defaults)                                       | object  | No       | -       | -                                     |
+| [remove_from_scheduler](#remove_remove_from_scheduler)             | boolean | No       | -       | Remove suite from the used scheduler. |
+| [remove_not_completed_suites](#remove_remove_not_completed_suites) | boolean | No       | -       | Force removal of suites not completed |
+| [Cleaning_example](#remove_Cleaning_example)                       | object  | No       | -       | -                                     |
+
+<a name="remove_defaults"></a>
+### Property `Config > remove > defaults`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+| Property                                                  | Type    | Required | Default | Title/Description                                                                                                                           |
+| --------------------------------------------------------- | ------- | -------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| [include](#remove_defaults_include)                       | string  | No       | -       | regular experssion according to it which files to clean                                                                                     |
+| [ncycles_delay](#remove_defaults_ncycles_delay)           | number  | No       | -       | number of cycle_length periods with which the cleaning is shifted to the experiment start day to the past.                                  |
+| [cleaning_delay](#remove_defaults_cleaning_delay)         | string  | No       | -       | time period with which the cleaning is shifted to the experiment start day to the past. Should be a multiple of general.times.cycle_length. |
+| [cleaning_max_delay](#remove_defaults_cleaning_max_delay) | string  | No       | -       | time period which defines the cleaning according to the cleaning_delay to the past. Should be a multiple of general.times.cycle_length.     |
+| [step](#remove_defaults_step)                             | string  | No       | -       | time step which determines moments when to make a cleaning, should be a multiple of general.times.cycle_length.                             |
+| [active](#remove_defaults_active)                         | boolean | No       | -       | Activate cleaning files                                                                                                                     |
+| [dry_run](#remove_defaults_dry_run)                       | boolean | No       | -       | test cleaning without to  delete files                                                                                                      |
+| [path](#remove_defaults_path)                             | string  | No       | ""      | Path to clean                                                                                                                               |
+| [wipe](#remove_defaults_wipe)                             | boolean | No       | false   | Flag for cleaning everything in a path                                                                                                      |
+
+<a name="remove_defaults_include"></a>
+#### Property `Config > remove > defaults > include`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** regular experssion according to it which files to clean
+
+<a name="remove_defaults_ncycles_delay"></a>
+#### Property `Config > remove > defaults > ncycles_delay`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `number` |
+| **Required** | No       |
+
+**Description:** number of cycle_length periods with which the cleaning is shifted to the experiment start day to the past.
+
+<a name="remove_defaults_cleaning_delay"></a>
+#### Property `Config > remove > defaults > cleaning_delay`
+
+|              |            |
+| ------------ | ---------- |
+| **Type**     | `string`   |
+| **Required** | No         |
+| **Format**   | `duration` |
+
+**Description:** time period with which the cleaning is shifted to the experiment start day to the past. Should be a multiple of general.times.cycle_length.
+
+<a name="remove_defaults_cleaning_max_delay"></a>
+#### Property `Config > remove > defaults > cleaning_max_delay`
+
+|              |            |
+| ------------ | ---------- |
+| **Type**     | `string`   |
+| **Required** | No         |
+| **Format**   | `duration` |
+
+**Description:** time period which defines the cleaning according to the cleaning_delay to the past. Should be a multiple of general.times.cycle_length.
+
+<a name="remove_defaults_step"></a>
+#### Property `Config > remove > defaults > step`
+
+|              |            |
+| ------------ | ---------- |
+| **Type**     | `string`   |
+| **Required** | No         |
+| **Format**   | `duration` |
+
+**Description:** time step which determines moments when to make a cleaning, should be a multiple of general.times.cycle_length.
+
+<a name="remove_defaults_active"></a>
+#### Property `Config > remove > defaults > active`
+
+|              |           |
+| ------------ | --------- |
+| **Type**     | `boolean` |
+| **Required** | No        |
+
+**Description:** Activate cleaning files
+
+<a name="remove_defaults_dry_run"></a>
+#### Property `Config > remove > defaults > dry_run`
+
+|              |           |
+| ------------ | --------- |
+| **Type**     | `boolean` |
+| **Required** | No        |
+
+**Description:** test cleaning without to  delete files
+
+<a name="remove_defaults_path"></a>
+#### Property `Config > remove > defaults > path`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+| **Default**  | `""`     |
+
+**Description:** Path to clean
+
+<a name="remove_defaults_wipe"></a>
+#### Property `Config > remove > defaults > wipe`
+
+|              |           |
+| ------------ | --------- |
+| **Type**     | `boolean` |
+| **Required** | No        |
+| **Default**  | `false`   |
+
+**Description:** Flag for cleaning everything in a path
+
+<a name="remove_remove_from_scheduler"></a>
+### Property `Config > remove > remove_from_scheduler`
+
+|              |           |
+| ------------ | --------- |
+| **Type**     | `boolean` |
+| **Required** | No        |
+
+**Description:** Remove suite from the used scheduler.
+
+<a name="remove_remove_not_completed_suites"></a>
+### Property `Config > remove > remove_not_completed_suites`
+
+|              |           |
+| ------------ | --------- |
+| **Type**     | `boolean` |
+| **Required** | No        |
+
+**Description:** Force removal of suites not completed
+
+<a name="remove_Cleaning_example"></a>
+### Property `Config > remove > Cleaning_example`
+
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+
+| Property                                                          | Type    | Required | Default | Title/Description                                                                                                                           |
+| ----------------------------------------------------------------- | ------- | -------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| [path](#remove_Cleaning_example_path)                             | string  | Yes      | -       | path to the folder where files will be cleaned                                                                                              |
+| [include](#remove_Cleaning_example_include)                       | string  | No       | "(.*)"  | regular expression for files to select for cleaning                                                                                         |
+| [exclude](#remove_Cleaning_example_exclude)                       | string  | No       | -       | regular expression for files to explicitly exclude from cleaning                                                                            |
+| [ncycles_delay](#remove_Cleaning_example_ncycles_delay)           | number  | No       | -       | number of cycle_length periods with which the cleaning is shifted to the experiment start day to the past.                                  |
+| [cleaning_delay](#remove_Cleaning_example_cleaning_delay)         | string  | No       | -       | time period with which the cleaning is shifted to the experiment start day to the past. Should be a multiple of general.times.cycle_length. |
+| [cleaning_max_delay](#remove_Cleaning_example_cleaning_max_delay) | string  | No       | -       | time period which defines the cleaning according to the cleaning_delay to the past. Should be a multiple of general.times.cycle_length.     |
+| [step](#remove_Cleaning_example_step)                             | string  | No       | -       | time step which determines moments when to make a cleaning, should be a multiple of general.times.cycle_length.                             |
+| [active](#remove_Cleaning_example_active)                         | boolean | No       | -       | Activate cleaning files                                                                                                                     |
+| [dry_run](#remove_Cleaning_example_dry_run)                       | boolean | No       | true    | test cleaning without to  delete files                                                                                                      |
+
+<a name="remove_Cleaning_example_path"></a>
+#### Property `Config > remove > Cleaning_example > path`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | Yes      |
+
+**Description:** path to the folder where files will be cleaned
+
+<a name="remove_Cleaning_example_include"></a>
+#### Property `Config > remove > Cleaning_example > include`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+| **Default**  | `"(.*)"` |
+
+**Description:** regular expression for files to select for cleaning
+
+<a name="remove_Cleaning_example_exclude"></a>
+#### Property `Config > remove > Cleaning_example > exclude`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** regular expression for files to explicitly exclude from cleaning
+
+<a name="remove_Cleaning_example_ncycles_delay"></a>
+#### Property `Config > remove > Cleaning_example > ncycles_delay`
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `number` |
+| **Required** | No       |
+
+**Description:** number of cycle_length periods with which the cleaning is shifted to the experiment start day to the past.
+
+<a name="remove_Cleaning_example_cleaning_delay"></a>
+#### Property `Config > remove > Cleaning_example > cleaning_delay`
+
+|              |            |
+| ------------ | ---------- |
+| **Type**     | `string`   |
+| **Required** | No         |
+| **Format**   | `duration` |
+
+**Description:** time period with which the cleaning is shifted to the experiment start day to the past. Should be a multiple of general.times.cycle_length.
+
+<a name="remove_Cleaning_example_cleaning_max_delay"></a>
+#### Property `Config > remove > Cleaning_example > cleaning_max_delay`
+
+|              |            |
+| ------------ | ---------- |
+| **Type**     | `string`   |
+| **Required** | No         |
+| **Format**   | `duration` |
+
+**Description:** time period which defines the cleaning according to the cleaning_delay to the past. Should be a multiple of general.times.cycle_length.
+
+<a name="remove_Cleaning_example_step"></a>
+#### Property `Config > remove > Cleaning_example > step`
+
+|              |            |
+| ------------ | ---------- |
+| **Type**     | `string`   |
+| **Required** | No         |
+| **Format**   | `duration` |
+
+**Description:** time step which determines moments when to make a cleaning, should be a multiple of general.times.cycle_length.
+
+<a name="remove_Cleaning_example_active"></a>
+#### Property `Config > remove > Cleaning_example > active`
+
+|              |           |
+| ------------ | --------- |
+| **Type**     | `boolean` |
+| **Required** | No        |
+
+**Description:** Activate cleaning files
+
+<a name="remove_Cleaning_example_dry_run"></a>
+#### Property `Config > remove > Cleaning_example > dry_run`
+
+|              |           |
+| ------------ | --------- |
+| **Type**     | `boolean` |
+| **Required** | No        |
+| **Default**  | `true`    |
+
+**Description:** test cleaning without to  delete files
 
 <a name="scheduler"></a>
 ## Property `Config > scheduler`

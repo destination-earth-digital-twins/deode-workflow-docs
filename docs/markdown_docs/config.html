@@ -249,6 +249,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../deode.html#deode.cleaning.CleanDeode.prep_cleaning"><code class="docutils literal notranslate"><span class="pre">CleanDeode.prep_cleaning()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../deode.html#deode.cleaning.wipe_ecfs"><code class="docutils literal notranslate"><span class="pre">wipe_ecfs()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../deode.html#module-deode.commands_functions">deode.commands_functions module</a><ul>
@@ -267,6 +268,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../deode.html#deode.commands_functions.namelist_convert"><code class="docutils literal notranslate"><span class="pre">namelist_convert()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../deode.html#deode.commands_functions.namelist_format"><code class="docutils literal notranslate"><span class="pre">namelist_format()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../deode.html#deode.commands_functions.namelist_integrate"><code class="docutils literal notranslate"><span class="pre">namelist_integrate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../deode.html#deode.commands_functions.remove_cases"><code class="docutils literal notranslate"><span class="pre">remove_cases()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../deode.html#deode.commands_functions.run_task"><code class="docutils literal notranslate"><span class="pre">run_task()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../deode.html#deode.commands_functions.show_config"><code class="docutils literal notranslate"><span class="pre">show_config()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../deode.html#deode.commands_functions.show_config_schema"><code class="docutils literal notranslate"><span class="pre">show_config_schema()</span></code></a></li>
@@ -592,9 +594,11 @@
 <li class="toctree-l4"><a class="reference internal" href="../deode.html#deode.scheduler.EcflowServer.begin_suite"><code class="docutils literal notranslate"><span class="pre">EcflowServer.begin_suite()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../deode.html#deode.scheduler.EcflowServer.force_aborted"><code class="docutils literal notranslate"><span class="pre">EcflowServer.force_aborted()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../deode.html#deode.scheduler.EcflowServer.force_complete"><code class="docutils literal notranslate"><span class="pre">EcflowServer.force_complete()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../deode.html#deode.scheduler.EcflowServer.get_ecf_home_and_files"><code class="docutils literal notranslate"><span class="pre">EcflowServer.get_ecf_home_and_files()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../deode.html#deode.scheduler.EcflowServer.remove_suites"><code class="docutils literal notranslate"><span class="pre">EcflowServer.remove_suites()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../deode.html#deode.scheduler.EcflowServer.replace"><code class="docutils literal notranslate"><span class="pre">EcflowServer.replace()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../deode.html#deode.scheduler.EcflowServer.start_server"><code class="docutils literal notranslate"><span class="pre">EcflowServer.start_server()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../deode.html#deode.scheduler.EcflowServer.suite_is_complete"><code class="docutils literal notranslate"><span class="pre">EcflowServer.suite_is_complete()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../deode.html#deode.scheduler.EcflowTask"><code class="docutils literal notranslate"><span class="pre">EcflowTask</span></code></a></li>
@@ -818,6 +822,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../misc_section_in_doc_page.html#settings-for-the-archive-folder">Settings for the archive folder</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../misc_section_in_doc_page.html#removal-of-a-complete-case">Removal of a complete case</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../misc_section_in_doc_page.html#some-notes-about-using-the-fdb-archive">Some notes about using the FDB archive</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../misc_section_in_doc_page.html#preparing-the-fdb-tool">Preparing the fdb tool</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../misc_section_in_doc_page.html#how-to-list-available-data">How to list available data</a></li>
@@ -1111,6 +1116,13 @@
 <li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-platform-properties">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">platform</span> <span class="pre">&gt;</span> <span class="pre">properties</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-remove">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-remove-defaults">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span> <span class="pre">&gt;</span> <span class="pre">defaults</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-remove-remove-from-scheduler">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span> <span class="pre">&gt;</span> <span class="pre">remove_from_scheduler</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-remove-remove-not-completed-suites">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span> <span class="pre">&gt;</span> <span class="pre">remove_not_completed_suites</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-remove-cleaning-example">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span> <span class="pre">&gt;</span> <span class="pre">Cleaning_example</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-scheduler">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-scheduler-ecfvars">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span> <span class="pre">&gt;</span> <span class="pre">ecfvars</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../misc_section_in_doc_page.html#property-config-scheduler-mirror-globaldt">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span> <span class="pre">&gt;</span> <span class="pre">mirror_globalDT</span></code></a></li>
@@ -1383,7 +1395,7 @@
            <div itemprop="articleBody">
              
   <p>The following section was automatically generated running
-<code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">doc</span> <span class="pre">config</span></code> on 2026-01-21T16:09:13.</p>
+<code class="docutils literal notranslate"><span class="pre">deode</span> <span class="pre">doc</span> <span class="pre">config</span></code> on 2026-01-23T12:50:07.</p>
 <section id="config">
 <h1>Config<a class="headerlink" href="#config" title="Link to this heading"></a></h1>
 <p><strong>Title:</strong> Config</p>
@@ -1554,19 +1566,25 @@
 <td><p>-</p></td>
 <td><p>Platform Section, defined in files under include/platform_paths</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../deode.html#module-deode.scheduler" title="deode.scheduler"><span class="xref myst py py-mod">scheduler</span></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#remove"><span class="xref myst">remove</span></a></p></td>
+<td><p>object</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>RemoveSection</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../deode.html#module-deode.scheduler" title="deode.scheduler"><span class="xref myst py py-mod">scheduler</span></a></p></td>
 <td><p>object</p></td>
 <td><p>No</p></td>
 <td><p>-</p></td>
 <td><p>Scheduler Section, defined in files under include/scheduler</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../deode.html#module-deode.submission" title="deode.submission"><span class="xref myst py py-mod">submission</span></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="../deode.html#module-deode.submission" title="deode.submission"><span class="xref myst py py-mod">submission</span></a></p></td>
 <td><p>object</p></td>
 <td><p>No</p></td>
 <td><p>-</p></td>
 <td><p>Submission Section, defined in files under include/submission</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#vertical_levels"><span class="xref myst">vertical_levels</span></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#vertical_levels"><span class="xref myst">vertical_levels</span></a></p></td>
 <td><p>object</p></td>
 <td><p>No</p></td>
 <td><p>-</p></td>
@@ -11441,6 +11459,18 @@
 <td><p>-</p></td>
 <td><p>test cleaning without to  delete files</p></td>
 </tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#cleaning_defaults_path"><span class="xref myst">path</span></a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>“”</p></td>
+<td><p>Path to clean</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#cleaning_defaults_wipe"><span class="xref myst">wipe</span></a></p></td>
+<td><p>boolean</p></td>
+<td><p>No</p></td>
+<td><p>false</p></td>
+<td><p>Flag for cleaning everything in a path</p></td>
+</tr>
 </tbody>
 </table>
 <table class="docutils align-default">
@@ -11666,6 +11696,52 @@
 </tbody>
 </table>
 <p><strong>Description:</strong> test cleaning without to  delete files</p>
+<p><a name="cleaning_defaults_path"></a></p>
+</section>
+<section id="property-config-cleaning-defaults-path">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span> <span class="pre">&gt;</span> <span class="pre">defaults</span> <span class="pre">&gt;</span> <span class="pre">path</span></code><a class="headerlink" href="#property-config-cleaning-defaults-path" title="Link to this heading"></a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Default</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> Path to clean</p>
+<p><a name="cleaning_defaults_wipe"></a></p>
+</section>
+<section id="property-config-cleaning-defaults-wipe">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">cleaning</span> <span class="pre">&gt;</span> <span class="pre">defaults</span> <span class="pre">&gt;</span> <span class="pre">wipe</span></code><a class="headerlink" href="#property-config-cleaning-defaults-wipe" title="Link to this heading"></a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Default</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">false</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> Flag for cleaning everything in a path</p>
 <p><a name="cleaning_Cleaning_example"></a></p>
 </section>
 </section>
@@ -23689,7 +23765,673 @@
 </tr>
 </tbody>
 </table>
+<p><a name="remove"></a></p>
+</section>
+</section>
+<section id="property-config-remove">
+<h2>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span></code><a class="headerlink" href="#property-config-remove" title="Link to this heading"></a></h2>
+<p><strong>Title:</strong> RemoveSection</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">object</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Additional properties</strong></p></td>
+<td><p><a class="reference internal" href="#"><span class="xref myst">[Any type: allowed]</span></a></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> Model for validation of the remove configuration.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Title/Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="#remove_defaults"><span class="xref myst">defaults</span></a></p></td>
+<td><p>object</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>-</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#remove_remove_from_scheduler"><span class="xref myst">remove_from_scheduler</span></a></p></td>
+<td><p>boolean</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>Remove suite from the used scheduler.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#remove_remove_not_completed_suites"><span class="xref myst">remove_not_completed_suites</span></a></p></td>
+<td><p>boolean</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>Force removal of suites not completed</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#remove_Cleaning_example"><span class="xref myst">Cleaning_example</span></a></p></td>
+<td><p>object</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>-</p></td>
+</tr>
+</tbody>
+</table>
+<p><a name="remove_defaults"></a></p>
+<section id="property-config-remove-defaults">
+<h3>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span> <span class="pre">&gt;</span> <span class="pre">defaults</span></code><a class="headerlink" href="#property-config-remove-defaults" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">object</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Additional properties</strong></p></td>
+<td><p><a class="reference internal" href="#"><span class="xref myst">[Any type: allowed]</span></a></p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Title/Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="#remove_defaults_include"><span class="xref myst">include</span></a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>regular experssion according to it which files to clean</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#remove_defaults_ncycles_delay"><span class="xref myst">ncycles_delay</span></a></p></td>
+<td><p>number</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>number of cycle_length periods with which the cleaning is shifted to the experiment start day to the past.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#remove_defaults_cleaning_delay"><span class="xref myst">cleaning_delay</span></a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>time period with which the cleaning is shifted to the experiment start day to the past. Should be a multiple of general.times.cycle_length.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#remove_defaults_cleaning_max_delay"><span class="xref myst">cleaning_max_delay</span></a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>time period which defines the cleaning according to the cleaning_delay to the past. Should be a multiple of general.times.cycle_length.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#remove_defaults_step"><span class="xref myst">step</span></a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>time step which determines moments when to make a cleaning, should be a multiple of general.times.cycle_length.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#remove_defaults_active"><span class="xref myst">active</span></a></p></td>
+<td><p>boolean</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>Activate cleaning files</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#remove_defaults_dry_run"><span class="xref myst">dry_run</span></a></p></td>
+<td><p>boolean</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>test cleaning without to  delete files</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#remove_defaults_path"><span class="xref myst">path</span></a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>“”</p></td>
+<td><p>Path to clean</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#remove_defaults_wipe"><span class="xref myst">wipe</span></a></p></td>
+<td><p>boolean</p></td>
+<td><p>No</p></td>
+<td><p>false</p></td>
+<td><p>Flag for cleaning everything in a path</p></td>
+</tr>
+</tbody>
+</table>
+<p><a name="remove_defaults_include"></a></p>
+<section id="property-config-remove-defaults-include">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span> <span class="pre">&gt;</span> <span class="pre">defaults</span> <span class="pre">&gt;</span> <span class="pre">include</span></code><a class="headerlink" href="#property-config-remove-defaults-include" title="Link to this heading"></a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> regular experssion according to it which files to clean</p>
+<p><a name="remove_defaults_ncycles_delay"></a></p>
+</section>
+<section id="property-config-remove-defaults-ncycles-delay">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span> <span class="pre">&gt;</span> <span class="pre">defaults</span> <span class="pre">&gt;</span> <span class="pre">ncycles_delay</span></code><a class="headerlink" href="#property-config-remove-defaults-ncycles-delay" title="Link to this heading"></a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">number</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> number of cycle_length periods with which the cleaning is shifted to the experiment start day to the past.</p>
+<p><a name="remove_defaults_cleaning_delay"></a></p>
+</section>
+<section id="property-config-remove-defaults-cleaning-delay">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span> <span class="pre">&gt;</span> <span class="pre">defaults</span> <span class="pre">&gt;</span> <span class="pre">cleaning_delay</span></code><a class="headerlink" href="#property-config-remove-defaults-cleaning-delay" title="Link to this heading"></a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Format</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">duration</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> time period with which the cleaning is shifted to the experiment start day to the past. Should be a multiple of general.times.cycle_length.</p>
+<p><a name="remove_defaults_cleaning_max_delay"></a></p>
+</section>
+<section id="property-config-remove-defaults-cleaning-max-delay">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span> <span class="pre">&gt;</span> <span class="pre">defaults</span> <span class="pre">&gt;</span> <span class="pre">cleaning_max_delay</span></code><a class="headerlink" href="#property-config-remove-defaults-cleaning-max-delay" title="Link to this heading"></a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Format</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">duration</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> time period which defines the cleaning according to the cleaning_delay to the past. Should be a multiple of general.times.cycle_length.</p>
+<p><a name="remove_defaults_step"></a></p>
+</section>
+<section id="property-config-remove-defaults-step">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span> <span class="pre">&gt;</span> <span class="pre">defaults</span> <span class="pre">&gt;</span> <span class="pre">step</span></code><a class="headerlink" href="#property-config-remove-defaults-step" title="Link to this heading"></a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Format</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">duration</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> time step which determines moments when to make a cleaning, should be a multiple of general.times.cycle_length.</p>
+<p><a name="remove_defaults_active"></a></p>
+</section>
+<section id="property-config-remove-defaults-active">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span> <span class="pre">&gt;</span> <span class="pre">defaults</span> <span class="pre">&gt;</span> <span class="pre">active</span></code><a class="headerlink" href="#property-config-remove-defaults-active" title="Link to this heading"></a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> Activate cleaning files</p>
+<p><a name="remove_defaults_dry_run"></a></p>
+</section>
+<section id="property-config-remove-defaults-dry-run">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span> <span class="pre">&gt;</span> <span class="pre">defaults</span> <span class="pre">&gt;</span> <span class="pre">dry_run</span></code><a class="headerlink" href="#property-config-remove-defaults-dry-run" title="Link to this heading"></a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> test cleaning without to  delete files</p>
+<p><a name="remove_defaults_path"></a></p>
+</section>
+<section id="property-config-remove-defaults-path">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span> <span class="pre">&gt;</span> <span class="pre">defaults</span> <span class="pre">&gt;</span> <span class="pre">path</span></code><a class="headerlink" href="#property-config-remove-defaults-path" title="Link to this heading"></a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Default</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> Path to clean</p>
+<p><a name="remove_defaults_wipe"></a></p>
+</section>
+<section id="property-config-remove-defaults-wipe">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span> <span class="pre">&gt;</span> <span class="pre">defaults</span> <span class="pre">&gt;</span> <span class="pre">wipe</span></code><a class="headerlink" href="#property-config-remove-defaults-wipe" title="Link to this heading"></a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Default</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">false</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> Flag for cleaning everything in a path</p>
+<p><a name="remove_remove_from_scheduler"></a></p>
+</section>
+</section>
+<section id="property-config-remove-remove-from-scheduler">
+<h3>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span> <span class="pre">&gt;</span> <span class="pre">remove_from_scheduler</span></code><a class="headerlink" href="#property-config-remove-remove-from-scheduler" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> Remove suite from the used scheduler.</p>
+<p><a name="remove_remove_not_completed_suites"></a></p>
+</section>
+<section id="property-config-remove-remove-not-completed-suites">
+<h3>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span> <span class="pre">&gt;</span> <span class="pre">remove_not_completed_suites</span></code><a class="headerlink" href="#property-config-remove-remove-not-completed-suites" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> Force removal of suites not completed</p>
+<p><a name="remove_Cleaning_example"></a></p>
+</section>
+<section id="property-config-remove-cleaning-example">
+<h3>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span> <span class="pre">&gt;</span> <span class="pre">Cleaning_example</span></code><a class="headerlink" href="#property-config-remove-cleaning-example" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">object</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Additional properties</strong></p></td>
+<td><p><a class="reference internal" href="#"><span class="xref myst">[Any type: allowed]</span></a></p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Title/Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="#remove_Cleaning_example_path"><span class="xref myst">path</span></a></p></td>
+<td><p>string</p></td>
+<td><p>Yes</p></td>
+<td><p>-</p></td>
+<td><p>path to the folder where files will be cleaned</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#remove_Cleaning_example_include"><span class="xref myst">include</span></a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>“(.*)”</p></td>
+<td><p>regular expression for files to select for cleaning</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#remove_Cleaning_example_exclude"><span class="xref myst">exclude</span></a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>regular expression for files to explicitly exclude from cleaning</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#remove_Cleaning_example_ncycles_delay"><span class="xref myst">ncycles_delay</span></a></p></td>
+<td><p>number</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>number of cycle_length periods with which the cleaning is shifted to the experiment start day to the past.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#remove_Cleaning_example_cleaning_delay"><span class="xref myst">cleaning_delay</span></a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>time period with which the cleaning is shifted to the experiment start day to the past. Should be a multiple of general.times.cycle_length.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#remove_Cleaning_example_cleaning_max_delay"><span class="xref myst">cleaning_max_delay</span></a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>time period which defines the cleaning according to the cleaning_delay to the past. Should be a multiple of general.times.cycle_length.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#remove_Cleaning_example_step"><span class="xref myst">step</span></a></p></td>
+<td><p>string</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>time step which determines moments when to make a cleaning, should be a multiple of general.times.cycle_length.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#remove_Cleaning_example_active"><span class="xref myst">active</span></a></p></td>
+<td><p>boolean</p></td>
+<td><p>No</p></td>
+<td><p>-</p></td>
+<td><p>Activate cleaning files</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#remove_Cleaning_example_dry_run"><span class="xref myst">dry_run</span></a></p></td>
+<td><p>boolean</p></td>
+<td><p>No</p></td>
+<td><p>true</p></td>
+<td><p>test cleaning without to  delete files</p></td>
+</tr>
+</tbody>
+</table>
+<p><a name="remove_Cleaning_example_path"></a></p>
+<section id="property-config-remove-cleaning-example-path">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span> <span class="pre">&gt;</span> <span class="pre">Cleaning_example</span> <span class="pre">&gt;</span> <span class="pre">path</span></code><a class="headerlink" href="#property-config-remove-cleaning-example-path" title="Link to this heading"></a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>Yes</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> path to the folder where files will be cleaned</p>
+<p><a name="remove_Cleaning_example_include"></a></p>
+</section>
+<section id="property-config-remove-cleaning-example-include">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span> <span class="pre">&gt;</span> <span class="pre">Cleaning_example</span> <span class="pre">&gt;</span> <span class="pre">include</span></code><a class="headerlink" href="#property-config-remove-cleaning-example-include" title="Link to this heading"></a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Default</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;(.*)&quot;</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> regular expression for files to select for cleaning</p>
+<p><a name="remove_Cleaning_example_exclude"></a></p>
+</section>
+<section id="property-config-remove-cleaning-example-exclude">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span> <span class="pre">&gt;</span> <span class="pre">Cleaning_example</span> <span class="pre">&gt;</span> <span class="pre">exclude</span></code><a class="headerlink" href="#property-config-remove-cleaning-example-exclude" title="Link to this heading"></a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> regular expression for files to explicitly exclude from cleaning</p>
+<p><a name="remove_Cleaning_example_ncycles_delay"></a></p>
+</section>
+<section id="property-config-remove-cleaning-example-ncycles-delay">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span> <span class="pre">&gt;</span> <span class="pre">Cleaning_example</span> <span class="pre">&gt;</span> <span class="pre">ncycles_delay</span></code><a class="headerlink" href="#property-config-remove-cleaning-example-ncycles-delay" title="Link to this heading"></a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">number</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> number of cycle_length periods with which the cleaning is shifted to the experiment start day to the past.</p>
+<p><a name="remove_Cleaning_example_cleaning_delay"></a></p>
+</section>
+<section id="property-config-remove-cleaning-example-cleaning-delay">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span> <span class="pre">&gt;</span> <span class="pre">Cleaning_example</span> <span class="pre">&gt;</span> <span class="pre">cleaning_delay</span></code><a class="headerlink" href="#property-config-remove-cleaning-example-cleaning-delay" title="Link to this heading"></a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Format</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">duration</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> time period with which the cleaning is shifted to the experiment start day to the past. Should be a multiple of general.times.cycle_length.</p>
+<p><a name="remove_Cleaning_example_cleaning_max_delay"></a></p>
+</section>
+<section id="property-config-remove-cleaning-example-cleaning-max-delay">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span> <span class="pre">&gt;</span> <span class="pre">Cleaning_example</span> <span class="pre">&gt;</span> <span class="pre">cleaning_max_delay</span></code><a class="headerlink" href="#property-config-remove-cleaning-example-cleaning-max-delay" title="Link to this heading"></a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Format</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">duration</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> time period which defines the cleaning according to the cleaning_delay to the past. Should be a multiple of general.times.cycle_length.</p>
+<p><a name="remove_Cleaning_example_step"></a></p>
+</section>
+<section id="property-config-remove-cleaning-example-step">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span> <span class="pre">&gt;</span> <span class="pre">Cleaning_example</span> <span class="pre">&gt;</span> <span class="pre">step</span></code><a class="headerlink" href="#property-config-remove-cleaning-example-step" title="Link to this heading"></a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">string</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Format</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">duration</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> time step which determines moments when to make a cleaning, should be a multiple of general.times.cycle_length.</p>
+<p><a name="remove_Cleaning_example_active"></a></p>
+</section>
+<section id="property-config-remove-cleaning-example-active">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span> <span class="pre">&gt;</span> <span class="pre">Cleaning_example</span> <span class="pre">&gt;</span> <span class="pre">active</span></code><a class="headerlink" href="#property-config-remove-cleaning-example-active" title="Link to this heading"></a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> Activate cleaning files</p>
+<p><a name="remove_Cleaning_example_dry_run"></a></p>
+</section>
+<section id="property-config-remove-cleaning-example-dry-run">
+<h4>Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span> <span class="pre">&gt;</span> <span class="pre">Cleaning_example</span> <span class="pre">&gt;</span> <span class="pre">dry_run</span></code><a class="headerlink" href="#property-config-remove-cleaning-example-dry-run" title="Link to this heading"></a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">boolean</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Required</strong></p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Default</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">true</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description:</strong> test cleaning without to  delete files</p>
 <p><a name="scheduler"></a></p>
+</section>
 </section>
 </section>
 <section id="property-config-scheduler">
@@ -29672,7 +30414,7 @@ must respect the following conditions</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2026-01-21T16:09:15Z.
+      <span class="lastupdated">Last updated on 2026-01-23T12:50:09Z.
       </span></p>
   </div>
 

@@ -248,6 +248,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.cleaning.CleanDeode.prep_cleaning"><code class="docutils literal notranslate"><span class="pre">CleanDeode.prep_cleaning()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.cleaning.wipe_ecfs"><code class="docutils literal notranslate"><span class="pre">wipe_ecfs()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../deode.html#module-deode.commands_functions">deode.commands_functions module</a><ul>
@@ -266,6 +267,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.commands_functions.namelist_convert"><code class="docutils literal notranslate"><span class="pre">namelist_convert()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.commands_functions.namelist_format"><code class="docutils literal notranslate"><span class="pre">namelist_format()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.commands_functions.namelist_integrate"><code class="docutils literal notranslate"><span class="pre">namelist_integrate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.commands_functions.remove_cases"><code class="docutils literal notranslate"><span class="pre">remove_cases()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.commands_functions.run_task"><code class="docutils literal notranslate"><span class="pre">run_task()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.commands_functions.show_config"><code class="docutils literal notranslate"><span class="pre">show_config()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.commands_functions.show_config_schema"><code class="docutils literal notranslate"><span class="pre">show_config_schema()</span></code></a></li>
@@ -591,9 +593,11 @@
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.scheduler.EcflowServer.begin_suite"><code class="docutils literal notranslate"><span class="pre">EcflowServer.begin_suite()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.scheduler.EcflowServer.force_aborted"><code class="docutils literal notranslate"><span class="pre">EcflowServer.force_aborted()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.scheduler.EcflowServer.force_complete"><code class="docutils literal notranslate"><span class="pre">EcflowServer.force_complete()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.scheduler.EcflowServer.get_ecf_home_and_files"><code class="docutils literal notranslate"><span class="pre">EcflowServer.get_ecf_home_and_files()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.scheduler.EcflowServer.remove_suites"><code class="docutils literal notranslate"><span class="pre">EcflowServer.remove_suites()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.scheduler.EcflowServer.replace"><code class="docutils literal notranslate"><span class="pre">EcflowServer.replace()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.scheduler.EcflowServer.start_server"><code class="docutils literal notranslate"><span class="pre">EcflowServer.start_server()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.scheduler.EcflowServer.suite_is_complete"><code class="docutils literal notranslate"><span class="pre">EcflowServer.suite_is_complete()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.scheduler.EcflowTask"><code class="docutils literal notranslate"><span class="pre">EcflowTask</span></code></a></li>
@@ -817,6 +821,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#settings-for-the-archive-folder">Settings for the archive folder</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../misc_section_in_doc_page.html#removal-of-a-complete-case">Removal of a complete case</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../misc_section_in_doc_page.html#some-notes-about-using-the-fdb-archive">Some notes about using the FDB archive</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#preparing-the-fdb-tool">Preparing the fdb tool</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#how-to-list-available-data">How to list available data</a></li>
@@ -1110,6 +1115,13 @@
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-platform-properties">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">platform</span> <span class="pre">&gt;</span> <span class="pre">properties</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-remove">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-remove-defaults">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span> <span class="pre">&gt;</span> <span class="pre">defaults</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-remove-remove-from-scheduler">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span> <span class="pre">&gt;</span> <span class="pre">remove_from_scheduler</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-remove-remove-not-completed-suites">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span> <span class="pre">&gt;</span> <span class="pre">remove_not_completed_suites</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-remove-cleaning-example">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span> <span class="pre">&gt;</span> <span class="pre">Cleaning_example</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-scheduler">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-scheduler-ecfvars">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span> <span class="pre">&gt;</span> <span class="pre">ecfvars</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../misc_section_in_doc_page.html#property-config-scheduler-mirror-globaldt">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span> <span class="pre">&gt;</span> <span class="pre">mirror_globalDT</span></code></a></li>
@@ -1387,6 +1399,7 @@
 <span></span><span class="ch">#!/usr/bin/env python3</span>
 <span class="sd">&quot;&quot;&quot;Implement the package&#39;s commands.&quot;&quot;&quot;</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">argparse</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">contextlib</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
@@ -1400,6 +1413,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">troika.connections.ssh</span><span class="w"> </span><span class="kn">import</span> <span class="n">SSHConnection</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">GeneralConstants</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.cleaning</span><span class="w"> </span><span class="kn">import</span> <span class="n">CleanDeode</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.config_parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">BasicConfig</span><span class="p">,</span> <span class="n">ConfigParserDefaults</span><span class="p">,</span> <span class="n">ConfigPaths</span><span class="p">,</span> <span class="n">ParsedConfig</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.derived_variables</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_fullpos_namelist</span><span class="p">,</span> <span class="n">derived_variables</span><span class="p">,</span> <span class="n">set_times</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.experiment</span><span class="w"> </span><span class="kn">import</span> <span class="n">case_setup</span>
@@ -1818,6 +1832,107 @@
 
 
 
+<div class="viewcode-block" id="remove_cases">
+<a class="viewcode-back" href="../../deode.html#deode.commands_functions.remove_cases">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">remove_cases</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>  <span class="c1"># ARG001</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove output from cases.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">config_files</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;No files no removal&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="c1"># Fetch the remove config</span>
+    <span class="n">cleaning_config</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;remove&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cleaning_config</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="n">cleaning_config</span> <span class="o">=</span> <span class="n">cleaning_config</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
+    <span class="n">defaults</span> <span class="o">=</span> <span class="n">cleaning_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;defaults&quot;</span><span class="p">)</span>
+    <span class="n">cleaning_config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;defaults&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Loop over all given config files</span>
+    <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">config_files</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Cannot find </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Read config from: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="n">case_config</span> <span class="o">=</span> <span class="n">ParsedConfig</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">json_schema</span><span class="o">=</span><span class="p">{})</span>
+        <span class="n">case_config</span> <span class="o">=</span> <span class="n">case_config</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">update</span><span class="o">=</span><span class="n">set_times</span><span class="p">(</span><span class="n">case_config</span><span class="p">))</span>
+        <span class="n">case_config</span> <span class="o">=</span> <span class="n">case_config</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">update</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;remove&quot;</span><span class="p">:</span> <span class="n">cleaning_config</span><span class="p">})</span>
+        <span class="n">platform</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">case_config</span><span class="p">)</span>
+
+        <span class="c1"># Loop over the different section in the remove config</span>
+        <span class="k">for</span> <span class="n">section</span><span class="p">,</span> <span class="n">settings</span> <span class="ow">in</span> <span class="n">cleaning_config</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">section</span> <span class="o">!=</span> <span class="s2">&quot;main&quot;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">case_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;impact.</span><span class="si">{</span><span class="n">section</span><span class="si">}</span><span class="s2">.active&quot;</span><span class="p">,</span> <span class="kc">False</span>
+            <span class="p">):</span>
+                <span class="k">continue</span>
+
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Remove for section:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">section</span><span class="p">)</span>
+
+            <span class="n">suite_name</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;suite_name&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">remove_from_scheduler</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;remove_from_scheduler&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="n">remove_not_completed_suites</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;remove_not_completed_suites&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">or</span> <span class="n">args</span><span class="o">.</span><span class="n">force_remove</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">suite_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">suite_name</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">suite_name</span><span class="p">)</span>
+
+                <span class="n">server</span> <span class="o">=</span> <span class="n">EcflowServer</span><span class="p">(</span><span class="n">case_config</span><span class="p">)</span>
+                <span class="n">server</span><span class="o">.</span><span class="n">ecf_client</span><span class="o">.</span><span class="n">sync_local</span><span class="p">()</span>
+
+                <span class="n">this_suite</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">for</span> <span class="n">suite</span> <span class="ow">in</span> <span class="n">server</span><span class="o">.</span><span class="n">ecf_client</span><span class="o">.</span><span class="n">get_defs</span><span class="p">()</span><span class="o">.</span><span class="n">suites</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">suite</span><span class="o">.</span><span class="n">name</span><span class="p">()</span> <span class="o">==</span> <span class="n">suite_name</span><span class="p">:</span>
+                        <span class="n">this_suite</span> <span class="o">=</span> <span class="n">suite</span>
+                        <span class="k">break</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">remove_not_completed_suites</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">this_suite</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No suite found for </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">suite_name</span><span class="p">)</span>
+                        <span class="k">continue</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">server</span><span class="o">.</span><span class="n">suite_is_complete</span><span class="p">(</span><span class="n">this_suite</span><span class="p">):</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                            <span class="s2">&quot;Suite is not completed, do not remove anything from </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="p">,</span>
+                            <span class="n">suite_name</span><span class="p">,</span>
+                        <span class="p">)</span>
+                        <span class="k">continue</span>
+
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span>
+                <span class="s2">&quot;suite_name&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;remove_from_scheduler&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;remove_not_completed_suites&quot;</span><span class="p">,</span>
+            <span class="p">):</span>
+                <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">KeyError</span><span class="p">):</span>
+                    <span class="n">settings</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+            <span class="n">cleaner</span> <span class="o">=</span> <span class="n">CleanDeode</span><span class="p">(</span><span class="n">case_config</span><span class="p">,</span> <span class="n">defaults</span><span class="p">)</span>
+            <span class="n">dry_run</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">execute_removal</span>
+            <span class="n">cleaner</span><span class="o">.</span><span class="n">prep_cleaning</span><span class="p">(</span><span class="n">settings</span><span class="p">,</span> <span class="n">dry_run</span><span class="o">=</span><span class="n">dry_run</span><span class="p">)</span>
+            <span class="n">cleaner</span><span class="o">.</span><span class="n">clean</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">suite_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">remove_from_scheduler</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">dry_run</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot; would have removed suite </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">suite_name</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">EcflowServer</span><span class="p">(</span><span class="n">case_config</span><span class="p">)</span><span class="o">.</span><span class="n">remove_suites</span><span class="p">(</span>
+                            <span class="p">[</span><span class="n">suite_name</span><span class="p">],</span> <span class="n">check_if_complete</span><span class="o">=</span><span class="kc">False</span>
+                        <span class="p">)</span>
+                    <span class="k">except</span> <span class="p">(</span><span class="ne">ModuleNotFoundError</span><span class="p">,</span> <span class="ne">UnboundLocalError</span><span class="p">):</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                            <span class="s2">&quot;ecflow or config not found, suite </span><span class="si">{}</span><span class="s2"> not removed&quot;</span><span class="p">,</span> <span class="n">suite_name</span>
+                        <span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">Rerun with &#39;--execute-removal&#39; to do the actual removal</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="kc">True</span></div>
+
+
+
+<span class="c1">#########################################</span>
+<span class="c1">#########################################</span>
+
+
 <div class="viewcode-block" id="show_namelist">
 <a class="viewcode-back" href="../../deode.html#deode.commands_functions.show_namelist">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">show_namelist</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
@@ -1998,7 +2113,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2026-01-21T16:09:15Z.
+      <span class="lastupdated">Last updated on 2026-01-23T12:50:09Z.
       </span></p>
   </div>
 

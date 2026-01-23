@@ -248,6 +248,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../deode.html#deode.cleaning.CleanDeode.prep_cleaning"><code class="docutils literal notranslate"><span class="pre">CleanDeode.prep_cleaning()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.cleaning.wipe_ecfs"><code class="docutils literal notranslate"><span class="pre">wipe_ecfs()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../deode.html#module-deode.commands_functions">deode.commands_functions module</a><ul>
@@ -266,6 +267,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.commands_functions.namelist_convert"><code class="docutils literal notranslate"><span class="pre">namelist_convert()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.commands_functions.namelist_format"><code class="docutils literal notranslate"><span class="pre">namelist_format()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.commands_functions.namelist_integrate"><code class="docutils literal notranslate"><span class="pre">namelist_integrate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.commands_functions.remove_cases"><code class="docutils literal notranslate"><span class="pre">remove_cases()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.commands_functions.run_task"><code class="docutils literal notranslate"><span class="pre">run_task()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.commands_functions.show_config"><code class="docutils literal notranslate"><span class="pre">show_config()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.commands_functions.show_config_schema"><code class="docutils literal notranslate"><span class="pre">show_config_schema()</span></code></a></li>
@@ -591,9 +593,11 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../deode.html#deode.scheduler.EcflowServer.begin_suite"><code class="docutils literal notranslate"><span class="pre">EcflowServer.begin_suite()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../deode.html#deode.scheduler.EcflowServer.force_aborted"><code class="docutils literal notranslate"><span class="pre">EcflowServer.force_aborted()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../deode.html#deode.scheduler.EcflowServer.force_complete"><code class="docutils literal notranslate"><span class="pre">EcflowServer.force_complete()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../deode.html#deode.scheduler.EcflowServer.get_ecf_home_and_files"><code class="docutils literal notranslate"><span class="pre">EcflowServer.get_ecf_home_and_files()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../deode.html#deode.scheduler.EcflowServer.remove_suites"><code class="docutils literal notranslate"><span class="pre">EcflowServer.remove_suites()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../deode.html#deode.scheduler.EcflowServer.replace"><code class="docutils literal notranslate"><span class="pre">EcflowServer.replace()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../deode.html#deode.scheduler.EcflowServer.start_server"><code class="docutils literal notranslate"><span class="pre">EcflowServer.start_server()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../deode.html#deode.scheduler.EcflowServer.suite_is_complete"><code class="docutils literal notranslate"><span class="pre">EcflowServer.suite_is_complete()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../deode.html#deode.scheduler.EcflowTask"><code class="docutils literal notranslate"><span class="pre">EcflowTask</span></code></a></li>
@@ -817,6 +821,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../misc_section_in_doc_page.html#settings-for-the-archive-folder">Settings for the archive folder</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../../misc_section_in_doc_page.html#removal-of-a-complete-case">Removal of a complete case</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../misc_section_in_doc_page.html#some-notes-about-using-the-fdb-archive">Some notes about using the FDB archive</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../misc_section_in_doc_page.html#preparing-the-fdb-tool">Preparing the fdb tool</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../misc_section_in_doc_page.html#how-to-list-available-data">How to list available data</a></li>
@@ -1108,6 +1113,13 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-platform-archive-root">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">platform</span> <span class="pre">&gt;</span> <span class="pre">archive_root</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-platform-unix-group">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">platform</span> <span class="pre">&gt;</span> <span class="pre">unix_group</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-platform-properties">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">platform</span> <span class="pre">&gt;</span> <span class="pre">properties</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-remove">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-remove-defaults">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span> <span class="pre">&gt;</span> <span class="pre">defaults</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-remove-remove-from-scheduler">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span> <span class="pre">&gt;</span> <span class="pre">remove_from_scheduler</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-remove-remove-not-completed-suites">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span> <span class="pre">&gt;</span> <span class="pre">remove_not_completed_suites</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-remove-cleaning-example">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span> <span class="pre">&gt;</span> <span class="pre">Cleaning_example</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../misc_section_in_doc_page.html#property-config-scheduler">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span></code></a><ul>
@@ -1542,7 +1554,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2026-01-21T16:09:15Z.
+      <span class="lastupdated">Last updated on 2026-01-23T12:50:09Z.
       </span></p>
   </div>
 

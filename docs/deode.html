@@ -251,6 +251,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#deode.cleaning.CleanDeode.prep_cleaning"><code class="docutils literal notranslate"><span class="pre">CleanDeode.prep_cleaning()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#deode.cleaning.wipe_ecfs"><code class="docutils literal notranslate"><span class="pre">wipe_ecfs()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-deode.commands_functions">deode.commands_functions module</a><ul>
@@ -269,6 +270,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#deode.commands_functions.namelist_convert"><code class="docutils literal notranslate"><span class="pre">namelist_convert()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#deode.commands_functions.namelist_format"><code class="docutils literal notranslate"><span class="pre">namelist_format()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#deode.commands_functions.namelist_integrate"><code class="docutils literal notranslate"><span class="pre">namelist_integrate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deode.commands_functions.remove_cases"><code class="docutils literal notranslate"><span class="pre">remove_cases()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#deode.commands_functions.run_task"><code class="docutils literal notranslate"><span class="pre">run_task()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#deode.commands_functions.show_config"><code class="docutils literal notranslate"><span class="pre">show_config()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#deode.commands_functions.show_config_schema"><code class="docutils literal notranslate"><span class="pre">show_config_schema()</span></code></a></li>
@@ -594,9 +596,11 @@
 <li class="toctree-l4"><a class="reference internal" href="#deode.scheduler.EcflowServer.begin_suite"><code class="docutils literal notranslate"><span class="pre">EcflowServer.begin_suite()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#deode.scheduler.EcflowServer.force_aborted"><code class="docutils literal notranslate"><span class="pre">EcflowServer.force_aborted()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#deode.scheduler.EcflowServer.force_complete"><code class="docutils literal notranslate"><span class="pre">EcflowServer.force_complete()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deode.scheduler.EcflowServer.get_ecf_home_and_files"><code class="docutils literal notranslate"><span class="pre">EcflowServer.get_ecf_home_and_files()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#deode.scheduler.EcflowServer.remove_suites"><code class="docutils literal notranslate"><span class="pre">EcflowServer.remove_suites()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#deode.scheduler.EcflowServer.replace"><code class="docutils literal notranslate"><span class="pre">EcflowServer.replace()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#deode.scheduler.EcflowServer.start_server"><code class="docutils literal notranslate"><span class="pre">EcflowServer.start_server()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deode.scheduler.EcflowServer.suite_is_complete"><code class="docutils literal notranslate"><span class="pre">EcflowServer.suite_is_complete()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#deode.scheduler.EcflowTask"><code class="docutils literal notranslate"><span class="pre">EcflowTask</span></code></a></li>
@@ -820,6 +824,7 @@
 <li class="toctree-l3"><a class="reference internal" href="misc_section_in_doc_page.html#settings-for-the-archive-folder">Settings for the archive folder</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="misc_section_in_doc_page.html#removal-of-a-complete-case">Removal of a complete case</a></li>
 <li class="toctree-l2"><a class="reference internal" href="misc_section_in_doc_page.html#some-notes-about-using-the-fdb-archive">Some notes about using the FDB archive</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="misc_section_in_doc_page.html#preparing-the-fdb-tool">Preparing the fdb tool</a></li>
 <li class="toctree-l3"><a class="reference internal" href="misc_section_in_doc_page.html#how-to-list-available-data">How to list available data</a></li>
@@ -1111,6 +1116,13 @@
 <li class="toctree-l4"><a class="reference internal" href="misc_section_in_doc_page.html#property-config-platform-archive-root">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">platform</span> <span class="pre">&gt;</span> <span class="pre">archive_root</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="misc_section_in_doc_page.html#property-config-platform-unix-group">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">platform</span> <span class="pre">&gt;</span> <span class="pre">unix_group</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="misc_section_in_doc_page.html#property-config-platform-properties">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">platform</span> <span class="pre">&gt;</span> <span class="pre">properties</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="misc_section_in_doc_page.html#property-config-remove">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="misc_section_in_doc_page.html#property-config-remove-defaults">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span> <span class="pre">&gt;</span> <span class="pre">defaults</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="misc_section_in_doc_page.html#property-config-remove-remove-from-scheduler">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span> <span class="pre">&gt;</span> <span class="pre">remove_from_scheduler</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="misc_section_in_doc_page.html#property-config-remove-remove-not-completed-suites">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span> <span class="pre">&gt;</span> <span class="pre">remove_not_completed_suites</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="misc_section_in_doc_page.html#property-config-remove-cleaning-example">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">remove</span> <span class="pre">&gt;</span> <span class="pre">Cleaning_example</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="misc_section_in_doc_page.html#property-config-scheduler">Property <code class="docutils literal notranslate"><span class="pre">Config</span> <span class="pre">&gt;</span> <span class="pre">scheduler</span></code></a><ul>
@@ -2085,18 +2097,25 @@ issued.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="deode.cleaning.CleanDeode.prep_cleaning">
-<span class="sig-name descname"><span class="pre">prep_cleaning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">choices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basetime</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/cleaning.html#CleanDeode.prep_cleaning"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.cleaning.CleanDeode.prep_cleaning" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">prep_cleaning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">choices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basetime</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dry_run</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/cleaning.html#CleanDeode.prep_cleaning"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.cleaning.CleanDeode.prep_cleaning" title="Link to this definition"></a></dt>
 <dd><p>Prepare tasks for cleaning.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>choices</strong> (<em>dict</em>) – Dict with cleaning settings</p></li>
 <li><p><strong>basetime</strong> (<em>dateTime object</em>) – Reference time</p></li>
+<li><p><strong>dry_run</strong> (<em>boolean</em>) – Flag for dry runs</p></li>
 </ul>
 </dd>
 </dl>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deode.cleaning.wipe_ecfs">
+<span class="sig-name descname"><span class="pre">wipe_ecfs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ecfs_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/cleaning.html#wipe_ecfs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.cleaning.wipe_ecfs" title="Link to this definition"></a></dt>
+<dd><p>Remove a full ecfs directory tree.</p>
 </dd></dl>
 
 </section>
@@ -2216,6 +2235,12 @@ issued.</p>
 <dd class="field-even"><p><strong>SystemExit   # noqa</strong> – DAR401</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="deode.commands_functions.remove_cases">
+<span class="sig-name descname"><span class="pre">remove_cases</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/commands_functions.html#remove_cases"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.commands_functions.remove_cases" title="Link to this definition"></a></dt>
+<dd><p>Remove output from cases.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -4882,14 +4907,32 @@ handle exceptions and signals, by calling the abort child command.
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="deode.scheduler.EcflowServer.get_ecf_home_and_files">
+<span class="sig-name descname"><span class="pre">get_ecf_home_and_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">suite</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/scheduler.html#EcflowServer.get_ecf_home_and_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.scheduler.EcflowServer.get_ecf_home_and_files" title="Link to this definition"></a></dt>
+<dd><p>Get ECF_HOME and ECF_HOST of the suite.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>suite</strong> (<em>Ecflow suite</em>) – suite object.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Path to ECF_HOME.
+ecf_files (Path): Path to ECF_FILES.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ecf_home (Path)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="deode.scheduler.EcflowServer.remove_suites">
-<span class="sig-name descname"><span class="pre">remove_suites</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">suite_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_if_complete</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/scheduler.html#EcflowServer.remove_suites"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.scheduler.EcflowServer.remove_suites" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">remove_suites</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">suite_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_if_complete</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/scheduler.html#EcflowServer.remove_suites"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.scheduler.EcflowServer.remove_suites" title="Link to this definition"></a></dt>
 <dd><p>Remove suites selected from a list.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>suite_list</strong> (<em>list</em>) – Suite names.</p></li>
-<li><p><strong>check_if_complete</strong> (<em>boolean</em>) – True if suite should be complete.</p></li>
+<li><p><strong>check_if_complete</strong> (<em>boolean</em>) – True if suite has to be complete.</p></li>
 </ul>
 </dd>
 </dl>
@@ -4919,6 +4962,23 @@ handle exceptions and signals, by calling the abort child command.
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>RuntimeError</strong> – Server is not running or Could not restart server.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="deode.scheduler.EcflowServer.suite_is_complete">
+<span class="sig-name descname"><span class="pre">suite_is_complete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">suite</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deode/scheduler.html#EcflowServer.suite_is_complete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deode.scheduler.EcflowServer.suite_is_complete" title="Link to this definition"></a></dt>
+<dd><p>Returns the true if a suite is complete.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>suite</strong> (<em>suite object</em>) – Suite</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Suite has complete status</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>suite_is_complte (boolean)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -5951,7 +6011,7 @@ the class.</p></li>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2026-01-21T16:09:15Z.
+      <span class="lastupdated">Last updated on 2026-01-23T12:50:09Z.
       </span></p>
   </div>
 
