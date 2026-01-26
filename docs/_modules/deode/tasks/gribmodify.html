@@ -1414,6 +1414,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">product</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">utci</span><span class="w"> </span><span class="kn">import</span> <span class="n">utci_function</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..datetime_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">as_datetime</span><span class="p">,</span> <span class="n">as_timedelta</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
@@ -1755,6 +1756,12 @@
                     <span class="n">physical_range</span><span class="p">,</span>
                     <span class="n">nature_weighting</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                 <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">operation</span> <span class="o">==</span> <span class="s2">&quot;utci&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">5</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Model must have 5 components!&quot;</span><span class="p">)</span>
+                <span class="c1"># Order of input parameters must be strictly: 2t, mrt, 2r, 10u, 10v</span>
+                <span class="n">result_values</span> <span class="o">=</span> <span class="n">utci_function</span><span class="o">.</span><span class="n">utci</span><span class="p">(</span><span class="o">*</span><span class="n">values_list</span><span class="p">)</span>
+
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
                     <span class="s2">&quot;Operation </span><span class="si">{}</span><span class="s2"> not implemented yet.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">operation</span><span class="p">)</span>
@@ -2183,7 +2190,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2026-01-23T15:20:38Z.
+      <span class="lastupdated">Last updated on 2026-01-26T12:06:33Z.
       </span></p>
   </div>
 
