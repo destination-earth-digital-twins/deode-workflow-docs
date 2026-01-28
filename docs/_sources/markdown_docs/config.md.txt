@@ -1,5 +1,5 @@
 The following section was automatically generated running
-        `deode doc config` on 2026-01-26T12:06:31.
+        `deode doc config` on 2026-01-28T10:07:20.
 
 # Config
 
@@ -1525,46 +1525,21 @@ Must be one of:
 | **Required**              | No                                                                        |
 | **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
 
-| Property                                                                                   | Type             | Required | Default | Title/Description                                              |
-| ------------------------------------------------------------------------------------------ | ---------------- | -------- | ------- | -------------------------------------------------------------- |
-| [do_clean_scratch_data](#suite_control_DeodeCleaningSuiteDefinition_do_clean_scratch_data) | boolean          | No       | true    | Activate cleaning the scratch data                             |
-| [do_clean_suites](#suite_control_DeodeCleaningSuiteDefinition_do_clean_suites)             | boolean          | No       | true    | Activate cleaning the suites                                   |
-| [do_clean_IFS](#suite_control_DeodeCleaningSuiteDefinition_do_clean_IFS)                   | boolean          | No       | true    | Activate cleaning IFS data                                     |
-| [days_in_week](#suite_control_DeodeCleaningSuiteDefinition_days_in_week)                   | array of integer | No       | -       | List of days when cleaning suite will run, 0-6 Sunday-Saturday |
-| [time_to_run](#suite_control_DeodeCleaningSuiteDefinition_time_to_run)                     | string           | No       | -       | Time to run                                                    |
+| Property                                                                     | Type             | Required | Default | Title/Description                                              |
+| ---------------------------------------------------------------------------- | ---------------- | -------- | ------- | -------------------------------------------------------------- |
+| [do_clean_cases](#suite_control_DeodeCleaningSuiteDefinition_do_clean_cases) | boolean          | No       | -       | Activate cleaning of the cases                                 |
+| [days_in_week](#suite_control_DeodeCleaningSuiteDefinition_days_in_week)     | array of integer | No       | -       | List of days when cleaning suite will run, 0-6 Sunday-Saturday |
+| [time_to_run](#suite_control_DeodeCleaningSuiteDefinition_time_to_run)       | string           | No       | -       | Time to run                                                    |
 
-<a name="suite_control_DeodeCleaningSuiteDefinition_do_clean_scratch_data"></a>
-#### Property `Config > suite_control > DeodeCleaningSuiteDefinition > do_clean_scratch_data`
+<a name="suite_control_DeodeCleaningSuiteDefinition_do_clean_cases"></a>
+#### Property `Config > suite_control > DeodeCleaningSuiteDefinition > do_clean_cases`
 
 |              |           |
 | ------------ | --------- |
 | **Type**     | `boolean` |
 | **Required** | No        |
-| **Default**  | `true`    |
 
-**Description:** Activate cleaning the scratch data
-
-<a name="suite_control_DeodeCleaningSuiteDefinition_do_clean_suites"></a>
-#### Property `Config > suite_control > DeodeCleaningSuiteDefinition > do_clean_suites`
-
-|              |           |
-| ------------ | --------- |
-| **Type**     | `boolean` |
-| **Required** | No        |
-| **Default**  | `true`    |
-
-**Description:** Activate cleaning the suites
-
-<a name="suite_control_DeodeCleaningSuiteDefinition_do_clean_IFS"></a>
-#### Property `Config > suite_control > DeodeCleaningSuiteDefinition > do_clean_IFS`
-
-|              |           |
-| ------------ | --------- |
-| **Type**     | `boolean` |
-| **Required** | No        |
-| **Default**  | `true`    |
-
-**Description:** Activate cleaning IFS data
+**Description:** Activate cleaning of the cases
 
 <a name="suite_control_DeodeCleaningSuiteDefinition_days_in_week"></a>
 #### Property `Config > suite_control > DeodeCleaningSuiteDefinition > days_in_week`
@@ -1621,65 +1596,16 @@ Must be one of:
 | **Required**              | No                                                                        |
 | **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
 
-| Property                                                   | Type   | Required | Default                                                                 | Title/Description              |
-| ---------------------------------------------------------- | ------ | -------- | ----------------------------------------------------------------------- | ------------------------------ |
-| [ehype_data_period](#clean_old_data_ehype_data_period)     | string | No       | "P14D"                                                                  | Age for old ehype data in days |
-| [scratch_data_period](#clean_old_data_scratch_data_period) | string | No       | "P14D"                                                                  | Age for old data in days       |
-| [suites_period](#clean_old_data_suites_period)             | string | No       | "P14D"                                                                  | Age for old data in days       |
-| [IFS_period](#clean_old_data_IFS_period)                   | string | No       | "P7D"                                                                   | Age for old data in days       |
-| [ignore](#clean_old_data_ignore)                           | array  | No       | []                                                                      | -                              |
-| [suite_format](#clean_old_data_suite_format)               | string | No       | "/"                                                                     | -                              |
-| [scratch_format](#clean_old_data_scratch_format)           | string | No       | "/"                                                                     | -                              |
-| [ifs_format](#clean_old_data_ifs_format)                   | string | No       | "/IFS/(\\d{4})/(0[1-9]|1[0-2])/(0[1-9]|[12]\\d|3[01])/([01]\\d|2[0-3])" | -                              |
-| [scratch_ext](#clean_old_data_scratch_ext)                 | string | No       | "deode"                                                                 | -                              |
+| Property                                                   | Type   | Required | Default                                               | Title/Description         |
+| ---------------------------------------------------------- | ------ | -------- | ----------------------------------------------------- | ------------------------- |
+| [cases_period](#clean_old_data_cases_period)               | string | No       | "P7D"                                                 | Age for old cases in days |
+| [ignore](#clean_old_data_ignore)                           | array  | No       | []                                                    | -                         |
+| [scratch_ext](#clean_old_data_scratch_ext)                 | string | No       | "deode"                                               | -                         |
+| [force_delete_period](#clean_old_data_force_delete_period) | string | No       | "P365D"                                               | -                         |
+| [dw_case_prefixes](#clean_old_data_dw_case_prefixes)       | array  | No       | ["AUTOMATED_RUN", "HARMONIE_AROME", "AROME", "ALARO"] | -                         |
 
-<a name="clean_old_data_ehype_data_period"></a>
-### Property `Config > clean_old_data > ehype_data_period`
-
-|              |          |
-| ------------ | -------- |
-| **Type**     | `string` |
-| **Required** | No       |
-| **Default**  | `"P14D"` |
-
-**Description:** Age for old ehype data in days
-
-| Restrictions                      |                                                                                                                                                                           |
-| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Must match regular expression** | ```^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?$``` [Test](https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%24) |
-
-<a name="clean_old_data_scratch_data_period"></a>
-### Property `Config > clean_old_data > scratch_data_period`
-
-|              |          |
-| ------------ | -------- |
-| **Type**     | `string` |
-| **Required** | No       |
-| **Default**  | `"P14D"` |
-
-**Description:** Age for old data in days
-
-| Restrictions                      |                                                                                                                                                                           |
-| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Must match regular expression** | ```^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?$``` [Test](https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%24) |
-
-<a name="clean_old_data_suites_period"></a>
-### Property `Config > clean_old_data > suites_period`
-
-|              |          |
-| ------------ | -------- |
-| **Type**     | `string` |
-| **Required** | No       |
-| **Default**  | `"P14D"` |
-
-**Description:** Age for old data in days
-
-| Restrictions                      |                                                                                                                                                                           |
-| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Must match regular expression** | ```^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?$``` [Test](https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%24) |
-
-<a name="clean_old_data_IFS_period"></a>
-### Property `Config > clean_old_data > IFS_period`
+<a name="clean_old_data_cases_period"></a>
+### Property `Config > clean_old_data > cases_period`
 
 |              |          |
 | ------------ | -------- |
@@ -1687,7 +1613,7 @@ Must be one of:
 | **Required** | No       |
 | **Default**  | `"P7D"`  |
 
-**Description:** Age for old data in days
+**Description:** Age for old cases in days
 
 | Restrictions                      |                                                                                                                                                                           |
 | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -1710,33 +1636,6 @@ Must be one of:
 | **Additional items** | False              |
 | **Tuple validation** | N/A                |
 
-<a name="clean_old_data_suite_format"></a>
-### Property `Config > clean_old_data > suite_format`
-
-|              |          |
-| ------------ | -------- |
-| **Type**     | `string` |
-| **Required** | No       |
-| **Default**  | `"/"`    |
-
-<a name="clean_old_data_scratch_format"></a>
-### Property `Config > clean_old_data > scratch_format`
-
-|              |          |
-| ------------ | -------- |
-| **Type**     | `string` |
-| **Required** | No       |
-| **Default**  | `"/"`    |
-
-<a name="clean_old_data_ifs_format"></a>
-### Property `Config > clean_old_data > ifs_format`
-
-|              |                                                                           |
-| ------------ | ------------------------------------------------------------------------- |
-| **Type**     | `string`                                                                  |
-| **Required** | No                                                                        |
-| **Default**  | `"/IFS/(\\d{4})/(0[1-9]|1[0-2])/(0[1-9]|[12]\\d|3[01])/([01]\\d|2[0-3])"` |
-
 <a name="clean_old_data_scratch_ext"></a>
 ### Property `Config > clean_old_data > scratch_ext`
 
@@ -1745,6 +1644,36 @@ Must be one of:
 | **Type**     | `string`  |
 | **Required** | No        |
 | **Default**  | `"deode"` |
+
+<a name="clean_old_data_force_delete_period"></a>
+### Property `Config > clean_old_data > force_delete_period`
+
+|              |           |
+| ------------ | --------- |
+| **Type**     | `string`  |
+| **Required** | No        |
+| **Default**  | `"P365D"` |
+
+| Restrictions                      |                                                                                                                                                                           |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Must match regular expression** | ```^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?$``` [Test](https://regex101.com/?regex=%5EP%28%3F%21%24%29%28%5Cd%2BY%29%3F%28%5Cd%2BM%29%3F%28%5Cd%2BW%29%3F%28%5Cd%2BD%29%3F%24) |
+
+<a name="clean_old_data_dw_case_prefixes"></a>
+### Property `Config > clean_old_data > dw_case_prefixes`
+
+|              |                                                         |
+| ------------ | ------------------------------------------------------- |
+| **Type**     | `array`                                                 |
+| **Required** | No                                                      |
+| **Default**  | `["AUTOMATED_RUN", "HARMONIE_AROME", "AROME", "ALARO"]` |
+
+|                      | Array restrictions |
+| -------------------- | ------------------ |
+| **Min items**        | N/A                |
+| **Max items**        | N/A                |
+| **Items unicity**    | False              |
+| **Additional items** | False              |
+| **Tuple validation** | N/A                |
 
 <a name="system"></a>
 ## Property `Config > system`
