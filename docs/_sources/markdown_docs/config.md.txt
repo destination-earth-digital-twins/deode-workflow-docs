@@ -1,5 +1,5 @@
 The following section was automatically generated running
-        `deode doc config` on 2026-02-11T14:40:15.
+        `deode doc config` on 2026-02-11T17:42:23.
 
 # Config
 
@@ -1676,21 +1676,25 @@ Must be one of:
 
 **Description:** Settings for control of boundary treatment.
 
-| Property                                                          | Pattern | Type                      | Definition | Title/Description                                                                 |
-| ----------------------------------------------------------------- | ------- | ------------------------- | ---------- | --------------------------------------------------------------------------------- |
-| - [bdint](#boundaries_bdint )                                     | No      | string                    | -          | Boundary interval                                                                 |
-| - [bdshift](#boundaries_bdshift )                                 | No      | string                    | -          | Shift of boundary initial time. E.g. 'PT3H' would mean use 3H old boundaries      |
-| - [bdshift_sfx](#boundaries_bdshift_sfx )                         | No      | string                    | -          | Shift of SURFEX prep input initial time. E.g. 'PT24H' would mean use 24H old file |
-| - [lbc_per_task](#boundaries_lbc_per_task )                       | No      | number                    | -          | Number of LBCs processed in a single task                                         |
-| - [max_interpolation_tasks](#boundaries_max_interpolation_tasks ) | No      | number                    | -          | Number of interpolate tasks run in parallel                                       |
-| - [bdmodel](#boundaries_bdmodel )                                 | No      | enum (of string)          | -          | Coupling model                                                                    |
-| - [bdmodel_sfx](#boundaries_bdmodel_sfx )                         | No      | enum (of string)          | -          | SURFEX prep input file                                                            |
-| - [sstmodels](#boundaries_sstmodels )                             | No      | array of enum (of string) | -          | Coupling model for SST & SIC                                                      |
-| - [sst_is_lsm](#boundaries_sst_is_lsm )                           | No      | enum (of string)          | -          | Switch for using SST as LSM                                                       |
-| - [humi_gp](#boundaries_humi_gp )                                 | No      | boolean                   | -          | Value of TFP_Q%LLGP in domain namelist for c903. True for gridpoint humidity.     |
-| - [lam](#boundaries_lam )                                         | No      | object                    | -          | LAM related boundary settings                                                     |
-| - [ifs](#boundaries_ifs )                                         | No      | object                    | -          | IFS related settings                                                              |
-| - [bd_has_surfex](#boundaries_bd_has_surfex )                     | No      | boolean                   | -          | Set to true if the host model runs with surfex                                    |
+| Property                                                          | Pattern | Type                      | Definition | Title/Description                                                                     |
+| ----------------------------------------------------------------- | ------- | ------------------------- | ---------- | ------------------------------------------------------------------------------------- |
+| - [bdint](#boundaries_bdint )                                     | No      | string                    | -          | Boundary interval                                                                     |
+| - [bdshift](#boundaries_bdshift )                                 | No      | string                    | -          | Shift of boundary initial time. E.g. 'PT3H' would mean use 3H old boundaries          |
+| - [bdshift_sfx](#boundaries_bdshift_sfx )                         | No      | string                    | -          | Shift of SURFEX prep input initial time. E.g. 'PT24H' would mean use 24H old file     |
+| - [lbc_per_task](#boundaries_lbc_per_task )                       | No      | number                    | -          | Number of LBCs processed in a single task                                             |
+| - [max_interpolation_tasks](#boundaries_max_interpolation_tasks ) | No      | number                    | -          | Number of interpolate tasks run in parallel                                           |
+| - [bdmodel](#boundaries_bdmodel )                                 | No      | enum (of string)          | -          | Coupling model                                                                        |
+| - [bdmodel_sfx](#boundaries_bdmodel_sfx )                         | No      | enum (of string)          | -          | SURFEX prep input file                                                                |
+| - [sstmodels](#boundaries_sstmodels )                             | No      | array of enum (of string) | -          | Coupling model for SST & SIC                                                          |
+| - [sst_is_lsm](#boundaries_sst_is_lsm )                           | No      | enum (of string)          | -          | Switch for using SST as LSM                                                           |
+| - [humi_gp](#boundaries_humi_gp )                                 | No      | boolean                   | -          | Value of TFP_Q%LLGP in domain namelist for c903. True for gridpoint humidity.         |
+| - [lam](#boundaries_lam )                                         | No      | object                    | -          | LAM related boundary settings                                                         |
+| - [ifs](#boundaries_ifs )                                         | No      | object                    | -          | IFS related settings                                                                  |
+| - [bd_has_surfex](#boundaries_bd_has_surfex )                     | No      | boolean                   | -          | Set to true if the host model runs with surfex                                        |
+| - [do_slaf](#boundaries_do_slaf )                                 | No      | boolean                   | -          | Set to true if using the SLAF scheme for ensemble member boundary files               |
+| - [slaflag](#boundaries_slaflag )                                 | No      | string                    | -          | SLAF shift of boundary initial time. E.g. 'PT3H' would mean use 3H old(er) boundaries |
+| - [slafdiff](#boundaries_slafdiff )                               | No      | string                    | -          | SLAF difference of boundary initial times. E.g. 'PT6H' would mean a 6H difference     |
+| - [slafk](#boundaries_slafk )                                     | No      | number                    | -          | SLAF difference scaling factor                                                        |
 
 ### <a name="boundaries_bdint"></a>![Optional](https://img.shields.io/badge/Optional-yellow) Property `Config > boundaries > bdint`
 
@@ -1947,6 +1951,40 @@ Must be one of:
 | **Type** | `boolean` |
 
 **Description:** Set to true if the host model runs with surfex
+
+### <a name="boundaries_do_slaf"></a>![Optional](https://img.shields.io/badge/Optional-yellow) Property `Config > boundaries > do_slaf`
+
+|          |           |
+| -------- | --------- |
+| **Type** | `boolean` |
+
+**Description:** Set to true if using the SLAF scheme for ensemble member boundary files
+
+### <a name="boundaries_slaflag"></a>![Optional](https://img.shields.io/badge/Optional-yellow) Property `Config > boundaries > slaflag`
+
+|            |            |
+| ---------- | ---------- |
+| **Type**   | `string`   |
+| **Format** | `duration` |
+
+**Description:** SLAF shift of boundary initial time. E.g. 'PT3H' would mean use 3H old(er) boundaries
+
+### <a name="boundaries_slafdiff"></a>![Optional](https://img.shields.io/badge/Optional-yellow) Property `Config > boundaries > slafdiff`
+
+|            |            |
+| ---------- | ---------- |
+| **Type**   | `string`   |
+| **Format** | `duration` |
+
+**Description:** SLAF difference of boundary initial times. E.g. 'PT6H' would mean a 6H difference
+
+### <a name="boundaries_slafk"></a>![Optional](https://img.shields.io/badge/Optional-yellow) Property `Config > boundaries > slafk`
+
+|          |          |
+| -------- | -------- |
+| **Type** | `number` |
+
+**Description:** SLAF difference scaling factor
 
 ## <a name="collectlogs"></a>![Optional](https://img.shields.io/badge/Optional-yellow) Property `Config > collectlogs`
 

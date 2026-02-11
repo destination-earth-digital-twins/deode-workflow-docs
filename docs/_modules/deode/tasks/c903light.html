@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>deode.tasks.forecast &mdash; Deode Workflow Docs  documentation</title>
+  <title>deode.tasks.c903light &mdash; Deode Workflow Docs  documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
@@ -1403,7 +1403,7 @@
       <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
           <li class="breadcrumb-item"><a href="../../deode.html">deode</a></li>
-      <li class="breadcrumb-item active">deode.tasks.forecast</li>
+      <li class="breadcrumb-item active">deode.tasks.c903light</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -1412,387 +1412,70 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>Source code for deode.tasks.forecast</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Forecast.&quot;&quot;&quot;</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">atexit</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">glob</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">pysurfex.namelist</span><span class="w"> </span><span class="kn">import</span> <span class="n">InputDataFromNamelist</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pysurfex.platform_deps</span><span class="w"> </span><span class="kn">import</span> <span class="n">SystemFilePathsFromFile</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">..config_parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigPaths</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..datetime_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">as_datetime</span><span class="p">,</span> <span class="n">as_timedelta</span><span class="p">,</span> <span class="n">oi2dt_list</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..derived_variables</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_fullpos_namelist</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..initial_conditions</span><span class="w"> </span><span class="kn">import</span> <span class="n">InitialConditions</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..namelist</span><span class="w"> </span><span class="kn">import</span> <span class="n">NamelistGenerator</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..os_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">deodemakedirs</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">Task</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.batch</span><span class="w"> </span><span class="kn">import</span> <span class="n">BatchJob</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.iomerge</span><span class="w"> </span><span class="kn">import</span> <span class="n">IOMERGE_FILETYPES</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.sfx</span><span class="w"> </span><span class="kn">import</span> <span class="n">PySurfexBaseTask</span>
+  <h1>Source code for deode.tasks.c903light</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;C903Light.&quot;&quot;&quot;</span>
 
 
-<div class="viewcode-block" id="Forecast">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.forecast.Forecast">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">Forecast</span><span class="p">(</span><span class="n">PySurfexBaseTask</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Forecast task.&quot;&quot;&quot;</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">deode.boundary_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">Boundary</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">deode.datetime_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">as_datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">deode.logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">deode.tasks.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">Task</span>
+
+
+<div class="viewcode-block" id="C903Light">
+<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.c903light.C903Light">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">C903Light</span><span class="p">(</span><span class="n">Task</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;C903Light, just symlink the target file to one produced elsewhere.&quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct forecast object.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct C903Light object.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            config (deode.ParsedConfig): Configuration</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">PySurfexBaseTask</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">cycle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.cycle&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cnmexp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.cnmexp&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">domain</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;domain.name&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">windfarm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;general.windfarm&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">forecast_dir_link</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;system.forecast_dir_link&quot;</span><span class="p">]</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">basetime</span> <span class="o">=</span> <span class="n">as_datetime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.times.basetime&quot;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cycle_length</span> <span class="o">=</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.times.cycle_length&quot;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bdint</span> <span class="o">=</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;boundaries.bdint&quot;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">intp_bddir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;system.intp_bddir&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">forecast_range</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.times.forecast_range&quot;</span><span class="p">]</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">archive</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_system_value</span><span class="p">(</span><span class="s2">&quot;archive&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">deode_home</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;platform.deode_home&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">output_settings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.output_settings&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">surfex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.surfex&quot;</span><span class="p">]</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">accelerator_device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;accelerator_device&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">io_server</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;NPROC_IO&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">iomerge_is_external</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">io_server</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;suite_control.n_io_merge&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span>
-        <span class="p">)</span>
-
-        <span class="c1"># Update namelist settings</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">nlgen_master</span> <span class="o">=</span> <span class="n">NamelistGenerator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;master&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">nlgen_surfex</span> <span class="o">=</span> <span class="n">NamelistGenerator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;surfex&quot;</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">master</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_binary</span><span class="p">(</span><span class="s2">&quot;MASTERODB&quot;</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">file_templates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;file_templates&quot;</span><span class="p">]</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">unix_group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_platform_value</span><span class="p">(</span><span class="s2">&quot;unix_group&quot;</span><span class="p">)</span>
-
-<div class="viewcode-block" id="Forecast.post">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.forecast.Forecast.post">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Do special post for Foreast.&quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Forecast class post&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">iomerge_is_external</span><span class="p">:</span>
-            <span class="c1"># Clean workdir</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.keep_workdirs&quot;</span><span class="p">]:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">rename_wdir</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;Finished_task_&quot;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">remove_wdir</span><span class="p">()</span></div>
-
-
-<div class="viewcode-block" id="Forecast.archive_output">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.forecast.Forecast.archive_output">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">archive_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filetype</span><span class="p">,</span> <span class="n">periods</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Archive forecast model output.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            filetype (str): Filename template</span>
-<span class="sd">            periods (str): Output list</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">dt_list</span> <span class="o">=</span> <span class="n">oi2dt_list</span><span class="p">(</span><span class="n">periods</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast_range</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Input template: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">filetype</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">])</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Output template: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">filetype</span><span class="p">[</span><span class="s2">&quot;archive&quot;</span><span class="p">])</span>
-        <span class="k">for</span> <span class="n">dt</span> <span class="ow">in</span> <span class="n">dt_list</span><span class="p">:</span>
-            <span class="n">filename_in</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
-                <span class="n">filetype</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">],</span> <span class="n">validtime</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">basetime</span> <span class="o">+</span> <span class="n">dt</span>
-            <span class="p">)</span>
-            <span class="n">filename_out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
-                <span class="n">filetype</span><span class="p">[</span><span class="s2">&quot;archive&quot;</span><span class="p">],</span> <span class="n">validtime</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">basetime</span> <span class="o">+</span> <span class="n">dt</span>
-            <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="n">filename_in</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">archive</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">filename_out</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="Forecast.wfp_input">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.forecast.Forecast.wfp_input">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">wfp_input</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add wind turbine files to forecast directory.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;json2tab.enabled&quot;</span><span class="p">]:</span>
-            <span class="c1"># Use JSON-2-TAB generated output</span>
-            <span class="n">wfp_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;json2tab.output.directory&quot;</span><span class="p">])</span>
-
-            <span class="n">turbine_loc_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;json2tab.output.files.location_tab&quot;</span><span class="p">]</span>
-            <span class="p">)</span>
-            <span class="n">turbine_tab_prefix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;json2tab.output.files.type_tab_prefix&quot;</span><span class="p">]</span>
-            <span class="p">)</span>
-
-            <span class="n">location_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">wfp_dir</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">turbine_loc_file</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="n">turbine_list</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">wfp_dir</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">turbine_tab_prefix</span><span class="si">}</span><span class="s2">*.tab&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># Use old static tab-files</span>
-            <span class="n">wfp_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_platform_value</span><span class="p">(</span><span class="s2">&quot;windfarm_path&quot;</span><span class="p">)</span>
-
-            <span class="n">yy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">basetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y&quot;</span><span class="p">)</span>
-            <span class="n">location_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">wfp_dir</span><span class="si">}</span><span class="s2">/wind_turbine_coordinates_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">yy</span><span class="si">}</span><span class="s2">.tab&quot;</span>
-            <span class="n">turbine_list</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">wfp_dir</span><span class="si">}</span><span class="s2">/wind_turbine_[0-9][0-9][0-9].tab&quot;</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="n">location_file</span><span class="p">,</span> <span class="s2">&quot;wind_turbine_coordinates.tab&quot;</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">ifile</span> <span class="ow">in</span> <span class="n">turbine_list</span><span class="p">:</span>
-            <span class="n">infile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">ifile</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="n">ifile</span><span class="p">,</span> <span class="n">infile</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="Forecast.sst_sic_input">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.forecast.Forecast.sst_sic_input">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">sst_sic_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intp_bddir</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Link SST &amp; SIC input file to forecast directory.&quot;&quot;&quot;</span>
-        <span class="n">current_datetime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">basetime</span>
-        <span class="n">end_datetime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">basetime</span> <span class="o">+</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">forecast_range</span><span class="p">)</span>
-        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">while</span> <span class="n">current_datetime</span> <span class="o">&lt;=</span> <span class="n">end_datetime</span><span class="p">:</span>
-            <span class="n">source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;file_templates.sstfile.archive&quot;</span><span class="p">],</span> <span class="n">bd_index</span><span class="o">=</span><span class="n">i</span>
-            <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">intp_bddir</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">source</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">source</span><span class="p">)</span>
-            <span class="n">current_datetime</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bdint</span>
-            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span></div>
-
-
-<div class="viewcode-block" id="Forecast.accelerator_device_input">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.forecast.Forecast.accelerator_device_input">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">accelerator_device_input</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Copy the input files for GPU execution.</span>
-
-<span class="sd">        - parallel_method: input file with parallelisation technique for each algorithm</span>
-<span class="sd">        - synchost: input file defining optional device-to-host memory transfers</span>
-<span class="sd">        - select_gpu: wrapper file for sbatch, binding GPU to MPI rank</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">file_definition</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">accelerator_device</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;parallel_method&quot;</span><span class="p">,</span> <span class="s2">&quot;sync_host&quot;</span><span class="p">,</span> <span class="s2">&quot;select_gpu&quot;</span><span class="p">]:</span>
-                <span class="n">input_file</span> <span class="o">=</span> <span class="n">file_definition</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="n">output_file</span> <span class="o">=</span> <span class="n">file_definition</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-                <span class="k">if</span> <span class="n">input_file</span> <span class="ow">and</span> <span class="n">output_file</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">output_file</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="Forecast.merge_output">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.forecast.Forecast.merge_output">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">merge_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filetype</span><span class="p">,</span> <span class="n">periods</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge distributed forecast model output.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            filetype (str): File type (history, surfex, fullpos)</span>
-<span class="sd">            periods (str): Output list</span>
-
-<span class="sd">        Final result is the expected output file name in the working directory</span>
-<span class="sd">        (as if there was no IO server).</span>
-<span class="sd">        NOTE: This function has been replaced by io_merge tasks.</span>
-<span class="sd">        It is only called if n_io_merge=0.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">dt_list</span> <span class="o">=</span> <span class="n">oi2dt_list</span><span class="p">(</span><span class="n">periods</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast_range</span><span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">dt</span> <span class="ow">in</span> <span class="n">dt_list</span><span class="p">:</span>
-            <span class="n">ftemplate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_templates</span><span class="p">[</span><span class="n">filetype</span><span class="p">][</span><span class="s2">&quot;model&quot;</span><span class="p">]</span>
-            <span class="n">filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">ftemplate</span><span class="p">,</span> <span class="n">validtime</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">basetime</span> <span class="o">+</span> <span class="n">dt</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Merging file </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">filetype</span> <span class="o">==</span> <span class="s2">&quot;history&quot;</span><span class="p">:</span>
-                <span class="n">lfitools</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_binary</span><span class="p">(</span><span class="s2">&quot;lfitools&quot;</span><span class="p">)</span>
-                <span class="n">cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">lfitools</span><span class="si">}</span><span class="s2"> facat all io_serv*.d/</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">.gridall &quot;</span>
-                <span class="n">cmd</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;io_serv*.d/</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">.speca* </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
-                <span class="n">BatchJob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">,</span> <span class="n">wrapper</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
-
-            <span class="k">elif</span> <span class="n">filetype</span> <span class="o">==</span> <span class="s2">&quot;surfex&quot;</span><span class="p">:</span>
-                <span class="c1"># NOTE: .sfx also has a part in the working directory,</span>
-                <span class="c1">#        so you *must* change the name</span>
-                <span class="n">lfitools</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_binary</span><span class="p">(</span><span class="s2">&quot;lfitools&quot;</span><span class="p">)</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">filename</span> <span class="o">+</span> <span class="s2">&quot;.part&quot;</span><span class="p">)</span>
-                <span class="n">cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">lfitools</span><span class="si">}</span><span class="s2"> facat all </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">.part &quot;</span>
-                <span class="n">cmd</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;io_serv*.d/</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
-                <span class="n">BatchJob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">,</span> <span class="n">wrapper</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
-
-            <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># Fullpos (grib2) output has .hpf as extra file extension</span>
-                <span class="n">cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;cat io_serv*.d/</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">*.hfp &gt; </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
-                <span class="n">BatchJob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">,</span> <span class="n">wrapper</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="Forecast.execute">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.forecast.Forecast.execute">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute forecast.&quot;&quot;&quot;</span>
-        <span class="c1"># Fetch forecast model static input data</span>
-        <span class="n">input_definition</span> <span class="o">=</span> <span class="n">ConfigPaths</span><span class="o">.</span><span class="n">path_from_subpath</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_system_value</span><span class="p">(</span><span class="s2">&quot;forecast_input_definition&quot;</span><span class="p">)</span>
-        <span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Read static data spec from: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">input_definition</span><span class="p">)</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">input_definition</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">input_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input_data_iterator</span><span class="p">(</span><span class="n">input_data</span><span class="p">)</span>
-
-        <span class="c1"># wind farm input data</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">windfarm</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">wfp_input</span><span class="p">()</span>
-
-        <span class="c1"># Construct master namelist and include fullpos config</span>
-        <span class="n">forecast_namelist</span> <span class="o">=</span> <span class="s2">&quot;forecast&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">nlgen_master</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">forecast_namelist</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">nlgen_master</span> <span class="o">=</span> <span class="n">check_fullpos_namelist</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nlgen_master</span><span class="p">)</span>
-
-        <span class="n">nlres</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nlgen_master</span><span class="o">.</span><span class="n">assemble_namelist</span><span class="p">(</span><span class="n">forecast_namelist</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">nlgen_master</span><span class="o">.</span><span class="n">write_namelist</span><span class="p">(</span><span class="n">nlres</span><span class="p">,</span> <span class="s2">&quot;fort.4&quot;</span><span class="p">)</span>
-
-        <span class="c1"># SURFEX: Namelists and input data</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">nlgen_surfex</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;forecast&quot;</span><span class="p">)</span>
-        <span class="n">settings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nlgen_surfex</span><span class="o">.</span><span class="n">assemble_namelist</span><span class="p">(</span><span class="s2">&quot;forecast&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">nlgen_surfex</span><span class="o">.</span><span class="n">write_namelist</span><span class="p">(</span><span class="n">settings</span><span class="p">,</span> <span class="s2">&quot;EXSEG1.nam&quot;</span><span class="p">)</span>
-
-        <span class="n">input_definition</span> <span class="o">=</span> <span class="n">ConfigPaths</span><span class="o">.</span><span class="n">path_from_subpath</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_system_value</span><span class="p">(</span><span class="s2">&quot;sfx_input_definition&quot;</span><span class="p">)</span>
-        <span class="p">)</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">input_definition</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">input_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-        <span class="n">binput_data</span> <span class="o">=</span> <span class="n">InputDataFromNamelist</span><span class="p">(</span>
-            <span class="n">settings</span><span class="p">,</span>
-            <span class="n">input_data</span><span class="p">,</span>
-            <span class="s2">&quot;forecast&quot;</span><span class="p">,</span>
-            <span class="n">SystemFilePathsFromFile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pysurfex_system_file</span><span class="p">),</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">data</span>
-
-        <span class="k">for</span> <span class="n">dest</span><span class="p">,</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">binput_data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;target=</span><span class="si">{}</span><span class="s2">, dest=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">dest</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">dest</span><span class="p">)</span>
-
-        <span class="c1"># Initial files</span>
-        <span class="n">initfile</span><span class="p">,</span> <span class="n">initfile_sfx</span> <span class="o">=</span> <span class="n">InitialConditions</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span><span class="o">.</span><span class="n">find_initial_files</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="n">initfile</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;ICMSH</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cnmexp</span><span class="si">}</span><span class="s2">INIT&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">surfex</span><span class="p">:</span>
-            <span class="n">initfile_sfx</span> <span class="o">=</span> <span class="kc">None</span>
-
-        <span class="k">if</span> <span class="n">initfile_sfx</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="n">initfile_sfx</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;ICMSH</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cnmexp</span><span class="si">}</span><span class="s2">INIT.sfx&quot;</span><span class="p">)</span>
-
-        <span class="c1"># Use explicitly defined boundary dir if defined</span>
-        <span class="n">intp_bddir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;system.intp_bddir&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrk</span><span class="p">)</span>
-
-        <span class="c1"># Link the boundary files, use initial file as first boundary file</span>
-        <span class="n">initfile_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">file_templates</span><span class="p">[</span><span class="s2">&quot;interpolated_boundaries&quot;</span><span class="p">][</span><span class="s2">&quot;model&quot;</span><span class="p">],</span>
-            <span class="n">validtime</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">basetime</span><span class="p">,</span>
-            <span class="n">bd_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-        <span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="n">initfile</span><span class="p">,</span> <span class="n">initfile_model</span><span class="p">)</span>
-
-        <span class="n">current_datetime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">basetime</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">bdint</span>
-        <span class="n">end_datetime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">basetime</span> <span class="o">+</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">forecast_range</span><span class="p">)</span>
-        <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="k">while</span> <span class="n">current_datetime</span> <span class="o">&lt;=</span> <span class="n">end_datetime</span><span class="p">:</span>
-            <span class="n">source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">file_templates</span><span class="p">[</span><span class="s2">&quot;interpolated_boundaries&quot;</span><span class="p">][</span><span class="s2">&quot;archive&quot;</span><span class="p">],</span>
-                <span class="n">validtime</span><span class="o">=</span><span class="n">current_datetime</span><span class="p">,</span>
-                <span class="n">bd_index</span><span class="o">=</span><span class="n">i</span><span class="p">,</span>
-            <span class="p">)</span>
-            <span class="n">target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">file_templates</span><span class="p">[</span><span class="s2">&quot;interpolated_boundaries&quot;</span><span class="p">][</span><span class="s2">&quot;model&quot;</span><span class="p">],</span>
-                <span class="n">validtime</span><span class="o">=</span><span class="n">current_datetime</span><span class="p">,</span>
-                <span class="n">bd_index</span><span class="o">=</span><span class="n">i</span><span class="p">,</span>
-            <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">intp_bddir</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">source</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
-            <span class="n">current_datetime</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bdint</span>
-            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;general.upd_sst_sic&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">sst_sic_input</span><span class="p">(</span><span class="n">intp_bddir</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">accelerator_device</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Processing accelerator_device section&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">accelerator_device_input</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;No accelerator_device section found&quot;</span><span class="p">)</span>
-
-        <span class="c1"># Create a link to working directory for IO_merge tasks</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">iomerge_is_external</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">islink</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">forecast_dir_link</span><span class="p">):</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Removing old link.&quot;</span><span class="p">)</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">forecast_dir_link</span><span class="p">)</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">symlink</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">forecast_dir_link</span><span class="p">)</span>
-
-        <span class="c1"># Store the output</span>
-        <span class="c1"># Must happen before the forecast starts, so the io_merge tasks</span>
-        <span class="c1">#   can write to it.</span>
-        <span class="n">deodemakedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">archive</span><span class="p">,</span> <span class="n">unixgroup</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">unix_group</span><span class="p">)</span>
-
-        <span class="c1"># Run MASTERODB</span>
-        <span class="n">batch</span> <span class="o">=</span> <span class="n">BatchJob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">,</span> <span class="n">wrapper</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="p">))</span>
-        <span class="n">batch</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">master</span><span class="p">)</span>
-
-        <span class="c1"># Merge files and move to archive</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">iomerge_is_external</span><span class="p">:</span>
-            <span class="n">atexit</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rename_wdir</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">filetype</span><span class="p">,</span> <span class="n">oi</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_settings</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">filetype</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">IOMERGE_FILETYPES</span> <span class="ow">and</span> <span class="n">filetype</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_templates</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">archive_output</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_templates</span><span class="p">[</span><span class="n">filetype</span><span class="p">],</span> <span class="n">oi</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">filetype</span><span class="p">,</span> <span class="n">oi</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_settings</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">filetype</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_templates</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">io_server</span> <span class="ow">and</span> <span class="n">filetype</span> <span class="ow">in</span> <span class="n">IOMERGE_FILETYPES</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">merge_output</span><span class="p">(</span><span class="n">filetype</span><span class="p">,</span> <span class="n">oi</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">archive_output</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_templates</span><span class="p">[</span><span class="n">filetype</span><span class="p">],</span> <span class="n">oi</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">archive_logs</span><span class="p">([</span><span class="s2">&quot;fort.4&quot;</span><span class="p">,</span> <span class="s2">&quot;EXSEG1.nam&quot;</span><span class="p">,</span> <span class="s2">&quot;NODE.001_01&quot;</span><span class="p">])</span></div>
-</div>
-
-
-
-<div class="viewcode-block" id="PrepareCycle">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.forecast.PrepareCycle">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">PrepareCycle</span><span class="p">(</span><span class="n">Task</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Task.&quot;&quot;&quot;</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct object.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            config (deode.ParsedConfig): Configuration</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">Task</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">archive</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_system_value</span><span class="p">(</span><span class="s2">&quot;archive&quot;</span><span class="p">)</span>
-        <span class="n">deodemakedirs</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">archive</span><span class="p">,</span> <span class="n">unixgroup</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_platform_value</span><span class="p">(</span><span class="s2">&quot;unix_group&quot;</span><span class="p">)</span>
-        <span class="p">)</span></div>
-
-
-
-<div class="viewcode-block" id="FirstGuess">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.forecast.FirstGuess">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">FirstGuess</span><span class="p">(</span><span class="n">Task</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;FirstGuess.&quot;&quot;&quot;</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct FirstGuess object.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            config (deode.ParsedConfig): Configuration</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Task</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
 
-<div class="viewcode-block" id="FirstGuess.execute">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.forecast.FirstGuess.execute">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">basetime</span> <span class="o">=</span> <span class="n">as_datetime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;general.times.basetime&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">boundary</span> <span class="o">=</span> <span class="n">Boundary</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_system_value</span><span class="p">(</span><span class="s1">&#39;intp_bddir&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="o">+</span> <span class="s2">&quot;/&quot;</span>
+            <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;file_templates.interpolated_boundaries.archive&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_&quot;</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">boundary</span><span class="o">.</span><span class="n">min_index</span><span class="si">}</span><span class="s2">-&quot;</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">boundary</span><span class="o">.</span><span class="n">max_index</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+
+<div class="viewcode-block" id="C903Light.execute">
+<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.c903light.C903Light.execute">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find initial file.&quot;&quot;&quot;</span>
-        <span class="n">initfile</span><span class="p">,</span> <span class="n">initfile_sfx</span> <span class="o">=</span> <span class="n">InitialConditions</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span><span class="o">.</span><span class="n">find_initial_files</span><span class="p">()</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run task.</span>
+
+<span class="sd">        Define run sequence.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get target file name</span>
+        <span class="n">duo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;task.args.duo&quot;</span><span class="p">,</span> <span class="s2">&quot;0:0&quot;</span><span class="p">)</span>
+        <span class="n">doer</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">j</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">duo</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
+        <span class="n">me</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;task.args.me&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">))</span>
+
+        <span class="c1"># Loop over boundary files for this batch</span>
+        <span class="k">for</span> <span class="n">bd_index</span><span class="p">,</span> <span class="n">bd_time</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">boundary</span><span class="o">.</span><span class="n">bd_index_time_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">validtime</span> <span class="o">=</span> <span class="n">as_datetime</span><span class="p">(</span><span class="n">bd_time</span><span class="p">)</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;@NNN@&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">bd_index</span><span class="si">:</span><span class="s2">03</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="c1"># Find the path to the actual file</span>
+            <span class="n">real_target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
+                <span class="n">target</span><span class="p">,</span> <span class="n">basetime</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">boundary</span><span class="o">.</span><span class="n">bd_basetime</span><span class="p">,</span> <span class="n">validtime</span><span class="o">=</span><span class="n">validtime</span>
+            <span class="p">)</span>
+            <span class="n">real_target</span> <span class="o">=</span> <span class="n">real_target</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;mbr</span><span class="si">{</span><span class="n">me</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;mbr</span><span class="si">{</span><span class="n">doer</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">real_target</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;_slaf</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">if</span> <span class="s2">&quot;target_suffix&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;task.args&quot;</span><span class="p">]:</span>
+                <span class="n">target</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;task.args.target_suffix&quot;</span><span class="p">]</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;real_target=</span><span class="si">{</span><span class="n">real_target</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="n">real_target</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;     target=</span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 </div>
 
 </pre></div>
