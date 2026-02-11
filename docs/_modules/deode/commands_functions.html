@@ -607,6 +607,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.scheduler.EcflowServer.start_server"><code class="docutils literal notranslate"><span class="pre">EcflowServer.start_server()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.scheduler.EcflowServer.suite_finish_time"><code class="docutils literal notranslate"><span class="pre">EcflowServer.suite_finish_time()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.scheduler.EcflowServer.suite_is_complete"><code class="docutils literal notranslate"><span class="pre">EcflowServer.suite_is_complete()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.scheduler.EcflowServer.suspend"><code class="docutils literal notranslate"><span class="pre">EcflowServer.suspend()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../deode.html#deode.scheduler.EcflowTask"><code class="docutils literal notranslate"><span class="pre">EcflowTask</span></code></a></li>
@@ -1869,8 +1870,8 @@
         <span class="n">platform</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">case_config</span><span class="p">)</span>
 
         <span class="c1"># Loop over the different section in the remove config</span>
-        <span class="k">for</span> <span class="n">section</span><span class="p">,</span> <span class="n">settings</span> <span class="ow">in</span> <span class="n">cleaning_config</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">section</span><span class="p">,</span> <span class="n">original_settings</span> <span class="ow">in</span> <span class="n">cleaning_config</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">settings</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">original_settings</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">section</span> <span class="o">!=</span> <span class="s2">&quot;main&quot;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">case_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;impact.</span><span class="si">{</span><span class="n">section</span><span class="si">}</span><span class="s2">.active&quot;</span><span class="p">,</span> <span class="kc">False</span>
             <span class="p">):</span>
@@ -1919,7 +1920,6 @@
             <span class="n">dry_run</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">execute_removal</span>
             <span class="n">cleaner</span><span class="o">.</span><span class="n">prep_cleaning</span><span class="p">(</span><span class="n">settings</span><span class="p">,</span> <span class="n">dry_run</span><span class="o">=</span><span class="n">dry_run</span><span class="p">)</span>
             <span class="n">cleaner</span><span class="o">.</span><span class="n">clean</span><span class="p">()</span>
-
             <span class="k">if</span> <span class="n">suite_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">remove_from_scheduler</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">dry_run</span><span class="p">:</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot; would have removed suite </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">suite_name</span><span class="p">)</span>
@@ -2122,7 +2122,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2026-02-11T11:46:49Z.
+      <span class="lastupdated">Last updated on 2026-02-11T13:13:14Z.
       </span></p>
   </div>
 
