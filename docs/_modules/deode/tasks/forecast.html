@@ -1731,6 +1731,9 @@
         <span class="c1"># Merge files and move to archive</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">iomerge_is_external</span><span class="p">:</span>
             <span class="n">atexit</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rename_wdir</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">filetype</span><span class="p">,</span> <span class="n">oi</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_settings</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">filetype</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">IOMERGE_FILETYPES</span> <span class="ow">and</span> <span class="n">filetype</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_templates</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">archive_output</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_templates</span><span class="p">[</span><span class="n">filetype</span><span class="p">],</span> <span class="n">oi</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">filetype</span><span class="p">,</span> <span class="n">oi</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_settings</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="k">if</span> <span class="n">filetype</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_templates</span><span class="p">:</span>
@@ -1795,7 +1798,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2026-02-11T13:13:14Z.
+      <span class="lastupdated">Last updated on 2026-02-11T14:40:17Z.
       </span></p>
   </div>
 
