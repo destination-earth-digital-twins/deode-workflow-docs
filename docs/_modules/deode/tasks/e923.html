@@ -1423,7 +1423,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">deode.config_parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigPaths</span>
 
@@ -1456,6 +1456,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">master</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_binary</span><span class="p">(</span><span class="s2">&quot;MASTERODB&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">nlgen</span> <span class="o">=</span> <span class="n">NamelistGenerator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;master&quot;</span><span class="p">)</span>
+
+        <span class="n">input_definition</span> <span class="o">=</span> <span class="n">ConfigPaths</span><span class="o">.</span><span class="n">path_from_subpath</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_system_value</span><span class="p">(</span><span class="s2">&quot;e923_input_definition&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Read input data spec from: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">input_definition</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">input_definition</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">input_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
 <div class="viewcode-block" id="E923.myexec">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.e923.E923.myexec">[docs]</a>
@@ -1492,21 +1500,6 @@
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Could not remove file &#39;</span><span class="si">{}</span><span class="s2">&#39;.&quot;</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="E923.print_part">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.e923.E923.print_part">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">print_part</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">part</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run the constant part of e923.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            part: which step</span>
-<span class="sd">            month: month</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">month</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Executing PART </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">part</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Executing PART </span><span class="si">{}</span><span class="s2">, month </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">part</span><span class="p">,</span> <span class="n">month</span><span class="p">)</span></div>
-
-
 <div class="viewcode-block" id="E923.constant_part">
 <a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.e923.E923.constant_part">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">constant_part</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">constant_file</span><span class="p">):</span>
@@ -1517,68 +1510,26 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Create: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">constant_file</span><span class="p">)</span>
 
-        <span class="c1"># RTTM input</span>
-        <span class="k">for</span> <span class="n">ifile</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;MCICA&quot;</span><span class="p">,</span> <span class="s2">&quot;RADSRTM&quot;</span><span class="p">]:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;@RRTM_DIR@/</span><span class="si">{</span><span class="n">ifile</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ifile</span><span class="p">)</span>
+        <span class="c1"># RRTM input</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">link_data_files</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;rrtm&quot;</span><span class="p">)</span>
 
         <span class="c1"># PGD input</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">climdir</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pgd_prel</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;Neworog&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">climdir</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pgd_prel</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;Newsuborog&quot;</span><span class="p">)</span>
 
-        <span class="c1"># Part 0</span>
-        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">topo_files</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="s2">&quot;Water_Percentage&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;Oro_Mean&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;Sigma&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;Nb_Peaks&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;Urbanisation&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;Dh_over_Dx_Dh_over_Dy&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;Dh_over_Dx_square&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;Dh_over_Dy_square&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;Hmax-HxH-Hmin_ov4&quot;</span><span class="p">,</span>
-        <span class="p">]</span>
-        <span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">topo_files</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;@E923_DATA@/GTOPT030/</span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">part_nr</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">part_nr</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="c1"># Part 1 reuses files from part 0</span>
+                <span class="n">remove_link_files</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">link_data_files</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="n">part_nr</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">nlgen</span><span class="o">.</span><span class="n">generate_namelist</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;e923_part_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;fort.4&quot;</span><span class="p">)</span>
-        <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="s2">&quot;fort.4&quot;</span><span class="p">,</span> <span class="s2">&quot;fort.4_0&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">print_part</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">myexec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">master</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">execute_part</span><span class="p">(</span><span class="n">part_nr</span><span class="p">)</span>
 
-        <span class="c1"># Cleanup</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">remove_links</span><span class="p">([</span><span class="s2">&quot;Neworog&quot;</span><span class="p">])</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s2">&quot;Const.Clim&quot;</span><span class="p">,</span> <span class="s2">&quot;Neworog&quot;</span><span class="p">)</span>
-
-        <span class="c1"># Part 1</span>
-        <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">nlgen</span><span class="o">.</span><span class="n">generate_namelist</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;e923_part_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;fort.4&quot;</span><span class="p">)</span>
-        <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="s2">&quot;fort.4&quot;</span><span class="p">,</span> <span class="s2">&quot;fort.4_1&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">print_part</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">myexec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">master</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">remove_links</span><span class="p">(</span><span class="n">topo_files</span><span class="p">)</span>
-
-        <span class="c1"># Part 2</span>
-        <span class="n">i</span> <span class="o">=</span> <span class="mi">2</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">nlgen</span><span class="o">.</span><span class="n">generate_namelist</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;e923_part_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;fort.4&quot;</span><span class="p">)</span>
-        <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="s2">&quot;fort.4&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;fort.4_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">ifiles</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="s2">&quot;itp_GL&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;alb_GL&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;emi_GL&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;dps_GL&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;arg_GL&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;sab_GL&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;vgx_GL&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;dpr_GL&quot;</span><span class="p">,</span>
-        <span class="p">]</span>
-        <span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">ifiles</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;@E923_DATA@/SURFACE_G/</span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">print_part</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">myexec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">master</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">remove_links</span><span class="p">(</span><span class="n">ifiles</span><span class="p">)</span>
+            <span class="c1"># Cleanup</span>
+            <span class="k">if</span> <span class="n">part_nr</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">remove_links</span><span class="p">([</span><span class="s2">&quot;Neworog&quot;</span><span class="p">])</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s2">&quot;Const.Clim&quot;</span><span class="p">,</span> <span class="s2">&quot;Neworog&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">remove_link_files</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">remove_links</span><span class="p">(</span><span class="n">remove_link_files</span><span class="p">)</span>
 
         <span class="c1"># Archive namelists and NODE files</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">archive_logs</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;NODE.*&quot;</span><span class="p">),</span> <span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">climdir</span><span class="p">)</span>
@@ -1599,120 +1550,120 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s2">&quot;Const.Clim&quot;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="n">constant_file</span><span class="p">,</span> <span class="s2">&quot;Const.Clim&quot;</span><span class="p">,</span> <span class="n">provider_id</span><span class="o">=</span><span class="s2">&quot;copy&quot;</span><span class="p">)</span>
 
-        <span class="c1"># Preload files for different parts</span>
-        <span class="n">part9_files</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;part9&quot;</span><span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">ifile</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;MCICA&quot;</span><span class="p">,</span> <span class="s2">&quot;RADSRTM&quot;</span><span class="p">]:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;@RRTM_DIR@/</span><span class="si">{</span><span class="n">ifile</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ifile</span><span class="p">)</span>
-
         <span class="c1"># Part 3 expects 12 input files, silly...</span>
-        <span class="n">i</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="n">part_nr</span> <span class="o">=</span> <span class="mi">3</span>
         <span class="k">for</span> <span class="n">mm</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">13</span><span class="p">):</span>
             <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">constant_file</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Const.Clim.</span><span class="si">{</span><span class="n">mm</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">ifile</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;N108_GL&quot;</span><span class="p">]:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;@E923_DATA@/N108/</span><span class="si">{</span><span class="n">ifile</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ifile</span><span class="p">)</span>
+        <span class="c1"># RRTM input</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">link_data_files</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;rrtm&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">link_data_files</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="n">part_nr</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute_part</span><span class="p">(</span><span class="n">part_nr</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">nlgen</span><span class="o">.</span><span class="n">generate_namelist</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;e923_part_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;fort.4&quot;</span><span class="p">)</span>
-        <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="s2">&quot;fort.4&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;fort.4_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">print_part</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">myexec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">master</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">ifile</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;z0v_GL&quot;</span><span class="p">,</span> <span class="s2">&quot;alv_GL&quot;</span><span class="p">,</span> <span class="s2">&quot;rsm_GL&quot;</span><span class="p">]:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;@E923_DATA@/SURFACE_G/</span><span class="si">{</span><span class="n">ifile</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ifile</span><span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">ifile</span> <span class="ow">in</span> <span class="p">[</span>
-            <span class="s2">&quot;msk_HR&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;itp_HR&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;dpr_HR&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;rsm_HR&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;vgx_HR&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;alv_HR&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;z0v_HR&quot;</span><span class="p">,</span>
-        <span class="p">]:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;@E923_DATA@/SURFACE_L/</span><span class="si">{</span><span class="n">ifile</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ifile</span><span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">ifile</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;rel_GL.Z&quot;</span><span class="p">]:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;@E923_DATA@/CLIM_G/v2/</span><span class="si">{</span><span class="n">ifile</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ifile</span><span class="p">,</span> <span class="n">provider_id</span><span class="o">=</span><span class="s2">&quot;copy&quot;</span>
-            <span class="p">)</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;gunzip rel_GL.Z&quot;</span><span class="p">)</span>  <span class="c1"># noqa</span>
+        <span class="c1"># Link/copy the constant file groups</span>
+        <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;constant&quot;</span><span class="p">,</span> <span class="s2">&quot;constant_copy&quot;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">link_data_files</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="n">group</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">mm</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">months</span><span class="p">:</span>
             <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Const.Clim.</span><span class="si">{</span><span class="n">mm</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;Const.Clim&quot;</span><span class="p">)</span>
 
-            <span class="c1"># PART 4</span>
-            <span class="n">files</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">vegtype</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;veg&quot;</span><span class="p">,</span> <span class="s2">&quot;lai&quot;</span><span class="p">]:</span>
-                <span class="n">source</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;@E923_DATA@/SURFACE_G/</span><span class="si">{</span><span class="n">vegtype</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">mm</span><span class="si">}</span><span class="s2">_GL&quot;</span>
-                <span class="n">target</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">vegtype</span><span class="si">}</span><span class="s2">_GL&quot;</span>
-                <span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
-
-            <span class="bp">self</span><span class="o">.</span><span class="n">nlgen</span><span class="o">.</span><span class="n">generate_namelist</span><span class="p">(</span><span class="s2">&quot;e923_part_4&quot;</span><span class="p">,</span> <span class="s2">&quot;fort.4&quot;</span><span class="p">)</span>
-            <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="s2">&quot;fort.4&quot;</span><span class="p">,</span> <span class="s2">&quot;fort.4_4&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">print_part</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">mm</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">myexec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">master</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">remove_links</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="mi">5</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_sections</span><span class="p">:</span>
-                <span class="c1"># PART 5</span>
-                <span class="n">files</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="k">for</span> <span class="n">vegtype</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;veg&quot;</span><span class="p">,</span> <span class="s2">&quot;lai&quot;</span><span class="p">]:</span>
-                    <span class="n">source</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;@E923_DATA@/SURFACE_L/</span><span class="si">{</span><span class="n">vegtype</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">mm</span><span class="si">}</span><span class="s2">_HR&quot;</span>
-                    <span class="n">target</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">vegtype</span><span class="si">}</span><span class="s2">_HR&quot;</span>
-                    <span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
-
-                <span class="bp">self</span><span class="o">.</span><span class="n">nlgen</span><span class="o">.</span><span class="n">generate_namelist</span><span class="p">(</span><span class="s2">&quot;e923_part_5&quot;</span><span class="p">,</span> <span class="s2">&quot;fort.4&quot;</span><span class="p">)</span>
-                <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="s2">&quot;fort.4&quot;</span><span class="p">,</span> <span class="s2">&quot;fort.4_5&quot;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">print_part</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">mm</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">myexec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">master</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">remove_links</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="mi">6</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_sections</span><span class="p">:</span>
-                <span class="c1"># PART 6</span>
-                <span class="n">indata</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;tpl&quot;</span><span class="p">,</span> <span class="s2">&quot;wpl&quot;</span><span class="p">,</span> <span class="s2">&quot;snl&quot;</span><span class="p">]</span>
-                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">indata</span><span class="p">:</span>
-                    <span class="n">target</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">_GL.Z&quot;</span>
-                    <span class="n">source</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;@E923_DATA@/CLIM_G/v2/</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">mm</span><span class="si">}</span><span class="s2">_GL.Z&quot;</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">provider_id</span><span class="o">=</span><span class="s2">&quot;copy&quot;</span><span class="p">)</span>
-
-                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">indata</span><span class="p">:</span>
-                    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;gunzip -f </span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">_GL.Z&quot;</span><span class="p">)</span>  <span class="c1"># noqa</span>
-
-                <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="s2">&quot;tpl_GL&quot;</span><span class="p">,</span> <span class="s2">&quot;tsl_GL&quot;</span><span class="p">,</span> <span class="n">provider_id</span><span class="o">=</span><span class="s2">&quot;copy&quot;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="s2">&quot;wpl_GL&quot;</span><span class="p">,</span> <span class="s2">&quot;wsl_GL&quot;</span><span class="p">,</span> <span class="n">provider_id</span><span class="o">=</span><span class="s2">&quot;copy&quot;</span><span class="p">)</span>
-
-                <span class="bp">self</span><span class="o">.</span><span class="n">nlgen</span><span class="o">.</span><span class="n">generate_namelist</span><span class="p">(</span><span class="s2">&quot;e923_part_6&quot;</span><span class="p">,</span> <span class="s2">&quot;fort.4&quot;</span><span class="p">)</span>
-                <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="s2">&quot;fort.4&quot;</span><span class="p">,</span> <span class="s2">&quot;fort.4_6&quot;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">print_part</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">mm</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">myexec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">master</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
-
-            <span class="c1"># PART 8</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;@E923_DATA@/abc_O3/abc_quadra_</span><span class="si">{</span><span class="n">mm</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;abc_coef&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">nlgen</span><span class="o">.</span><span class="n">generate_namelist</span><span class="p">(</span><span class="s2">&quot;e923_part_8&quot;</span><span class="p">,</span> <span class="s2">&quot;fort.4&quot;</span><span class="p">)</span>
-            <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="s2">&quot;fort.4&quot;</span><span class="p">,</span> <span class="s2">&quot;fort.4_8&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">print_part</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="n">mm</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">myexec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">master</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
-
-            <span class="c1"># PART 9</span>
-            <span class="n">path9</span> <span class="o">=</span> <span class="n">part9_files</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;*** part9_files: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">part9_files</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">dst</span><span class="p">,</span> <span class="n">src</span> <span class="ow">in</span> <span class="n">part9_files</span><span class="p">[</span><span class="s2">&quot;files&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="n">src_local</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;@MM@&quot;</span><span class="p">,</span> <span class="n">mm</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">path9</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">src_local</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                    <span class="n">dst</span><span class="p">,</span>
+            <span class="k">for</span> <span class="n">part_nr</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="o">*</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optional_sections</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">{</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">}),</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">]:</span>
+                <span class="n">remove_link_files</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">link_data_files</span><span class="p">(</span>
+                    <span class="n">label</span><span class="o">=</span><span class="n">part_nr</span><span class="p">,</span>
+                    <span class="n">month</span><span class="o">=</span><span class="n">mm</span><span class="p">,</span>
+                    <span class="n">gunzip_flags</span><span class="o">=</span><span class="s2">&quot;-f&quot;</span><span class="p">,</span>
                 <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">execute_part</span><span class="p">(</span><span class="n">part_nr</span><span class="p">,</span> <span class="n">mm</span><span class="p">)</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">nlgen</span><span class="o">.</span><span class="n">generate_namelist</span><span class="p">(</span><span class="s2">&quot;e923_part_9&quot;</span><span class="p">,</span> <span class="s2">&quot;fort.4&quot;</span><span class="p">)</span>
-            <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="s2">&quot;fort.4&quot;</span><span class="p">,</span> <span class="s2">&quot;fort.4_9&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">print_part</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="n">mm</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">myexec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">master</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">remove_link_files</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">remove_links</span><span class="p">(</span><span class="n">remove_link_files</span><span class="p">)</span>
 
             <span class="c1"># Finished. Archive output</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="s2">&quot;Const.Clim&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Const.Clim.</span><span class="si">{</span><span class="n">mm</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="E923.execute_part">
+<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.e923.E923.execute_part">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute_part</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">part_nr</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">month</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generates namelist for E923 part and execute binary.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            part_nr: the number of the E923 part to execute</span>
+<span class="sd">            month: (optional) month number</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nlgen</span><span class="o">.</span><span class="n">generate_namelist</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;e923_part_</span><span class="si">{</span><span class="n">part_nr</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;fort.4&quot;</span><span class="p">)</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="s2">&quot;fort.4&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;fort.4_</span><span class="si">{</span><span class="n">part_nr</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">month</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Executing PART </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">part_nr</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Executing PART </span><span class="si">{}</span><span class="s2">, month </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">part_nr</span><span class="p">,</span> <span class="n">month</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">myexec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">master</span><span class="p">,</span> <span class="n">part_nr</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="E923.link_data_files">
+<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.e923.E923.link_data_files">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">link_data_files</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">label</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">month</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">gunzip_flags</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Link/copy input files for E923 part.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            label: dataset label in input_data (or integer to get related part)</span>
+<span class="sd">            month: month number</span>
+<span class="sd">            gunzip_flags: Flags used to unzip comppresed files (*.Z-files)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List of files where links can be removed for cleanup</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;part</span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;*** </span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+        <span class="n">path</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;path&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">sep</span> <span class="o">=</span> <span class="s2">&quot;/&quot;</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">remove_link_files</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">remove_links</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;remove_links&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">provider_id</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;provider_id&quot;</span><span class="p">,</span> <span class="s2">&quot;symlink&quot;</span><span class="p">)</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;param&quot;</span><span class="p">,</span> <span class="p">[])</span>
+
+        <span class="n">apply_param</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">apply_param</span><span class="p">:</span>
+            <span class="c1"># Default use one unused param to handle non-parameterized parts</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span>
+
+        <span class="n">files</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;files&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">files</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">files</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">dst</span><span class="p">,</span> <span class="n">src</span> <span class="ow">in</span> <span class="n">files</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">src_local</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;@PARAM@&quot;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">apply_param</span> <span class="k">else</span> <span class="n">src</span>
+                <span class="n">dst_local</span> <span class="o">=</span> <span class="n">dst</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;@PARAM@&quot;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">apply_param</span> <span class="k">else</span> <span class="n">dst</span>
+
+                <span class="k">if</span> <span class="n">month</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">src_local</span> <span class="o">=</span> <span class="n">src_local</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;@MM@&quot;</span><span class="p">,</span> <span class="n">month</span><span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">fmanager</span><span class="o">.</span><span class="n">input</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">path</span><span class="si">}{</span><span class="n">sep</span><span class="si">}{</span><span class="n">src_local</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">dst_local</span><span class="p">,</span> <span class="n">provider_id</span><span class="o">=</span><span class="n">provider_id</span>
+                <span class="p">)</span>
+
+                <span class="c1"># Decompress compressed files</span>
+                <span class="k">if</span> <span class="n">dst_local</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.Z&quot;</span><span class="p">):</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;gunzip </span><span class="si">{</span><span class="n">gunzip_flags</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">dst_local</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># noqa</span>
+
+                <span class="k">if</span> <span class="n">remove_links</span><span class="p">:</span>
+                    <span class="n">remove_link_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dst_local</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">remove_link_files</span></div>
 </div>
 
 
@@ -1851,16 +1802,6 @@
 <span class="sd">        Define run sequence.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">input_definition</span> <span class="o">=</span> <span class="s2">&quot;e923_input_definition&quot;</span>
-        <span class="c1"># Fetch input data</span>
-        <span class="n">input_definition</span> <span class="o">=</span> <span class="n">ConfigPaths</span><span class="o">.</span><span class="n">path_from_subpath</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">get_system_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_definition</span><span class="p">)</span>
-        <span class="p">)</span>
-
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Read input data spec from: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">input_definition</span><span class="p">)</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">input_definition</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">input_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-
         <span class="c1"># Run the monthly part</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">monthly_part</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">constant_file</span><span class="p">)</span>
 
@@ -1884,7 +1825,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2026-02-17T07:45:46Z.
+      <span class="lastupdated">Last updated on 2026-02-17T14:21:56Z.
       </span></p>
   </div>
 
