@@ -605,7 +605,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.scheduler.EcflowServer.force_complete"><code class="docutils literal notranslate"><span class="pre">EcflowServer.force_complete()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.scheduler.EcflowServer.get_all_tasks"><code class="docutils literal notranslate"><span class="pre">EcflowServer.get_all_tasks()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.scheduler.EcflowServer.get_config_of_suite"><code class="docutils literal notranslate"><span class="pre">EcflowServer.get_config_of_suite()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.scheduler.EcflowServer.get_ecf_home_and_files"><code class="docutils literal notranslate"><span class="pre">EcflowServer.get_ecf_home_and_files()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.scheduler.EcflowServer.get_ecf_vars"><code class="docutils literal notranslate"><span class="pre">EcflowServer.get_ecf_vars()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.scheduler.EcflowServer.get_suites_from_server"><code class="docutils literal notranslate"><span class="pre">EcflowServer.get_suites_from_server()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.scheduler.EcflowServer.remove_suites"><code class="docutils literal notranslate"><span class="pre">EcflowServer.remove_suites()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.scheduler.EcflowServer.replace"><code class="docutils literal notranslate"><span class="pre">EcflowServer.replace()</span></code></a></li>
@@ -1936,16 +1936,23 @@
             <span class="k">if</span> <span class="n">suite_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">remove_from_scheduler</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">dry_run</span><span class="p">:</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot; would have removed suite </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">suite_name</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">directory</span> <span class="ow">in</span> <span class="n">server</span><span class="o">.</span><span class="n">get_ecf_vars</span><span class="p">(</span><span class="n">this_suite</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
+                            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                                <span class="s2">&quot; would have removed ecflow directory </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">directory</span>
+                            <span class="p">)</span>
+
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">try</span><span class="p">:</span>
-                        <span class="n">EcflowServer</span><span class="p">(</span><span class="n">case_config</span><span class="p">)</span><span class="o">.</span><span class="n">remove_suites</span><span class="p">(</span>
-                            <span class="p">[</span><span class="n">suite_name</span><span class="p">],</span> <span class="n">check_if_complete</span><span class="o">=</span><span class="kc">False</span>
-                        <span class="p">)</span>
+                        <span class="n">server</span><span class="o">.</span><span class="n">remove_suites</span><span class="p">([</span><span class="n">suite_name</span><span class="p">],</span> <span class="n">check_if_complete</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
                     <span class="k">except</span> <span class="p">(</span><span class="ne">ModuleNotFoundError</span><span class="p">,</span> <span class="ne">UnboundLocalError</span><span class="p">):</span>
                         <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                             <span class="s2">&quot;ecflow or config not found, suite </span><span class="si">{}</span><span class="s2"> not removed&quot;</span><span class="p">,</span> <span class="n">suite_name</span>
                         <span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">Rerun with &#39;--execute-removal&#39; to do the actual removal</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">dry_run</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">Rerun with &#39;--execute-removal&#39; to do the actual removal</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
 
     <span class="k">return</span> <span class="kc">True</span></div>
 
@@ -2135,7 +2142,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2026-02-19T14:46:12Z.
+      <span class="lastupdated">Last updated on 2026-02-20T09:30:45Z.
       </span></p>
   </div>
 

@@ -605,7 +605,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.scheduler.EcflowServer.force_complete"><code class="docutils literal notranslate"><span class="pre">EcflowServer.force_complete()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.scheduler.EcflowServer.get_all_tasks"><code class="docutils literal notranslate"><span class="pre">EcflowServer.get_all_tasks()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.scheduler.EcflowServer.get_config_of_suite"><code class="docutils literal notranslate"><span class="pre">EcflowServer.get_config_of_suite()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.scheduler.EcflowServer.get_ecf_home_and_files"><code class="docutils literal notranslate"><span class="pre">EcflowServer.get_ecf_home_and_files()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.scheduler.EcflowServer.get_ecf_vars"><code class="docutils literal notranslate"><span class="pre">EcflowServer.get_ecf_vars()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.scheduler.EcflowServer.get_suites_from_server"><code class="docutils literal notranslate"><span class="pre">EcflowServer.get_suites_from_server()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.scheduler.EcflowServer.remove_suites"><code class="docutils literal notranslate"><span class="pre">EcflowServer.remove_suites()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.scheduler.EcflowServer.replace"><code class="docutils literal notranslate"><span class="pre">EcflowServer.replace()</span></code></a></li>
@@ -1444,6 +1444,7 @@
         <span class="k">if</span> <span class="n">result</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Error running command: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">command</span><span class="p">))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Clean ecfs_path:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ecfs_path</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">err</span><span class="p">)</span></div>
 
@@ -1586,7 +1587,7 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">choice</span><span class="p">[</span><span class="s2">&quot;step&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">as_timedelta</span><span class="p">(</span><span class="n">choice</span><span class="p">[</span><span class="s2">&quot;step&quot;</span><span class="p">])</span>
 
-                <span class="k">if</span> <span class="n">dry_run</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">dry_run</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">choice</span><span class="p">[</span><span class="s2">&quot;dry_run&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dry_run</span>
 
                 <span class="bp">self</span><span class="o">.</span><span class="n">_check_choice</span><span class="p">(</span><span class="n">choice</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
@@ -1665,7 +1666,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2026-02-19T14:46:12Z.
+      <span class="lastupdated">Last updated on 2026-02-20T09:30:45Z.
       </span></p>
   </div>
 

@@ -605,7 +605,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.scheduler.EcflowServer.force_complete"><code class="docutils literal notranslate"><span class="pre">EcflowServer.force_complete()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.scheduler.EcflowServer.get_all_tasks"><code class="docutils literal notranslate"><span class="pre">EcflowServer.get_all_tasks()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.scheduler.EcflowServer.get_config_of_suite"><code class="docutils literal notranslate"><span class="pre">EcflowServer.get_config_of_suite()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.scheduler.EcflowServer.get_ecf_home_and_files"><code class="docutils literal notranslate"><span class="pre">EcflowServer.get_ecf_home_and_files()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.scheduler.EcflowServer.get_ecf_vars"><code class="docutils literal notranslate"><span class="pre">EcflowServer.get_ecf_vars()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.scheduler.EcflowServer.get_suites_from_server"><code class="docutils literal notranslate"><span class="pre">EcflowServer.get_suites_from_server()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.scheduler.EcflowServer.remove_suites"><code class="docutils literal notranslate"><span class="pre">EcflowServer.remove_suites()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../deode.html#deode.scheduler.EcflowServer.replace"><code class="docutils literal notranslate"><span class="pre">EcflowServer.replace()</span></code></a></li>
@@ -1726,11 +1726,10 @@
             <span class="p">):</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Removing suite </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">suite_name</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">ecf_client</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">suite_name</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">directory</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ecf_home_and_files</span><span class="p">(</span><span class="n">suite</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">directory</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ecf_vars</span><span class="p">(</span><span class="n">suite</span><span class="p">):</span>
                     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
-                        <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> does not exist&quot;</span><span class="p">,</span> <span class="n">directory</span><span class="p">)</span></div>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Remove ecflow directory </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">directory</span><span class="p">)</span>
+                        <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="EcflowServer.get_suites_from_server">
@@ -1806,26 +1805,28 @@
         <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">endtimes</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">force_delete_time</span><span class="o">.</span><span class="n">timestamp</span><span class="p">())</span></div>
 
 
-<div class="viewcode-block" id="EcflowServer.get_ecf_home_and_files">
-<a class="viewcode-back" href="../../deode.html#deode.scheduler.EcflowServer.get_ecf_home_and_files">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_ecf_home_and_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">suite</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get ECF_HOME and ECF_HOST of the suite.</span>
+<div class="viewcode-block" id="EcflowServer.get_ecf_vars">
+<a class="viewcode-back" href="../../deode.html#deode.scheduler.EcflowServer.get_ecf_vars">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_ecf_vars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">suite</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get some ecf_vars from a ecflow suite.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            suite (Ecflow suite): suite object.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            ecf_home (Path): Path to ECF_HOME.</span>
-<span class="sd">            ecf_files (Path): Path to ECF_FILES.</span>
+<span class="sd">            ecf_vars (list): List of Paths</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">suite_name</span> <span class="o">=</span> <span class="n">suite</span><span class="o">.</span><span class="n">name</span><span class="p">()</span>
-        <span class="n">ecf_home</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">suite</span><span class="o">.</span><span class="n">find_variable</span><span class="p">(</span><span class="s2">&quot;ECF_HOME&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="p">())</span>
-        <span class="n">ecf_files</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">suite</span><span class="o">.</span><span class="n">find_variable</span><span class="p">(</span><span class="s2">&quot;ECF_FILES&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="p">())</span>
-        <span class="k">if</span> <span class="n">suite_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;DE_Impact_EHYPE&quot;</span><span class="p">):</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;ecf_files: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ecf_files</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-            <span class="n">ecf_files</span> <span class="o">=</span> <span class="n">ecf_files</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">ecf_vars</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">_ecf_var</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;ECF_OUT&quot;</span><span class="p">,</span> <span class="s2">&quot;ECF_HOME&quot;</span><span class="p">,</span> <span class="s2">&quot;ECF_FILES&quot;</span><span class="p">]:</span>
+            <span class="n">ecf_var</span> <span class="o">=</span> <span class="n">suite</span><span class="o">.</span><span class="n">find_variable</span><span class="p">(</span><span class="n">_ecf_var</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ecf_var</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">ecf_var</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">ecf_var</span><span class="p">)</span> <span class="o">/</span> <span class="n">suite_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ecf_var</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ecf_vars</span><span class="p">:</span>
+                <span class="n">ecf_vars</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ecf_var</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="n">ecf_home</span> <span class="o">/</span> <span class="n">suite_name</span><span class="p">),</span> <span class="n">Path</span><span class="p">(</span><span class="n">ecf_files</span> <span class="o">/</span> <span class="n">suite_name</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">ecf_vars</span></div>
 
 
 <div class="viewcode-block" id="EcflowServer.get_all_tasks">
@@ -2065,7 +2066,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2026-02-19T14:46:12Z.
+      <span class="lastupdated">Last updated on 2026-02-20T09:30:45Z.
       </span></p>
   </div>
 
