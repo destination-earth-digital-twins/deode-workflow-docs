@@ -1761,6 +1761,9 @@
             <span class="k">for</span> <span class="n">b_setting</span> <span class="ow">in</span> <span class="n">batch_settings</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
                 <span class="n">file_handler</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">b_setting</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
+            <span class="k">if</span> <span class="n">scheduler</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">nproc_io</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_task_settings</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="s2">&quot;NPROC_IO&quot;</span><span class="p">)</span>
+                <span class="n">file_handler</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;export NPROC_IO=&quot;</span><span class="si">{</span><span class="n">nproc_io</span><span class="si">}</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">scheduler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">scheduler</span> <span class="o">==</span> <span class="s2">&quot;ecflow&quot;</span><span class="p">:</span>
                 <span class="n">ecf_vars</span> <span class="o">=</span> <span class="p">[</span>
                     <span class="s2">&quot;ECF_HOST&quot;</span><span class="p">,</span>
@@ -1866,7 +1869,8 @@
         <span class="n">task_job</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
         <span class="n">output</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
         <span class="n">member</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">troika</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;troika&quot;</span><span class="p">,</span>
+        <span class="n">troika</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;troika&quot;</span><span class="p">,</span>
+        <span class="n">create_only</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Submit task.</span>
 
@@ -1879,6 +1883,7 @@
 <span class="sd">            member      (int, optional): Member number for which to submit job.</span>
 <span class="sd">                Defaults to None.</span>
 <span class="sd">            troika      (str, optional): troika binary. Defaults to &quot;troika&quot;.</span>
+<span class="sd">            create_only: (bool, optional): Only create the job, do not submit it.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            RuntimeError: Submission failure.</span>
@@ -1904,14 +1909,15 @@
             <span class="n">member</span><span class="o">=</span><span class="n">member</span><span class="p">,</span>
             <span class="n">scheduler</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">cmd</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">troika</span><span class="si">}</span><span class="s2"> -c </span><span class="si">{</span><span class="n">troika_config</span><span class="si">}</span><span class="s2"> submit </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">task_settings</span><span class="o">.</span><span class="n">job_type</span><span class="si">}</span><span class="s2"> &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">task_job</span><span class="si">}</span><span class="s2"> -o </span><span class="si">{</span><span class="n">output</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="p">)</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">cmd</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>  <span class="c1"># noqa S603</span>
-        <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Submission failed with </span><span class="si">{</span><span class="n">exc</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span></div>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">create_only</span><span class="p">:</span>
+            <span class="n">cmd</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">troika</span><span class="si">}</span><span class="s2"> -c </span><span class="si">{</span><span class="n">troika_config</span><span class="si">}</span><span class="s2"> submit </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">task_settings</span><span class="o">.</span><span class="n">job_type</span><span class="si">}</span><span class="s2"> &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">task_job</span><span class="si">}</span><span class="s2"> -o </span><span class="si">{</span><span class="n">output</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">cmd</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>  <span class="c1"># noqa S603</span>
+            <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Submission failed with </span><span class="si">{</span><span class="n">exc</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span></div>
 </div>
 
 </pre></div>
@@ -1924,7 +1930,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2026-03-04T12:48:25Z.
+      <span class="lastupdated">Last updated on 2026-03-05T10:00:58Z.
       </span></p>
   </div>
 

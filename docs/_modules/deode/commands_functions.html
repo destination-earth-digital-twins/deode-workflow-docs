@@ -1525,31 +1525,16 @@
     <span class="n">submission_defs</span> <span class="o">=</span> <span class="n">TaskSettings</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
     <span class="n">sub</span> <span class="o">=</span> <span class="n">NoSchedulerSubmission</span><span class="p">(</span><span class="n">submission_defs</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">members</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">sub</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span>
-            <span class="n">task</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">task</span><span class="p">,</span>
-            <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
-            <span class="n">template_job</span><span class="o">=</span><span class="n">template_job</span><span class="p">,</span>
-            <span class="n">task_job</span><span class="o">=</span><span class="n">task_job</span><span class="p">,</span>
-            <span class="n">output</span><span class="o">=</span><span class="n">output</span><span class="p">,</span>
-            <span class="n">troika</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">troika</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Task </span><span class="si">{}</span><span class="s2"> submitted.&quot;</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">task</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">members</span><span class="p">:</span>
-            <span class="c1"># Change suffixes to include member string</span>
-            <span class="n">output_</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;.mbr</span><span class="si">{</span><span class="n">member</span><span class="si">:</span><span class="s2">03d</span><span class="si">}{</span><span class="n">output</span><span class="o">.</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">task_job_</span> <span class="o">=</span> <span class="n">task_job</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;.mbr</span><span class="si">{</span><span class="n">member</span><span class="si">:</span><span class="s2">03d</span><span class="si">}{</span><span class="n">task_job</span><span class="o">.</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">sub</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span>
-                <span class="n">task</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">task</span><span class="p">,</span>
-                <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
-                <span class="n">template_job</span><span class="o">=</span><span class="n">template_job</span><span class="p">,</span>
-                <span class="n">task_job</span><span class="o">=</span><span class="n">task_job_</span><span class="p">,</span>
-                <span class="n">output</span><span class="o">=</span><span class="n">output_</span><span class="p">,</span>
-                <span class="n">member</span><span class="o">=</span><span class="n">member</span><span class="p">,</span>
-                <span class="n">troika</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">troika</span><span class="p">,</span>
-            <span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Task </span><span class="si">{}</span><span class="s2"> submitted for member </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">task</span><span class="p">,</span> <span class="n">member</span><span class="p">)</span></div>
+    <span class="n">sub</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span>
+        <span class="n">task</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">task</span><span class="p">,</span>
+        <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+        <span class="n">template_job</span><span class="o">=</span><span class="n">template_job</span><span class="p">,</span>
+        <span class="n">task_job</span><span class="o">=</span><span class="n">task_job</span><span class="p">,</span>
+        <span class="n">output</span><span class="o">=</span><span class="n">output</span><span class="p">,</span>
+        <span class="n">troika</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">troika</span><span class="p">,</span>
+        <span class="n">create_only</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">create_only</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Task </span><span class="si">{}</span><span class="s2"> submitted.&quot;</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">task</span><span class="p">)</span></div>
 
 
 
@@ -2142,7 +2127,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, The WP5.1 dev group in the DE_330 project.
-      <span class="lastupdated">Last updated on 2026-03-04T12:48:25Z.
+      <span class="lastupdated">Last updated on 2026-03-05T10:00:58Z.
       </span></p>
   </div>
 
