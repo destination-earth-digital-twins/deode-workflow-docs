@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>deode.tasks.serial &mdash; Deode Workflow Docs  documentation</title>
+  <title>deode.tasks.wildfires &mdash; Deode Workflow Docs  documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
@@ -1425,7 +1425,7 @@
       <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
           <li class="breadcrumb-item"><a href="../../deode.html">deode</a></li>
-      <li class="breadcrumb-item active">deode.tasks.serial</li>
+      <li class="breadcrumb-item active">deode.tasks.wildfires</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -1434,33 +1434,83 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>Source code for deode.tasks.serial</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Serial task.&quot;&quot;&quot;</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">..logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">Task</span>
+  <h1>Source code for deode.tasks.wildfires</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Impact model classes.&quot;&quot;&quot;</span>
 
 
-<div class="viewcode-block" id="Serial">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.serial.Serial">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">Serial</span><span class="p">(</span><span class="n">Task</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Serial task.&quot;&quot;&quot;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct serial task.</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tomlkit</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            config (deode.ParsedConfig): Configuration</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Construct serial task&quot;</span><span class="p">)</span>
-        <span class="n">Task</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">deode.host_actions</span><span class="w"> </span><span class="kn">import</span> <span class="n">SelectHost</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">deode.logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">deode.os_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">deodemakedirs</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">deode.tasks.impacts</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseImpactModel</span>
 
-<div class="viewcode-block" id="Serial.execute">
-<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.serial.Serial.execute">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute task.&quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Run serial&quot;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Config: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="WildFire">
+<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.wildfires.WildFire">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">()</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">WildFire</span><span class="p">(</span><span class="n">BaseImpactModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;WildFire specific methods.&quot;&quot;&quot;</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;wildfire&quot;</span>
+
+<div class="viewcode-block" id="WildFire.run">
+<a class="viewcode-back" href="../../../deode.tasks.html#deode.tasks.wildfires.WildFire.run">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Starts the WildFire suite.&quot;&quot;&quot;</span>
+        <span class="c1"># Let BaseImpactModel handle the path preparation</span>
+        <span class="n">tmp_path</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+
+        <span class="n">config_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;config_name&quot;</span><span class="p">))</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot; Load config from: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">config_name</span><span class="p">)</span>
+        <span class="n">config_</span> <span class="o">=</span> <span class="n">tomlkit</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">config_name</span><span class="p">)</span><span class="o">.</span><span class="n">read_text</span><span class="p">())</span>
+
+        <span class="c1"># expands ecf variables</span>
+        <span class="n">ecf_host</span> <span class="o">=</span> <span class="n">config_</span><span class="p">[</span><span class="s2">&quot;ecfvars&quot;</span><span class="p">][</span><span class="s2">&quot;ECF_HOST&quot;</span><span class="p">]</span>
+        <span class="n">ecf_host</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">ecf_host</span><span class="p">)</span>
+        <span class="n">ecf_host</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">ecf_host</span><span class="p">,</span> <span class="n">object_</span><span class="o">=</span><span class="n">SelectHost</span><span class="p">)</span>
+        <span class="n">config_</span><span class="p">[</span><span class="s2">&quot;ecfvars&quot;</span><span class="p">][</span><span class="s2">&quot;ECF_HOST&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ecf_host</span>
+
+        <span class="n">troika_config_file</span> <span class="o">=</span> <span class="n">config_</span><span class="p">[</span><span class="s2">&quot;ecfvars&quot;</span><span class="p">][</span><span class="s2">&quot;TROIKA_CONFIG&quot;</span><span class="p">]</span>
+        <span class="n">endpart</span> <span class="o">=</span> <span class="n">troika_config_file</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;)&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">troika_config_file</span><span class="p">,</span> <span class="n">object_</span><span class="o">=</span><span class="s2">&quot;deode.os_utils&quot;</span><span class="p">))</span>
+        <span class="n">config_</span><span class="p">[</span><span class="s2">&quot;ecfvars&quot;</span><span class="p">][</span><span class="s2">&quot;TROIKA_CONFIG&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">path</span> <span class="o">+</span> <span class="n">endpart</span>
+
+        <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">config_</span><span class="p">[</span><span class="s2">&quot;workdir&quot;</span><span class="p">])</span>
+        <span class="n">deodemakedirs</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">unixgroup</span><span class="o">=</span><span class="n">config_</span><span class="p">[</span><span class="s2">&quot;unix_group&quot;</span><span class="p">])</span>
+
+        <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">config_</span><span class="p">[</span><span class="s2">&quot;archive&quot;</span><span class="p">])</span>
+        <span class="n">deodemakedirs</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">unixgroup</span><span class="o">=</span><span class="n">config_</span><span class="p">[</span><span class="s2">&quot;unix_group&quot;</span><span class="p">])</span>
+
+        <span class="c1"># adds path to wf suite</span>
+        <span class="n">suite_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">),</span> <span class="s2">&quot;IPMA-FIRE&quot;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">suite_path</span><span class="p">)</span>
+
+        <span class="c1"># updates path to cloned repo in the original deode config file</span>
+        <span class="n">config_</span><span class="p">[</span><span class="s2">&quot;repo_home&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">)</span>
+
+        <span class="c1"># updates ecflow server variables</span>
+        <span class="n">ecf_files</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">suite_path</span><span class="p">,</span> <span class="s2">&quot;wf-suite/ecf_files&quot;</span><span class="p">)</span>
+        <span class="n">config_</span><span class="p">[</span><span class="s2">&quot;ecfvars&quot;</span><span class="p">][</span><span class="s2">&quot;ECF_FILES&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ecf_files</span>
+
+        <span class="n">ecf_include</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">suite_path</span><span class="p">,</span> <span class="s2">&quot;wf-suite/include&quot;</span><span class="p">)</span>
+        <span class="n">config_</span><span class="p">[</span><span class="s2">&quot;ecfvars&quot;</span><span class="p">][</span><span class="s2">&quot;ECF_INCLUDE&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ecf_include</span>
+
+        <span class="c1"># writes wildfire config file to disk</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot; Dump modified config to: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">config_name</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_name</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_h</span><span class="p">:</span>
+            <span class="n">f_h</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">tomlkit</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">config_</span><span class="p">))</span>
+
+        <span class="c1"># creates and loads wildfire applications suite</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">wf_suite</span>
+
+        <span class="n">wf_suite</span><span class="o">.</span><span class="n">load_suite</span><span class="p">(</span><span class="n">config_</span><span class="p">)</span></div>
 </div>
 
 </pre></div>
